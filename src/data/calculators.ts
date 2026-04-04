@@ -18,9 +18,10 @@ export type CalculatorInfo = {
 export const categories: Category[] = [
   { id: "kredi", name: "Kredi", slug: "kredi", description: "İhtiyaç, konut, taşıt ve ticari kredi hesaplamaları.", icon: "Bank" },
   { id: "finans", name: "Finans", slug: "finans", description: "Faiz, döviz, enflasyon ve yatırım getirisi hesaplamaları.", icon: "TrendingUp" },
-  { id: "saglik", name: "Sağlık", slug: "saglik", description: "Vücut kitle endeksi, gebelik, kalori ve yaş hesaplamaları.", icon: "Heart" },
+  { id: "saglik", name: "Sağlık", slug: "saglik", description: "İdeal kilo, su ihtiyacı, vücut kitle endeksi, gebelik ve yaş.", icon: "Heart" },
   { id: "egitim", name: "Eğitim", slug: "egitim", description: "Ders notu, ortalama ve okul başlangıç yaşı vb. okul hesaplamaları.", icon: "BookOpen" },
-  { id: "matematik", name: "Matematik", slug: "matematik", description: "Alan, hacim, yüzdelik oran ve denklem çözümleri.", icon: "Calculator" },
+  { id: "matematik", name: "Matematik", slug: "matematik", description: "Alan, hacim, yüzdelik oran, denklem çözümleri ve dönüştürücüler.", icon: "Calculator" },
+  { id: "donusturuculer", name: "Dönüştürücüler", slug: "donusturucu", description: "Uzunluk, ağırlık ve sıcaklık gibi çeşitli birim çevirme araçları.", icon: "Repeat" },
   { id: "sure", name: "Zaman", slug: "zaman", description: "Tarihler arası gün, hafta, saat, namaz saatleri ve yaş.", icon: "Clock" },
   { id: "muhasebe", name: "Muhasebe", slug: "muhasebe", description: "Maaş, tazminat, mesai ve asgari geçim hesaplamaları.", icon: "Briefcase" },
   { id: "vergi", name: "Vergi", slug: "vergi", description: "KDV, damga vergisi, emlak, gelir ve ÖTV hesaplamaları.", icon: "Percent" },
@@ -32,6 +33,10 @@ export const categories: Category[] = [
 export const calculators: CalculatorInfo[] = [
   // Sağlık Kats.
   { id: "bmi", title: "Vücut Kitle Endeksi", slug: "vucut-kitle-endeksi", categoryId: "saglik", description: "Boyunuza ve kilonuza göre sağlıklı aralıkta olup olmadığınızı öğrenin." },
+  { id: "ideal-kilo", title: "İdeal Kilo Hesaplama", slug: "ideal-kilo", categoryId: "saglik", description: "Boy, yaş ve cinsiyete göre tıbbi standartlardaki ideal (olmanız gereken) kilonuz." },
+  { id: "su-ihtiyaci", title: "Su İhtiyacı Hesaplama", slug: "su-ihtiyaci", categoryId: "saglik", description: "Günlük olarak tüketmeniz gereken minimum litre ve bardak bazında su miktarı." },
+  { id: "uyku-dongusu", title: "Uyku Döngüsü (REM) Hesaplama", slug: "uyku-dongusu", categoryId: "saglik", description: "Dinç uyanmak için tam olarak saat kaçta uyanmanız veya uyumanız gerektiği." },
+  { id: "bmr", title: "Bazal Metabolizma Hızı (BMR)", slug: "bmr", categoryId: "saglik", description: "Vücudunuzun istirahat halindeyken (hiç hareket etmeden) harcadığı minimum kalori." },
   { id: "gebelik", title: "Gebelik Hesaplama", slug: "gebelik", categoryId: "saglik", description: "Doğum tarihi ve gebelik haftanızı ortalama değerlere göre hesaplayın." },
   { id: "adet-takibi", title: "Adet (Regl) Takibi ve Yumurtlama", slug: "adet-takibi", categoryId: "saglik", description: "Sonraki adet döngünüzü, yumurtlama (ovulasyon) günü ve doğurganlık tarihinizi hesaplayın." },
   { id: "kalori", title: "Günlük Kalori İhtiyacı", slug: "gunluk-kalori-ihtiyaci", categoryId: "saglik", description: "Boy, kilo ve hareket durumunuza göre almanız gereken kalori." },
@@ -68,11 +73,17 @@ export const calculators: CalculatorInfo[] = [
   { id: "ebob_ekok", title: "EBOB EKOK", slug: "ebob-ekok", categoryId: "matematik", description: "İki veya daha fazla sayının en büyük ortak böleni ve en küçük ortak katı." },
   { id: "kesir", title: "Kesir Hesaplama", slug: "kesir", categoryId: "matematik", description: "Kesirlerle toplama, çıkarma, çarpma ve bölme işlemlerini kolayca yapın." },
   { id: "logaritma", title: "Logaritma Hesaplama", slug: "logaritma", categoryId: "matematik", description: "İstediğiniz tabanda (10, 2, e) logaritma değerini milisaniyeler içinde hesaplayın." },
+  { id: "alan-hacim", title: "Alan ve Hacim Hesaplayıcı", slug: "alan-hacim", categoryId: "matematik", description: "Kare, silindir, küre, daire gibi şekillerin alan, çevre ve hacimlerini bulun." },
+  { id: "uslu-koklu", title: "Üslü ve Köklü Sayı Hesaplama", slug: "uslu-koklu", categoryId: "matematik", description: "Herhangi bir sayının üssünü veya n'inci dereceden kökünü kolayca sistemde çözün." },
+  { id: "denklem", title: "Denklem Çözücü", slug: "denklem-cozucu", categoryId: "matematik", description: "Birinci ve ikinci dereceden (ax² + bx + c) denklemlerin köklerini ve deltasını bulun." },
+  { id: "asal-sayi", title: "Asal Sayı Bulucu", slug: "asal-sayi", categoryId: "matematik", description: "Bir sayının asal olup olmadığını kontrol edin ve çarpanlarına ayırın." },
 
-  // Muhasebe ve Ticari
+  // Muhasebe, Ticari, Gündelik
   { id: "netbrut", title: "Netten Brüte Maaş", slug: "netten-brute", categoryId: "muhasebe", description: "Ele geçen net paradan vergi kesintileri dahil brüt maaş hesaplama." },
   { id: "tazminat", title: "Kıdem Tazminatı", slug: "kidem-tazminati", categoryId: "muhasebe", description: "Çalışma sürenize ve brüt maaşınıza göre alacağınız tazminat tutarı." },
   { id: "arac-gider", title: "Binek Araç Gider Kısıtlaması", slug: "binek-arac-gider", categoryId: "muhasebe", description: "Kanunen kabul edilen (KKEG) ve edilmeyen ticari binek araç giderlerini belirleyin." },
+  { id: "yakit-tuketim", title: "Yakıt Hesaplama", slug: "yakit-maliyeti", categoryId: "muhasebe", description: "Aracınızın km başına kaç TL yaktığını, toplam yol masrafını analiz edin." },
+  { id: "mtv", title: "Motorlu Taşıtlar Vergisi (MTV)", slug: "mtv-hesaplama", categoryId: "muhasebe", description: "Araç yaşı ve motor hacminize göre yıllık MTV verginizi hesaplayın." },
   { id: "fiyat-hesap", title: "Fiyat Hesaplama", slug: "fiyat", categoryId: "ticari", description: "Ürün ve hizmetlerin birim maliyeti ve hedeflenen kar marjı ile satış fiyatını bulun." },
   { id: "kar-marji", title: "Kar Marjı Hesaplama", slug: "kar-marji", categoryId: "ticari", description: "Maliyet ve satış fiyatından brüt kar marjı, markup ve kar tutarını anlık hesaplayın." },
   { id: "kar-zarar", title: "Kar / Zarar Hesaplama", slug: "kar-zarar", categoryId: "ticari", description: "Toplam gelir ve giderden kar-zarar dengesi ile KDV yükümlülüğünü öğrenin." },
@@ -84,6 +95,7 @@ export const calculators: CalculatorInfo[] = [
   { id: "ales", title: "ALES Puan Hesaplama", slug: "ales-puan", categoryId: "sinav", description: "ALES Sayısal, Sözel ve Eşit Ağırlık tahmini sınav sonuç puanları (50-100)." },
   { id: "dgs", title: "DGS Puan Hesaplama", slug: "dgs-puan", categoryId: "sinav", description: "DGS ve ÖBP eklemeli Sayısal, Sözel, EA tahmini sınav puanı hesaplamaları." },
   { id: "yds", title: "YDS & YÖKDİL Puan Hesaplama", slug: "yds-puan", categoryId: "sinav", description: "Doğru sayınıza göre yabancı dil sınavı puanınızı ve harf seviyenizi hesaplayın." },
+  { id: "tus-dus", title: "TUS / DUS Puan Hesaplama", slug: "tus-dus-puan", categoryId: "sinav", description: "Tıpta ve Diş Hekimliğinde Uzmanlık temel/klinik tıp puan hesaplama simülatörü." },
   { id: "ags", title: "AGS Puan Hesaplama", slug: "ags-puan", categoryId: "sinav", description: "Akademi Giriş Sınavı netlerinizi ve tahmini puanınızı hesaplayın." },
   { id: "hsy", title: "Hâkim ve Savcı Yardımcılığı Puanı", slug: "hakim-savci-puan", categoryId: "sinav", description: "Genel Kültür ve Alan Bilgisi netlerinize göre tahmini sınav puanınız." },
 
@@ -92,6 +104,7 @@ export const calculators: CalculatorInfo[] = [
   { id: "yks", title: "YKS Puan Hesaplama", slug: "yks-puan", categoryId: "egitim", description: "TYT, AYT ve YDT netlerinizi girerek üniversite sınav puanınızı tahmini çıkarın." },
   { id: "grade", title: "Ders Notu Ortalaması", slug: "not-ortalamasi", categoryId: "egitim", description: "Ders notlarınızı ve kredilerini (veya ders saati) girerek ağırlıklı not ortalamanızı hesaplayın." },
   // Eğitim - Okul / Karne Paketi
+  { id: "aof", title: "AÖF Harf Notu Hesaplama", slug: "aof-harf-notu", categoryId: "egitim", description: "Açıköğretim (AÖF) Vize-Final ortalamasına göre tahmini çan hesabı harf notu." },
   { id: "vize-final", title: "Vize Final Ortalama Hesaplama", slug: "vize-final-ortalama", categoryId: "egitim", description: "Üniversite vize ve final ağırlıklarınıza göre ders geçme notunuzu belirleyin." },
   { id: "e-okul", title: "E-Okul Not Hesaplama", slug: "e-okul-not", categoryId: "egitim", description: "Öğrenci sınav, sözlü ve proje performans notlarının e-okul standart ortalaması." },
   { id: "ders-notu", title: "Ders Notu Hesaplama", slug: "ders-notu-hesaplama", categoryId: "egitim", description: "Tekil ders bazlı veya haftalık ağırlığa göre not hesaplayıcısı." },
@@ -112,6 +125,13 @@ export const calculators: CalculatorInfo[] = [
   { id: "calisma-saati", title: "Çalışma Saati Hesaplama", slug: "calisma-saati", categoryId: "sure", description: "Giriş-çıkış saati ve mola süresine göre günlük, haftalık, aylık ve yıllık çalışma saatinizi öğrenin." },
   { id: "kusak", title: "Kuşak Hesaplama", slug: "kusak", categoryId: "diger", description: "Doğum yılınıza göre hangi jenerasyona (kuşağa) ait olduğunuzu bulun." },
   { id: "burc", title: "Burç Hesaplama", slug: "burc-hesaplama", categoryId: "diger", description: "Doğum tarihinize göre güneş burcunuzu, grubunu ve yönetici gezegeninizi öğrenin." },
+  { id: "cin-burcu", title: "Çin Burcu Hesaplama", slug: "cin-burcu", categoryId: "diger", description: "Çin Zodyak sistemine göre doğum yılıyla elementinizi ve hayvan motifi burcunuzu bulun." },
+  { id: "yukselen", title: "Yükselen Burç Hesaplama", slug: "yukselen-burc", categoryId: "diger", description: "Doğum tarihi ve saatinizi kullanarak astrolojik ana haritanızdaki yükselen burcu bulun." },
+
+  // Dönüştürücüler
+  { id: "uzunluk-ceviri", title: "Uzunluk Çevirici", slug: "uzunluk-cevirici", categoryId: "donusturucu", description: "Metre, kilometre, inç, ayak, mil gibi uzunluk birimlerini anında birbirine çevirin." },
+  { id: "agirlik-ceviri", title: "Ağırlık Çevirici", slug: "agirlik-cevirici", categoryId: "donusturucu", description: "Gram, kilogram, ton, ons (oz) ve libre (lb) birimlerini kolaylıkla hesaplayın." },
+  { id: "sicaklik-ceviri", title: "Sıcaklık Çevirici", slug: "sicaklik-cevirici", categoryId: "donusturucu", description: "Celsius (°C), Fahrenheit (°F) ve Kelvin (K) ısı birimleri dönüştürücüsü." },
 
   // Vergi Hesaplamaları
   { id: "kdv", title: "KDV Hesaplama", slug: "kdv", categoryId: "vergi", description: "KDV dahil ve hariç tutarları %1, %10, %20 oranlarında anında hesaplayın." },

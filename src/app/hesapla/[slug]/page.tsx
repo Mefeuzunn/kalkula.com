@@ -73,6 +73,10 @@ import { DateDiffCalculator, AgeCalculator, TimeCalculator, WorkHoursCalculator 
 import { KpssCalculator, AlesCalculator, DgsCalculator, YdsCalculator } from "@/components/calculators/OsymCalculators";
 import { PeriodCalculator, ZodiacCalculator } from "@/components/calculators/ExtraHealthMiscCalculators";
 import { FractionsCalculator, LogarithmCalculator } from "@/components/calculators/ExtraMathCalculators";
+import { IdealWeightCalculator, WaterIntakeCalculator, SleepCycleCalculator, BmrCalculator, AreaVolumeCalculator, PowerRootCalculator, EquationSolverCalculator, PrimeNumberCalculator } from "@/components/calculators/Phase1Calculators";
+import { FuelCostCalculator, MtvCalculator } from "@/components/calculators/Phase2Calculators";
+import { LengthConverter, WeightConverter, TempConverter } from "@/components/calculators/Converters";
+import { AofCalculator, TusDusCalculator, ChineseZodiac, AscendantCalculator } from "@/components/calculators/Phase3Calculators";
 
 // BMI Calculator within the file
 function BMICalculator() {
@@ -174,6 +178,10 @@ export default function CalculatorPage() {
       case "vucut-kitle-endeksi": return <BMICalculator />;
       case "gebelik": return <PregnancyCalculator />;
       case "adet-takibi": return <PeriodCalculator />;
+      case "ideal-kilo": return <IdealWeightCalculator />;
+      case "su-ihtiyaci": return <WaterIntakeCalculator />;
+      case "uyku-dongusu": return <SleepCycleCalculator />;
+      case "bmr": return <BmrCalculator />;
       case "gunluk-kalori-ihtiyaci": return <CalorieCalculator />;
       case "kredi-hesaplama": return <LoanCalculator />;
       case "kredi-karti-asgari": return <CreditCardCalculator />;
@@ -185,10 +193,16 @@ export default function CalculatorPage() {
       case "ebob-ekok": return <EbobEkokCalculator />;
       case "kesir": return <FractionsCalculator />;
       case "logaritma": return <LogarithmCalculator />;
+      case "alan-hacim": return <AreaVolumeCalculator />;
+      case "uslu-koklu": return <PowerRootCalculator />;
+      case "denklem-cozucu": return <EquationSolverCalculator />;
+      case "asal-sayi": return <PrimeNumberCalculator />;
       
-      // Muhasebe
+      // Muhasebe ve Gündelik
       case "netten-brute": return <NetGrossCalculator />;
       case "kidem-tazminati": return <SeveranceCalculator />;
+      case "yakit-maliyeti": return <FuelCostCalculator />;
+      case "mtv-hesaplama": return <MtvCalculator />;
       
       // Yeni eklenen 8 arac
       case "ags-puan": return <AgssCalculator />;
@@ -226,6 +240,8 @@ export default function CalculatorPage() {
       case "ales-puan": return <AlesCalculator />;
       case "dgs-puan": return <DgsCalculator />;
       case "yds-puan": return <YdsCalculator />;
+      case "tus-dus-puan": return <TusDusCalculator />;
+      case "aof-harf-notu": return <AofCalculator />;
       case "lgs-puan": return <LgsCalculator />;
       case "yks-puan": return <YksCalculator />;
       case "not-ortalamasi": return <GradeCalculator />;
@@ -258,6 +274,13 @@ export default function CalculatorPage() {
       case "saat-hesaplama": return <TimeCalculator />;
       case "calisma-saati": return <WorkHoursCalculator />;
       case "burc-hesaplama": return <ZodiacCalculator />;
+      case "cin-burcu": return <ChineseZodiac />;
+      case "yukselen-burc": return <AscendantCalculator />;
+      
+      // Donusturuculer
+      case "uzunluk-cevirici": return <LengthConverter />;
+      case "agirlik-cevirici": return <WeightConverter />;
+      case "sicaklik-cevirici": return <TempConverter />;
 
       default: return <GenericCalculator />;
     }
