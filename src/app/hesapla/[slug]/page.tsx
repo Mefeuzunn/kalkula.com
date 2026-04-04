@@ -67,6 +67,7 @@ import { HighSchoolYBPCalculator } from "@/components/calculators/HighSchoolYBPC
 import { HighSchoolGraduationCalculator } from "@/components/calculators/HighSchoolGraduationCalculator";
 import { UniversityGPACalculator } from "@/components/calculators/UniversityGPACalculator";
 import { SchoolAgeCalculator } from "@/components/calculators/SchoolAgeCalculator";
+import { KdvCalculator, DamgaVergisiCalculator, GelirVergisiCalculator } from "@/components/calculators/TaxCalculators";
 
 // BMI Calculator within the file
 function BMICalculator() {
@@ -223,7 +224,12 @@ export default function CalculatorPage() {
       case "lise-mezuniyet": return <HighSchoolGraduationCalculator />;
       case "universite-not-ortalamasi": return <UniversityGPACalculator />;
       case "okula-baslama-yasi": return <SchoolAgeCalculator />;
-      
+
+      // Vergi
+      case "kdv": return <KdvCalculator />;
+      case "damga-vergisi": return <DamgaVergisiCalculator />;
+      case "gelir-vergisi": return <GelirVergisiCalculator />;
+
       default: return <GenericCalculator />;
     }
   };

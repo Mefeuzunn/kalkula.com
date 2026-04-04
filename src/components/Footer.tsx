@@ -64,9 +64,15 @@ export default function Footer() {
           <div>
             <h4 style={{ fontWeight: 700, marginBottom: "1rem", color: "var(--text-primary)", fontSize: "0.9rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>Bilgi</h4>
             <ul style={{ listStyle: "none", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              {["Hakkımızda", "Gizlilik Politikası", "Kullanım Şartları", "İletişim"].map(label => (
-                <li key={label}>
-                  <Link href="#" className="footer-link">{label}</Link>
+              {[
+                { label: "Hakkımızda", href: "/hakkimizda" },
+                { label: "Gizlilik Politikası", href: "/gizlilik" },
+                { label: "İletişim", href: "/iletisim" },
+                { label: "Hesap Makinesi", href: "/calculator" },
+                { label: "Takvim", href: "/calendar" },
+              ].map(item => (
+                <li key={item.href}>
+                  <Link href={item.href} className="footer-link">{item.label}</Link>
                 </li>
               ))}
             </ul>

@@ -95,7 +95,12 @@ export const calculators: CalculatorInfo[] = [
 
   // Zaman ve Diğer
   { id: "kacinci-gun", title: "Yılın Kaçıncı Günü", slug: "yilin-kacinci-gunu", categoryId: "sure", description: "Seçtiğiniz tarihin yılın kaçıncı günü olduğunu kolayca hesaplayın." },
-  { id: "kusak", title: "Kuşak Hesaplama", slug: "kusak", categoryId: "diger", description: "Doğum yılınıza göre hangi jenerasyona (kuşağa) ait olduğunuzu bulun." }
+  { id: "kusak", title: "Kuşak Hesaplama", slug: "kusak", categoryId: "diger", description: "Doğum yılınıza göre hangi jenerasyona (kuşağa) ait olduğunuzu bulun." },
+
+  // Vergi Hesaplamaları
+  { id: "kdv", title: "KDV Hesaplama", slug: "kdv", categoryId: "vergi", description: "KDV dahil ve hariç tutarları %1, %10, %20 oranlarında anında hesaplayın." },
+  { id: "damga-vergisi", title: "Damga Vergisi Hesaplama", slug: "damga-vergisi", categoryId: "vergi", description: "Sözleşme, kira, bordro ve banka evraklarının damga vergisini hesaplayın." },
+  { id: "gelir-vergisi", title: "Gelir Vergisi Hesaplama", slug: "gelir-vergisi", categoryId: "vergi", description: "2025 gelir vergisi dilimlerine göre aylık brüt maaştan net maaşa geçin." }
 ];
 
 export function getCalculatorsByCategory(categoryId: string) {

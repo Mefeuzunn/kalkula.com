@@ -542,3 +542,9 @@ input, textarea, select {
 .footer-link:hover {
   color: var(--accent-primary);
 }
+
+/* Sidebar link hover */
+.sidebar-link:hover {
+  background: var(--surface-hover) !important;
+  color: var(--text-primary) !important;
+}
