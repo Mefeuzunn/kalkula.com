@@ -75,7 +75,7 @@ import { PeriodCalculator, ZodiacCalculator } from "@/components/calculators/Ext
 import { FractionsCalculator, LogarithmCalculator } from "@/components/calculators/ExtraMathCalculators";
 import { IdealWeightCalculator, WaterIntakeCalculator, SleepCycleCalculator, BmrCalculator, AreaVolumeCalculator, PowerRootCalculator, EquationSolverCalculator, PrimeNumberCalculator } from "@/components/calculators/Phase1Calculators";
 import { FuelCostCalculator, MtvCalculator } from "@/components/calculators/Phase2Calculators";
-import { LengthConverter, WeightConverter, TempConverter } from "@/components/calculators/Converters";
+import { LengthConverter, WeightConverter, TempConverter, AreaConverter, VolumeConverter, SpeedConverter, DataConverter, TimeConverter } from "@/components/calculators/Converters";
 import { AofCalculator, TusDusCalculator, ChineseZodiac, AscendantCalculator } from "@/components/calculators/Phase3Calculators";
 
 // BMI Calculator within the file
@@ -281,6 +281,11 @@ export default function CalculatorPage() {
       case "uzunluk-cevirici": return <LengthConverter />;
       case "agirlik-cevirici": return <WeightConverter />;
       case "sicaklik-cevirici": return <TempConverter />;
+      case "alan-cevirici": return <AreaConverter />;
+      case "hacim-cevirici": return <VolumeConverter />;
+      case "hiz-cevirici": return <SpeedConverter />;
+      case "veri-cevirici": return <DataConverter />;
+      case "zaman-cevirici": return <TimeConverter />;
 
       default: return <GenericCalculator />;
     }
