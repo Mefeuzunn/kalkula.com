@@ -11,7 +11,7 @@ type Note = {
   updatedAt: number;
 };
 
-const STORAGE_KEY = "multihub_notes_v2";
+const STORAGE_KEY = "kalkula_notes_v2";
 const generateId = () => `note_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`;
 
 export default function Notepad() {
@@ -32,7 +32,7 @@ export default function Notepad() {
       if (parsed.length > 0) setActiveId(parsed[0].id);
     } else {
       // Default first note
-      const first: Note = { id: generateId(), title: "İlk Notum", content: "Merhaba! MultiHub Not Defterine hoş geldiniz.", createdAt: Date.now(), updatedAt: Date.now() };
+      const first: Note = { id: generateId(), title: "İlk Notum", content: "Merhaba! Kalküla Not Defterine hoş geldiniz.\n\nBuraya istediğiniz notları yazabilir, TXT veya Markdown olarak indirebilirsiniz.", createdAt: Date.now(), updatedAt: Date.now() };
       setNotes([first]);
       setActiveId(first.id);
     }
@@ -98,7 +98,7 @@ export default function Notepad() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "multihub_notlar.txt";
+    a.download = "kalkula_notlar.txt";
     a.click();
     URL.revokeObjectURL(url);
   };

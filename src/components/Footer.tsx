@@ -19,7 +19,7 @@ export default function Footer() {
                   <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
                 </svg>
               </div>
-              <span style={{ fontWeight: 700, fontSize: "1.1rem", color: "var(--text-primary)" }}>MultiHub</span>
+              <span style={{ fontWeight: 700, fontSize: "1.1rem", color: "var(--text-primary)" }}>Kalküla</span>
             </div>
             <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", lineHeight: 1.7, maxWidth: "240px" }}>
               Türkiye&apos;nin en kapsamlı ücretsiz hesaplama ve dönüştürme platformu.
@@ -75,7 +75,7 @@ export default function Footer() {
 
         <div style={{ borderTop: "1px solid var(--border)", paddingTop: "1.5rem", marginTop: "2rem", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
           <p style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
-            © 2025 MultiHub. Tüm hakları saklıdır.
+            © 2025 Kalküla. Tüm hakları saklıdır.
           </p>
           <p style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
             Hesaplamalar bilgilendirme amaçlıdır; profesyonel danışmanlık yerine geçmez.

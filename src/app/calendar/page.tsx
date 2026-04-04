@@ -12,7 +12,7 @@ type CalendarEvent = {
 };
 
 const COLORS = ["#3b82f6", "#22c55e", "#ef4444", "#f59e0b", "#8b5cf6", "#ec4899"];
-const STORAGE_KEY = "multihub_calendar_events";
+const STORAGE_KEY = "kalkula_calendar_events";
 const monthNames = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 const dayNames = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
 const dayNamesFull = ["Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi", "Pazar"];
@@ -57,7 +57,7 @@ export default function Calendar() {
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "multihub_takvim.txt";
+    a.download = "kalkula_takvim.txt";
     a.click();
   };
 
@@ -65,12 +65,12 @@ export default function Calendar() {
     const lines = [
       "BEGIN:VCALENDAR",
       "VERSION:2.0",
-      "PRODID:-//MultiHub//Calendar//TR",
+      "PRODID:-//Kalküla//Calendar//TR",
       ...events.flatMap(e => [
         "BEGIN:VEVENT",
         `DTSTART:${e.date.replace(/-/g, "")}`,
         `SUMMARY:${e.title}`,
-        `UID:${e.id}@multihub`,
+        `UID:${e.id}@kalkula`,
         "END:VEVENT",
       ]),
       "END:VCALENDAR",
@@ -78,7 +78,7 @@ export default function Calendar() {
     const blob = new Blob([lines], { type: "text/calendar" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "multihub_takvim.ics";
+    a.download = "kalkula_takvim.ics";
     a.click();
   };
 

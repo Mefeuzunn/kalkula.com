@@ -16,8 +16,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Multi-Tool Hub | Her Şey Tek Bir Yerde",
-  description: "Hesap makinesi, not defteri, sayaçlar, takvim ve dönüştürücüler gibi binlerce özelliğin bir arada olduğu premium bir internet sitesi.",
+  title: "Kalküla | Türkiye'nin En Kapsamlı Hesaplama Platformu",
+  description: "Kalküla ile finans, eğitim, sağlık, vergi ve daha fazlasını kapsayan 60+ ücretsiz hesaplama aracı, not defteri, takvim ve belge dönüştürücü tek platformda.",
+  keywords: "hesaplama, hesap makinesi, kredi hesaplama, vergi hesaplama, kalküla",
+  openGraph: {
+    title: "Kalküla | Türkiye'nin En Kapsamlı Hesaplama Platformu",
+    description: "60+ ücretsiz hesaplama aracı tek platformda.",
+    locale: "tr_TR",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
