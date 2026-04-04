@@ -129,14 +129,14 @@ export const calculators: CalculatorInfo[] = [
   { id: "yukselen", title: "Yükselen Burç Hesaplama", slug: "yukselen-burc", categoryId: "diger", description: "Doğum tarihi ve saatinizi kullanarak astrolojik ana haritanızdaki yükselen burcu bulun." },
 
   // Dönüştürücüler
-  { id: "uzunluk-ceviri", title: "Uzunluk Çevirici", slug: "uzunluk-cevirici", categoryId: "donusturucu", description: "Metre, kilometre, inç, ayak, mil gibi uzunluk birimlerini anında birbirine çevirin." },
-  { id: "agirlik-ceviri", title: "Ağırlık Çevirici", slug: "agirlik-cevirici", categoryId: "donusturucu", description: "Gram, kilogram, ton, ons (oz) ve libre (lb) birimlerini kolaylıkla hesaplayın." },
-  { id: "sicaklik-ceviri", title: "Sıcaklık Çevirici", slug: "sicaklik-cevirici", categoryId: "donusturucu", description: "Celsius (°C), Fahrenheit (°F) ve Kelvin (K) ısı birimleri dönüştürücüsü." },
-  { id: "alan-ceviri", title: "Alan Çevirici", slug: "alan-cevirici", categoryId: "donusturucu", description: "Metrekare, dönüm, hektar, acre ve daha fazlası arasında anında alan dönüşümü." },
-  { id: "hacim-ceviri", title: "Hacim Çevirici", slug: "hacim-cevirici", categoryId: "donusturucu", description: "Litre, metreküp, galon ve diğer sıvı/katı hacim birimlerini anlık dönüştürün." },
-  { id: "hiz-ceviri", title: "Hız Çevirici", slug: "hiz-cevirici", categoryId: "donusturucu", description: "Km/h, Mph, Knot, Mach vb. hız ölçüleri arasında bilimsel rotasyonlar yapın." },
-  { id: "veri-ceviri", title: "Veri (Disk) Çevirici", slug: "veri-cevirici", categoryId: "donusturucu", description: "GB, MB, TB, KB gibi bilgisayar depolama (Byte) birimlerinin karşılıklarını edinin." },
-  { id: "zaman-ceviri", title: "Zaman Çevirici", slug: "zaman-cevirici", categoryId: "donusturucu", description: "Saniye, dakika, saat, gün, ay, yıl arasındaki matematiksel zaman dönüşümü." },
+  { id: "uzunluk-ceviri", title: "Uzunluk Çevirici", slug: "uzunluk-cevirici", categoryId: "donusturuculer", description: "Metre, kilometre, inç, ayak, mil gibi uzunluk birimlerini anında birbirine çevirin." },
+  { id: "agirlik-ceviri", title: "Ağırlık Çevirici", slug: "agirlik-cevirici", categoryId: "donusturuculer", description: "Gram, kilogram, ton, ons (oz) ve libre (lb) birimlerini kolaylıkla hesaplayın." },
+  { id: "sicaklik-ceviri", title: "Sıcaklık Çevirici", slug: "sicaklik-cevirici", categoryId: "donusturuculer", description: "Celsius (°C), Fahrenheit (°F) ve Kelvin (K) ısı birimleri dönüştürücüsü." },
+  { id: "alan-ceviri", title: "Alan Çevirici", slug: "alan-cevirici", categoryId: "donusturuculer", description: "Metrekare, dönüm, hektar, acre ve daha fazlası arasında anında alan dönüşümü." },
+  { id: "hacim-ceviri", title: "Hacim Çevirici", slug: "hacim-cevirici", categoryId: "donusturuculer", description: "Litre, metreküp, galon ve diğer sıvı/katı hacim birimlerini anlık dönüştürün." },
+  { id: "hiz-ceviri", title: "Hız Çevirici", slug: "hiz-cevirici", categoryId: "donusturuculer", description: "Km/h, Mph, Knot, Mach vb. hız ölçüleri arasında bilimsel rotasyonlar yapın." },
+  { id: "veri-ceviri", title: "Veri (Disk) Çevirici", slug: "veri-cevirici", categoryId: "donusturuculer", description: "GB, MB, TB, KB gibi bilgisayar depolama (Byte) birimlerinin karşılıklarını edinin." },
+  { id: "zaman-ceviri", title: "Zaman Çevirici", slug: "zaman-cevirici", categoryId: "donusturuculer", description: "Saniye, dakika, saat, gün, ay, yıl arasındaki matematiksel zaman dönüşümü." },
 
   // Vergi Hesaplamaları
   { id: "kdv", title: "KDV Hesaplama", slug: "kdv", categoryId: "vergi", description: "KDV dahil ve hariç tutarları %1, %10, %20 oranlarında anında hesaplayın." },
