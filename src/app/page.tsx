@@ -1,7 +1,8 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { categories, calculators } from "@/data/calculators";
+import { categories, calculators, getCalculatorBySlug } from "@/data/calculators";
 import { AdPlaceholder } from "@/components/AdPlaceholder";
 
 const STATS = [
@@ -21,6 +22,18 @@ const POPULAR_TOOLS = [
 ];
 
 export default function Home() {
+  const [recentTools, setRecentTools] = useState<any[]>([]);
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem("recent_calculators") || "[]");
+      const mappedTools = stored.map((slug: string) => getCalculatorBySlug(slug)).filter(Boolean);
+      setRecentTools(mappedTools);
+    } catch (e) {
+       // ignore
+    }
+  }, []);
+
   return (
     <div style={{ paddingBottom: "5rem" }}>
       {/* Hero */}
@@ -66,6 +79,26 @@ export default function Home() {
 
       <div className="container" style={{ padding: "3rem 1.5rem" }}>
         <AdPlaceholder type="leaderboard" />
+
+        {/* Recent Tools */}
+        {recentTools.length > 0 && (
+          <section style={{ marginBottom: "3rem" }}>
+            <h2 style={{ fontSize: "1.4rem", fontWeight: 700, marginBottom: "1.25rem", color: "var(--accent-primary)" }}>🕒 Son Kullanılanlar</h2>
+            <div className="popular-grid">
+              {recentTools.map((tool) => {
+                 const cat = categories.find(c => c.id === tool.categoryId);
+                 // simple emoji fallback based on category
+                 const icon = cat?.icon === "Heart" ? "🩺" : cat?.icon === "Calculator" ? "🧮" : cat?.icon === "Clock" ? "🕒" : "🔧";
+                 return (
+                  <Link key={tool.slug} href={`/hesapla/${tool.slug}`} className="popular-card" style={{ border: "1px solid var(--accent-primary)" }}>
+                    <span style={{ fontSize: "1.3rem" }}>{icon}</span>
+                    <span>{tool.title}</span>
+                  </Link>
+                 )
+              })}
+            </div>
+          </section>
+        )}
 
         {/* Popular Quick Access */}
         <section style={{ marginBottom: "3rem" }}>

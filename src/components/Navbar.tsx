@@ -13,6 +13,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,6 +38,18 @@ export default function Navbar() {
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // CMD + K or CTRL + K
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   const handleSelect = (slug: string) => {
@@ -67,17 +80,22 @@ export default function Navbar() {
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
             <input
+              ref={inputRef}
               type="text"
-              placeholder="Hesaplama aracı ara..."
+              placeholder="Hesaplama aracı ara... (Cmd + K)"
               className={styles.searchInput}
               value={query}
               onChange={e => setQuery(e.target.value)}
               onFocus={() => results.length > 0 && setOpen(true)}
             />
-            {query && (
+            {query ? (
               <button className={styles.searchClear} onClick={() => { setQuery(""); setOpen(false); }}>
                 ×
               </button>
+            ) : (
+               <div style={{ position: "absolute", right: "12px", fontSize: "0.75rem", background: "var(--surface)", border: "1px solid var(--border)", padding: "2px 6px", borderRadius: "4px", color: "var(--text-muted)", pointerEvents: "none", fontWeight: 600 }}>
+                  ⌘K
+               </div>
             )}
           </div>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { getCalculatorBySlug, getCategoryBySlug } from "@/data/calculators";
@@ -77,6 +77,8 @@ import { IdealWeightCalculator, WaterIntakeCalculator, SleepCycleCalculator, Bmr
 import { FuelCostCalculator, MtvCalculator } from "@/components/calculators/Phase2Calculators";
 import { LengthConverter, WeightConverter, TempConverter, AreaConverter, VolumeConverter, SpeedConverter, DataConverter, TimeConverter } from "@/components/calculators/Converters";
 import { AofCalculator, TusDusCalculator, ChineseZodiac, AscendantCalculator } from "@/components/calculators/Phase3Calculators";
+import { PasswordGenerator, WordCounter, QRCodeGenerator, RaffleMaker, RandomNumberGen } from "@/components/calculators/Phase4Utilities";
+import { JsonFormatter, HashGenerator, ColorConverter } from "@/components/calculators/Phase4DevTools";
 
 // BMI Calculator within the file
 function BMICalculator() {
@@ -163,6 +165,19 @@ export default function CalculatorPage() {
   
   const calc = getCalculatorBySlug(slug);
   const category = calc ? getCategoryBySlug(calc.categoryId) : null;
+
+  useEffect(() => {
+    if (calc) {
+      try {
+        const stored = JSON.parse(localStorage.getItem("recent_calculators") || "[]");
+        const filtered = stored.filter((s: string) => s !== slug);
+        filtered.unshift(slug);
+        localStorage.setItem("recent_calculators", JSON.stringify(filtered.slice(0, 4)));
+      } catch (e) {
+        // ignore errors
+      }
+    }
+  }, [slug, calc]);
 
   if (!calc) {
     return (
@@ -286,6 +301,16 @@ export default function CalculatorPage() {
       case "hiz-cevirici": return <SpeedConverter />;
       case "veri-cevirici": return <DataConverter />;
       case "zaman-cevirici": return <TimeConverter />;
+
+      // Geliştirici & Pratik Araçlar (YENI)
+      case "sifre-olusturucu": return <PasswordGenerator />;
+      case "kelime-sayaci": return <WordCounter />;
+      case "qr-kod-olusturucu": return <QRCodeGenerator />;
+      case "cekilis-yapici": return <RaffleMaker />;
+      case "rastgele-sayi": return <RandomNumberGen />;
+      case "json-formatter": return <JsonFormatter />;
+      case "hash-generator": return <HashGenerator />;
+      case "renk-donusturucu": return <ColorConverter />;
 
       default: return <GenericCalculator />;
     }
