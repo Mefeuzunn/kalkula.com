@@ -30,7 +30,7 @@ export default function Iletisim() {
         {/* Contact Info */}
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {[
-            { icon: "📧", title: "E-posta", value: "iletisim@kalkula.com.tr" },
+            { icon: "📧", title: "E-posta", value: "mefeuzunn@gmail.com" },
             { icon: "🕐", title: "Yanıt Süresi", value: "1-2 iş günü" },
             { icon: "🌍", title: "Hizmet Bölgesi", value: "Türkiye geneli" },
           ].map(c => (
