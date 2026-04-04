@@ -109,50 +109,61 @@ input, textarea, select {
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.05);
+  transition: box-shadow var(--transition-normal);
+  overflow: hidden;
 }
 
 .panel:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 8px 30px -6px rgba(0, 0, 0, 0.08);
 }
 
 /* Buttons */
 .btn-primary {
-  background: var(--accent-primary);
+  background: linear-gradient(145deg, var(--accent-primary), var(--accent-secondary));
   color: white;
-  padding: 0.6rem 1.2rem;
-  border-radius: var(--radius-sm);
-  font-weight: 500;
+  padding: 0.75rem 1.75rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+  border: none;
+  box-shadow: 0 4px 12px var(--accent-glow);
   transition: all var(--transition-fast);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 0.95rem;
+  cursor: pointer;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
 .btn-primary:hover {
-  background: var(--accent-secondary);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px var(--accent-glow);
+  filter: brightness(1.05);
 }
 
 .btn-primary:active {
   transform: translateY(1px);
+  box-shadow: 0 2px 4px var(--accent-glow);
 }
 
 .btn-secondary {
   background: var(--surface-light);
   color: var(--text-primary);
-  padding: 0.6rem 1.2rem;
-  border-radius: var(--radius-sm);
-  font-weight: 500;
+  padding: 0.7rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.95rem;
   border: 1px solid var(--border);
   transition: all var(--transition-fast);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  font-size: 0.95rem;
+  cursor: pointer;
 }
 
 .btn-secondary:hover {
@@ -163,23 +174,27 @@ input, textarea, select {
 /* Form Elements */
 .input-field {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1.15rem;
   background: var(--bg-primary);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
   color: var(--text-primary);
   font-size: 1rem;
-  transition: all var(--transition-fast);
+  font-weight: 500;
+  transition: all var(--transition-normal);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.015);
 }
 
 .input-field:focus {
   outline: none;
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 3px var(--accent-glow);
+  background: var(--surface);
+  box-shadow: 0 0 0 4px var(--accent-glow), inset 0 1px 2px rgba(0,0,0,0.015);
 }
 
 .input-field::placeholder {
   color: var(--text-muted);
+  font-weight: 400;
 }
 
 /* Animations */

@@ -265,13 +265,19 @@ export default function CalculatorPage() {
           </div>
         )}
 
-        <div className="panel" style={{ padding: "2rem 2.5rem" }}>
-          <h1 style={{ fontSize: "2rem", fontWeight: 700, marginBottom: "0.5rem" }}>{calc.title}</h1>
-          <p style={{ color: "var(--text-secondary)", marginBottom: "2.5rem", paddingBottom: "1.5rem", borderBottom: "1px solid var(--border)" }}>
-            {calc.description}
-          </p>
+        <div className="panel" style={{ padding: 0 }}>
+          {/* Header Area */}
+          <div style={{ padding: "2.5rem 2.5rem 1.75rem", background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}>
+            <h1 style={{ fontSize: "2.25rem", fontWeight: 800, marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>{calc.title}</h1>
+            <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: "800px" }}>
+              {calc.description}
+            </p>
+          </div>
 
-          {renderCalculator()}
+          {/* Calculator Area */}
+          <div style={{ padding: "2.5rem" }}>
+            {renderCalculator()}
+          </div>
         </div>
         
         <AdPlaceholder type="fluid" />
