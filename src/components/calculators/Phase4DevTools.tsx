@@ -115,8 +115,9 @@ export function HashGenerator() {
 export function ColorConverter() {
   const [hex, setHex] = useState("#3b82f6");
   const [rgb, setRgb] = useState("rgb(59, 130, 246)");
+  const [cmyk, setCmyk] = useState("cmyk(76%, 47%, 0%, 4%)");
 
-  const hexToRgb = (h: string) => {
+  const hexToRgbVals = (h: string) => {
     let r = 0, g = 0, b = 0;
     if (h.length === 4) {
       r = parseInt(h[1] + h[1], 16);
@@ -127,28 +128,43 @@ export function ColorConverter() {
       g = parseInt(h.substring(3, 5), 16);
       b = parseInt(h.substring(5, 7), 16);
     }
-    if (isNaN(r) || isNaN(g) || isNaN(b)) return "";
-    return "rgb(" + r + ", " + g + ", " + b + ")";
+    return { r, g, b };
   };
 
-  const rgbToHex = (rStr: string) => {
-    const arr = rStr.match(/\\d+/g);
-    if (!arr || arr.length < 3) return "";
-    const r = parseInt(arr[0]), g = parseInt(arr[1]), b = parseInt(arr[2]);
-    return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+  const rgbToCmykVals = (r: number, g: number, b: number) => {
+    let c = 1 - (r / 255);
+    let m = 1 - (g / 255);
+    let y = 1 - (b / 255);
+    let k = Math.min(c, Math.min(m, y));
+    if (k === 1) return { c: 0, m: 0, y: 0, k: 100 };
+    c = Math.round(((c - k) / (1 - k)) * 100);
+    m = Math.round(((m - k) / (1 - k)) * 100);
+    y = Math.round(((y - k) / (1 - k)) * 100);
+    k = Math.round(k * 100);
+    return { c, m, y, k };
   };
 
   const handleHexChange = (v: string) => {
     setHex(v);
     if(v.startsWith("#") && (v.length === 4 || v.length === 7)) {
-       setRgb(hexToRgb(v));
+       const { r, g, b } = hexToRgbVals(v);
+       if(!isNaN(r)) {
+         setRgb("rgb(" + r + ", " + g + ", " + b + ")");
+         const cmy = rgbToCmykVals(r, g, b);
+         setCmyk("cmyk(" + cmy.c + "%, " + cmy.m + "%, " + cmy.y + "%, " + cmy.k + "%)");
+       }
     }
   };
 
   const handleRgbChange = (v: string) => {
     setRgb(v);
-    const converted = rgbToHex(v);
-    if(converted) setHex(converted);
+    const arr = v.match(/\\d+/g);
+    if (!arr || arr.length < 3) return;
+    const r = parseInt(arr[0]), g = parseInt(arr[1]), b = parseInt(arr[2]);
+    const converted = "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
+    setHex(converted);
+    const cmy = rgbToCmykVals(r, g, b);
+    setCmyk("cmyk(" + cmy.c + "%, " + cmy.m + "%, " + cmy.y + "%, " + cmy.k + "%)");
   };
 
   return (
@@ -157,14 +173,18 @@ export function ColorConverter() {
       {/* Color Preview */}
       <div style={{ width: "100%", height: "120px", background: hex, borderRadius: "12px", border: "1px solid var(--border)", transition: "background 0.3s" }}></div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
          <div>
-            <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>HEX Kodu</label>
+            <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>HEX</label>
             <input type="text" value={hex} onChange={e => handleHexChange(e.target.value)} className="input-field" placeholder="#RRGGBB" />
          </div>
          <div>
-            <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>RGB Kodu</label>
+            <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>RGB</label>
             <input type="text" value={rgb} onChange={e => handleRgbChange(e.target.value)} className="input-field" placeholder="rgb(r, g, b)" />
+         </div>
+         <div>
+            <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>CMYK (Otomatik)</label>
+            <input type="text" value={cmyk} readOnly className="input-field" style={{ background: "var(--bg-secondary)" }} />
          </div>
       </div>
     </div>

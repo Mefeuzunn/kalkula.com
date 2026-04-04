@@ -65,12 +65,13 @@ export function WordCounter() {
   const words = text.trim() ? text.trim().split(/\\s+/).length : 0;
   const chars = text.length;
   const charsNoSpace = text.replace(/\\s/g, "").length;
+  const paragraphs = text.trim() ? text.split(/\\n+/).filter(p => p.trim().length > 0).length : 0;
   // Ortalama bir yetişkin dakikada 200 kelime okur.
   const readingTime = Math.ceil(words / 200);
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", textAlign: "center" }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "1rem", textAlign: "center" }}>
         <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent-primary)" }}>{words}</div>
            <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Kelime</div>
@@ -82,6 +83,10 @@ export function WordCounter() {
         <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary)" }}>{charsNoSpace}</div>
            <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Boşluksuz</div>
+        </div>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
+           <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary)" }}>{paragraphs}</div>
+           <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Paragraf</div>
         </div>
         <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent-secondary)" }}>{readingTime}</div>
@@ -106,9 +111,26 @@ export function QRCodeGenerator() {
 
   const generate = () => {
     if (!url.trim()) return;
-    // Using an open reliable API for simplicity in a statically rendered React app without heavy dependencies
     const encoded = encodeURIComponent(url);
     setQrReady("https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encoded);
+  };
+
+  const handleDownload = async () => {
+    if (!qrReady) return;
+    try {
+      const response = await fetch(qrReady);
+      const blob = await response.blob();
+      const donwloadUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = donwloadUrl;
+      a.download = "kalkula-qr-kod.png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(donwloadUrl);
+    } catch (err) {
+      console.error("QR Code indirilemedi", err);
+    }
   };
 
   return (
@@ -123,8 +145,9 @@ export function QRCodeGenerator() {
       {qrReady && (
         <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "2rem", textAlign: "center" }}>
            {/* eslint-disable-next-line @next/next/no-img-element */}
-           <img src={qrReady} alt="QR_Code" style={{ margin: "0 auto", borderRadius: "10px" }} />
-           <p style={{ marginTop: "1rem", color: "var(--text-muted)" }}>Barkodu telefonunuzun kamerası ile okutabilirsiniz.</p>
+           <img src={qrReady} alt="QR_Code" style={{ margin: "0 auto", borderRadius: "10px", display: "block" }} />
+           <p style={{ marginTop: "1rem", color: "var(--text-muted)", marginBottom: "1.5rem" }}>Barkodu telefonunuzun kamerası ile okutabilirsiniz.</p>
+           <button className="btn-secondary" onClick={handleDownload} style={{ background: "var(--accent-glow)", border: "1px solid var(--accent-primary)", color: "var(--accent-primary)" }}>QR Kodu İndir</button>
         </div>
       )}
     </div>
@@ -134,12 +157,25 @@ export function QRCodeGenerator() {
 export function RaffleMaker() {
   const [names, setNames] = useState("");
   const [winner, setWinner] = useState<string | null>(null);
+  const [isRolling, setIsRolling] = useState(false);
 
   const roll = () => {
     const list = names.split("\\n").map(n => n.trim()).filter(n => n.length > 0);
     if (list.length === 0) return;
-    const randomIdx = Math.floor(Math.random() * list.length);
-    setWinner(list[randomIdx]);
+    
+    setIsRolling(true);
+    let passes = 0;
+    const interval = setInterval(() => {
+       const randomIdx = Math.floor(Math.random() * list.length);
+       setWinner(list[randomIdx]);
+       passes++;
+       if(passes > 20) {
+          clearInterval(interval);
+          setIsRolling(false);
+          // Pick final
+          setWinner(list[Math.floor(Math.random() * list.length)]);
+       }
+    }, 100);
   };
 
   return (
@@ -155,15 +191,19 @@ export function RaffleMaker() {
         />
       </div>
       
-      <button className="btn-primary" onClick={roll} style={{ background: "linear-gradient(90deg, #ec4899, #8b5cf6)" }}>Kura Çek</button>
+      <button className="btn-primary" onClick={roll} disabled={isRolling} style={{ background: isRolling ? "gray" : "linear-gradient(90deg, #ec4899, #8b5cf6)" }}>
+        {isRolling ? "Karıştırılıyor..." : "Kura Çek"}
+      </button>
 
       {winner && (
-        <div style={{ background: "var(--surface)", border: "1px solid #8b5cf6", borderRadius: "10px", padding: "2rem", textAlign: "center", position: "relative", overflow: "hidden" }}>
-           <div style={{ color: "var(--text-muted)", marginBottom: "0.5rem" }}>🎉 Kazanan 🎉</div>
-           <div style={{ fontSize: "3rem", fontWeight: 800, color: "var(--text-primary)" }}>{winner}</div>
-           <div style={{ marginTop: "1.5rem" }}>
-             <ShareResultButton resultText={"Çekilişi kazanan şanslı isim: " + winner} />
-           </div>
+        <div style={{ background: "var(--surface)", border: "2px dashed #8b5cf6", borderRadius: "10px", padding: "2rem", textAlign: "center", position: "relative", overflow: "hidden", transition: "all 0.3s" }}>
+           <div style={{ color: "var(--text-muted)", marginBottom: "0.5rem" }}>{isRolling ? "Şanslı aranıyor..." : "🎉 Kazanan 🎉"}</div>
+           <div style={{ fontSize: "3rem", fontWeight: 800, color: isRolling ? "var(--text-muted)" : "var(--text-primary)" }}>{winner}</div>
+           {!isRolling && (
+             <div style={{ marginTop: "1.5rem", animation: "fade-in 0.5s ease" }}>
+               <ShareResultButton resultText={"Çekilişi kazanan şanslı isim: " + winner} />
+             </div>
+           )}
         </div>
       )}
     </div>
