@@ -33,6 +33,7 @@ export const calculators: CalculatorInfo[] = [
   // Sağlık Kats.
   { id: "bmi", title: "Vücut Kitle Endeksi", slug: "vucut-kitle-endeksi", categoryId: "saglik", description: "Boyunuza ve kilonuza göre sağlıklı aralıkta olup olmadığınızı öğrenin." },
   { id: "gebelik", title: "Gebelik Hesaplama", slug: "gebelik", categoryId: "saglik", description: "Doğum tarihi ve gebelik haftanızı ortalama değerlere göre hesaplayın." },
+  { id: "adet-takibi", title: "Adet (Regl) Takibi ve Yumurtlama", slug: "adet-takibi", categoryId: "saglik", description: "Sonraki adet döngünüzü, yumurtlama (ovulasyon) günü ve doğurganlık tarihinizi hesaplayın." },
   { id: "kalori", title: "Günlük Kalori İhtiyacı", slug: "gunluk-kalori-ihtiyaci", categoryId: "saglik", description: "Boy, kilo ve hareket durumunuza göre almanız gereken kalori." },
   
   // Finans ve Kredi
@@ -65,6 +66,8 @@ export const calculators: CalculatorInfo[] = [
   // Matematik
   { id: "yuzde", title: "Yüzde Hesaplama", slug: "yuzde", categoryId: "matematik", description: "Bir sayının %x'i, yüzde farkları ve oran orantı problemleri." },
   { id: "ebob_ekok", title: "EBOB EKOK", slug: "ebob-ekok", categoryId: "matematik", description: "İki veya daha fazla sayının en büyük ortak böleni ve en küçük ortak katı." },
+  { id: "kesir", title: "Kesir Hesaplama", slug: "kesir", categoryId: "matematik", description: "Kesirlerle toplama, çıkarma, çarpma ve bölme işlemlerini kolayca yapın." },
+  { id: "logaritma", title: "Logaritma Hesaplama", slug: "logaritma", categoryId: "matematik", description: "İstediğiniz tabanda (10, 2, e) logaritma değerini milisaniyeler içinde hesaplayın." },
 
   // Muhasebe ve Ticari
   { id: "netbrut", title: "Netten Brüte Maaş", slug: "netten-brute", categoryId: "muhasebe", description: "Ele geçen net paradan vergi kesintileri dahil brüt maaş hesaplama." },
@@ -77,6 +80,10 @@ export const calculators: CalculatorInfo[] = [
   { id: "basabas", title: "Başabaş Noktası Hesaplama", slug: "basabas-noktasi", categoryId: "ticari", description: "Sabit giderlerinizi karşılamak için satmanız gereken minimum ürün adedini hesaplayın." },
 
   // Sınavlar
+  { id: "kpss", title: "KPSS Puan Hesaplama", slug: "kpss-puan", categoryId: "sinav", description: "Lisans, Önlisans ve Ortaöğretim KPSS tahmini sınav P3/P93/P94 ve P10 puanınız." },
+  { id: "ales", title: "ALES Puan Hesaplama", slug: "ales-puan", categoryId: "sinav", description: "ALES Sayısal, Sözel ve Eşit Ağırlık tahmini sınav sonuç puanları (50-100)." },
+  { id: "dgs", title: "DGS Puan Hesaplama", slug: "dgs-puan", categoryId: "sinav", description: "DGS ve ÖBP eklemeli Sayısal, Sözel, EA tahmini sınav puanı hesaplamaları." },
+  { id: "yds", title: "YDS & YÖKDİL Puan Hesaplama", slug: "yds-puan", categoryId: "sinav", description: "Doğru sayınıza göre yabancı dil sınavı puanınızı ve harf seviyenizi hesaplayın." },
   { id: "ags", title: "AGS Puan Hesaplama", slug: "ags-puan", categoryId: "sinav", description: "Akademi Giriş Sınavı netlerinizi ve tahmini puanınızı hesaplayın." },
   { id: "hsy", title: "Hâkim ve Savcı Yardımcılığı Puanı", slug: "hakim-savci-puan", categoryId: "sinav", description: "Genel Kültür ve Alan Bilgisi netlerinize göre tahmini sınav puanınız." },
 
@@ -104,6 +111,7 @@ export const calculators: CalculatorInfo[] = [
   { id: "saat-hesap", title: "Saat Hesaplama", slug: "saat-hesaplama", categoryId: "sure", description: "İki süreyi toplayın veya çıkarın — çalışma süreleri, mesai ve proje takibi için ideal." },
   { id: "calisma-saati", title: "Çalışma Saati Hesaplama", slug: "calisma-saati", categoryId: "sure", description: "Giriş-çıkış saati ve mola süresine göre günlük, haftalık, aylık ve yıllık çalışma saatinizi öğrenin." },
   { id: "kusak", title: "Kuşak Hesaplama", slug: "kusak", categoryId: "diger", description: "Doğum yılınıza göre hangi jenerasyona (kuşağa) ait olduğunuzu bulun." },
+  { id: "burc", title: "Burç Hesaplama", slug: "burc-hesaplama", categoryId: "diger", description: "Doğum tarihinize göre güneş burcunuzu, grubunu ve yönetici gezegeninizi öğrenin." },
 
   // Vergi Hesaplamaları
   { id: "kdv", title: "KDV Hesaplama", slug: "kdv", categoryId: "vergi", description: "KDV dahil ve hariç tutarları %1, %10, %20 oranlarında anında hesaplayın." },

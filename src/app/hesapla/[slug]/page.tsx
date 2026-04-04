@@ -70,6 +70,9 @@ import { SchoolAgeCalculator } from "@/components/calculators/SchoolAgeCalculato
 import { KdvCalculator, DamgaVergisiCalculator, GelirVergisiCalculator } from "@/components/calculators/TaxCalculators";
 import { KarMarjiCalculator, KarZararCalculator, TopPriceCalculator, BreakEvenCalculator } from "@/components/calculators/CommercialCalculators";
 import { DateDiffCalculator, AgeCalculator, TimeCalculator, WorkHoursCalculator } from "@/components/calculators/TimeCalculators";
+import { KpssCalculator, AlesCalculator, DgsCalculator, YdsCalculator } from "@/components/calculators/OsymCalculators";
+import { PeriodCalculator, ZodiacCalculator } from "@/components/calculators/ExtraHealthMiscCalculators";
+import { FractionsCalculator, LogarithmCalculator } from "@/components/calculators/ExtraMathCalculators";
 
 // BMI Calculator within the file
 function BMICalculator() {
@@ -170,13 +173,20 @@ export default function CalculatorPage() {
     switch (slug) {
       case "vucut-kitle-endeksi": return <BMICalculator />;
       case "gebelik": return <PregnancyCalculator />;
+      case "adet-takibi": return <PeriodCalculator />;
       case "gunluk-kalori-ihtiyaci": return <CalorieCalculator />;
       case "kredi-hesaplama": return <LoanCalculator />;
       case "kredi-karti-asgari": return <CreditCardCalculator />;
       case "faiz": return <InterestCalculator />;
       case "enflasyon": return <InflationCalculator />;
+      
+      // Matematik
       case "yuzde": return <PercentageCalculator />;
       case "ebob-ekok": return <EbobEkokCalculator />;
+      case "kesir": return <FractionsCalculator />;
+      case "logaritma": return <LogarithmCalculator />;
+      
+      // Muhasebe
       case "netten-brute": return <NetGrossCalculator />;
       case "kidem-tazminati": return <SeveranceCalculator />;
       
@@ -211,7 +221,11 @@ export default function CalculatorPage() {
       case "vadeli-islem": return <FuturesCalculator />;
       case "vadeli-mevduat": return <DepositInterestCalculator />;
       
-      // Egitim
+      // Egitim & Sinavlar
+      case "kpss-puan": return <KpssCalculator />;
+      case "ales-puan": return <AlesCalculator />;
+      case "dgs-puan": return <DgsCalculator />;
+      case "yds-puan": return <YdsCalculator />;
       case "lgs-puan": return <LgsCalculator />;
       case "yks-puan": return <YksCalculator />;
       case "not-ortalamasi": return <GradeCalculator />;
@@ -238,11 +252,12 @@ export default function CalculatorPage() {
       case "toptan-perakende": return <TopPriceCalculator />;
       case "basabas-noktasi": return <BreakEvenCalculator />;
 
-      // Zaman
+      // Zaman & Diger
       case "tarihler-arasi-gun": return <DateDiffCalculator />;
       case "yas-hesaplama": return <AgeCalculator />;
       case "saat-hesaplama": return <TimeCalculator />;
       case "calisma-saati": return <WorkHoursCalculator />;
+      case "burc-hesaplama": return <ZodiacCalculator />;
 
       default: return <GenericCalculator />;
     }
