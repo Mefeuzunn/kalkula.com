@@ -1,0 +1,65 @@
+.container {
+  padding: 100px 0 4rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.headerRight {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.status {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  animation: fadeIn 0.3s;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.editorWrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+.textarea {
+  flex: 1;
+  width: 100%;
+  padding: 2rem;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1.125rem;
+  line-height: 1.7;
+  resize: none;
+  outline: none;
+  font-family: var(--font-base);
+}
+
+.textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.5;
+}
