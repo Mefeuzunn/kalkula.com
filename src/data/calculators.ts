@@ -71,6 +71,10 @@ export const calculators: CalculatorInfo[] = [
   { id: "tazminat", title: "Kıdem Tazminatı", slug: "kidem-tazminati", categoryId: "muhasebe", description: "Çalışma sürenize ve brüt maaşınıza göre alacağınız tazminat tutarı." },
   { id: "arac-gider", title: "Binek Araç Gider Kısıtlaması", slug: "binek-arac-gider", categoryId: "muhasebe", description: "Kanunen kabul edilen (KKEG) ve edilmeyen ticari binek araç giderlerini belirleyin." },
   { id: "fiyat-hesap", title: "Fiyat Hesaplama", slug: "fiyat", categoryId: "ticari", description: "Ürün ve hizmetlerin birim maliyeti ve hedeflenen kar marjı ile satış fiyatını bulun." },
+  { id: "kar-marji", title: "Kar Marjı Hesaplama", slug: "kar-marji", categoryId: "ticari", description: "Maliyet ve satış fiyatından brüt kar marjı, markup ve kar tutarını anlık hesaplayın." },
+  { id: "kar-zarar", title: "Kar / Zarar Hesaplama", slug: "kar-zarar", categoryId: "ticari", description: "Toplam gelir ve giderden kar-zarar dengesi ile KDV yükümlülüğünü öğrenin." },
+  { id: "toptan", title: "Toptan – Perakende Fiyat", slug: "toptan-perakende", categoryId: "ticari", description: "Birim maliyet ve adet bazında toptan ile perakende fiyatlarını karşılaştırın." },
+  { id: "basabas", title: "Başabaş Noktası Hesaplama", slug: "basabas-noktasi", categoryId: "ticari", description: "Sabit giderlerinizi karşılamak için satmanız gereken minimum ürün adedini hesaplayın." },
 
   // Sınavlar
   { id: "ags", title: "AGS Puan Hesaplama", slug: "ags-puan", categoryId: "sinav", description: "Akademi Giriş Sınavı netlerinizi ve tahmini puanınızı hesaplayın." },
@@ -95,6 +99,10 @@ export const calculators: CalculatorInfo[] = [
 
   // Zaman ve Diğer
   { id: "kacinci-gun", title: "Yılın Kaçıncı Günü", slug: "yilin-kacinci-gunu", categoryId: "sure", description: "Seçtiğiniz tarihin yılın kaçıncı günü olduğunu kolayca hesaplayın." },
+  { id: "tarih-fark", title: "Tarihler Arası Gün Hesaplama", slug: "tarihler-arasi-gun", categoryId: "sure", description: "İki tarih arasındaki gün, hafta, ay, yıl ve iş günü sayısını hesaplayın." },
+  { id: "yas-hesap", title: "Yaş Hesaplama", slug: "yas-hesaplama", categoryId: "sure", description: "Doğum tarihinizden kaç yaşında olduğunuzu, toplam günü ve sonraki doğum gününüzü bulun." },
+  { id: "saat-hesap", title: "Saat Hesaplama", slug: "saat-hesaplama", categoryId: "sure", description: "İki süreyi toplayın veya çıkarın — çalışma süreleri, mesai ve proje takibi için ideal." },
+  { id: "calisma-saati", title: "Çalışma Saati Hesaplama", slug: "calisma-saati", categoryId: "sure", description: "Giriş-çıkış saati ve mola süresine göre günlük, haftalık, aylık ve yıllık çalışma saatinizi öğrenin." },
   { id: "kusak", title: "Kuşak Hesaplama", slug: "kusak", categoryId: "diger", description: "Doğum yılınıza göre hangi jenerasyona (kuşağa) ait olduğunuzu bulun." },
 
   // Vergi Hesaplamaları

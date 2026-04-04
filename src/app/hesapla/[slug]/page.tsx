@@ -68,6 +68,8 @@ import { HighSchoolGraduationCalculator } from "@/components/calculators/HighSch
 import { UniversityGPACalculator } from "@/components/calculators/UniversityGPACalculator";
 import { SchoolAgeCalculator } from "@/components/calculators/SchoolAgeCalculator";
 import { KdvCalculator, DamgaVergisiCalculator, GelirVergisiCalculator } from "@/components/calculators/TaxCalculators";
+import { KarMarjiCalculator, KarZararCalculator, TopPriceCalculator, BreakEvenCalculator } from "@/components/calculators/CommercialCalculators";
+import { DateDiffCalculator, AgeCalculator, TimeCalculator, WorkHoursCalculator } from "@/components/calculators/TimeCalculators";
 
 // BMI Calculator within the file
 function BMICalculator() {
@@ -229,6 +231,18 @@ export default function CalculatorPage() {
       case "kdv": return <KdvCalculator />;
       case "damga-vergisi": return <DamgaVergisiCalculator />;
       case "gelir-vergisi": return <GelirVergisiCalculator />;
+
+      // Ticari
+      case "kar-marji": return <KarMarjiCalculator />;
+      case "kar-zarar": return <KarZararCalculator />;
+      case "toptan-perakende": return <TopPriceCalculator />;
+      case "basabas-noktasi": return <BreakEvenCalculator />;
+
+      // Zaman
+      case "tarihler-arasi-gun": return <DateDiffCalculator />;
+      case "yas-hesaplama": return <AgeCalculator />;
+      case "saat-hesaplama": return <TimeCalculator />;
+      case "calisma-saati": return <WorkHoursCalculator />;
 
       default: return <GenericCalculator />;
     }
