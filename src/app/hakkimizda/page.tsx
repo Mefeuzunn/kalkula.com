@@ -70,6 +70,31 @@ export default function Hakkimizda() {
         ))}
       </div>
 
+      {/* Developer & Contact */}
+      <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "1.25rem" }}>Geliştirici & İletişim</h2>
+      <div style={{ background: "var(--surface)", border: "1.5px solid var(--accent-primary)", borderRadius: "12px", padding: "1.5rem 2rem", marginBottom: "3rem", display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "center", gap: "1.5rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+           <div style={{ width: "50px", height: "50px", borderRadius: "50%", background: "var(--accent-glow)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>
+              👤
+           </div>
+           <div>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }}>Geliştirici</div>
+              <div style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--text-primary)" }}>MEHMET EFE UZUN</div>
+           </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+           <div style={{ width: "50px", height: "50px", borderRadius: "50%", background: "var(--accent-glow)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem" }}>
+              ✉️
+           </div>
+           <div>
+              <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.05em" }}>İletişim</div>
+              <Link href="mailto:mefeuzunn@gmail.com" style={{ fontSize: "1.25rem", fontWeight: 800, color: "var(--accent-primary)", textDecoration: "none" }}>
+                mefeuzunn@gmail.com
+              </Link>
+           </div>
+        </div>
+      </div>
+
       {/* CTA */}
       <div style={{ background: "linear-gradient(135deg, var(--accent-primary), #1d4ed8)", borderRadius: "12px", padding: "2.5rem", textAlign: "center", color: "white" }}>
         <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "0.75rem" }}>Hesaplamaya Başlayın</h2>
