@@ -1,69 +1,60 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import confetti from "canvas-confetti";
 
 // Ortak Çevirici Şablonu (Premium, Live, Bidirectional)
 interface Unit {
   id: string;
   name: string;
-  multiplier: number; // Base unit'e göre çarpan (veya özel fonksiyonlar için null)
+  multiplier: number; // Base unit'e göre çarpan
 }
 
 interface UniversalConverterProps {
   title: string;
-  icon: string;
   units: Record<string, Unit>;
-  baseUnitId: string;
   defaultLeft: string;
   defaultRight: string;
-  customConverter?: (val: number, from: string, to: string) => number; // Sıcaklık gibi özel formüller için
+  customConverter?: (val: number, from: string, to: string) => number;
 }
 
-function UniversalConverter({ title, icon, units, defaultLeft, defaultRight, customConverter }: UniversalConverterProps) {
+function UniversalConverter({ units, defaultLeft, defaultRight, customConverter }: UniversalConverterProps) {
   const [leftUnit, setLeftUnit] = useState(defaultLeft);
   const [rightUnit, setRightUnit] = useState(defaultRight);
   const [leftValue, setLeftValue] = useState<string>("1");
   const [rightValue, setRightValue] = useState<string>("");
 
   useEffect(() => {
-    // Initial calculate on load
     handleLeftChange("1", leftUnit, rightUnit);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const convert = (val: string, fromUnit: string, toUnit: string, isFromLeft: boolean) => {
-    if (val === "" || val === "-" || isNaN(Number(val))) {
-      return "";
-    }
+  const convert = (val: string, fromUnit: string, toUnit: string) => {
+    if (val === "" || val === "-" || isNaN(Number(val))) return "";
     const numVal = parseFloat(val);
     let output = 0;
 
     if (customConverter) {
       output = customConverter(numVal, fromUnit, toUnit);
     } else {
-      // Standart çarpan mantığı
-      // X = val * fromUnit.multiplier (base'e çevir)
-      // Y = X / toUnit.multiplier (hedefe çevir)
       const inBase = numVal * units[fromUnit].multiplier;
       output = inBase / units[toUnit].multiplier;
     }
 
-    // Virgülden sonrasını temizle (Max 7 basamak)
     let formatted = parseFloat(output.toPrecision(8)).toString();
-    // Eger 0 ise 0 kalir
     if (Math.abs(output) < 1e-8 && Math.abs(output) > 0) formatted = output.toExponential(4);
-
     return formatted;
   };
 
   const handleLeftChange = (val: string, lMode = leftUnit, rMode = rightUnit) => {
     setLeftValue(val);
-    setRightValue(convert(val, lMode, rMode, true));
+    setRightValue(convert(val, lMode, rMode));
+    if (parseFloat(val) > 1000) confetti({ particleCount: 10, spread: 30, origin: { y: 0.8 } });
   };
 
   const handleRightChange = (val: string, lMode = leftUnit, rMode = rightUnit) => {
     setRightValue(val);
-    setLeftValue(convert(val, rMode, lMode, false));
+    setLeftValue(convert(val, rMode, lMode));
   };
 
   const swapUnits = () => {
@@ -71,72 +62,79 @@ function UniversalConverter({ title, icon, units, defaultLeft, defaultRight, cus
     const tempR = rightUnit;
     setLeftUnit(tempR);
     setRightUnit(tempL);
-    // Recalculate based on current left value
     handleLeftChange(leftValue, tempR, tempL);
+    confetti({ particleCount: 20, spread: 40 });
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "1rem", alignItems: "center" }}>
+    <div className="flex flex-col gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
         
         {/* SOL PANEL */}
-        <div style={{ display: "flex", flexDirection: "column", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden", transition: "all 0.3s" }} className="hover-ring">
-           <div style={{ padding: "0.75rem", borderBottom: "1px solid var(--border)", background: "var(--bg-secondary)" }}>
-              <select 
-                value={leftUnit} 
-                onChange={e => { setLeftUnit(e.target.value); handleLeftChange(leftValue, e.target.value, rightUnit); }} 
-                style={{ width: "100%", background: "transparent", border: "none", outline: "none", fontWeight: 700, fontSize: "1rem", color: "var(--text-primary)", cursor: "pointer" }}
-              >
-                {Object.values(units).map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-              </select>
-           </div>
-           <div style={{ padding: "1.5rem" }}>
-              <input 
-                 type="number" 
-                 value={leftValue} 
-                 onChange={e => handleLeftChange(e.target.value)} 
-                 style={{ width: "100%", background: "transparent", border: "none", outline: "none", fontSize: "2rem", fontWeight: 800, color: "var(--accent-primary)", textAlign: "center" }}
-                 placeholder="0"
-              />
+        <div className="result-container-premium !mt-0 group">
+           <div className="result-card-premium !text-left !p-0 overflow-hidden border-2 border-border group-hover:border-primary/40 transition-all">
+              <div className="bg-bg-secondary p-3 border-b border-border flex items-center justify-between">
+                 <select 
+                   value={leftUnit} 
+                   onChange={e => { setLeftUnit(e.target.value); handleLeftChange(leftValue, e.target.value, rightUnit); }} 
+                   className="w-full bg-transparent border-none outline-none font-bold text-sm text-primary appearance-none cursor-pointer"
+                 >
+                   {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface">{u.name}</option>)}
+                 </select>
+                 <span className="text-muted pointer-events-none">▼</span>
+              </div>
+              <div className="p-10">
+                 <input 
+                    type="number" 
+                    value={leftValue} 
+                    onChange={e => handleLeftChange(e.target.value)} 
+                    className="w-full bg-transparent border-none outline-none text-4xl font-black text-center text-primary"
+                    placeholder="0"
+                 />
+              </div>
            </div>
         </div>
 
         {/* SWAP BUTTON */}
         <button 
            onClick={swapUnits}
-           style={{ width: "48px", height: "48px", borderRadius: "50%", background: "var(--surface)", border: "1px solid var(--border)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "var(--text-muted)", boxShadow: "0 4px 6px -1px rgba(0,0,0,0.1)", zIndex: 10 }}
-           onMouseOver={e => e.currentTarget.style.color = "var(--accent-primary)"}
-           onMouseOut={e => e.currentTarget.style.color = "var(--text-muted)"}
+           className="w-14 h-14 rounded-full bg-surface border-2 border-border flex items-center justify-center cursor-pointer text-muted hover:text-primary hover:border-primary/40 hover:scale-110 transition-all shadow-xl rotate-0 md:rotate-90 md:group-hover:rotate-0"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m8 3 4 4-4 4"/><path d="M12 7H4"/><path d="m16 21-4-4 4-4"/><path d="M12 17h8"/></svg>
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m8 3 4 4-4 4"/><path d="M12 7H4"/><path d="m16 21-4-4 4-4"/><path d="M12 17h8"/></svg>
         </button>
 
         {/* SAĞ PANEL */}
-        <div style={{ display: "flex", flexDirection: "column", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden", transition: "all 0.3s" }} className="hover-ring">
-           <div style={{ padding: "0.75rem", borderBottom: "1px solid var(--border)", background: "var(--bg-secondary)" }}>
-              <select 
-                value={rightUnit} 
-                onChange={e => { setRightUnit(e.target.value); handleLeftChange(leftValue, leftUnit, e.target.value); }} 
-                style={{ width: "100%", background: "transparent", border: "none", outline: "none", fontWeight: 700, fontSize: "1rem", color: "var(--text-primary)", cursor: "pointer" }}
-              >
-                {Object.values(units).map(u => <option key={u.id} value={u.id}>{u.name}</option>)}
-              </select>
-           </div>
-           <div style={{ padding: "1.5rem" }}>
-              <input 
-                 type="number" 
-                 value={rightValue} 
-                 onChange={e => handleRightChange(e.target.value)} 
-                 style={{ width: "100%", background: "transparent", border: "none", outline: "none", fontSize: "2rem", fontWeight: 800, color: "var(--text-primary)", textAlign: "center" }}
-                 placeholder="0"
-              />
+        <div className="result-container-premium !mt-0 group">
+           <div className="result-card-premium !text-left !p-0 overflow-hidden border-2 border-border group-hover:border-accent-primary/40 transition-all shadow-[0_0_20px_rgba(0,0,0,0.05)]">
+              <div className="bg-bg-secondary p-3 border-b border-border flex items-center justify-between">
+                 <select 
+                   value={rightUnit} 
+                   onChange={e => { setRightUnit(e.target.value); handleLeftChange(leftValue, leftUnit, e.target.value); }} 
+                   className="w-full bg-transparent border-none outline-none font-bold text-sm text-accent-primary appearance-none cursor-pointer"
+                 >
+                   {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface">{u.name}</option>)}
+                 </select>
+                 <span className="text-muted pointer-events-none">▼</span>
+              </div>
+              <div className="p-10">
+                 <input 
+                    type="number" 
+                    value={rightValue} 
+                    onChange={e => handleRightChange(e.target.value)} 
+                    className="w-full bg-transparent border-none outline-none text-4xl font-black text-center text-accent-primary"
+                    placeholder="0"
+                 />
+              </div>
            </div>
         </div>
 
       </div>
 
-      <div style={{ marginTop: "1rem", textAlign: "center", color: "var(--text-muted)", fontSize: "0.85rem", background: "var(--surface)", border: "1px dashed var(--border)", padding: "1rem", borderRadius: "8px" }}>
-        <strong>Formül:</strong> 1 {units[leftUnit].name} = {convert("1", leftUnit, rightUnit, true)} {units[rightUnit].name}
+      <div className="p-6 bg-secondary/5 border-2 border-dashed border-border rounded-2xl text-center">
+        <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-2 block">DÖNÜŞÜM FORMÜLÜ</label>
+        <div className="font-mono text-sm font-bold text-primary opacity-80 decoration-accent-primary decoration-2">
+          1 {units[leftUnit].name} = <span className="text-accent-primary">{convert("1", leftUnit, rightUnit)}</span> {units[rightUnit].name}
+        </div>
       </div>
     </div>
   );
@@ -144,7 +142,22 @@ function UniversalConverter({ title, icon, units, defaultLeft, defaultRight, cus
 
 // ---------------- VERİ VE PRESETLER ----------------
 
-// 1. Uzunluk
+// 1. Mutfak Ölçü Birimleri (YENİ)
+const kitchenUnits: Record<string, Unit> = {
+  ml: { id: "ml", name: "Mililitre (ml)", multiplier: 1 },
+  cl: { id: "cl", name: "Santilitre (cl)", multiplier: 10 },
+  l: { id: "l", name: "Litre (L)", multiplier: 1000 },
+  cup_tr: { id: "cup_tr", name: "Su Bardağı (TR)", multiplier: 200 },
+  cup_us: { id: "cup_us", name: "Su Bardağı (US)", multiplier: 240 },
+  glass: { id: "glass", name: "Çay Bardağı", multiplier: 100 },
+  tbsp: { id: "tbsp", name: "Yemek Kaşığı", multiplier: 15 },
+  dssp: { id: "dssp", name: "Tatlı Kaşığı", multiplier: 10 },
+  tsp: { id: "tsp", name: "Çay Kaşığı", multiplier: 5 },
+  coffee: { id: "coffee", name: "Kahve Fincanı", multiplier: 75 },
+};
+export function KitchenConverter() { return <UniversalConverter title="Mutfak" units={kitchenUnits} defaultLeft="cup_tr" defaultRight="ml" />; }
+
+// Diğer Mevcut Birimler
 const lengthUnits: Record<string, Unit> = {
   mm: { id: "mm", name: "Milimetre (mm)", multiplier: 0.001 },
   cm: { id: "cm", name: "Santimetre (cm)", multiplier: 0.01 },
@@ -156,43 +169,19 @@ const lengthUnits: Record<string, Unit> = {
   mi: { id: "mi", name: "Mil (mi)", multiplier: 1609.344 },
   nm: { id: "nm", name: "Deniz Mili (nmi)", multiplier: 1852 },
 };
-export function LengthConverter() { return <UniversalConverter title="Uzunluk" icon="" units={lengthUnits} baseUnitId="m" defaultLeft="cm" defaultRight="m" />; }
+export function LengthConverter() { return <UniversalConverter title="Uzunluk" units={lengthUnits} defaultLeft="cm" defaultRight="m" />; }
 
-// 2. Ağırlık / Kütle
 const weightUnits: Record<string, Unit> = {
-  mcg: { id: "mcg", name: "Mikrogram (µg)", multiplier: 1e-9 },
   mg: { id: "mg", name: "Miligram (mg)", multiplier: 1e-6 },
   g: { id: "g", name: "Gram (g)", multiplier: 0.001 },
   kg: { id: "kg", name: "Kilogram (kg)", multiplier: 1 },
   t: { id: "t", name: "Ton (t)", multiplier: 1000 },
   oz: { id: "oz", name: "Ons (oz)", multiplier: 0.02834952 },
-  lb: { id: "lb", name: "Libre / Pound (lb)", multiplier: 0.45359237 },
-  gr: { id: "gr", name: "Grain (gr)", multiplier: 0.0000647989 },
+  lb: { id: "lb", name: "Libre (lb)", multiplier: 0.45359237 },
 };
-export function WeightConverter() { return <UniversalConverter title="Ağırlık" icon="" units={weightUnits} baseUnitId="kg" defaultLeft="kg" defaultRight="lb" />; }
+export function WeightConverter() { return <UniversalConverter title="Ağırlık" units={weightUnits} defaultLeft="kg" defaultRight="lb" />; }
 
-// 3. Sıcaklık (Custom Converter gerektirir)
-const tempUnits: Record<string, Unit> = {
-  C: { id: "C", name: "Santigrat Derece (°C)", multiplier: 1 },
-  F: { id: "F", name: "Fahrenheit (°F)", multiplier: 1 },
-  K: { id: "K", name: "Kelvin (K)", multiplier: 1 },
-};
-const tempLogic = (val: number, from: string, to: string) => {
-  let inC = 0;
-  if (from === "C") inC = val;
-  else if (from === "F") inC = (val - 32) * 5/9;
-  else if (from === "K") inC = val - 273.15;
-
-  if (to === "C") return inC;
-  if (to === "F") return (inC * 9/5) + 32;
-  if (to === "K") return inC + 273.15;
-  return 0;
-};
-export function TempConverter() { return <UniversalConverter title="Sıcaklık" icon="" units={tempUnits} baseUnitId="C" defaultLeft="C" defaultRight="F" customConverter={tempLogic} />; }
-
-// 4. Alan
 const areaUnits: Record<string, Unit> = {
-  mm2: { id: "mm2", name: "Milimetrekare (mm²)", multiplier: 1e-6 },
   cm2: { id: "cm2", name: "Santimetrekare (cm²)", multiplier: 1e-4 },
   m2: { id: "m2", name: "Metrekare (m²)", multiplier: 1 },
   ha: { id: "ha", name: "Hektar (ha)", multiplier: 10000 },
@@ -200,49 +189,58 @@ const areaUnits: Record<string, Unit> = {
   donum: { id: "donum", name: "Dönüm", multiplier: 1000 },
   acre: { id: "acre", name: "Acre (ac)", multiplier: 4046.85642 },
 };
-export function AreaConverter() { return <UniversalConverter title="Alan" icon="" units={areaUnits} baseUnitId="m2" defaultLeft="m2" defaultRight="donum" />; }
+export function AreaConverter() { return <UniversalConverter title="Alan" units={areaUnits} defaultLeft="m2" defaultRight="donum" />; }
 
-// 5. Hacim
 const volumeUnits: Record<string, Unit> = {
   ml: { id: "ml", name: "Mililitre (mL)", multiplier: 0.001 },
   l: { id: "l", name: "Litre (L)", multiplier: 1 },
   m3: { id: "m3", name: "Metreküp (m³)", multiplier: 1000 },
   us_gal: { id: "us_gal", name: "US Galon", multiplier: 3.78541178 },
   uk_gal: { id: "uk_gal", name: "UK Galon (Imperial)", multiplier: 4.54609 },
-  cup: { id: "cup", name: "Su Bardağı (Ort.)", multiplier: 0.2 },
 };
-export function VolumeConverter() { return <UniversalConverter title="Hacim" icon="" units={volumeUnits} baseUnitId="l" defaultLeft="l" defaultRight="ml" />; }
+export function VolumeConverter() { return <UniversalConverter title="Hacim" units={volumeUnits} defaultLeft="l" defaultRight="us_gal" />; }
 
-// 6. Hız
-const speedUnits: Record<string, Unit> = {
-  ms: { id: "ms", name: "Metre / Saniye (m/s)", multiplier: 1 },
-  kmh: { id: "kmh", name: "Kilometre / Saat (km/h)", multiplier: 0.277777778 },
-  mph: { id: "mph", name: "Mil / Saat (mph)", multiplier: 0.44704 },
-  knot: { id: "knot", name: "Knot (kn)", multiplier: 0.514444444 },
-  mach: { id: "mach", name: "Mach (Deniz Seviyesi)", multiplier: 340.29 },
-};
-export function SpeedConverter() { return <UniversalConverter title="Hız" icon="" units={speedUnits} baseUnitId="ms" defaultLeft="kmh" defaultRight="mph" />; }
-
-// 7. Veri
 const dataUnits: Record<string, Unit> = {
-  b:  { id: "b", name: "Bit", multiplier: 0.125 }, // 1 byte = 8 bit
   B:  { id: "B", name: "Byte (B)", multiplier: 1 },
   KB: { id: "KB", name: "Kilobyte (KB)", multiplier: 1024 },
   MB: { id: "MB", name: "Megabyte (MB)", multiplier: 1048576 },
   GB: { id: "GB", name: "Gigabyte (GB)", multiplier: 1073741824 },
   TB: { id: "TB", name: "Terabyte (TB)", multiplier: 1099511627776 },
 };
-export function DataConverter() { return <UniversalConverter title="Veri / Disk" icon="" units={dataUnits} baseUnitId="B" defaultLeft="GB" defaultRight="MB" />; }
+export function DataConverter() { return <UniversalConverter title="Veri / Disk" units={dataUnits} defaultLeft="GB" defaultRight="MB" />; }
 
-// 8. Zaman
 const timeUnits: Record<string, Unit> = {
-  ms: { id: "ms", name: "Milisaniye", multiplier: 0.001 },
   sec: { id: "sec", name: "Saniye", multiplier: 1 },
   min: { id: "min", name: "Dakika", multiplier: 60 },
   hr: { id: "hr", name: "Saat", multiplier: 3600 },
   day: { id: "day", name: "Gün", multiplier: 86400 },
   week: { id: "week", name: "Hafta", multiplier: 604800 },
-  month: { id: "month", name: "Ay (Ort 30.43)", multiplier: 2629800 },
+  month: { id: "month", name: "Ay (30.4)", multiplier: 2629800 },
   year: { id: "year", name: "Yıl (365)", multiplier: 31536000 },
 };
-export function TimeConverter() { return <UniversalConverter title="Zaman" icon="" units={timeUnits} baseUnitId="sec" defaultLeft="hr" defaultRight="min" />; }
+export function TimeConverter() { return <UniversalConverter title="Zaman" units={timeUnits} defaultLeft="hr" defaultRight="min" />; }
+
+const tempLogic = (val: number, from: string, to: string) => {
+  let inC = 0;
+  if (from === "C") inC = val;
+  else if (from === "F") inC = (val - 32) * 5/9;
+  else if (from === "K") inC = val - 273.15;
+  if (to === "C") return inC;
+  if (to === "F") return (inC * 9/5) + 32;
+  if (to === "K") return inC + 273.15;
+  return 0;
+};
+export function TempConverter() { 
+  const units = { C: { id: "C", name: "Santigrat (°C)", multiplier: 1 }, F: { id: "F", name: "Fahrenheit (°F)", multiplier: 1 }, K: { id: "K", name: "Kelvin (K)", multiplier: 1 } };
+  return <UniversalConverter title="Sıcaklık" units={units} defaultLeft="C" defaultRight="F" customConverter={tempLogic} />; 
+}
+
+export function SpeedConverter() {
+  const units = { 
+    ms: { id: "ms", name: "m/s", multiplier: 1 },
+    kmh: { id: "kmh", name: "km/h", multiplier: 0.277777778 },
+    mph: { id: "mph", name: "mph", multiplier: 0.44704 },
+    knot: { id: "knot", name: "Knot", multiplier: 0.514444444 }
+  };
+  return <UniversalConverter title="Hız" units={units} defaultLeft="kmh" defaultRight="mph" />;
+}

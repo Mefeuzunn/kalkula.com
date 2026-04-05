@@ -30,7 +30,8 @@ export const categories: Category[] = [
   { id: "diger", name: "Diğer", slug: "diger", description: "Kuşak hesaplama, burç hesabı ve diğer spesifik araçlar.", icon: "MoreHorizontal" },
   { id: "araclar", name: "Pratik Araçlar", slug: "pratik-araclar", description: "Şifre oluşturucu, kelime sayacı ve QR kod üretici gibi günlük hayatınızı kolaylaştıran web araçları.", icon: "Settings" },
   { id: "eglence", name: "Eğlence & Çekiliş", slug: "eglence", description: "Çekiliş yapıcı, zar atma, şanslı kelime ve rastgele sayı üretici (RNG) tarzı eğlence oyunları.", icon: "Smile" },
-  { id: "gelistirici", name: "Geliştirici Araçları", slug: "gelistirici-araclari", description: "JSON formatlayıcı, Hash/MD5 şifreleyici, Base64 ve Renk (HEX/RGB) kod dönüştürücü programcı modülleri.", icon: "Code" }
+  { id: "gelistirici", name: "Geliştirici Araçları", slug: "gelistirici-araclari", description: "JSON formatlayıcı, Hash/MD5 şifreleyici, Base64 ve Renk (HEX/RGB) kod dönüştürücü programcı modülleri.", icon: "Code" },
+  { id: "sosyal", name: "Sosyal Medya", slug: "sosyal-medya-araclari", description: "X (Twitter) karakter sayacı, dekoratif yazı oluşturucu ve içerik araçları.", icon: "Share2" }
 ];
 
 export const calculators: CalculatorInfo[] = [
@@ -138,8 +139,13 @@ export const calculators: CalculatorInfo[] = [
   { id: "alan-ceviri", title: "Alan Çevirici", slug: "alan-cevirici", categoryId: "donusturuculer", description: "Metrekare, dönüm, hektar, acre ve daha fazlası arasında anında alan dönüşümü." },
   { id: "hacim-ceviri", title: "Hacim Çevirici", slug: "hacim-cevirici", categoryId: "donusturuculer", description: "Litre, metreküp, galon ve diğer sıvı/katı hacim birimlerini anlık dönüştürün." },
   { id: "hiz-ceviri", title: "Hız Çevirici", slug: "hiz-cevirici", categoryId: "donusturuculer", description: "Km/h, Mph, Knot, Mach vb. hız ölçüleri arasında bilimsel rotasyonlar yapın." },
+  { id: "mutfak-ceviri", title: "Mutfak Birim Dönüştürücü", slug: "mutfak-donusturucu", categoryId: "donusturuculer", description: "Su bardağı, kaşık ve kahve fincanı gibi mutfak ölçülerini anlık gram/ml'ye çevirin." },
   { id: "veri-ceviri", title: "Veri (Disk) Çevirici", slug: "veri-cevirici", categoryId: "donusturuculer", description: "GB, MB, TB, KB gibi bilgisayar depolama (Byte) birimlerinin karşılıklarını edinin." },
   { id: "zaman-ceviri", title: "Zaman Çevirici", slug: "zaman-cevirici", categoryId: "donusturuculer", description: "Saniye, dakika, saat, gün, ay, yıl arasındaki matematiksel zaman dönüşümü." },
+
+  // Sosyal Medya
+  { id: "twitter-count", title: "X (Twitter) Karakter Sayacı", slug: "twitter-karakter-sayaci", categoryId: "sosyal", description: "Twitter (X) limitlerine göre link ve görselleri de sayan gelişmiş karakter aracı." },
+  { id: "font-gen", title: "Şık Yazı Tipi Oluşturucu", slug: "sik-yazi-tipi-olusturucu", categoryId: "sosyal", description: "Metinlerinizi b𝚘𝚕𝚍, 𝘪𝘵𝘢𝘭𝘪𝘤 veya 𝔊𝔬𝔱𝔦𝔨 gibi 20+ farklı Unicode stiline dönüştürün." },
 
   // Vergi Hesaplamaları
   { id: "kdv", title: "KDV Hesaplama", slug: "kdv", categoryId: "vergi", description: "KDV dahil ve hariç tutarları %1, %10, %20 oranlarında anında hesaplayın." },

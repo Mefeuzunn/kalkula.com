@@ -68,10 +68,11 @@ import { PeriodCalculator, ZodiacCalculator } from "@/components/calculators/Ext
 import { FractionsCalculator, LogarithmCalculator } from "@/components/calculators/ExtraMathCalculators";
 import { IdealWeightCalculator, WaterIntakeCalculator, SleepCycleCalculator, BmrCalculator, AreaVolumeCalculator, PowerRootCalculator, EquationSolverCalculator, PrimeNumberCalculator } from "@/components/calculators/Phase1Calculators";
 import { FuelCostCalculator, MtvCalculator } from "@/components/calculators/Phase2Calculators";
-import { LengthConverter, WeightConverter, TempConverter, AreaConverter, VolumeConverter, SpeedConverter, DataConverter, TimeConverter } from "@/components/calculators/Converters";
+import { LengthConverter, WeightConverter, TempConverter, AreaConverter, VolumeConverter, SpeedConverter, DataConverter, TimeConverter, KitchenConverter } from "@/components/calculators/Converters";
 import { AofCalculator, TusDusCalculator, ChineseZodiac, AscendantCalculator, RaffleMaker, RandomNumberGen } from "@/components/calculators/Phase3Calculators";
 import { PasswordGenerator, WordCounter, QRCodeGenerator } from "@/components/calculators/Phase4Utilities";
 import { JsonFormatter, HashGenerator, ColorConverter } from "@/components/calculators/Phase4DevTools";
+import { XCharacterCounter, StyleTextGenerator } from "@/components/calculators/SocialMediaTools";
 
 // BMI Calculator
 function BMICalculator() {
@@ -279,9 +280,12 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "sicaklik-cevirici": return <TempConverter />;
       case "alan-cevirici": return <AreaConverter />;
       case "hacim-cevirici": return <VolumeConverter />;
+      case "mutfak-donusturucu": return <KitchenConverter />;
       case "hiz-cevirici": return <SpeedConverter />;
       case "veri-cevirici": return <DataConverter />;
       case "zaman-cevirici": return <TimeConverter />;
+      case "twitter-karakter-sayaci": return <XCharacterCounter />;
+      case "sik-yazi-tipi-olusturucu": return <StyleTextGenerator />;
       case "sifre-olusturucu": return <PasswordGenerator />;
       case "kelime-sayaci": return <WordCounter />;
       case "qr-kod-olusturucu": return <QRCodeGenerator />;
