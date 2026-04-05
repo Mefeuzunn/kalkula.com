@@ -45,18 +45,25 @@ export const calculators: CalculatorInfo[] = [
   { id: "gebelik", title: "Gebelik Hesaplama", slug: "gebelik", categoryId: "saglik", description: "Doğum tarihi ve gebelik haftanızı ortalama değerlere göre hesaplayın." },
   { id: "adet-takibi", title: "Adet (Regl) Takibi ve Yumurtlama", slug: "adet-takibi", categoryId: "saglik", description: "Sonraki adet döngünüzü, yumurtlama (ovulasyon) günü ve doğurganlık tarihinizi hesaplayın." },
   { id: "kalori", title: "Günlük Kalori İhtiyacı", slug: "gunluk-kalori-ihtiyaci", categoryId: "saglik", description: "Boy, kilo ve hareket durumunuza göre almanız gereken kalori." },
+  { id: "kalori", title: "Günlük Kalori İhtiyacı", slug: "gunluk-kalori-ihtiyaci", categoryId: "saglik", description: "Boy, kilo ve hareket durumuna göre almanız gereken kalori." },
   
   // Finans ve Kredi
   { id: "kredi", title: "Kredi Hesaplama", slug: "kredi-hesaplama", categoryId: "kredi", description: "Aylık taksit tutarlarınızı, anapara ve faiz oranınıza göre detaylı hesaplayın." },
   { id: "kredikarti", title: "Kredi Kartı Asgari Ödeme", slug: "kredi-karti-asgari", categoryId: "kredi", description: "Mevcut borcunuza göre ödemeniz gereken minimum asgari tutar." },
   { id: "amortizasyon", title: "Kredi Ödeme Planı (Amortizasyon)", slug: "kredi-ödeme-plani", categoryId: "kredi", description: "Ay bazlı anapara ve faiz dökümünü içeren detaylı kredi taksit tablosu." },
   { id: "faiz", title: "Faiz Getirisi", slug: "faiz", categoryId: "finans", description: "Vadeli mevduat hesaplamaları ve net/brüt getiri hesabı." },
-  { id: "enflasyon", title: "Enflasyon Hesaplama", slug: "enflasyon", categoryId: "finans", description: "Paranın geçmiş ve gelecek yıllara göre alım gücündeki değişimler." },
+  { id: "ovulasyon", title: "Yumurtlama (Ovulasyon) Günü", slug: "ovulasyon-hesaplama", categoryId: "saglik", description: "Hamilelik planlaması için en verimli doğurganlık günlerinizi belirleyin." },
+  { id: "makro", title: "Makro & Kalori Analizi", slug: "makro-hesaplama", categoryId: "saglik", description: "Hedefinize göre (Kilo ver/al) almanız gereken protein, karbonhidrat ve yağ dengesi." },
+
+  // Gastro & Mutfak
+  { id: "tarif", title: "Tarif Ölçekleyici (Portiyonlama)", slug: "tarif-olcekleyici", categoryId: "saglik", description: "Kişi sayısına göre tarifteki tüm malzemeleri anlık olarak yeniden oranlayın." },
+  { id: "gastro", title: "Hassas Mutfak Dönüştürücü", slug: "mutfak-donusturucu", categoryId: "saglik", description: "Un, şeker, yağ gibi malzemeleri malzemeye özel özkütle ile birimler arası dönüştürün." },
   { id: "eurobond", title: "Eurobond Hesaplama", slug: "eurobond", categoryId: "finans", description: "Eurobond yatırımınızın getirisini ve pazar fiyatlamasını hesaplayın." },
   { id: "npv", title: "Net Bugünkü Değer Hesaplama", slug: "net-bugunku-deger", categoryId: "finans", description: "Bir nakit akışını paranın maliyeti ile indirgeyerek bugünkü değerini hesaplayın." },
   { id: "altin", title: "Altın Hesaplama", slug: "altin", categoryId: "finans", description: "Gram, çeyrek, yarım ve tam altın gibi türlerin güncel kur bazlı hesaplaması." },
   { id: "doviz", title: "Döviz Hesaplama", slug: "doviz", categoryId: "finans", description: "Dolar, Euro, Sterlin gibi majör para birimleri arası kur çevirici." },
   { id: "cagr", title: "Bileşik Büyüme (CAGR) Hesaplama", slug: "bilesik-buyume", categoryId: "finans", description: "Bir yatırımın belirli yıllar arasındaki yıllık bileşik büyüme oranını hesaplar." },
+  { id: "enflasyon", title: "Enflasyon Hesaplama", slug: "enflasyon", categoryId: "finans", description: "Paranın geçmiş ve gelecek yıllara göre alım gücündeki değişimler." },
   { id: "birikim", title: "Birikim Hesaplama", slug: "birikim", categoryId: "finans", description: "Aylık düzenli ödemeler ile gelecekteki anapara ve faizli birikim tutarınız." },
   { id: "bono", title: "Bono Hesaplama", slug: "bono", categoryId: "finans", description: "İskontolu hazine bonolarının cari fiyat, getiri ve verim hesabı." },
   { id: "tahvil", title: "Tahvil Hesaplama", slug: "tahvil", categoryId: "finans", description: "Kuponlu tahvillerin bugünkü değerine göre fiyatlaması ve satım teorik verimi." },
