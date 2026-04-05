@@ -89,10 +89,13 @@ export const calculators: CalculatorInfo[] = [
   { id: "tazminat", title: "Kıdem Tazminatı", slug: "kidem-tazminati", categoryId: "muhasebe", description: "Çalışma sürenize ve brüt maaşınıza göre alacağınız tazminat tutarı." },
   { id: "arac-gider", title: "Binek Araç Gider Kısıtlaması", slug: "binek-arac-gider", categoryId: "muhasebe", description: "Kanunen kabul edilen (KKEG) ve edilmeyen ticari binek araç giderlerini belirleyin." },
   { id: "yakit-tuketim", title: "Yakıt Hesaplama", slug: "yakit-maliyeti", categoryId: "muhasebe", description: "Aracınızın km başına kaç TL yaktığını, toplam yol masrafını analiz edin." },
-  { id: "mtv", title: "Motorlu Taşıtlar Vergisi (MTV)", slug: "mtv-hesaplama", categoryId: "muhasebe", description: "Araç yaşı ve motor hacminize göre yıllık MTV verginizi hesaplayın." },
-  { id: "fiyat-hesap", title: "Fiyat Hesaplama", slug: "fiyat", categoryId: "ticari", description: "Ürün ve hizmetlerin birim maliyeti ve hedeflenen kar marjı ile satış fiyatını bulun." },
-  { id: "kar-marji", title: "Kar Marjı Hesaplama", slug: "kar-marji", categoryId: "ticari", description: "Maliyet ve satış fiyatından brüt kar marjı, markup ve kar tutarını anlık hesaplayın." },
-  { id: "kar-zarar", title: "Kar / Zarar Hesaplama", slug: "kar-zarar", categoryId: "ticari", description: "Toplam gelir ve giderden kar-zarar dengesi ile KDV yükümlülüğünü öğrenin." },
+  { id: "mtv", title: "MTV Hesaplama (2025 Güncel)", slug: "mtv-hesaplama", categoryId: "araba", description: "2024 ve 2025 Ocak MTV tutarlarını araç tipi ve yaşına göre karşılaştırmalı hesaplayın." },
+  
+  // Ticari ve Vergi
+  { id: "kdv", title: "KDV Hesaplama (Tevkifatlı)", slug: "kdv", categoryId: "ticari", description: "Tevkifat desteği ile KDV dahil ve hariç fatura tutarlarını hesaplayın." },
+  { id: "gelirvergisi", title: "Gelir Vergisi (2025 Projeksiyon)", slug: "gelir-vergisi", categoryId: "ticari", description: "2025 yılı beklenen vergi dilimlerine göre net maaş ve dilim dağılımı analizi." },
+  { id: "karmarji", title: "Ticari Analiz & Kar Marjı", slug: "kar-marji", categoryId: "ticari", description: "Kar marjı, markup ve başabaş noktası (break-even) görsel analiz modülü." },
+  { id: "karzarar", title: "Kar Zarar Hesaplama", slug: "kar-zarar", categoryId: "ticari", description: "Alış ve satış fiyatı üzerinden toplam kar veya zarar tutarı." },
   { id: "toptan", title: "Toptan – Perakende Fiyat", slug: "toptan-perakende", categoryId: "ticari", description: "Birim maliyet ve adet bazında toptan ile perakende fiyatlarını karşılaştırın." },
   { id: "basabas", title: "Başabaş Noktası Hesaplama", slug: "basabas-noktasi", categoryId: "ticari", description: "Sabit giderlerinizi karşılamak için satmanız gereken minimum ürün adedini hesaplayın." },
 

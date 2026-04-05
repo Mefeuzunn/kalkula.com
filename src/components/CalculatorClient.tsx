@@ -57,9 +57,11 @@ import { HighSchoolYBPCalculator } from "@/components/calculators/HighSchoolYBPC
 import { HighSchoolGraduationCalculator } from "@/components/calculators/HighSchoolGraduationCalculator";
 import { UniversityGPACalculator } from "@/components/calculators/UniversityGPACalculator";
 import { SchoolAgeCalculator } from "@/components/calculators/SchoolAgeCalculator";
-import { DamgaVergisiCalculator, GelirVergisiCalculator } from "@/components/calculators/TaxCalculators";
+import { DamgaVergisiCalculator } from "@/components/calculators/TaxCalculators";
+import { IncomeTaxCalculator } from "@/components/calculators/IncomeTaxCalculator";
 import { VatCalculator } from "@/components/calculators/VatCalculator";
-import { KarMarjiCalculator, KarZararCalculator, TopPriceCalculator, BreakEvenCalculator } from "@/components/calculators/CommercialCalculators";
+import { KarZararCalculator, TopPriceCalculator, BreakEvenCalculator } from "@/components/calculators/CommercialCalculators";
+import { CommercialAnalytics } from "@/components/calculators/CommercialAnalytics";
 import { DateDiffCalculator, AgeCalculator, TimeCalculator, WorkHoursCalculator } from "@/components/calculators/TimeCalculators";
 import { KpssCalculator, AlesCalculator, DgsCalculator, YdsCalculator } from "@/components/calculators/OsymCalculators";
 import { PeriodCalculator, ZodiacCalculator } from "@/components/calculators/ExtraHealthMiscCalculators";
@@ -69,7 +71,8 @@ import { GeometryCalculators } from "@/components/calculators/GeometryCalculator
 import { OhmLawCalculator } from "@/components/calculators/OhmLawCalculator";
 import { WaterIntakeCalculator } from "@/components/calculators/WaterIntakeCalculator";
 import { ResistorCalculator } from "@/components/calculators/ResistorCalculator";
-import { FuelCostCalculator, MtvCalculator } from "@/components/calculators/Phase2Calculators";
+import { FuelCostCalculator } from "@/components/calculators/Phase2Calculators";
+import { MtvCalculator } from "@/components/calculators/MtvCalculator";
 import { LengthConverter, WeightConverter, TempConverter, AreaConverter, VolumeConverter, SpeedConverter, DataConverter, TimeConverter, KitchenConverter } from "@/components/calculators/Converters";
 import { AofCalculator } from "@/components/calculators/AofCalculator";
 import { TusDusCalculator } from "@/components/calculators/TusDusCalculator";
@@ -282,9 +285,9 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "kdv": return <VatCalculator />;
       case "direnc-renk-kodlari": return <ResistorCalculator />;
       case "ohm-kanunu": return <OhmLawCalculator />;
+      case "gelir-vergisi": return <IncomeTaxCalculator />;
       case "damga-vergisi": return <DamgaVergisiCalculator />;
-      case "gelir-vergisi": return <GelirVergisiCalculator />;
-      case "kar-marji": return <KarMarjiCalculator />;
+      case "kar-marji": return <CommercialAnalytics />;
       case "kar-zarar": return <KarZararCalculator />;
       case "toptan-perakende": return <TopPriceCalculator />;
       case "basabas-noktasi": return <BreakEvenCalculator />;
