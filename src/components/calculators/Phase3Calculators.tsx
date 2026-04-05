@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ShareResultButton } from "../ShareResultButton";
+import confetti from "canvas-confetti";
 
 /**
  * Profesyonel Çekiliş Yapıcı
@@ -32,7 +33,16 @@ export function RaffleMaker() {
           
           // Gerçek kazananları seç (karıştır ve ilk n kişiyi al)
           const shuffled = [...list].sort(() => 0.5 - Math.random());
-          setWinners(shuffled.slice(0, winnersCount));
+          const finalWinners = shuffled.slice(0, winnersCount);
+          setWinners(finalWinners);
+
+          // WOW Efekti: Konfeti Patlat
+          confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ["#3b82f6", "#8b5cf6", "#ec4899"]
+          });
        }
     }, 80);
   };
@@ -40,12 +50,12 @@ export function RaffleMaker() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
-        <label className="text-sm font-bold text-muted uppercase tracking-tighter">Katılımcı Listesi (Her satıra bir isim)</label>
+        <label className="text-sm font-bold text-muted uppercase tracking-tighter">Katılımcı Listesi</label>
         <textarea 
-          placeholder="Ahmet&#10;Mehmet&#10;Ayşe&#10;Fatma..." 
+          placeholder="Ahmet&#10;Mehmet&#10;Ayşe..." 
           value={names} 
           onChange={e => setNames(e.target.value)} 
-          className="input-field p-6 min-h-[200px] text-lg leading-relaxed focus:border-accent-secondary"
+          className="input-field p-6 min-h-[200px] text-lg leading-relaxed shadow-inner"
         />
       </div>
 
@@ -55,43 +65,45 @@ export function RaffleMaker() {
            <input 
             type="number" 
             min="1" 
-            max="100" 
             value={winnersCount} 
             onChange={e => setWinnersCount(parseInt(e.target.value) || 1)} 
             className="input-field"
            />
         </div>
         <button 
-          className={`btn-primary flex-[2] w-full py-4 text-lg font-bold shadow-xl transition-all ${isRolling ? 'opacity-50 scale-95' : 'hover:scale-[1.02]'}`}
+          className={`btn-primary flex-[2] w-full py-4 text-lg font-bold shadow-2xl transition-all ${isRolling ? 'opacity-50 scale-95' : 'hover:scale-[1.02]'}`}
           onClick={roll} 
           disabled={isRolling || !names.trim()}
-          style={{ background: isRolling ? 'var(--bg-secondary)' : 'linear-gradient(135deg, #8b5cf6, #ec4899)' }}
         >
-          {isRolling ? "Kura Çekiliyor..." : "Çekilişi Başlat"}
+          {isRolling ? "Kura Çekiliyor..." : "ÇEKİLİŞİ BAŞLAT"}
         </button>
       </div>
 
       {isRolling && (
-        <div className="panel flex items-center justify-center py-12 border-2 border-dashed border-accent-secondary animate-pulse">
-           <div className="text-4xl md:text-6xl font-black text-accent-secondary italic uppercase tracking-tighter">
+        <div className="panel flex items-center justify-center py-20 bg-accent-glow animate-pulse border-accent-secondary/30">
+           <div className="text-5xl md:text-7xl font-black text-accent-secondary italic tracking-tighter uppercase">
              {currentName}
            </div>
         </div>
       )}
 
       {winners.length > 0 && !isRolling && (
-        <div className="animate-in zoom-in fade-in duration-500">
-           <div className="panel border-2 border-accent-secondary bg-accent-secondary/5 p-8 text-center relative overflow-hidden">
-             <div className="text-xs font-black text-accent-secondary uppercase tracking-[0.2em] mb-4">🎉 TEBRİKLER KAZANANLAR 🎉</div>
-             <div className="flex flex-wrap justify-center gap-4 mt-6">
+        <div className="result-container-premium animate-result">
+           <div className="result-card-premium">
+             <div className="result-badge">Tebrikler Kazananlar</div>
+             <div className="flex flex-wrap justify-center gap-6 mt-2">
                {winners.map((w, i) => (
-                 <div key={i} className="bg-surface border border-accent-secondary/30 px-8 py-4 rounded-2xl shadow-lg transform hover:scale-110 transition-transform">
-                    <span className="text-3xl font-black text-primary">{w}</span>
+                 <div key={i} className="group relative">
+                    <div className="absolute -inset-1 bg-gradient-to-r from-accent-primary to-accent-secondary rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000"></div>
+                    <div className="relative bg-surface px-10 py-6 rounded-2xl border border-border">
+                       <span className="result-value-premium block">{w}</span>
+                    </div>
                  </div>
                ))}
              </div>
-             <div className="mt-10">
-               <ShareResultButton resultText={"Kalküla Çekiliş Sonucu: Kazanan şanslılar: " + winners.join(", ")} />
+             
+             <div className="result-footer-premium">
+               <ShareResultButton resultText={"Kalküla Çekilişi Kazananları: " + winners.join(", ")} />
              </div>
            </div>
         </div>
@@ -117,8 +129,12 @@ export function RandomNumberGen() {
       count++;
       if (count > 20) {
         clearInterval(interval);
-        setResult(Math.floor(Math.random() * (max - min + 1)) + min);
+        const final = Math.floor(Math.random() * (max - min + 1)) + min;
+        setResult(final);
         setIsRolling(false);
+        
+        // Küçük bir konfeti patlatması
+        confetti({ particleCount: 50, spread: 40, origin: { y: 0.7 } });
       }
     }, 50);
   };

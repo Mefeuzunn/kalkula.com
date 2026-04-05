@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import confetti from "canvas-confetti";
 
 // KDV Hesaplama
 export function KdvCalculator() {
@@ -14,66 +15,75 @@ export function KdvCalculator() {
     const r = parseFloat(kdvOran) / 100;
     if (!t || isNaN(t)) return;
 
+    let res;
     if (mod === "haric") {
       const kdv = t * r;
-      setResult({ kdv, net: t, gross: t + kdv });
+      res = { kdv, net: t, gross: t + kdv };
     } else {
       const net = t / (1 + r);
       const kdv = t - net;
-      setResult({ kdv, net, gross: t });
+      res = { kdv, net, gross: t };
     }
+    setResult(res);
+    confetti({ particleCount: 30, spread: 40, origin: { y: 0.8 } });
   };
 
   const fmt = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "flex", gap: "0.5rem", background: "var(--bg-secondary)", borderRadius: "8px", padding: "4px" }}>
+    <div className="flex flex-col gap-6">
+      <div className="flex gap-1 bg-secondary/30 p-1 rounded-xl border border-border">
         {(["haric", "dahil"] as const).map(m => (
           <button key={m} onClick={() => setMod(m)}
-            style={{ flex: 1, padding: "0.5rem", borderRadius: "6px", border: "none", cursor: "pointer", fontWeight: 600, fontSize: "0.9rem", background: mod === m ? "var(--accent-primary)" : "transparent", color: mod === m ? "white" : "var(--text-secondary)", transition: "all 0.2s" }}>
+            className={`flex-1 py-3 px-4 rounded-lg font-bold text-sm transition-all ${mod === m ? 'bg-primary text-white shadow-lg' : 'text-muted hover:text-primary'}`}>
             KDV {m === "haric" ? "Hariç" : "Dahil"}
           </button>
         ))}
       </div>
 
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>
+      <div className="flex flex-col gap-4">
+        <label className="text-xs font-bold text-muted uppercase tracking-widest px-1">
           Tutar (KDV {mod === "haric" ? "Hariç" : "Dahil"}) ₺
         </label>
         <input type="number" placeholder="Örn: 1000" value={tutar} onChange={e => setTutar(e.target.value)}
-          className="input-field" />
+          className="input-field text-xl font-bold py-4" />
       </div>
 
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>KDV Oranı</label>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+      <div className="flex flex-col gap-3">
+        <label className="text-xs font-bold text-muted uppercase tracking-widest px-1">KDV Oranı</label>
+        <div className="flex gap-2 flex-wrap">
           {["1", "10", "20"].map(o => (
             <button key={o} onClick={() => setKdvOran(o)}
-              style={{ padding: "0.45rem 1rem", borderRadius: "7px", border: `1px solid ${kdvOran === o ? "var(--accent-primary)" : "var(--border)"}`, background: kdvOran === o ? "var(--accent-glow)" : "var(--surface)", color: kdvOran === o ? "var(--accent-primary)" : "var(--text-secondary)", fontWeight: 600, cursor: "pointer" }}>
+              className={`px-6 py-2.5 rounded-xl font-bold border-2 transition-all ${kdvOran === o ? 'bg-accent-glow border-accent-primary text-accent-primary' : 'bg-surface border-border text-muted hover:border-muted'}`}>
               %{o}
             </button>
           ))}
           <input type="number" value={kdvOran} onChange={e => setKdvOran(e.target.value)}
-            style={{ width: "80px", padding: "0.45rem 0.75rem", border: "1px solid var(--border)", borderRadius: "7px", background: "var(--surface)", color: "var(--text-primary)", fontFamily: "inherit", textAlign: "center" }}
+            className="w-24 px-4 py-2 border-2 border-border rounded-xl text-center font-bold focus:border-accent-primary outline-none"
             placeholder="Özel" />
         </div>
       </div>
 
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Hesapla</button>
+      <button className="btn-primary py-4 text-lg font-bold shadow-xl" onClick={hesapla}>Hesapla</button>
 
       {result && (
-        <div style={{ background: "var(--bg-secondary)", borderRadius: "10px", padding: "1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-          {[
-            { label: "KDV Hariç Tutar", value: `₺${fmt(result.net)}`, highlight: false },
-            { label: `KDV Tutarı (%${kdvOran})`, value: `₺${fmt(result.kdv)}`, highlight: false },
-            { label: "KDV Dahil Tutar", value: `₺${fmt(result.gross)}`, highlight: true },
-          ].map(r => (
-            <div key={r.label} style={{ display: "flex", justifyContent: "space-between", padding: "0.6rem 0", borderBottom: "1px solid var(--border)" }}>
-              <span style={{ color: "var(--text-secondary)", fontSize: "0.9rem" }}>{r.label}</span>
-              <span style={{ fontWeight: r.highlight ? 800 : 600, color: r.highlight ? "var(--accent-primary)" : "var(--text-primary)", fontSize: r.highlight ? "1.1rem" : "1rem" }}>{r.value}</span>
-            </div>
-          ))}
+        <div className="result-container-premium animate-result">
+           <div className="result-card-premium">
+              <div className="result-badge">Hesaplama Sonucu</div>
+              <div className="result-value-premium">₺{fmt(result.gross)}</div>
+              <div className="text-xs font-bold text-muted uppercase tracking-[0.2em] mb-8">KDV Dahil Toplam</div>
+              
+              <div className="space-y-4 pt-6 border-t border-border">
+                <div className="flex justify-between items-center text-sm font-medium">
+                   <span className="text-muted">KDV Hariç Tutar:</span>
+                   <span className="text-primary font-bold">₺{fmt(result.net)}</span>
+                </div>
+                <div className="flex justify-between items-center text-sm font-medium text-accent-primary">
+                   <span className="opacity-70">Hesaplanan KDV (%{kdvOran}):</span>
+                   <span className="font-black">₺{fmt(result.kdv)}</span>
+                </div>
+              </div>
+           </div>
         </div>
       )}
     </div>
@@ -99,38 +109,38 @@ export function DamgaVergisiCalculator() {
     if (!t || isNaN(t)) return;
     const { oran } = ORANLAR[tur];
     setResult({ oran, vergi: t * oran });
+    confetti({ particleCount: 30, spread: 30, origin: { y: 0.8 } });
   };
 
   const fmt = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Belge/İşlem Türü</label>
-        <select value={tur} onChange={e => setTur(e.target.value)} className="input-field">
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-3">
+        <label className="text-xs font-bold text-muted uppercase tracking-widest px-1">İşlem Türü</label>
+        <select value={tur} onChange={e => setTur(e.target.value)} className="input-field text-lg font-bold h-[60px]">
           {Object.entries(ORANLAR).map(([k, v]) => (
-            <option key={k} value={k}>{v.label} — ‰{(v.oran * 1000).toFixed(2)}</option>
+            <option key={k} value={k}>{v.label} (‰{(v.oran * 1000).toFixed(2)})</option>
           ))}
         </select>
       </div>
 
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Matrah (₺)</label>
-        <input type="number" placeholder="Örn: 50000" value={tutar} onChange={e => setTutar(e.target.value)} className="input-field" />
+      <div className="flex flex-col gap-3">
+        <label className="text-xs font-bold text-muted uppercase tracking-widest px-1">Matrah (₺)</label>
+        <input type="number" placeholder="Örn: 50000" value={tutar} onChange={e => setTutar(e.target.value)} className="input-field text-xl font-bold py-4" />
       </div>
 
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Hesapla</button>
+      <button className="btn-primary py-4 text-lg font-bold" onClick={hesapla}>Hesapla</button>
 
       {result && (
-        <div style={{ background: "var(--bg-secondary)", borderRadius: "10px", padding: "1.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", paddingBottom: "0.5rem", borderBottom: "1px solid var(--border)" }}>
-            <span style={{ color: "var(--text-muted)" }}>Uygulanan Oran</span>
-            <span style={{ fontWeight: 600 }}>‰{(result.oran * 1000).toFixed(2)}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.5rem" }}>
-            <span style={{ color: "var(--text-secondary)", fontSize: "0.95rem" }}>Ödenecek Damga Vergisi</span>
-            <span style={{ fontWeight: 800, fontSize: "1.3rem", color: "var(--accent-primary)" }}>₺{fmt(result.vergi)}</span>
-          </div>
+        <div className="result-container-premium animate-result">
+           <div className="result-card-premium">
+              <div className="result-badge">Ödenecek Vergi</div>
+              <div className="result-value-premium">₺{fmt(result.vergi)}</div>
+              <div className="text-[10px] font-black text-muted uppercase tracking-widest mt-2">
+                 Uygulanan Oran: ‰{(result.oran * 1000).toFixed(2)}
+              </div>
+           </div>
         </div>
       )}
     </div>
@@ -172,55 +182,59 @@ export function GelirVergisiCalculator() {
       prev = d.limit;
     }
 
-    // Damga vergisi
     const damga = brut * 0.00759;
     const toplamKesinti = sgkIsci + issizlik + vergi / parseInt(ay) + damga;
     const net = brut - toplamKesinti;
 
     setResult({ matrah: aylikMatrah, vergi: vergi / parseInt(ay), net, sgkIsci, issizlik });
+    confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ["#22c55e", "#10b981"] });
   };
 
   const fmt = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.3)", borderRadius: "8px", padding: "0.75rem 1rem", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-        💡 2025 yılı gelir vergisi dilimlerine göre hesaplanır. Sonuçlar tahmini olup profesyonel danışmanlık yerine geçmez.
+    <div className="flex flex-col gap-6">
+      <div className="bg-amber-500/10 border-2 border-amber-500/20 p-4 rounded-xl flex items-start gap-3">
+         <span className="text-xl">💡</span>
+         <p className="text-xs font-medium text-amber-700 dark:text-amber-400 leading-normal">
+           2025 yılı gelir vergisi dilimlerine göre hesaplanır. Sonuçlar tahmini olup profesyonel danışmanlık yerine geçmez.
+         </p>
       </div>
 
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Aylık Brüt Maaş (₺)</label>
-        <input type="number" placeholder="Örn: 25000" value={brutMaas} onChange={e => setBrutMaas(e.target.value)} className="input-field" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2">
+           <label className="text-xs font-bold text-muted uppercase px-1">Aylık Brüt Maaş (₺)</label>
+           <input type="number" placeholder="Örn: 25000" value={brutMaas} onChange={e => setBrutMaas(e.target.value)} className="input-field text-lg font-bold" />
+        </div>
+        <div className="flex flex-col gap-2">
+           <label className="text-xs font-bold text-muted uppercase px-1">Hesaplama Ayı</label>
+           <select value={ay} onChange={e => setAy(e.target.value)} className="input-field text-lg font-bold">
+             {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
+               <option key={m} value={m}>{m}. Ay (Kümülatif)</option>
+             ))}
+           </select>
+        </div>
       </div>
 
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Hesaplama Ayı</label>
-        <select value={ay} onChange={e => setAy(e.target.value)} className="input-field">
-          {Array.from({ length: 12 }, (_, i) => i + 1).map(m => (
-            <option key={m} value={m}>{m}. Ay</option>
-          ))}
-        </select>
-      </div>
-
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Hesapla</button>
+      <button className="btn-primary py-4 text-lg font-bold shadow-xl" onClick={hesapla}>Maaşı Hesapla</button>
 
       {result && (
-        <div style={{ background: "var(--bg-secondary)", borderRadius: "10px", padding: "1.5rem", display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-          {[
-            { label: "SGK İşçi Payı (%14)", value: fmt(result.sgkIsci), color: "" },
-            { label: "İşsizlik Sigortası (%1)", value: fmt(result.issizlik), color: "" },
-            { label: "Aylık Vergi Matrahı", value: fmt(result.matrah / parseInt(ay)), color: "" },
-            { label: "Gelir Vergisi", value: fmt(result.vergi), color: "#ef4444" },
-          ].map(r => (
-            <div key={r.label} style={{ display: "flex", justifyContent: "space-between", padding: "0.45rem 0", borderBottom: "1px solid var(--border)" }}>
-              <span style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>{r.label}</span>
-              <span style={{ fontWeight: 600, color: r.color || "var(--text-primary)" }}>₺{r.value}</span>
-            </div>
-          ))}
-          <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "0.75rem", marginTop: "0.25rem" }}>
-            <span style={{ fontWeight: 700 }}>Tahmini Net Maaş</span>
-            <span style={{ fontWeight: 800, fontSize: "1.3rem", color: "#22c55e" }}>₺{fmt(result.net)}</span>
-          </div>
+        <div className="result-container-premium animate-result">
+           <div className="result-card-premium">
+              <div className="result-badge !bg-green-500/10 !text-green-500 !border-green-500/20">Tahmini Net Maaş</div>
+              <div className="result-value-premium !text-green-500">₺{fmt(result.net)}</div>
+              
+              <div className="grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-border">
+                 <div className="text-left p-4 bg-secondary/20 rounded-xl">
+                    <div className="text-[10px] font-black text-muted uppercase mb-1">SGK + İŞSİZLİK (%15)</div>
+                    <div className="font-bold text-sm">₺{fmt(result.sgkIsci + result.issizlik)}</div>
+                 </div>
+                 <div className="text-left p-4 bg-red-500/5 rounded-xl border border-red-500/10">
+                    <div className="text-[10px] font-black text-red-400 uppercase mb-1">GELİR VERGİSİ</div>
+                    <div className="font-bold text-sm text-red-500">₺{fmt(result.vergi)}</div>
+                 </div>
+              </div>
+           </div>
         </div>
       )}
     </div>

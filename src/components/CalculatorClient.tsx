@@ -6,6 +6,7 @@ import { getCalculatorBySlug, getCategoryBySlug, Category, CalculatorInfo } from
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { RightSidebarAds } from "@/components/RightSidebarAds";
 import { AdPlaceholder } from "@/components/AdPlaceholder";
+import confetti from "canvas-confetti";
 
 // Tüm Hesaplama Bileşenlerini İçe Aktar (Orijinal dosyadan kopyalandı)
 import { PregnancyCalculator } from "@/components/calculators/PregnancyCalculator";
@@ -82,7 +83,11 @@ function BMICalculator() {
     const w = parseFloat(weight);
     const h = parseFloat(height) / 100;
     if (w > 0 && h > 0) {
-      setResult(w / (h * h));
+      const vke = w / (h * h);
+      setResult(vke);
+      
+      // WOW Efekti
+      confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
     }
   };
 
@@ -97,39 +102,52 @@ function BMICalculator() {
   }
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Boy (cm)</label>
-        <input 
-          type="number" 
-          placeholder="Örn: 175" 
-          value={height}
-          onChange={(e) => setHeight(e.target.value)}
-          className="input-field" 
-        />
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-muted uppercase px-1">Boy (cm)</label>
+          <input 
+            type="number" 
+            placeholder="175" 
+            value={height}
+            onChange={(e) => setHeight(e.target.value)}
+            className="input-field text-xl font-bold py-4" 
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-muted uppercase px-1">Kilo (kg)</label>
+          <input 
+            type="number" 
+            placeholder="70" 
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            className="input-field text-xl font-bold py-4" 
+          />
+        </div>
       </div>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Kilo (kg)</label>
-        <input 
-          type="number" 
-          placeholder="Örn: 70" 
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-          className="input-field" 
-        />
-      </div>
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>
+      <button className="btn-primary py-4 text-lg font-bold shadow-xl" onClick={calculate}>
         Hesapla
       </button>
 
       {result !== null && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", textAlign: "center", borderTop: `4px solid ${color}` }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)" }}>Vücut Kitle Endeksiniz:</h3>
-          <div style={{ fontSize: "2.5rem", fontWeight: "bold", margin: "0.5rem 0", color: "var(--text-primary)" }}>
-            {result.toFixed(1)}
-          </div>
-          <div style={{ fontSize: "1.25rem", fontWeight: 600, color }}>
-            {status}
+        <div className="result-container-premium animate-result shadow-2xl">
+          <div className="result-card-premium">
+            <div className="result-badge" style={{ backgroundColor: `${color}11`, color, borderColor: `${color}33` }}>
+               {status}
+            </div>
+            <div className="result-value-premium" style={{ color }}>
+              {result.toFixed(1)}
+            </div>
+            <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-4">Vücut Kitle Endeksiniz</div>
+            
+            <div className="mt-8 pt-6 border-t border-border flex justify-center">
+               <div className="flex gap-1 h-3 w-full max-w-sm rounded-full overflow-hidden bg-secondary/20">
+                  <div className="h-full flex-1 bg-blue-400 opacity-60"></div>
+                  <div className="h-full flex-1 bg-green-500"></div>
+                  <div className="h-full flex-1 bg-yellow-500 opacity-60"></div>
+                  <div className="h-full flex-1 bg-red-500 opacity-60"></div>
+               </div>
+            </div>
           </div>
         </div>
       )}

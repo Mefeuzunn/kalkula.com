@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { ShareResultButton } from "../ShareResultButton";
 import QRCode from "qrcode";
+import confetti from "canvas-confetti";
 
 /**
  * Gelişmiş Şifre Oluşturucu
@@ -30,6 +31,9 @@ export function PasswordGenerator() {
     }
     setPassword(gen);
     calculateStrength(gen);
+    
+    // WOW Efekti
+    confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 }, colors: ["#3b82f6", "#60a5fa"] });
   };
 
   const calculateStrength = (p: string) => {
@@ -88,23 +92,23 @@ export function PasswordGenerator() {
       </button>
 
       {password && (
-        <div className="panel overflow-hidden border-2 border-border shadow-2xl">
-          <div className="p-1">
-             <div className="bg-bg-secondary p-4 rounded-t-lg truncate font-mono text-xl md:text-2xl font-bold text-center tracking-wider text-accent-primary border-b border-border">
+        <div className="result-container-premium animate-result">
+          <div className="result-card-premium !p-0">
+             <div className="bg-bg-secondary p-6 rounded-t-lg truncate font-mono text-xl md:text-2xl font-bold text-center tracking-wider text-accent-primary border-b border-border">
                 {password}
              </div>
-             <div className="p-4 bg-surface">
-                <div className="flex justify-between items-center mb-2">
-                   <span className="text-sm text-muted font-medium">Güvenlik Seviyesi:</span>
-                   <span style={{ color: strength.color }} className="font-bold">{strength.label}</span>
+             <div className="p-8 bg-surface">
+                <div className="flex justify-between items-center mb-3">
+                   <span className="text-xs font-bold text-muted uppercase tracking-widest">Güvenlik Seviyesi</span>
+                   <span style={{ color: strength.color }} className="font-bold text-sm uppercase">{strength.label}</span>
                 </div>
-                <div className="h-2 w-full bg-border rounded-full overflow-hidden">
+                <div className="h-3 w-full bg-border rounded-full overflow-hidden shadow-inner">
                    <div 
-                    className="h-full transition-all duration-500" 
-                    style={{ width: `${strength.score}%`, backgroundColor: strength.color }}
+                    className="h-full transition-all duration-700 ease-out" 
+                    style={{ width: `${strength.score}%`, backgroundColor: strength.color, boxShadow: `0 0 10px ${strength.color}44` }}
                    />
                 </div>
-                <div className="mt-6 flex justify-center">
+                <div className="mt-8 flex justify-center">
                    <ShareResultButton resultText={"Güvenli şifremi Kalküla ile oluşturdum: " + password} />
                 </div>
              </div>
@@ -137,7 +141,7 @@ export function WordCounter() {
           { label: "Paragraf", val: paragraphs },
           { label: "Okuma (Dk)", val: readingTime, color: "#10b981" }
         ].map((item, i) => (
-          <div key={i} className="panel flex flex-col items-center justify-center p-4 hover:border-primary/40 transition-colors">
+          <div key={i} className="panel flex flex-col items-center justify-center p-4 hover:border-primary/40 transition-colors border-2">
             <div style={{ color: item.color || "var(--text-primary)" }} className="text-2xl font-black">{item.val}</div>
             <div className="text-[10px] uppercase tracking-widest text-muted font-bold mt-1">{item.label}</div>
           </div>
@@ -145,24 +149,23 @@ export function WordCounter() {
       </div>
       
       <textarea 
-        placeholder="Saymak istediğiniz metni buraya yapıştırın veya yazın..." 
+        placeholder="Saymak istediğiniz metni buraya yapıştırın..." 
         value={text} 
         onChange={e => setText(e.target.value)} 
-        className="input-field p-6 text-lg"
-        style={{ minHeight: "350px", resize: "vertical", lineHeight: "1.6" }}
+        className="input-field p-8 text-lg border-2 min-h-[400px] leading-relaxed shadow-inner"
+        style={{ resize: "vertical" }}
       />
     </div>
   );
 }
 
 /**
- * QR Kod Üreticisi (Yerel Kütüphane)
+ * QR Kod Üreticisi
  */
 export function QRCodeGenerator() {
   const [url, setUrl] = useState("");
   const [qrReady, setQrReady] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const generate = async () => {
     if (!url.trim()) return;
@@ -171,14 +174,14 @@ export function QRCodeGenerator() {
       const dataUrl = await QRCode.toDataURL(url, {
         width: 800,
         margin: 2,
-        color: {
-          dark: '#ffffff',
-          light: '#00000000'
-        }
+        color: { dark: '#ffffff', light: '#00000000' }
       });
       setQrReady(dataUrl);
+      
+      // WOW Efekti
+      confetti({ particleCount: 80, spread: 70, origin: { y: 0.8 } });
     } catch (err) {
-      console.error("QR hata:", err);
+      console.error(err);
     } finally {
       setIsGenerating(false);
     }
@@ -193,44 +196,48 @@ export function QRCodeGenerator() {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="panel p-6 bg-secondary/20 border-border">
-        <label className="text-sm font-bold text-muted uppercase tracking-tighter mb-2 block">Hedef URL veya Metin</label>
-        <div className="flex flex-col md:flex-row gap-3">
+      <div className="panel p-8 bg-secondary/10 border-2 border-border shadow-inner">
+        <label className="text-xs font-bold text-muted uppercase tracking-widest mb-3 block">Hedef URL veya Metin</label>
+        <div className="flex flex-col md:flex-row gap-4">
           <input 
             type="text" 
-            placeholder="https://google.com veya bir mesaj..." 
+            placeholder="https://example.com" 
             value={url} 
             onChange={e => setUrl(e.target.value)} 
-            className="input-field flex-grow"
+            className="input-field flex-grow text-lg"
           />
           <button 
-            className="btn-primary px-8" 
+            className="btn-primary px-10 py-4 shadow-xl" 
             onClick={generate}
             disabled={isGenerating || !url.trim()}
           >
-            {isGenerating ? "..." : "Oluştur"}
+            {isGenerating ? "..." : "QR ÜRET"}
           </button>
         </div>
       </div>
 
       {qrReady && (
-        <div className="panel flex flex-col items-center bg-surface border-border p-10 animate-in fade-in zoom-in duration-300">
-           <div className="p-4 bg-white rounded-2xl shadow-2xl mb-6">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={qrReady} alt="QR" width={250} height={250} className="rounded-lg mix-blend-multiply brightness-0" />
-           </div>
-           
-           <p className="text-muted text-sm mb-6 max-w-xs text-center">
-              QR kodunuz yerel olarak yüksek çözünürlükte oluşturuldu. Herhangi bir telefon kamerasıyla taratabilirsiniz.
-           </p>
+        <div className="result-container-premium animate-result">
+           <div className="result-card-premium">
+              <div className="result-badge">QR Kod Hazır</div>
+              
+              <div className="p-6 bg-white rounded-3xl shadow-2xl inline-block mb-8 border-8 border-white/10">
+                 {/* eslint-disable-next-line @next/next/no-img-element */}
+                 <img src={qrReady} alt="QR" width={220} height={220} className="mix-blend-multiply brightness-0" />
+              </div>
+              
+              <p className="text-muted text-sm mb-8 max-w-xs mx-auto leading-relaxed">
+                 QR kodunuz yüksek çözünürlükte oluşturuldu. Tüm cihazlarla uyumludur.
+              </p>
 
-           <div className="flex gap-3 w-full max-w-sm">
-             <button onClick={download} className="btn-secondary flex-1 border-primary/20 hover:bg-primary/5">
-                PNG Olarak İndir
-             </button>
-             <button onClick={() => setQrReady("")} className="btn-secondary flex-1 border-red-500/20 text-red-500 hover:bg-red-500/5">
-                Temizle
-             </button>
+              <div className="result-footer-premium">
+                <button onClick={download} className="btn-primary !bg-none !bg-accent-primary flex-1">
+                   PNG İndir
+                </button>
+                <button onClick={() => setQrReady("")} className="btn-secondary flex-1 border-red-500/20 text-red-500">
+                   Temizle
+                </button>
+              </div>
            </div>
         </div>
       )}

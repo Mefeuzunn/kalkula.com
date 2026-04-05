@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ShareResultButton } from "../ShareResultButton";
+import confetti from "canvas-confetti";
 
 /**
  * Profesyonel JSON Formatlayıcı & Minifier
@@ -17,6 +17,7 @@ export function JsonFormatter() {
       const parsed = JSON.parse(input);
       setOutput(JSON.stringify(parsed, null, spaces));
       setError(null);
+      confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 }, colors: ["#3b82f6", "#60a5fa"] });
     } catch (e: any) {
       setError("Hatalı JSON Formatı: " + e.message);
       setOutput("");
@@ -38,13 +39,12 @@ export function JsonFormatter() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
-        <label className="text-sm font-bold text-muted uppercase tracking-tighter">JSON Girişi</label>
+        <label className="text-xs font-bold text-muted uppercase tracking-widest block mb-2">JSON Girişi</label>
         <textarea 
           placeholder='{"key": "value", "id": 1}' 
           value={input} 
           onChange={e => setInput(e.target.value)} 
-          className="input-field font-mono text-sm leading-relaxed"
-          style={{ minHeight: "200px" }}
+          className="input-field font-mono text-sm leading-relaxed border-2 shadow-inner min-h-[220px]"
         />
       </div>
       
@@ -55,28 +55,31 @@ export function JsonFormatter() {
       </div>
 
       {error && (
-        <div className="p-4 bg-red-500/10 border border-red-500/30 text-red-500 rounded-lg text-sm font-mono leading-relaxed">
+        <div className="p-4 bg-red-500/10 border-2 border-red-500/30 text-red-500 rounded-xl text-sm font-mono leading-relaxed animate-result">
            ⚠️ {error}
         </div>
       )}
 
       {output && (
-        <div className="animate-in slide-in-from-top-4 duration-300">
-          <div className="flex justify-between items-center mb-2 px-1">
-             <label className="text-sm font-bold text-accent-primary uppercase tracking-tighter">Sonuç (Formatlanmış)</label>
-             <button 
-              onClick={() => { navigator.clipboard.writeText(output); }}
-              className="text-[10px] font-bold py-1 px-3 bg-accent-primary/10 text-accent-primary rounded-full hover:bg-accent-primary/20 transition-all border border-accent-primary/20"
-             >
-               KOPYALA
-             </button>
-          </div>
-          <textarea 
-            value={output} 
-            readOnly
-            className="input-field font-mono text-sm leading-relaxed bg-secondary/20 border-accent-primary/30"
-            style={{ minHeight: "350px" }}
-          />
+        <div className="result-container-premium animate-result">
+           <div className="result-card-premium !text-left !p-0">
+             <div className="flex justify-between items-center bg-bg-secondary p-4 border-b border-border">
+                <span className="text-xs font-bold text-accent-primary uppercase tracking-widest">Çıktı (JSON)</span>
+                <button 
+                  onClick={() => { navigator.clipboard.writeText(output); }}
+                  className="px-4 py-1.5 bg-accent-primary text-white text-[10px] font-black rounded-full hover:scale-105 transition-transform shadow-lg"
+                >
+                  KOPYALA
+                </button>
+             </div>
+             <div className="p-1">
+                <textarea 
+                  value={output} 
+                  readOnly
+                  className="w-full bg-surface border-0 font-mono text-sm leading-relaxed p-6 min-h-[350px] outline-none"
+                />
+             </div>
+           </div>
         </div>
       )}
     </div>
@@ -104,7 +107,7 @@ export function HashGenerator() {
       setBase64Dec(decodeURIComponent(escape(atob(val)))); 
       setIsError(false);
     } catch(e) { 
-      setBase64Dec("Geçersiz Base64 Formatı"); 
+      setBase64Dec("Geçersiz Base64"); 
       setIsError(true);
     }
   };
@@ -112,44 +115,46 @@ export function HashGenerator() {
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-4">
-        <label className="text-sm font-bold text-muted uppercase tracking-tighter">Metin veya Base64 Kodu</label>
+        <label className="text-xs font-bold text-muted uppercase tracking-widest">Metin veya Base64 Kodu</label>
         <textarea 
-          placeholder="Şifrelemek için metin, çözmek için Base64 kodu girin..."
+          placeholder="İşlem yapmak istediğiniz metni girin..."
           value={text} 
           onChange={e => processBasic(e.target.value)} 
-          className="input-field min-h-[120px]"
+          className="input-field min-h-[140px] border-2 shadow-inner"
         />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-         <div className="panel p-5 border-accent-secondary/20 bg-accent-secondary/5 relative overflow-hidden group">
-            <div className="text-[10px] uppercase font-black text-accent-secondary mb-3 tracking-widest opacity-80">BASE64 ENCODE (ŞİFRELE)</div>
-            <div className="font-mono text-sm break-all text-primary min-h-[50px] leading-relaxed">
-              {base64Enc || "Metin girilmesi bekleniyor..."}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+         <div className="result-container-premium !mt-0 h-full">
+            <div className="result-card-premium h-full flex flex-col p-6 text-left">
+              <div className="flex justify-between items-center mb-4">
+                 <span className="text-[10px] font-black uppercase text-accent-secondary tracking-widest">BASE64 ENCODE</span>
+                 {base64Enc && (
+                   <button onClick={() => navigator.clipboard.writeText(base64Enc)} className="p-2 hover:bg-accent-secondary/10 rounded-lg text-accent-secondary transition-colors">
+                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                   </button>
+                 )}
+              </div>
+              <div className="font-mono text-sm break-all text-primary leading-relaxed flex-1">
+                {base64Enc || "Bekleniyor..."}
+              </div>
             </div>
-            {base64Enc && (
-              <button 
-                onClick={() => navigator.clipboard.writeText(base64Enc)}
-                className="mt-4 w-full py-2 bg-accent-secondary/10 text-accent-secondary text-[11px] font-bold rounded-lg hover:bg-accent-secondary/20 border border-accent-secondary/30"
-              >
-                KOPYALA
-              </button>
-            )}
          </div>
 
-         <div className={`panel p-5 border-accent-primary/20 bg-accent-primary/5 ${isError ? 'border-red-500/30' : ''}`}>
-            <div className="text-[10px] uppercase font-black text-accent-primary mb-3 tracking-widest opacity-80">BASE64 DECODE (ÇÖZÜCÜ)</div>
-            <div className={`font-mono text-sm break-all leading-relaxed min-h-[50px] ${isError ? 'text-red-400 opacity-60' : 'text-primary'}`}>
-              {base64Dec || "Kod girilmesi bekleniyor..."}
+         <div className="result-container-premium !mt-0 h-full">
+            <div className={`result-card-premium h-full flex flex-col p-6 text-left ${isError ? 'opacity-50' : ''}`}>
+              <div className="flex justify-between items-center mb-4">
+                 <span className={`text-[10px] font-black uppercase tracking-widest ${isError ? 'text-red-500' : 'text-accent-primary'}`}>BASE64 DECODE</span>
+                 {base64Dec && !isError && (
+                   <button onClick={() => navigator.clipboard.writeText(base64Dec)} className="p-2 hover:bg-accent-primary/10 rounded-lg text-accent-primary transition-colors">
+                     <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                   </button>
+                 )}
+              </div>
+              <div className={`font-mono text-sm break-all leading-relaxed flex-1 ${isError ? 'text-red-400' : 'text-primary'}`}>
+                {base64Dec || "Bekleniyor..."}
+              </div>
             </div>
-            {base64Dec && !isError && (
-              <button 
-                onClick={() => navigator.clipboard.writeText(base64Dec)}
-                className="mt-4 w-full py-2 bg-accent-primary/10 text-accent-primary text-[11px] font-bold rounded-lg hover:bg-accent-primary/20 border border-accent-primary/30"
-              >
-                KOPYALA
-              </button>
-            )}
          </div>
       </div>
     </div>
@@ -181,7 +186,6 @@ export function ColorConverter() {
       const { r, g, b } = rgbVal;
       setRgb(`rgb(${r}, ${g}, ${b})`);
       
-      // Calculate CMYK
       let c = 1 - (r / 255);
       let m = 1 - (g / 255);
       let y = 1 - (b / 255);
@@ -198,41 +202,49 @@ export function ColorConverter() {
   };
 
   return (
-    <div className="flex flex-col gap-6">
-      <div 
-        className="w-full h-32 rounded-2xl shadow-xl border-4 border-surface shadow-black/20" 
-        style={{ backgroundColor: hex, transition: "background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1)" }}
-      ></div>
+    <div className="flex flex-col gap-8">
+      <div className="result-container-premium !mt-0 shadow-2xl">
+         <div 
+          className="result-card-premium !p-0 h-40 flex items-center justify-center transition-all duration-700" 
+          style={{ backgroundColor: hex }}
+         >
+            <div className="px-8 py-3 bg-white/20 backdrop-blur-xl border border-white/30 rounded-full text-white font-black text-2xl tracking-tighter shadow-2xl drop-shadow-xl">
+               {hex.toUpperCase()}
+            </div>
+         </div>
+      </div>
 
       <div className="flex flex-col gap-4">
-        <label className="text-sm font-bold text-muted uppercase tracking-tighter">Renk Seçici</label>
+        <label className="text-xs font-bold text-muted uppercase tracking-widest mb-2 block">Renk Seçici</label>
         <div className="flex gap-4">
            <input 
             type="color" 
             value={hex} 
             onChange={e => updateAll(e.target.value)} 
-            className="w-16 h-16 rounded-xl cursor-pointer bg-transparent border-0 p-0"
+            className="w-20 h-20 rounded-2xl cursor-pointer bg- surface border-4 border-surface shadow-xl p-0"
            />
            <input 
             type="text" 
             value={hex.toUpperCase()} 
             onChange={e => updateAll(e.target.value.startsWith("#") ? e.target.value : "#" + e.target.value)} 
-            className="input-field text-2xl font-mono text-center tracking-widest flex-1 p-0"
+            className="input-field text-3xl font-black text-center tracking-tighter flex-1 border-2"
            />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
-          { label: "RGB Değeri", val: rgb, color: "var(--accent-primary)" },
-          { label: "CMYK Değeri", val: cmyk, color: "var(--accent-secondary)" }
+          { label: "RGB VALUE", val: rgb, color: "var(--accent-primary)" },
+          { label: "CMYK VALUE", val: cmyk, color: "var(--accent-secondary)" }
         ].map((item, i) => (
-          <div key={i} className="panel p-5 bg-secondary/10 border-border">
-            <div className="flex justify-between items-center mb-2">
-               <span className="text-[10px] font-black uppercase text-muted tracking-widest">{item.label}</span>
-               <button onClick={() => navigator.clipboard.writeText(item.val)} className="text-[9px] font-bold text-primary opacity-50 hover:opacity-100 transition-opacity">KOPYALA</button>
+          <div key={i} className="panel p-6 bg-secondary/5 border-2 flex justify-between items-center hover:border-primary/30 transition-all cursor-pointer" onClick={() => navigator.clipboard.writeText(item.val)}>
+            <div>
+               <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">{item.label}</div>
+               <div style={{ color: item.color }} className="font-mono text-xl font-black">{item.val}</div>
             </div>
-            <div style={{ color: item.color }} className="font-mono text-lg font-bold">{item.val}</div>
+            <div className="text-muted opacity-30 group-hover:opacity-100">
+               <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+            </div>
           </div>
         ))}
       </div>
