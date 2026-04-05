@@ -186,7 +186,10 @@ export const calculators: CalculatorInfo[] = [
   // Mühendislik & Fizik
   { id: "direnc", title: "Direnç/Renk Kodları", slug: "direnc-hesaplama", categoryId: "muhendislik", description: "Direnç renk bantlarına göre ohm değerini interaktif görselle bulun." },
   { id: "atish", title: "Eğik Atış Simülatörü", slug: "egik-atish", categoryId: "muhendislik", description: "Hız ve açıya göre yörüngeyi interaktif animasyonla (Canvas) canlandırın." },
-  { id: "ohm", title: "Ohm Kanunu", slug: "ohm-kanunu", categoryId: "muhendislik", description: "Volt, Amper ve Direnç arasındaki elektriksel ilişkiyi hesaplayın." }
+  { id: "ohm", title: "Ohm Kanunu", slug: "ohm-kanunu", categoryId: "muhendislik", description: "Volt, Amper ve Direnç arasındaki elektriksel ilişkiyi hesaplayın." },
+  { id: "btu", title: "Klima BTU Hesaplama", slug: "btu-hesaplama", categoryId: "muhendislik", description: "Oda alanına ve bölge verilerine göre ihtiyacınız olan klima kapasitesini (BTU) belirleyin." },
+  { id: "motor-gucu", title: "Motor Gücü ve Tork Hesaplama", slug: "motor-gucu-hesaplama", categoryId: "muhendislik", description: "Elektrik motorları için nominal güç, RPM ve gerilim bazlı tork ve akım analizi." },
+  { id: "metal-agirlik", title: "Metal ve Çelik Ağırlık Hesaplama", slug: "metal-agirlik-hesaplama", categoryId: "muhendislik", description: "Plaka, dolu mil ve boru tipi metal malzemelerin boyutlarına göre teorik ağırlığını hesaplayın." }
 ];
 
 export function getCalculatorsByCategory(categoryId: string) {

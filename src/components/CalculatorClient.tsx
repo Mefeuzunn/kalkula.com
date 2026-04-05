@@ -103,6 +103,9 @@ import { StyleTextGenerator } from "@/components/calculators/StyleTextGenerator"
 import { IbanValidator } from "@/components/calculators/IbanValidator";
 import { BondCalculator } from "@/components/calculators/BondCalculator";
 import { IrrNpvCalculator } from "@/components/calculators/IrrNpvCalculator";
+import { BtuCalculator } from "@/components/calculators/BtuCalculator";
+import { MotorPowerCalculator } from "@/components/calculators/MotorPowerCalculator";
+import { SteelWeightCalculator } from "@/components/calculators/SteelWeightCalculator";
 
 // BMI Calculator
 function BMICalculator() {
@@ -336,6 +339,9 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "hash-generator": return <HashGenerator />;
       case "base64-converter": return <Base64Converter />;
       case "renk-donusturucu": return <ColorConverter />;
+      case "btu-hesaplama": return <BtuCalculator />;
+      case "motor-gucu-hesaplama": return <MotorPowerCalculator />;
+      case "metal-agirlik-hesaplama": return <SteelWeightCalculator />;
       default: return <GenericCalculator />;
     }
   };
