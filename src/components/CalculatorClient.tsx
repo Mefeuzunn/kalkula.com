@@ -26,18 +26,14 @@ import { HsyCalculator } from "@/components/calculators/HsyCalculator";
 import { VehicleExpenseCalculator } from "@/components/calculators/VehicleExpenseCalculator";
 import { PriceCalculator } from "@/components/calculators/PriceCalculator";
 import { DayOfYearCalculator } from "@/components/calculators/DayOfYearCalculator";
-import { NpvCalculator } from "@/components/calculators/NpvCalculator";
 import { GoldCalculator } from "@/components/calculators/GoldCalculator";
 import { CurrencyCalculator } from "@/components/calculators/CurrencyCalculator";
 import { CagrCalculator } from "@/components/calculators/CagrCalculator";
 import { SavingsCalculator } from "@/components/calculators/SavingsCalculator";
 import { BillCalculator } from "@/components/calculators/BillCalculator";
-import { BondCalculator } from "@/components/calculators/BondCalculator";
 import { HistoricalGoldCalculator } from "@/components/calculators/HistoricalGoldCalculator";
 import { HistoricalCurrencyCalculator } from "@/components/calculators/HistoricalCurrencyCalculator";
-import { IbanValidator } from "@/components/calculators/IbanValidator";
 import { DiscountCalculator } from "@/components/calculators/DiscountCalculator";
-import { IrrCalculator } from "@/components/calculators/IrrCalculator";
 import { RentIncreaseCalculator } from "@/components/calculators/RentIncreaseCalculator";
 import { AverageMaturityCalculator } from "@/components/calculators/AverageMaturityCalculator";
 import { TimeValueCalculator } from "@/components/calculators/TimeValueCalculator";
@@ -73,6 +69,10 @@ import { AofCalculator, TusDusCalculator, ChineseZodiac, AscendantCalculator, Ra
 import { PasswordGenerator, WordCounter, QRCodeGenerator } from "@/components/calculators/Phase4Utilities";
 import { JsonFormatter, HashGenerator, ColorConverter } from "@/components/calculators/Phase4DevTools";
 import { XCharacterCounter, StyleTextGenerator } from "@/components/calculators/SocialMediaTools";
+
+import { IbanValidator } from "@/components/calculators/IbanValidator";
+import { BondCalculator } from "@/components/calculators/BondCalculator";
+import { IrrNpvCalculator } from "@/components/calculators/IrrNpvCalculator";
 
 // BMI Calculator
 function BMICalculator() {
@@ -221,7 +221,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "binek-arac-gider": return <VehicleExpenseCalculator />;
       case "fiyat": return <PriceCalculator />;
       case "yilin-kacinci-gunu": return <DayOfYearCalculator />;
-      case "net-bugunku-deger": return <NpvCalculator />;
+      case "net-bugunku-deger": return <IrrNpvCalculator />;
       case "altin": return <GoldCalculator />;
       case "doviz": return <CurrencyCalculator />;
       case "bilesik-buyume": return <CagrCalculator />;
@@ -232,7 +232,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "gecmis-doviz": return <HistoricalCurrencyCalculator />;
       case "iban": return <IbanValidator />;
       case "iskonto": return <DiscountCalculator />;
-      case "ic-verim-orani": return <IrrCalculator />;
+      case "ic-verim-orani": return <IrrNpvCalculator />;
       case "kira-artisi": return <RentIncreaseCalculator />;
       case "ortalama-vade": return <AverageMaturityCalculator />;
       case "parasal-deger": return <TimeValueCalculator />;
