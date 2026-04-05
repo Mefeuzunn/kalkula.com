@@ -68,8 +68,8 @@ import { FractionsCalculator, LogarithmCalculator } from "@/components/calculato
 import { IdealWeightCalculator, WaterIntakeCalculator, SleepCycleCalculator, BmrCalculator, AreaVolumeCalculator, PowerRootCalculator, EquationSolverCalculator, PrimeNumberCalculator } from "@/components/calculators/Phase1Calculators";
 import { FuelCostCalculator, MtvCalculator } from "@/components/calculators/Phase2Calculators";
 import { LengthConverter, WeightConverter, TempConverter, AreaConverter, VolumeConverter, SpeedConverter, DataConverter, TimeConverter } from "@/components/calculators/Converters";
-import { AofCalculator, TusDusCalculator, ChineseZodiac, AscendantCalculator } from "@/components/calculators/Phase3Calculators";
-import { PasswordGenerator, WordCounter, QRCodeGenerator, RaffleMaker, RandomNumberGen } from "@/components/calculators/Phase4Utilities";
+import { AofCalculator, TusDusCalculator, ChineseZodiac, AscendantCalculator, RaffleMaker, RandomNumberGen } from "@/components/calculators/Phase3Calculators";
+import { PasswordGenerator, WordCounter, QRCodeGenerator } from "@/components/calculators/Phase4Utilities";
 import { JsonFormatter, HashGenerator, ColorConverter } from "@/components/calculators/Phase4DevTools";
 
 // BMI Calculator

@@ -144,7 +144,19 @@ export const calculators: CalculatorInfo[] = [
   // Vergi Hesaplamaları
   { id: "kdv", title: "KDV Hesaplama", slug: "kdv", categoryId: "vergi", description: "KDV dahil ve hariç tutarları %1, %10, %20 oranlarında anında hesaplayın." },
   { id: "damga-vergisi", title: "Damga Vergisi Hesaplama", slug: "damga-vergisi", categoryId: "vergi", description: "Sözleşme, kira, bordro ve banka evraklarının damga vergisini hesaplayın." },
-  { id: "gelir-vergisi", title: "Gelir Vergisi Hesaplama", slug: "gelir-vergisi", categoryId: "vergi", description: "2025 gelir vergisi dilimlerine göre aylık brüt maaştan net maaşa geçin." }
+  { id: "gelir-vergisi", title: "Gelir Vergisi Hesaplama", slug: "gelir-vergisi", categoryId: "vergi", description: "2025 gelir vergisi dilimlerine göre aylık brüt maaştan net maaşa geçin." },
+
+  // Geliştirici, Pratik ve Eğlence Araçları (Mevcut olanları veriye bağlama)
+  { id: "password-gen", title: "Gelişmiş Şifre Oluşturucu", slug: "sifre-olusturucu", categoryId: "araclar", description: "Yüksek güvenlikli, rastgele ve kırılmaz şifreler oluşturun." },
+  { id: "word-counter", title: "Kelime ve Karakter Sayacı", slug: "kelime-sayaci", categoryId: "araclar", description: "Metinlerinizin kelime, karakter ve okuma süresi gibi istatistiklerini anlık analiz edin." },
+  { id: "qr-gen", title: "QR Kod Üreticisi", slug: "qr-kod-olusturucu", categoryId: "araclar", description: "Linklerinizi veya metinlerinizi saniyeler içinde QR koda dönüştürün ve indirin." },
+  
+  { id: "raffle", title: "Profesyonel Çekiliş Yapıcı", slug: "cekilis-yapici", categoryId: "eglence", description: "İsim listesi üzerinden adil ve görsel olarak şık çekilişler düzenleyin." },
+  { id: "rng", title: "Rastgele Sayı Üretici", slug: "rastgele-sayi", categoryId: "eglence", description: "Belirlediğiniz aralıkta tamamen şans eseri rastgele sayılar ve zarlar üretin." },
+  
+  { id: "json-fmt", title: "JSON Formatlayıcı (Prettier)", slug: "json-formatter", categoryId: "gelistirici", description: "Karmaşık JSON verilerini okunaklı hale getirin, küçültün ve doğrulayın." },
+  { id: "hash-gen", title: "Base64 & Hash İşleyici", slug: "hash-generator", categoryId: "gelistirici", description: "Metinlerinizi Base64 formatına çevirin veya şifrelenmiş verileri geri çözün." },
+  { id: "color-conv", title: "Renk Dönüştürücü (HEX/RGB)", slug: "renk-donusturucu", categoryId: "gelistirici", description: "Tasarımcılar için HEX, RGB ve CMYK renk kodlarını anlık dönüştürün." }
 ];
 
 export function getCalculatorsByCategory(categoryId: string) {

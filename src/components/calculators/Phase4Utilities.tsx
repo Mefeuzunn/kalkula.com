@@ -1,15 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ShareResultButton } from "../ShareResultButton";
+import QRCode from "qrcode";
 
-// Geliştirici & Pratik Araçlar
+/**
+ * Gelişmiş Şifre Oluşturucu
+ */
 export function PasswordGenerator() {
-  const [length, setLength] = useState(16);
+  const [length, setLength] = useState(20);
   const [useUpper, setUseUpper] = useState(true);
   const [useNumbers, setUseNumbers] = useState(true);
   const [useSymbols, setUseSymbols] = useState(true);
   const [password, setPassword] = useState("");
+  const [strength, setStrength] = useState({ score: 0, label: "Zayıf", color: "#ef4444" });
 
   const generate = () => {
     let chars = "abcdefghijklmnopqrstuvwxyz";
@@ -18,232 +22,216 @@ export function PasswordGenerator() {
     if (useSymbols) chars += "!@#$%^&*()_+~`|}{[]:;?><,./-=";
     
     let gen = "";
+    const array = new Uint32Array(length);
+    window.crypto.getRandomValues(array);
+    
     for (let i = 0; i < length; i++) {
-       gen += chars.charAt(Math.floor(Math.random() * chars.length));
+       gen += chars.charAt(array[i] % chars.length);
     }
     setPassword(gen);
+    calculateStrength(gen);
   };
 
+  const calculateStrength = (p: string) => {
+    let score = 0;
+    if (p.length > 12) score += 2;
+    if (p.length > 16) score += 1;
+    if (/[A-Z]/.test(p)) score += 1;
+    if (/[0-9]/.test(p)) score += 1;
+    if (/[^A-Za-z0-9]/.test(p)) score += 2;
+
+    if (score >= 6) setStrength({ score: 100, label: "Çok Güçlü", color: "#22c55e" });
+    else if (score >= 4) setStrength({ score: 60, label: "Güçlü", color: "#3b82f6" });
+    else if (score >= 2) setStrength({ score: 30, label: "Orta", color: "#eab308" });
+    else setStrength({ score: 10, label: "Zayıf", color: "#ef4444" });
+  };
+
+  useEffect(() => { generate(); }, []);
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <label style={{ fontWeight: 600 }}>Şifre Uzunluğu: {length}</label>
-        <input type="range" min="8" max="64" value={length} onChange={e => setLength(parseInt(e.target.value))} style={{ width: "50%" }} />
-      </div>
-      
-      <div style={{ display: "flex", gap: "1rem", flexWrap: "wrap", margin: "0.5rem 0" }}>
-        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
-          <input type="checkbox" checked={useUpper} onChange={e => setUseUpper(e.target.checked)} /> Büyük Harf
-        </label>
-        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
-          <input type="checkbox" checked={useNumbers} onChange={e => setUseNumbers(e.target.checked)} /> Rakam
-        </label>
-        <label style={{ display: "flex", alignItems: "center", gap: "0.5rem", cursor: "pointer" }}>
-          <input type="checkbox" checked={useSymbols} onChange={e => setUseSymbols(e.target.checked)} /> Sembol
-        </label>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-4 p-6 bg-secondary/30 rounded-xl border border-border">
+        <div className="flex justify-between items-center">
+          <label className="text-sm font-semibold opacity-70">Şifre Uzunluğu</label>
+          <span className="text-xl font-bold font-mono text-primary">{length}</span>
+        </div>
+        <input 
+          type="range" 
+          min="8" max="64" 
+          value={length} 
+          onChange={e => setLength(parseInt(e.target.value))} 
+          className="w-full accent-primary cursor-pointer"
+        />
+        
+        <div className="grid grid-cols-2 gap-3 mt-2">
+          {[
+            { id: "upper", label: "A-Z", checked: useUpper, set: setUseUpper },
+            { id: "nums", label: "0-9", checked: useNumbers, set: setUseNumbers },
+            { id: "syms", label: "!@#", checked: useSymbols, set: setUseSymbols }
+          ].map(opt => (
+            <button 
+              key={opt.id}
+              onClick={() => opt.set(!opt.checked)}
+              className={`flex items-center gap-2 p-2 rounded-lg border transition-all text-sm font-medium ${opt.checked ? 'bg-primary/10 border-primary/40 text-primary' : 'bg-surface border-border text-muted hover:border-muted'}`}
+            >
+              <div className={`w-4 h-4 rounded border flex items-center justify-center ${opt.checked ? 'bg-primary border-primary' : 'border-border'}`}>
+                {opt.checked && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4"><polyline points="20 6 9 17 4 12"/></svg>}
+              </div>
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      <button className="btn-primary" onClick={generate}>Şifre Üret</button>
+      <button className="btn-primary py-4 text-lg" onClick={generate}>
+        Yeni Şifre Oluştur
+      </button>
 
       {password && (
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1.5rem", textAlign: "center", position: "relative" }}>
-           <div style={{ fontSize: "1.5rem", fontWeight: 800, wordBreak: "break-all", color: "var(--accent-primary)", padding: "1rem", background: "var(--bg-secondary)", borderRadius: "8px", fontFamily: "monospace" }}>
-              {password}
-           </div>
-           <div style={{ marginTop: "1rem" }}>
-              <ShareResultButton resultText={"Benim yeni harika güvenli şifrem: " + password} />
-           </div>
+        <div className="panel overflow-hidden border-2 border-border shadow-2xl">
+          <div className="p-1">
+             <div className="bg-bg-secondary p-4 rounded-t-lg truncate font-mono text-xl md:text-2xl font-bold text-center tracking-wider text-accent-primary border-b border-border">
+                {password}
+             </div>
+             <div className="p-4 bg-surface">
+                <div className="flex justify-between items-center mb-2">
+                   <span className="text-sm text-muted font-medium">Güvenlik Seviyesi:</span>
+                   <span style={{ color: strength.color }} className="font-bold">{strength.label}</span>
+                </div>
+                <div className="h-2 w-full bg-border rounded-full overflow-hidden">
+                   <div 
+                    className="h-full transition-all duration-500" 
+                    style={{ width: `${strength.score}%`, backgroundColor: strength.color }}
+                   />
+                </div>
+                <div className="mt-6 flex justify-center">
+                   <ShareResultButton resultText={"Güvenli şifremi Kalküla ile oluşturdum: " + password} />
+                </div>
+             </div>
+          </div>
         </div>
       )}
     </div>
   );
 }
 
+/**
+ * Profesyonel Kelime Sayacı
+ */
 export function WordCounter() {
   const [text, setText] = useState("");
   
-  const words = text.trim() ? text.trim().split(/\\s+/).length : 0;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   const chars = text.length;
-  const charsNoSpace = text.replace(/\\s/g, "").length;
-  const paragraphs = text.trim() ? text.split(/\\n+/).filter(p => p.trim().length > 0).length : 0;
-  // Ortalama bir yetişkin dakikada 200 kelime okur.
-  const readingTime = Math.ceil(words / 200);
+  const charsNoSpace = text.replace(/\s/g, "").length;
+  const paragraphs = text.trim() ? text.split(/\n+/).filter(p => p.trim().length > 0).length : 0;
+  const readingTime = Math.ceil(words / 200) || 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "1rem", textAlign: "center" }}>
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
-           <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent-primary)" }}>{words}</div>
-           <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Kelime</div>
-        </div>
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
-           <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary)" }}>{chars}</div>
-           <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Karakter</div>
-        </div>
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
-           <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary)" }}>{charsNoSpace}</div>
-           <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Boşluksuz</div>
-        </div>
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
-           <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--text-primary)" }}>{paragraphs}</div>
-           <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Paragraf</div>
-        </div>
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem" }}>
-           <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent-secondary)" }}>{readingTime}</div>
-           <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Dk. Okuma</div>
-        </div>
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        {[
+          { label: "Kelime", val: words, color: "var(--accent-primary)" },
+          { label: "Karakter", val: chars },
+          { label: "Boşluksuz", val: charsNoSpace },
+          { label: "Paragraf", val: paragraphs },
+          { label: "Okuma (Dk)", val: readingTime, color: "#10b981" }
+        ].map((item, i) => (
+          <div key={i} className="panel flex flex-col items-center justify-center p-4 hover:border-primary/40 transition-colors">
+            <div style={{ color: item.color || "var(--text-primary)" }} className="text-2xl font-black">{item.val}</div>
+            <div className="text-[10px] uppercase tracking-widest text-muted font-bold mt-1">{item.label}</div>
+          </div>
+        ))}
       </div>
       
       <textarea 
-        placeholder="Saymak istediğiniz metni buraya yapıştırın..." 
+        placeholder="Saymak istediğiniz metni buraya yapıştırın veya yazın..." 
         value={text} 
         onChange={e => setText(e.target.value)} 
-        className="input-field"
-        style={{ minHeight: "250px", resize: "vertical", fontFamily: "inherit" }}
+        className="input-field p-6 text-lg"
+        style={{ minHeight: "350px", resize: "vertical", lineHeight: "1.6" }}
       />
     </div>
   );
 }
 
+/**
+ * QR Kod Üreticisi (Yerel Kütüphane)
+ */
 export function QRCodeGenerator() {
   const [url, setUrl] = useState("");
   const [qrReady, setQrReady] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const generate = () => {
+  const generate = async () => {
     if (!url.trim()) return;
-    const encoded = encodeURIComponent(url);
-    setQrReady("https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" + encoded);
-  };
-
-  const handleDownload = async () => {
-    if (!qrReady) return;
+    setIsGenerating(true);
     try {
-      const response = await fetch(qrReady);
-      const blob = await response.blob();
-      const donwloadUrl = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = donwloadUrl;
-      a.download = "kalkula-qr-kod.png";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      window.URL.revokeObjectURL(donwloadUrl);
+      const dataUrl = await QRCode.toDataURL(url, {
+        width: 800,
+        margin: 2,
+        color: {
+          dark: '#ffffff',
+          light: '#00000000'
+        }
+      });
+      setQrReady(dataUrl);
     } catch (err) {
-      console.error("QR Code indirilemedi", err);
+      console.error("QR hata:", err);
+    } finally {
+      setIsGenerating(false);
     }
   };
 
+  const download = () => {
+    const link = document.createElement("a");
+    link.href = qrReady;
+    link.download = `kalkula-qr-${Date.now()}.png`;
+    link.click();
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Veri veya URL Linki</label>
-        <input type="text" placeholder="https://" value={url} onChange={e => setUrl(e.target.value)} className="input-field" />
+    <div className="flex flex-col gap-6">
+      <div className="panel p-6 bg-secondary/20 border-border">
+        <label className="text-sm font-bold text-muted uppercase tracking-tighter mb-2 block">Hedef URL veya Metin</label>
+        <div className="flex flex-col md:flex-row gap-3">
+          <input 
+            type="text" 
+            placeholder="https://google.com veya bir mesaj..." 
+            value={url} 
+            onChange={e => setUrl(e.target.value)} 
+            className="input-field flex-grow"
+          />
+          <button 
+            className="btn-primary px-8" 
+            onClick={generate}
+            disabled={isGenerating || !url.trim()}
+          >
+            {isGenerating ? "..." : "Oluştur"}
+          </button>
+        </div>
       </div>
-      
-      <button className="btn-primary" onClick={generate}>Oluştur</button>
 
       {qrReady && (
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "2rem", textAlign: "center" }}>
-           {/* eslint-disable-next-line @next/next/no-img-element */}
-           <img src={qrReady} alt="QR_Code" style={{ margin: "0 auto", borderRadius: "10px", display: "block" }} />
-           <p style={{ marginTop: "1rem", color: "var(--text-muted)", marginBottom: "1.5rem" }}>Barkodu telefonunuzun kamerası ile okutabilirsiniz.</p>
-           <button className="btn-secondary" onClick={handleDownload} style={{ background: "var(--accent-glow)", border: "1px solid var(--accent-primary)", color: "var(--accent-primary)" }}>QR Kodu İndir</button>
-        </div>
-      )}
-    </div>
-  );
-}
+        <div className="panel flex flex-col items-center bg-surface border-border p-10 animate-in fade-in zoom-in duration-300">
+           <div className="p-4 bg-white rounded-2xl shadow-2xl mb-6">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={qrReady} alt="QR" width={250} height={250} className="rounded-lg mix-blend-multiply brightness-0" />
+           </div>
+           
+           <p className="text-muted text-sm mb-6 max-w-xs text-center">
+              QR kodunuz yerel olarak yüksek çözünürlükte oluşturuldu. Herhangi bir telefon kamerasıyla taratabilirsiniz.
+           </p>
 
-export function RaffleMaker() {
-  const [names, setNames] = useState("");
-  const [winner, setWinner] = useState<string | null>(null);
-  const [isRolling, setIsRolling] = useState(false);
-
-  const roll = () => {
-    const list = names.split("\\n").map(n => n.trim()).filter(n => n.length > 0);
-    if (list.length === 0) return;
-    
-    setIsRolling(true);
-    let passes = 0;
-    const interval = setInterval(() => {
-       const randomIdx = Math.floor(Math.random() * list.length);
-       setWinner(list[randomIdx]);
-       passes++;
-       if(passes > 20) {
-          clearInterval(interval);
-          setIsRolling(false);
-          // Pick final
-          setWinner(list[Math.floor(Math.random() * list.length)]);
-       }
-    }, 100);
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>İsim Listesi (Her satıra bir isim)</label>
-        <textarea 
-          placeholder="Ahmet\\nMehmet\\nAyşe..." 
-          value={names} 
-          onChange={e => setNames(e.target.value)} 
-          className="input-field"
-          style={{ minHeight: "150px" }}
-        />
-      </div>
-      
-      <button className="btn-primary" onClick={roll} disabled={isRolling} style={{ background: isRolling ? "gray" : "linear-gradient(90deg, #ec4899, #8b5cf6)" }}>
-        {isRolling ? "Karıştırılıyor..." : "Kura Çek"}
-      </button>
-
-      {winner && (
-        <div style={{ background: "var(--surface)", border: "2px dashed #8b5cf6", borderRadius: "10px", padding: "2rem", textAlign: "center", position: "relative", overflow: "hidden", transition: "all 0.3s" }}>
-           <div style={{ color: "var(--text-muted)", marginBottom: "0.5rem" }}>{isRolling ? "Şanslı aranıyor..." : "🎉 Kazanan 🎉"}</div>
-           <div style={{ fontSize: "3rem", fontWeight: 800, color: isRolling ? "var(--text-muted)" : "var(--text-primary)" }}>{winner}</div>
-           {!isRolling && (
-             <div style={{ marginTop: "1.5rem", animation: "fade-in 0.5s ease" }}>
-               <ShareResultButton resultText={"Çekilişi kazanan şanslı isim: " + winner} />
-             </div>
-           )}
-        </div>
-      )}
-    </div>
-  );
-}
-
-export function RandomNumberGen() {
-  const [minVal, setMin] = useState("1");
-  const [maxVal, setMax] = useState("100");
-  const [result, setResult] = useState<number | null>(null);
-
-  const roll = () => {
-    let lower = parseInt(minVal);
-    let upper = parseInt(maxVal);
-    if(isNaN(lower)) lower = 1;
-    if(isNaN(upper)) upper = 100;
-    if(lower > upper) { const t = lower; lower = upper; upper = t; }
-
-    const num = Math.floor(Math.random() * (upper - lower + 1)) + lower;
-    setResult(num);
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-         <div>
-            <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Alt Sınır (Min)</label>
-            <input type="number" value={minVal} onChange={e => setMin(e.target.value)} className="input-field" />
-         </div>
-         <div>
-            <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Üst Sınır (Maks)</label>
-            <input type="number" value={maxVal} onChange={e => setMax(e.target.value)} className="input-field" />
-         </div>
-      </div>
-      <button className="btn-primary" onClick={roll}>Zar At / Üret</button>
-
-      {result !== null && (
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "2rem", textAlign: "center" }}>
-           <div style={{ color: "var(--text-muted)", marginBottom: "0.5rem" }}>Rastgele Seçilen Sayı</div>
-           <div style={{ fontSize: "5rem", fontWeight: 900, color: "var(--accent-primary)" }}>{result}</div>
+           <div className="flex gap-3 w-full max-w-sm">
+             <button onClick={download} className="btn-secondary flex-1 border-primary/20 hover:bg-primary/5">
+                PNG Olarak İndir
+             </button>
+             <button onClick={() => setQrReady("")} className="btn-secondary flex-1 border-red-500/20 text-red-500 hover:bg-red-500/5">
+                Temizle
+             </button>
+           </div>
         </div>
       )}
     </div>
