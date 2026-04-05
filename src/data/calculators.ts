@@ -176,8 +176,14 @@ export const calculators: CalculatorInfo[] = [
   { id: "hash-gen", title: "Base64 & Hash İşleyici", slug: "hash-generator", categoryId: "gelistirici", description: "Metinlerinizi Base64 formatına çevirin veya şifrelenmiş verileri geri çözün." },
   { id: "color-conv", title: "Renk Dönüştürücü (HEX/RGB)", slug: "renk-donusturucu", categoryId: "gelistirici", description: "Tasarımcılar için HEX, RGB ve CMYK renk kodlarını anlık dönüştürün." },
   
-  { id: "resistor", title: "Direnç Renk Kodları", slug: "direnc-renk-kodlari", categoryId: "muhendislik", description: "4 ve 5 bantlı dirençlerin değerini interaktif SVG simülasyonu ile hesaplayın." },
-  { id: "ohm", title: "Ohm Kanunu Hesaplama", slug: "ohm-kanunu", categoryId: "muhendislik", description: "V, I, R, P parametreleri arası profesyonel geçiş ve adım adım formül analizi." }
+  { id: "mod", title: "Mod Alma", slug: "mod-alma", categoryId: "matematik", description: "Bir sayının diğerine bölümünden kalanını bulun." },
+  { id: "matris", title: "Matris Hesaplayıcı", slug: "matris-hesaplama", categoryId: "matematik", description: "Matris toplama, çarpma, determinant ve ters matris işlemleri." },
+  { id: "denklem", title: "Denklem Çözücü (Adım Adım)", slug: "denklem-cozucu", categoryId: "matematik", description: "2. dereceden denklemleri çözüm yoluyla birlikte analiz edin." },
+
+  // Mühendislik & Fizik
+  { id: "direnc", title: "Direnç/Renk Kodları", slug: "direnc-hesaplama", categoryId: "muhendislik", description: "Direnç renk bantlarına göre ohm değerini interaktif görselle bulun." },
+  { id: "atish", title: "Eğik Atış Simülatörü", slug: "egik-atish", categoryId: "muhendislik", description: "Hız ve açıya göre yörüngeyi interaktif animasyonla (Canvas) canlandırın." },
+  { id: "ohm", title: "Ohm Kanunu", slug: "ohm-kanunu", categoryId: "muhendislik", description: "Volt, Amper ve Direnç arasındaki elektriksel ilişkiyi hesaplayın." }
 ];
 
 export function getCalculatorsByCategory(categoryId: string) {
