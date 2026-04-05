@@ -26,10 +26,12 @@ export default function Gizlilik() {
 Noktanızı not defterinde kaydetmeniz veya takvim etkinliği oluşturmanız gibi kişisel araçlarda ise veriler yalnızca tarayıcınızın yerel depolama alanında (localStorage) tutulur.`,
         },
         {
-          title: "2. Çerezler ve Takip",
-          content: `Site, aydınlık/koyu tema tercihini hatırlamak amacıyla yerel depolama kullanmaktadır. Kullanıcı davranışını izlemek amacıyla analitik çerezleri kullanılabilir.
+          title: "2. Çerezler ve Reklamcılık",
+          content: `Kalküla, aydınlık/koyu tema tercihinizi ve son kullandığınız araçları hatırlamak amacıyla yerel depolama ve çerezleri kullanır. 
 
-Google AdSense reklam gösteriminin bulunduğu sayfalarda Google'ın çerez politikaları geçerlidir. Daha fazla bilgi için Google Gizlilik Politikası'na başvurun.`,
+Google, üçüncü taraf tedarikçi olarak sitemizde reklam yayınlamak için çerezlerden yararlanır. Google'ın DART çerezlerini kullanması, kullanıcılarımızın sitemize ve İnternet'teki diğer sitelere yaptıkları ziyaretlere dayalı reklamlar sunmasına olanak tanır. Kullanıcılar, Google reklam ve içerik ağı gizlilik politikasını ziyaret ederek DART çerezinin kullanılmasını engelleyebilir.
+
+Üçüncü taraf reklam ağları aracılığıyla sunulan reklamlar için de çerezler kullanılabilir. Bu çerezlerin kontrolü ilgili reklam ağlarına aittir.`,
         },
         {
           title: "3. Üçüncü Taraflar",

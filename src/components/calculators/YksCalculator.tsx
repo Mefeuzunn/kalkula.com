@@ -4,6 +4,29 @@ import React, { useState } from "react";
 
 type ScoreCategory = { c: string; w: string };
 
+// InputRow dışarıda tanımlı olmalı — içeride tanımlanırsa her render'da
+// yeni bir referans oluşur ve React input'u unmount/remount eder, focus kaybolur.
+interface InputRowProps {
+  label: string;
+  maxQ: number;
+  name: string;
+  dict: Record<string, ScoreCategory>;
+  setDict: React.Dispatch<React.SetStateAction<Record<string, ScoreCategory>>>;
+}
+
+function InputRow({ label, maxQ, name, dict, setDict }: InputRowProps) {
+  const handleChange = (field: "c" | "w", val: string) => {
+    setDict(prev => ({ ...prev, [name]: { ...prev[name], [field]: val } }));
+  };
+  return (
+    <div style={{ display: "flex", gap: "1rem", alignItems: "center", paddingBottom: "0.5rem", borderBottom: "1px solid var(--border)", marginBottom: "0.5rem" }}>
+      <div style={{ flex: 1, fontWeight: 500 }}>{label} <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginLeft: "0.2rem" }}>({maxQ} Soru)</span></div>
+      <input type="number" min="0" max={maxQ} value={dict[name].c} onChange={e => handleChange("c", e.target.value)} className="input-field" placeholder="Doğru" style={{ width: "80px", padding: "0.5rem" }} />
+      <input type="number" min="0" max={maxQ} value={dict[name].w} onChange={e => handleChange("w", e.target.value)} className="input-field" placeholder="Yanlış" style={{ width: "80px", padding: "0.5rem" }} />
+    </div>
+  );
+}
+
 export function YksCalculator() {
   const [activeTab, setActiveTab] = useState<"TYT" | "AYT" | "YDT" | "SONUC">("TYT");
 
@@ -109,17 +132,7 @@ export function YksCalculator() {
     setActiveTab("SONUC");
   };
 
-  const updateState = (setter: React.Dispatch<React.SetStateAction<any>>, stateDict: any, name: string, field: "c" | "w", val: string) => {
-    setter({ ...stateDict, [name]: { ...stateDict[name], [field]: val } });
-  };
 
-  const InputRow = ({ label, maxQ, name, dict, setDict }: { label: string, maxQ: number, name: string, dict: any, setDict: any }) => (
-    <div style={{ display: "flex", gap: "1rem", alignItems: "center", paddingBottom: "0.5rem", borderBottom: "1px solid var(--border)", marginBottom: "0.5rem" }}>
-      <div style={{ flex: 1, fontWeight: 500 }}>{label} <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginLeft: "0.2rem" }}>({maxQ} Soru)</span></div>
-      <input type="number" min="0" max={maxQ} value={dict[name].c} onChange={e => updateState(setDict, dict, name, "c", e.target.value)} className="input-field" placeholder="Doğru" style={{ width: "80px", padding: "0.5rem" }} />
-      <input type="number" min="0" max={maxQ} value={dict[name].w} onChange={e => updateState(setDict, dict, name, "w", e.target.value)} className="input-field" placeholder="Yanlış" style={{ width: "80px", padding: "0.5rem" }} />
-    </div>
-  );
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
