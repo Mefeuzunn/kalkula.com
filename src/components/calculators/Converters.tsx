@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
 
 // Ortak Çevirici Şablonu (Premium, Live, Bidirectional)
@@ -49,7 +49,6 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
   const handleLeftChange = (val: string, lMode = leftUnit, rMode = rightUnit) => {
     setLeftValue(val);
     setRightValue(convert(val, lMode, rMode));
-    if (parseFloat(val) > 1000) confetti({ particleCount: 10, spread: 30, origin: { y: 0.8 } });
   };
 
   const handleRightChange = (val: string, lMode = leftUnit, rMode = rightUnit) => {
@@ -63,65 +62,70 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
     setLeftUnit(tempR);
     setRightUnit(tempL);
     handleLeftChange(leftValue, tempR, tempL);
-    confetti({ particleCount: 20, spread: 40 });
+    confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 }, colors: ["#3b82f6", "#ffffff"] });
   };
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-center">
+    <div className="flex flex-col gap-10 py-4">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-center">
         
-        {/* SOL PANEL */}
-        <div className="result-container-premium !mt-0 group">
-           <div className="result-card-premium !text-left !p-0 overflow-hidden border-2 border-border group-hover:border-primary/40 transition-all">
-              <div className="bg-bg-secondary p-3 border-b border-border flex items-center justify-between">
+        {/* SOL ÜNİTE */}
+        <div className="group relative">
+           <div className="absolute -inset-1 bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 rounded-[2.5rem] blur-xl opacity-10 group-focus-within:opacity-30 transition-all duration-700"></div>
+           <div className="relative bg-secondary/5 border-2 border-border rounded-[2.5rem] overflow-hidden transition-all duration-500 group-focus-within:border-accent-primary">
+              <div className="bg-secondary/10 p-4 border-b border-border flex items-center justify-between px-8 text-accent-primary">
                  <select 
-                   value={leftUnit} 
-                   onChange={e => { setLeftUnit(e.target.value); handleLeftChange(leftValue, e.target.value, rightUnit); }} 
-                   className="w-full bg-transparent border-none outline-none font-bold text-sm text-primary appearance-none cursor-pointer"
+                    value={leftUnit} 
+                    onChange={e => { setLeftUnit(e.target.value); handleLeftChange(leftValue, e.target.value, rightUnit); }} 
+                    className="w-full bg-transparent border-none outline-none font-black text-xs uppercase tracking-widest cursor-pointer appearance-none"
                  >
-                   {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface">{u.name}</option>)}
+                    {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
                  </select>
-                 <span className="text-muted pointer-events-none">▼</span>
+                 <span className="text-[10px] opacity-40">▼</span>
               </div>
               <div className="p-10">
                  <input 
                     type="number" 
                     value={leftValue} 
                     onChange={e => handleLeftChange(e.target.value)} 
-                    className="w-full bg-transparent border-none outline-none text-4xl font-black text-center text-primary"
+                    className="w-full bg-transparent border-none outline-none text-5xl font-black text-center text-primary italic tracking-tighter"
                     placeholder="0"
                  />
               </div>
            </div>
         </div>
 
-        {/* SWAP BUTTON */}
-        <button 
-           onClick={swapUnits}
-           className="w-14 h-14 rounded-full bg-surface border-2 border-border flex items-center justify-center cursor-pointer text-muted hover:text-primary hover:border-primary/40 hover:scale-110 transition-all shadow-xl rotate-0 md:rotate-90 md:group-hover:rotate-0"
-        >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="m8 3 4 4-4 4"/><path d="M12 7H4"/><path d="m16 21-4-4 4-4"/><path d="M12 17h8"/></svg>
-        </button>
+        {/* SWAP / TAKAS */}
+        <div className="flex justify-center z-20">
+           <button 
+              onClick={swapUnits}
+              className="w-16 h-16 rounded-full bg-surface border-4 border-border flex items-center justify-center cursor-pointer text-muted hover:text-accent-primary hover:border-accent-primary/40 hover:scale-110 active:scale-95 transition-all shadow-2xl relative group/btn"
+           >
+             <div className="absolute inset-0 bg-accent-primary/10 rounded-full blur-xl opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
+             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 rotate-90 lg:rotate-0"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
+           </button>
+        </div>
 
-        {/* SAĞ PANEL */}
-        <div className="result-container-premium !mt-0 group">
-           <div className="result-card-premium !text-left !p-0 overflow-hidden border-2 border-border group-hover:border-accent-primary/40 transition-all shadow-[0_0_20px_rgba(0,0,0,0.05)]">
-              <div className="bg-bg-secondary p-3 border-b border-border flex items-center justify-between">
+        {/* SAĞ ÜNİTE */}
+        <div className="group relative">
+           <div className="absolute -inset-1 bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 rounded-[2.5rem] blur-xl opacity-10 group-focus-within:opacity-30 transition-all duration-700"></div>
+           <div className="relative bg-secondary/5 border-2 border-border rounded-[2.5rem] overflow-hidden transition-all duration-500 group-focus-within:border-accent-primary shadow-[0_0_40px_rgba(59,130,246,0.05)]">
+              <div className="bg-secondary/10 p-4 border-b border-border flex items-center justify-between px-8 text-accent-primary">
                  <select 
-                   value={rightUnit} 
-                   onChange={e => { setRightUnit(e.target.value); handleLeftChange(leftValue, leftUnit, e.target.value); }} 
-                   className="w-full bg-transparent border-none outline-none font-bold text-sm text-accent-primary appearance-none cursor-pointer"
+                    value={rightUnit} 
+                    onChange={e => { setRightUnit(e.target.value); handleLeftChange(leftValue, leftUnit, e.target.value); }} 
+                    className="w-full bg-transparent border-none outline-none font-black text-xs uppercase tracking-widest cursor-pointer appearance-none"
                  >
-                   {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface">{u.name}</option>)}
+                    {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
                  </select>
-                 <span className="text-muted pointer-events-none">▼</span>
+                 <span className="text-[10px] opacity-40">▼</span>
               </div>
               <div className="p-10">
                  <input 
                     type="number" 
                     value={rightValue} 
                     onChange={e => handleRightChange(e.target.value)} 
-                    className="w-full bg-transparent border-none outline-none text-4xl font-black text-center text-accent-primary"
+                    className="w-full bg-transparent border-none outline-none text-5xl font-black text-center text-accent-primary italic tracking-tighter"
                     placeholder="0"
                  />
               </div>
@@ -130,11 +134,14 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
 
       </div>
 
-      <div className="p-6 bg-secondary/5 border-2 border-dashed border-border rounded-2xl text-center">
-        <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-2 block">DÖNÜŞÜM FORMÜLÜ</label>
-        <div className="font-mono text-sm font-bold text-primary opacity-80 decoration-accent-primary decoration-2">
-          1 {units[leftUnit].name} = <span className="text-accent-primary">{convert("1", leftUnit, rightUnit)}</span> {units[rightUnit].name}
+      <div className="p-8 bg-secondary/5 border-2 border-dashed border-border rounded-[2rem] text-center relative group">
+        <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] mb-3 block italic opacity-60">Dönüşüm Katsayısı ve Formülü</label>
+        <div className="font-mono text-lg font-black text-primary tracking-tighter flex items-center justify-center gap-3">
+          <span className="opacity-40">1 {units[leftUnit].id.toUpperCase()} =</span>
+          <span className="text-2xl text-accent-primary italic">{convert("1", leftUnit, rightUnit)}</span>
+          <span className="opacity-40">{units[rightUnit].id.toUpperCase()}</span>
         </div>
+        <div className="absolute bottom-2 right-4 text-[8px] font-black text-muted uppercase tracking-widest italic opacity-20">KALKÜLA PRECISION ENGINE</div>
       </div>
     </div>
   );
@@ -142,7 +149,6 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
 
 // ---------------- VERİ VE PRESETLER ----------------
 
-// 1. Mutfak Ölçü Birimleri (YENİ)
 const kitchenUnits: Record<string, Unit> = {
   ml: { id: "ml", name: "Mililitre (ml)", multiplier: 1 },
   cl: { id: "cl", name: "Santilitre (cl)", multiplier: 10 },
@@ -157,7 +163,6 @@ const kitchenUnits: Record<string, Unit> = {
 };
 export function KitchenConverter() { return <UniversalConverter title="Mutfak" units={kitchenUnits} defaultLeft="cup_tr" defaultRight="ml" />; }
 
-// Diğer Mevcut Birimler
 const lengthUnits: Record<string, Unit> = {
   mm: { id: "mm", name: "Milimetre (mm)", multiplier: 0.001 },
   cm: { id: "cm", name: "Santimetre (cm)", multiplier: 0.01 },

@@ -31,6 +31,7 @@ export const categories: Category[] = [
   { id: "araclar", name: "Pratik Araçlar", slug: "pratik-araclar", description: "Şifre oluşturucu, kelime sayacı ve QR kod üretici gibi günlük hayatınızı kolaylaştıran web araçları.", icon: "Settings" },
   { id: "eglence", name: "Eğlence & Çekiliş", slug: "eglence", description: "Çekiliş yapıcı, zar atma, şanslı kelime ve rastgele sayı üretici (RNG) tarzı eğlence oyunları.", icon: "Smile" },
   { id: "gelistirici", name: "Geliştirici Araçları", slug: "gelistirici-araclari", description: "JSON formatlayıcı, Hash/MD5 şifreleyici, Base64 ve Renk (HEX/RGB) kod dönüştürücü programcı modülleri.", icon: "Code" },
+  { id: "muhendislik", name: "Mühendislik", slug: "muhendislik-araclari", description: "Direnç renk kodları, Ohm kanunu ve teknik hesaplama araçları.", icon: "Cpu" },
   { id: "sosyal", name: "Sosyal Medya", slug: "sosyal-medya-araclari", description: "X (Twitter) karakter sayacı, dekoratif yazı oluşturucu ve içerik araçları.", icon: "Share2" }
 ];
 
@@ -48,6 +49,7 @@ export const calculators: CalculatorInfo[] = [
   // Finans ve Kredi
   { id: "kredi", title: "Kredi Hesaplama", slug: "kredi-hesaplama", categoryId: "kredi", description: "Aylık taksit tutarlarınızı, anapara ve faiz oranınıza göre detaylı hesaplayın." },
   { id: "kredikarti", title: "Kredi Kartı Asgari Ödeme", slug: "kredi-karti-asgari", categoryId: "kredi", description: "Mevcut borcunuza göre ödemeniz gereken minimum asgari tutar." },
+  { id: "amortizasyon", title: "Kredi Ödeme Planı (Amortizasyon)", slug: "kredi-ödeme-plani", categoryId: "kredi", description: "Ay bazlı anapara ve faiz dökümünü içeren detaylı kredi taksit tablosu." },
   { id: "faiz", title: "Faiz Getirisi", slug: "faiz", categoryId: "finans", description: "Vadeli mevduat hesaplamaları ve net/brüt getiri hesabı." },
   { id: "enflasyon", title: "Enflasyon Hesaplama", slug: "enflasyon", categoryId: "finans", description: "Paranın geçmiş ve gelecek yıllara göre alım gücündeki değişimler." },
   { id: "eurobond", title: "Eurobond Hesaplama", slug: "eurobond", categoryId: "finans", description: "Eurobond yatırımınızın getirisini ve pazar fiyatlamasını hesaplayın." },
@@ -162,7 +164,10 @@ export const calculators: CalculatorInfo[] = [
   
   { id: "json-fmt", title: "JSON Formatlayıcı (Prettier)", slug: "json-formatter", categoryId: "gelistirici", description: "Karmaşık JSON verilerini okunaklı hale getirin, küçültün ve doğrulayın." },
   { id: "hash-gen", title: "Base64 & Hash İşleyici", slug: "hash-generator", categoryId: "gelistirici", description: "Metinlerinizi Base64 formatına çevirin veya şifrelenmiş verileri geri çözün." },
-  { id: "color-conv", title: "Renk Dönüştürücü (HEX/RGB)", slug: "renk-donusturucu", categoryId: "gelistirici", description: "Tasarımcılar için HEX, RGB ve CMYK renk kodlarını anlık dönüştürün." }
+  { id: "color-conv", title: "Renk Dönüştürücü (HEX/RGB)", slug: "renk-donusturucu", categoryId: "gelistirici", description: "Tasarımcılar için HEX, RGB ve CMYK renk kodlarını anlık dönüştürün." },
+  
+  { id: "resistor", title: "Direnç Renk Kodları", slug: "direnc-renk-kodlari", categoryId: "muhendislik", description: "4 ve 5 bantlı dirençlerin değerini interaktif SVG simülasyonu ile hesaplayın." },
+  { id: "ohm", title: "Ohm Kanunu Hesaplama", slug: "ohm-kanunu", categoryId: "muhendislik", description: "V, I, R, P parametreleri arası profesyonel geçiş ve adım adım formül analizi." }
 ];
 
 export function getCalculatorsByCategory(categoryId: string) {

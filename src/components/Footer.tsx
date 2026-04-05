@@ -22,8 +22,8 @@ export default function Footer() {
               </div>
               <span style={{ fontWeight: 800, fontSize: "1.25rem", color: "var(--text-primary)", letterSpacing: "-0.02em" }}>Kalküla</span>
             </div>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", lineHeight: 1.7, maxWidth: "240px" }}>
-              Türkiye&apos;nin en kapsamlı ücretsiz hesaplama ve dönüştürme platformu.
+            <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: 1.7, maxWidth: "240px" }}>
+              Kalküla, Türkiye&apos;nin en kapsamlı ücretsiz hesaplama platformudur. Finanstan eğitime, sağlıktan muhasebeye kadar 160&apos;tan fazla profesyonel hesaplama aracını tek bir yerde sunuyoruz.
             </p>
             <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem", alignItems: "center" }}>
               <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22c55e" }}></div>
@@ -82,7 +82,7 @@ export default function Footer() {
 
         <div style={{ borderTop: "1px solid var(--border)", paddingTop: "1.5rem", marginTop: "2rem", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
           <p style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
-            © 2025 Kalküla. Tüm hakları saklıdır.
+            © 2025 Kalküla. Tüm hakları saklıdır. | Geliştirici: <Link href="/hakkimizda" style={{ color: "var(--accent-primary)", fontWeight: 700 }}>Mehmet Efe Uzun</Link>
           </p>
           <p style={{ color: "var(--text-muted)", fontSize: "0.8rem" }}>
             Hesaplamalar bilgilendirme amaçlıdır; profesyonel danışmanlık yerine geçmez.
