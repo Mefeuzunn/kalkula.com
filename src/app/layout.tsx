@@ -5,6 +5,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Footer from "@/components/Footer";
+import { CookieConsent } from "@/components/CookieConsent";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,7 +30,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Kalküla | Türkiye'nin En Kapsamlı Hesaplama Platformu",
-    description: "60+ ücretsiz hesaplama aracı tek platformda.",
+    description: "160+ profesyonel hesaplama aracı tek platformda.",
     url: "https://kalkula.com",
     siteName: "Kalküla",
     locale: "tr_TR",
@@ -83,6 +84,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
+          <CookieConsent />
         </ThemeProvider>
       </body>
     </html>

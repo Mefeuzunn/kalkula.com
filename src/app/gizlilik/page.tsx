@@ -1,64 +1,49 @@
-import Link from "next/link";
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Gizlilik Politikası | Kalküla",
-  description: "Kalküla gizlilik politikası — verilerinizin nasıl işlendiğini öğrenin.",
-};
-
-export default function Gizlilik() {
+export default function PrivacyPage() {
   return (
-    <div style={{ maxWidth: "860px", margin: "0 auto", padding: "3rem 1.5rem" }}>
-      <nav style={{ marginBottom: "2rem", fontSize: "0.875rem", color: "var(--text-muted)", display: "flex", gap: "0.4rem" }}>
-        <Link href="/" style={{ color: "var(--text-muted)" }}>Ana Sayfa</Link>
-        <span>›</span>
-        <span style={{ color: "var(--text-primary)" }}>Gizlilik Politikası</span>
-      </nav>
+    <main className="min-h-screen bg-main flex flex-col">
+      <div className="container py-20 max-w-4xl">
+        <div className="panel p-12 bg-white dark:bg-zinc-900 border border-border rounded-[3rem] shadow-2xl">
+          <h1 className="text-4xl font-black italic text-primary mb-8 tracking-tighter">Gizlilik Politikası ve KVKK Aydınlatma Metni</h1>
+          
+          <div className="prose prose-zinc dark:prose-invert max-w-none flex flex-col gap-8">
+            <section className="bg-secondary/5 p-8 rounded-3xl border border-border/50">
+               <h2 className="text-lg font-black uppercase tracking-widest text-accent-primary mb-4">1. Veri Sorumlusu ve Gizlilik Taahhüdü</h2>
+               <p className="text-muted leading-relaxed font-medium">
+                  Kalküla SaaS Hub ("Platform"), Mehmet Efe Uzun tarafından geliştirilmiştir. Platform olarak kullanıcı gizliliği ve veri güvenliği en üst önceliğimizdir. Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) ve GDPR uyumluluğu kapsamında hazırlanmıştır.
+               </p>
+            </section>
 
-      <h1 style={{ fontSize: "2rem", fontWeight: 800, marginBottom: "0.5rem" }}>Gizlilik Politikası</h1>
-      <p style={{ color: "var(--text-muted)", marginBottom: "2.5rem", fontSize: "0.875rem" }}>Son güncelleme: Nisan 2025</p>
+            <section>
+               <h2 className="text-xl font-black text-primary mb-4 italic">2. "Privacy-First" Hesaplama İlkesi</h2>
+               <p className="text-muted leading-relaxed">
+                  Kalküla'nın çalışma prensibi <b>Uçtan Uca Yerel Hesaplama (End-to-End Client-side Calculation)</b> üzerinedir. Hesaplama araçlarına girdiğiniz hiçbir veri (maaş, kredi tutarı, sağlık verileri vb.) sunucularımıza gönderilmez, bir veritabanında saklanmaz ve 3. taraflarla paylaşılmaz. Tüm işlemler doğrudan tarayıcınızda gerçekleşir.
+               </p>
+            </section>
 
-      {[
-        {
-          title: "1. Toplanan Veriler",
-          content: `Kalküla, hesaplama araçlarını kullanırken girdiğiniz verileri (sayılar, tarihler, tercihler) yalnızca hesaplama amacıyla ve yalnızca tarayıcınızda işler. Bu veriler hiçbir sunucuya gönderilmez.
+            <section>
+               <h2 className="text-xl font-black text-primary mb-4 italic">3. Toplanan Veriler ve Çerezler</h2>
+               <p className="text-muted leading-relaxed">
+                  Platformumuz sadece deneyiminizi iyileştirmek amacıyla şu verileri anonim olarak işleyebilir:
+               </p>
+               <ul className="list-disc pl-6 mt-4 text-muted flex flex-col gap-2">
+                  <li><b>Analitik Veriler:</b> Google Analytics veya benzeri araçlar aracılığıyla sayfa görüntüleme sayısı gibi anonim trafik verileri.</li>
+                  <li><b>Tercih Çerezleri:</b> "Son kullanılan araçlar" listesi ve "Çerez onayı" gibi tercihleriniz tarayıcınızın yerel depolamasında (LocalStorage) saklanır.</li>
+               </ul>
+            </section>
 
-Noktanızı not defterinde kaydetmeniz veya takvim etkinliği oluşturmanız gibi kişisel araçlarda ise veriler yalnızca tarayıcınızın yerel depolama alanında (localStorage) tutulur.`,
-        },
-        {
-          title: "2. Çerezler ve Reklamcılık",
-          content: `Kalküla, aydınlık/koyu tema tercihinizi ve son kullandığınız araçları hatırlamak amacıyla yerel depolama ve çerezleri kullanır. 
+            <section className="border-t border-border pt-8">
+               <h2 className="text-xl font-black text-primary mb-4 italic">4. KVKK Kapsamındaki Haklarınız</h2>
+               <p className="text-muted leading-relaxed">
+                  KVKK'nın 11. maddesi uyarınca; verilerinizin işlenip işlenmediğini öğrenme, işlenmişse bilgi talep etme ve verilerinizin silinmesini isteme hakkına sahipsiniz. Sorularınız için <b>mefeuzunn@gmail.com</b> adresinden bizimle iletişime geçebilirsiniz.
+               </p>
+            </section>
 
-Google, üçüncü taraf tedarikçi olarak sitemizde reklam yayınlamak için çerezlerden yararlanır. Google'ın DART çerezlerini kullanması, kullanıcılarımızın sitemize ve İnternet'teki diğer sitelere yaptıkları ziyaretlere dayalı reklamlar sunmasına olanak tanır. Kullanıcılar, Google reklam ve içerik ağı gizlilik politikasını ziyaret ederek DART çerezinin kullanılmasını engelleyebilir.
-
-Üçüncü taraf reklam ağları aracılığıyla sunulan reklamlar için de çerezler kullanılabilir. Bu çerezlerin kontrolü ilgili reklam ağlarına aittir.`,
-        },
-        {
-          title: "3. Üçüncü Taraflar",
-          content: `Kalküla, servis kesintisi yaşandığında destek almak amacıyla Vercel altyapısını kullanmaktadır. Vercel'in kendi gizlilik politikası geçerlidir. `,
-        },
-        {
-          title: "4. Güvenlik",
-          content: `Tüm hesaplamalar istemci taraflı (tarayıcınızda) gerçekleştiğinden girilen veriler asla ağ üzerinden iletilmez. Bu yapı, verilerinizin en güvenli şekilde korunmasını sağlar.`,
-        },
-        {
-          title: "5. Haklarınız",
-          content: `Tarayıcınızın geliştirici araçlarından localStorage'ı silerek Kalküla'nın cihazınızda tuttuğu tüm verileri kolayca kaldırabilirsiniz. Herhangi bir sorunuz için iletişim sayfamızı kullanabilirsiniz.`,
-        },
-      ].map(s => (
-        <div key={s.title} style={{ marginBottom: "2rem" }}>
-          <h2 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "0.75rem", color: "var(--text-primary)" }}>{s.title}</h2>
-          <div style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: "0.95rem", whiteSpace: "pre-line" }}>{s.content}</div>
-          <div style={{ borderBottom: "1px solid var(--border)", marginTop: "1.5rem" }} />
+            <div className="mt-12 p-6 bg-accent-glow rounded-2xl border border-accent-primary/20 text-center">
+               <p className="text-xs font-bold text-accent-primary uppercase tracking-[0.2em]">Son Güncelleme: 1 Ocak 2025 | Kalküla Güvenlik Departmanı</p>
+            </div>
+          </div>
         </div>
-      ))}
-
-      <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1.25rem 1.5rem", marginTop: "1rem" }}>
-        <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>
-          Gizlilik politikamızla ilgili sorularınız için{" "}
-          <Link href="/iletisim" style={{ color: "var(--accent-primary)" }}>iletişim formumuzu</Link> kullanabilirsiniz.
-        </p>
       </div>
-    </div>
+    </main>
   );
 }
