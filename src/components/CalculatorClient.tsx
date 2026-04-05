@@ -20,6 +20,7 @@ import { NetGrossCalculator } from "@/components/calculators/NetGrossCalculator"
 import { InflationCalculator } from "@/components/calculators/InflationCalculator";
 import { InterestCalculator } from "@/components/calculators/InterestCalculator";
 import { SeveranceCalculator } from "@/components/calculators/SeveranceCalculator";
+import { BodyFatCalculator } from "@/components/calculators/BodyFatCalculator";
 import { AgssCalculator } from "@/components/calculators/AgssCalculator";
 import { EurobondCalculator } from "@/components/calculators/EurobondCalculator";
 import { GenerationCalculator } from "@/components/calculators/GenerationCalculator";
@@ -77,6 +78,8 @@ import { PhysicsVisualizers } from "@/components/calculators/PhysicsVisualizers"
 import { WaterIntakeCalculator } from "@/components/calculators/WaterIntakeCalculator";
 import { ResistorCalculator } from "@/components/calculators/ResistorCalculator";
 import { FuelCostCalculator } from "@/components/calculators/Phase2Calculators";
+import { WaterIntakePremium } from "@/components/calculators/WaterIntakePremium";
+import { SleepCyclePremium } from "@/components/calculators/SleepCyclePremium";
 import { MtvCalculator } from "@/components/calculators/MtvCalculator";
 import { LengthConverter, WeightConverter, TempConverter, AreaConverter, VolumeConverter, SpeedConverter, DataConverter, TimeConverter, KitchenConverter } from "@/components/calculators/Converters";
 import { AofCalculator } from "@/components/calculators/AofCalculator";
@@ -219,11 +222,14 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
     switch (slug) {
       case "vucut-kitle-endeksi": return <BMICalculator />;
       case "gebelik": return <PregnancyCalculator />;
+      case "vucut-yag-orani": return <BodyFatCalculator />;
       case "adet-takibi": return <PeriodCalculator />;
       case "ideal-kilo": return <IdealWeightCalculator />;
-      case "su-ihtiyaci": return <WaterIntakeCalculator />;
-      case "bmr": return <BmrCalculator />;
+      case "su-ihtiyaci":
+      case "su-takibi": return <WaterIntakePremium />;
+      case "uyku-dongusu": return <SleepCyclePremium />;
       case "makro-hesaplama": return <MacroCalculator />;
+      case "bmr": return <BmrCalculator />;
       case "gunluk-kalori-ihtiyaci": return <CalorieCalculator />;
       case "kredi-hesaplama": return <LoanCalculator />;
       case "kredi-ödeme-plani": return <LoanAmortization />;

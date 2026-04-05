@@ -52,6 +52,9 @@ export const calculators: CalculatorInfo[] = [
   { id: "kredikarti", title: "Kredi Kartı Asgari Ödeme", slug: "kredi-karti-asgari", categoryId: "kredi", description: "Mevcut borcunuza göre ödemeniz gereken minimum asgari tutar." },
   { id: "amortizasyon", title: "Kredi Ödeme Planı (Amortizasyon)", slug: "kredi-ödeme-plani", categoryId: "kredi", description: "Ay bazlı anapara ve faiz dökümünü içeren detaylı kredi taksit tablosu." },
   { id: "faiz", title: "Faiz Getirisi", slug: "faiz", categoryId: "finans", description: "Vadeli mevduat hesaplamaları ve net/brüt getiri hesabı." },
+  { id: "vucut-yag", title: "Vücut Yağ Oranı (US Navy)", slug: "vucut-yag-orani", categoryId: "saglik", description: "Bel, boyun ve boy ölçülerinize göre vücut yağ yüzdenizi profesyonelce hesaplayın." },
+  { id: "su-takibi", title: "İnteraktif Su Takipçisi", slug: "su-takibi", categoryId: "saglik", description: "Günlük su ihtiyacınızı hesaplayın ve içtiğiniz suyu bardak bazlı görsel takip edin." },
+  { id: "uyku", title: "Uyku Döngüsü (Zinde Uyanma)", slug: "uyku-dongusu", categoryId: "saglik", description: "REM uykusu döngülerinize göre en zinde uyanabileceğiniz saati belirleyin." },
   { id: "ovulasyon", title: "Yumurtlama (Ovulasyon) Günü", slug: "ovulasyon-hesaplama", categoryId: "saglik", description: "Hamilelik planlaması için en verimli doğurganlık günlerinizi belirleyin." },
   { id: "makro", title: "Makro & Kalori Analizi", slug: "makro-hesaplama", categoryId: "saglik", description: "Hedefinize göre (Kilo ver/al) almanız gereken protein, karbonhidrat ve yağ dengesi." },
 
