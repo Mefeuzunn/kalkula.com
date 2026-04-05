@@ -1,14 +1,13 @@
-"use client";
-
 import React, { useState } from "react";
+import confetti from "canvas-confetti";
 
 export function RepoCalculator() {
   const [amount, setAmount] = useState("");
   const [rate, setRate] = useState("");
   const [days, setDays] = useState("");
-  const [tax, setTax] = useState("15"); // Repo stopaj orani varsayilan %15 (Yasal degisimlere gore esnektir)
+  const [tax, setTax] = useState("15"); 
   
-  const [result, setResult] = useState<{ grossInterest: number; netReturn: number; totalAmount: number } | null>(null);
+  const [result, setResult] = useState<{ grossInterest: number; netReturn: number; totalAmount: number; taxAmount: number } | null>(null);
 
   const calculate = () => {
     const p = parseFloat(amount);
@@ -17,63 +16,62 @@ export function RepoCalculator() {
     const t = parseFloat(tax) / 100;
 
     if (p > 0 && r > 0 && d > 0) {
-      // Brüt Repo Getirisi = P * r * (d / 365)
       const grossInterest = p * r * (d / 365);
-      
-      // Net Repo Getirisi = Brüt - (Brüt * Stopaj)
-      const netReturn = grossInterest * (1 - t);
-      
-      // Toplam Geri Dönüş
+      const taxAmount = grossInterest * t;
+      const netReturn = grossInterest - taxAmount;
       const totalAmount = p + netReturn;
 
-      setResult({ grossInterest, netReturn, totalAmount });
+      setResult({ grossInterest, netReturn, totalAmount, taxAmount });
+      confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
     }
   };
 
+  const fmt = (val: number) => val.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Bankalar arası gecelik veya vadeli repo (Menkul Kıymet Geri Alma Taahhüdü) işlemlerinizdeki kazancınızı hesaplayın.</p>
-      
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Repo'ya Girecek Anapara (₺)</label>
-        <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="input-field" placeholder="Örn: 100000" />
-      </div>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Yıllık Basit Repo Faizi (%)</label>
-        <input type="number" value={rate} onChange={e => setRate(e.target.value)} className="input-field" placeholder="Örn: 48" step="0.1" />
-      </div>
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <div style={{ flex: 1 }}>
-           <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Vade Günü</label>
-           <input type="number" value={days} onChange={e => setDays(e.target.value)} className="input-field" placeholder="Örn: 1" />
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-muted uppercase px-1">Yatıralacak Anapara (₺)</label>
+          <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="input-field py-4 font-bold" placeholder="100.000" />
         </div>
-        <div style={{ flex: 1 }}>
-           <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Stopaj (Vergi) (%)</label>
-           <input type="number" value={tax} onChange={e => setTax(e.target.value)} className="input-field" placeholder="Örn: 15" />
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-muted uppercase px-1">Yıllık Repo Oranı (%)</label>
+          <input type="number" value={rate} onChange={e => setRate(e.target.value)} className="input-field py-4 font-bold" placeholder="48" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-muted uppercase px-1">Vade Günü</label>
+          <input type="number" value={days} onChange={e => setDays(e.target.value)} className="input-field py-4 font-bold" placeholder="1" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-muted uppercase px-1">Stopaj (Vergi) Oranı</label>
+          <input type="number" value={tax} onChange={e => setTax(e.target.value)} className="input-field py-4 font-bold text-red-500" placeholder="15" />
         </div>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>Repo Getirisini Hesapla</button>
+      <button className="btn-primary py-4 text-lg font-bold shadow-xl" onClick={calculate}>Getiriyi Hesapla</button>
 
       {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "1.5rem", textAlign: "center" }}>Vade Sonu Özeti</h3>
-          
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem", paddingBottom: "0.5rem", borderBottom: "1px solid var(--border)" }}>
-             <span style={{ color: "var(--text-muted)" }}>Brüt Getiri:</span>
-             <span style={{ fontWeight: "bold" }}>{result.grossInterest.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem" }}>
-             <span style={{ color: "var(--text-muted)", fontWeight: "bold" }}>Net Getiri (Kâr):</span>
-             <span style={{ fontWeight: "bold", color: "#22c55e" }}>+{result.netReturn.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}</span>
-          </div>
-
-          <div style={{ textAlign: "center", marginTop: "1rem", paddingTop: "1rem", borderTop: "2px solid var(--border)" }}>
-             <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", marginBottom: "0.5rem" }}>Toplam Alınacak Para</p>
-             <div style={{ fontSize: "2.5rem", fontWeight: "bold", color: "var(--text-primary)" }}>
-                {result.totalAmount.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-             </div>
-          </div>
+        <div className="result-container-premium animate-result">
+           <div className="result-card-premium">
+              <div className="result-badge">Vade Sonu Toplam Para</div>
+              <div className="result-value-premium">{fmt(result.totalAmount)}</div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-border">
+                 <div className="text-left p-4 bg-secondary/10 rounded-2xl">
+                    <div className="text-[10px] font-black text-muted uppercase mb-1">Brüt Getiri</div>
+                    <div className="font-bold text-lg text-primary">{fmt(result.grossInterest)}</div>
+                 </div>
+                 <div className="text-left p-4 bg-secondary/10 rounded-2xl">
+                    <div className="text-[10px] font-black text-muted uppercase mb-1">Vergi Kesintisi</div>
+                    <div className="font-bold text-lg text-red-500">-{fmt(result.taxAmount)}</div>
+                 </div>
+                 <div className="text-left p-4 bg-accent-glow/5 border border-accent-primary/20 rounded-2xl">
+                    <div className="text-[10px] font-black text-accent-primary uppercase mb-1">Net Kâr</div>
+                    <div className="font-bold text-lg text-accent-primary">+{fmt(result.netReturn)}</div>
+                 </div>
+              </div>
+           </div>
         </div>
       )}
     </div>

@@ -1,6 +1,5 @@
-"use client";
-
 import React, { useState } from "react";
+import confetti from "canvas-confetti";
 
 export function TimeValueCalculator() {
   const [pv, setPv] = useState("");
@@ -14,50 +13,60 @@ export function TimeValueCalculator() {
     const y = parseFloat(years);
 
     if (presentValue > 0 && infl > 0 && y > 0) {
-      // Paranın gelecekteki 'nominal' karşılığı için: FV = PV * (1 + inflation)^years 
-      // (Aynı "alım gücünü" korumak için gereken para)
       const futureValue = presentValue * Math.pow(1 + infl, y);
-      
-      // Bugünkü paranın alım gücü kaybı = 1 - (PV / FV)
       const lossPercent = (1 - (presentValue / futureValue)) * 100;
 
       setResult({ futureValue, lossPercent });
+      confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 }, colors: ["#6366f1", "#8b5cf6"] });
     }
   };
 
+  const fmt = (val: number) => val.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Paranızın zaman içindeki alım gücünü enflasyon karşısında test edin. Aynı şeyleri alabilmek için gelecekteki parasal değeri hesaplayın.</p>
-      
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Paranın Bugünkü Değeri (₺)</label>
-        <input type="number" value={pv} onChange={e => setPv(e.target.value)} className="input-field" placeholder="Örn: 10000" />
-      </div>
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Beklenen Yıllık Enflasyon (%)</label>
-          <input type="number" value={inflation} onChange={e => setInflation(e.target.value)} className="input-field" placeholder="Örn: 40" />
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2 col-span-1 md:col-span-2">
+          <label className="text-xs font-bold text-muted uppercase px-1">Paranın Bugünkü Değeri (Alım Gücü) (₺)</label>
+          <input type="number" value={pv} onChange={e => setPv(e.target.value)} className="input-field py-4 font-bold" placeholder="10.000" />
         </div>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>İleriye Dönük Yıl</label>
-          <input type="number" value={years} onChange={e => setYears(e.target.value)} className="input-field" placeholder="Örn: 3" />
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-muted uppercase px-1">Yıllık Ortalama Enflasyon (%)</label>
+          <input type="number" value={inflation} onChange={e => setInflation(e.target.value)} className="input-field py-4 font-bold text-red-500" placeholder="45" />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="text-xs font-bold text-muted uppercase px-1">Tahmini Süre (Yıl)</label>
+          <input type="number" value={years} onChange={e => setYears(e.target.value)} className="input-field py-4 font-bold text-accent-primary" placeholder="3" />
         </div>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>Zaman Değerini Hesapla</button>
+      <button className="btn-primary py-4 text-lg font-bold shadow-xl" onClick={calculate}>Zaman Değerini Hesapla</button>
 
       {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", textAlign: "center" }}>
-           <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Alım Gücünü Korumak İçin Gereken Para</h3>
-           <div style={{ fontSize: "2.5rem", fontWeight: "bold", color: "var(--text-primary)", marginTop: "0.5rem" }}>
-              {result.futureValue.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-           </div>
-           
-           <div style={{ marginTop: "1.5rem", background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.3)", padding: "1rem", borderRadius: "8px" }}>
-              <p style={{ color: "#ef4444", fontSize: "0.9rem", fontWeight: "bold", marginBottom: "0.5rem" }}>Alım Gücü Kaybı Etkisi</p>
-              <p style={{ fontSize: "0.85rem", color: "var(--text-primary)" }}>
-                Paranızı hiçbir şeye yatırmayıp bir kenarda tutarsanız, bugünkü <span style={{ fontWeight: "bold" }}>{pv} ₺</span>'niz, {years} yıl sonra yukarıdaki rakamla alınabilecek mal/hizmet kadar bir enflasyon erimesine uğrayacaktır. Paranın satın alma gücündeki nispi değer kaybı: <span style={{ fontWeight: "bold", color: "#ef4444" }}>%{result.lossPercent.toFixed(2)}</span>
-              </p>
+        <div className="result-container-premium animate-result">
+           <div className="result-card-premium">
+              <div className="result-badge !bg-purple-500/10 !text-purple-500 !border-purple-500/20">Gelecekte Gereken Nominal Tutar</div>
+              <div className="result-value-premium !text-purple-500 font-black">{fmt(result.futureValue)}</div>
+              
+              <div className="mt-8 pt-8 border-t border-border">
+                 <div className="p-6 rounded-2xl bg-red-500/5 text-red-700 dark:text-red-400 border border-red-500/10 text-center">
+                    <div className="text-[10px] font-black uppercase mb-1 tracking-widest opacity-70">Satın Alma Gücü Erozyonu</div>
+                    <div className="text-3xl font-black mb-2">-%{result.lossPercent.toFixed(2)}</div>
+                    <p className="text-sm font-medium leading-relaxed">
+                       Paranızı bugünkü alım gücünde tutmak istiyorsanız, {years} yıl sonra elinizde en az <b>{fmt(result.futureValue)}</b> olmalı. 
+                       Aksi takdirde paranızın reel değeri yukarıdaki oranda eriyecektir.
+                    </p>
+                 </div>
+              </div>
+
+              <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                 <div className="p-4 bg-secondary/10 rounded-xl text-[10px] font-bold text-muted uppercase text-center border border-border">
+                    Bugünkü ₺100 → {years} Yıl Sonra ₺{(100 * Math.pow(1/(1 + parseFloat(inflation)/100), parseFloat(years))).toFixed(2)} Değerinde
+                 </div>
+                 <div className="p-4 bg-secondary/10 rounded-xl text-[10px] font-bold text-muted uppercase text-center border border-border">
+                    Yıllık %{inflation} Enflasyon Etkisi
+                 </div>
+              </div>
            </div>
         </div>
       )}
