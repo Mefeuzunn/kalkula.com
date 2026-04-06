@@ -12,7 +12,9 @@ export default function Navbar() {
   const [results, setResults] = useState<typeof calculators>([]);
   const [open, setOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showMobileSearch, setShowMobileSearch] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
+  const mobileInputRef = useRef<HTMLInputElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -52,6 +54,16 @@ export default function Navbar() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  useEffect(() => {
+    if (showMobileSearch) {
+      mobileInputRef.current?.focus();
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+    return () => { document.body.style.overflow = "unset"; };
+  }, [showMobileSearch]);
+
   const handleSelect = (slug: string) => {
     setQuery("");
     setOpen(false);
@@ -88,6 +100,19 @@ export default function Navbar() {
             letterSpacing: "-0.05em"
           }}>Kalkula</span>
         </Link>
+        <div style={{ flex: 1, display: "flex", justifyContent: "center" }}>
+          {/* Mobile Search Trigger Button (The one circled by user) */}
+          <button 
+            className={styles.mobileSearchTrigger}
+            onClick={() => setShowMobileSearch(true)}
+            aria-label="Ara"
+          >
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </button>
+        </div>
 
         {/* Desktop search */}
         <div className={styles.searchWrapper} ref={searchRef}>
@@ -161,6 +186,53 @@ export default function Navbar() {
           </button>
         </div>
       </div>
+
+      {/* Mobile search overlay */}
+      {showMobileSearch && (
+        <div className={styles.mobileSearchOverlay}>
+          <div className={styles.mobileSearchHeader}>
+            <div className={styles.searchBox} style={{ flex: 1 }}>
+              <svg className={styles.searchIcon} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input
+                ref={mobileInputRef}
+                type="text"
+                placeholder="Araç ara..."
+                className={styles.searchInput}
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+              />
+            </div>
+            <button className={styles.mobileSearchClose} onClick={() => { setShowMobileSearch(false); setQuery(""); }}>
+              Vazgeç
+            </button>
+          </div>
+          
+          <div className={styles.mobileSearchResults}>
+            {results.length > 0 ? (
+              results.map(r => (
+                <button key={r.id} className={styles.searchResult} onClick={() => { handleSelect(r.slug); setShowMobileSearch(false); }}>
+                  <div className={styles.searchResultIcon}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+                    </svg>
+                  </div>
+                  <div>
+                    <div className={styles.searchResultTitle}>{r.title}</div>
+                    <div className={styles.searchResultDesc}>{r.description.slice(0, 50)}...</div>
+                  </div>
+                </button>
+              ))
+            ) : query.length > 1 ? (
+              <div className="p-8 text-center text-muted font-medium italic">Sonuç bulunamadı...</div>
+            ) : (
+              <div className="p-8 text-center text-muted text-xs uppercase font-black tracking-widest opacity-30">Hesaplama aracı ismini yazın</div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Mobile menu dropdown */}
       {mobileMenuOpen && (
