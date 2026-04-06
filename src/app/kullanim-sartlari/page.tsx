@@ -36,7 +36,7 @@ export default function TermsPage() {
             </section>
 
             <div className="mt-12 p-6 bg-secondary/5 rounded-2xl border border-border text-center">
-               <p className="text-xs font-bold text-muted uppercase tracking-[0.2em]">Son Güncelleme: 1 Ocak 2025 | Hukuk ve Operasyon</p>
+               <p className="text-xs font-bold text-muted uppercase tracking-[0.2em]">Son Güncelleme: 1 Ocak 2026 | Hukuk ve Operasyon</p>
             </div>
           </div>
         </div>

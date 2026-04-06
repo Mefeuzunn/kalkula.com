@@ -90,7 +90,7 @@ export default function Footer() {
         }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
              <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", maxWidth: "600px" }}>
-               © 2025 Kalküla SaaS Hub. Tüm hakları saklıdır. Bu platformdaki tüm hesaplama motorları ve görsel bileşenler fikri mülkiyet koruması altındadır. | Geliştirici: <Link href="/hakkimizda" style={{ color: "var(--accent-primary)", fontWeight: 700 }}>Mehmet Efe Uzun</Link>
+               © 2026 Kalküla SaaS Hub. Tüm hakları saklıdır. Bu platformdaki tüm hesaplama motorları ve görsel bileşenler fikri mülkiyet koruması altındadır. | Geliştirici: <Link href="/hakkimizda" style={{ color: "var(--accent-primary)", fontWeight: 700 }}>Mehmet Efe Uzun</Link>
              </p>
              <div style={{ display: "flex", gap: "1rem", alignItems: "center", opacity: 0.7 }}>
                 <div title="SSL Secured" style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.7rem", color: "#22c55e", fontWeight: "bold", padding: "4px 10px", background: "#22c55e11", borderRadius: "100px", border: "1px solid #22c55e33" }}>

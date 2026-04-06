@@ -100,6 +100,11 @@ import { Base64Converter } from "@/components/calculators/Base64Converter";
 import { XCharacterCounter } from "@/components/calculators/XCharacterCounter";
 import { StyleTextGenerator } from "@/components/calculators/StyleTextGenerator";
 
+import { MebEkDersCalculator } from "@/components/calculators/MebEkDersCalculator";
+import { AkademisyenEkDersCalculator } from "@/components/calculators/AkademisyenEkDersCalculator";
+import { TaxFreeCalculator } from "@/components/calculators/TaxFreeCalculator";
+import { VolumeCalculator } from "@/components/calculators/VolumeCalculator";
+import { DesiCalculator } from "@/components/calculators/DesiCalculator";
 import { IbanValidator } from "@/components/calculators/IbanValidator";
 import { BondCalculator } from "@/components/calculators/BondCalculator";
 import { IrrNpvCalculator } from "@/components/calculators/IrrNpvCalculator";
@@ -255,8 +260,13 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "asal-sayi": return <PrimeNumberCalculator />;
       case "netten-brute": return <NetGrossCalculator />;
       case "kidem-tazminati": return <SeveranceCalculator />;
+      case "meb-ek-ders-hesaplama": return <MebEkDersCalculator />;
+      case "akademisyen-ek-ders-hesaplama": return <AkademisyenEkDersCalculator />;
       case "yakit-maliyeti": return <FuelCostCalculator />;
       case "mtv-hesaplama": return <MtvCalculator />;
+      case "tax-free-hesaplama": return <TaxFreeCalculator />;
+      case "kargo-desi-hesaplama": return <DesiCalculator />;
+      case "litre-cl-ml-hesaplama": return <VolumeCalculator />;
       case "ags-puan": return <AgssCalculator />;
       case "eurobond": return <EurobondCalculator />;
       case "kusak": return <GenerationCalculator />;

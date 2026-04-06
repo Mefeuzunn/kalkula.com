@@ -10,19 +10,17 @@ export function MtvCalculator() {
   const [value, setValue] = useState("medium"); // Range of vehicle value (TR specific)
   
   const [results, setResults] = useState<{
-    mtv2024: number;
     mtv2025: number;
+    mtv2026: number;
     firstInstallment: number;
     secondInstallment: number;
     increaseAmount: number;
   } | null>(null);
 
-  // Simplified MTV Data Logic for 2024 (Automobiles)
-  // Real logic involves hundreds of cells, we implement the most common brackets for Professional UI
+  // Simplified MTV Data Logic (2026)
   const calculateResult = () => {
     let base2024 = 0;
     
-    // Core Engine Brackets (2024 Examples)
     if (engineVolume === "0-1300") {
       if (age === "1-3") base2024 = 3359;
       else if (age === "4-6") base2024 = 2343;
@@ -39,32 +37,28 @@ export function MtvCalculator() {
       else if (age === "7-11") base2024 = 4758;
       else base2024 = 1941;
     } else {
-      // High volume default
       if (age === "1-3") base2024 = 15762;
       else base2024 = 10000;
     }
 
-    // Adjustment for vehicle value (TR Matrah rule)
     if (value === "high") base2024 *= 1.1;
     if (value === "low") base2024 *= 0.9;
 
-    const increaseRate = 1.4393; // 43.93% projected revaluation rate for 2025
-    const mtv2025 = base2024 * increaseRate;
+    const rate2025 = 1.4393; 
+    const rate2026 = 1.1895; // Official 2026 increase
+
+    const mtv2025 = base2024 * rate2025;
+    const mtv2026 = mtv2025 * rate2026;
 
     setResults({
-      mtv2024: base2024,
       mtv2025: mtv2025,
-      firstInstallment: mtv2025 / 2,
-      secondInstallment: mtv2025 / 2,
-      increaseAmount: mtv2025 - base2024
+      mtv2026: mtv2026,
+      firstInstallment: mtv2026 / 2,
+      secondInstallment: mtv2026 / 2,
+      increaseAmount: mtv2026 - mtv2025
     });
 
-    confetti({
-      particleCount: 20,
-      spread: 40,
-      origin: { y: 0.7 },
-      colors: ["#3b82f6", "#10b981"]
-    });
+    confetti({ particleCount: 20, spread: 40, origin: { y: 0.7 }, colors: ["#3b82f6", "#10b981"] });
   };
 
   useEffect(() => {
@@ -126,9 +120,9 @@ export function MtvCalculator() {
                     <div className="absolute top-0 right-0 p-6 opacity-5 font-black italic text-[10px] text-blue-600 tracking-[0.3em] uppercase rotate-12">Auto Tax Engine v3.0</div>
                     
                     <div className="flex flex-col items-center text-center mb-10">
-                       <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mb-4 bg-blue-500/10 px-4 py-1 rounded-full border border-blue-500/20 italic">2025 Toplam Yıllık MTV</span>
+                       <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mb-4 bg-blue-500/10 px-4 py-1 rounded-full border border-blue-500/20 italic">2026 Toplam Yıllık MTV</span>
                        <div className="text-6xl font-black italic tracking-tighter text-primary">
-                          {results.mtv2025.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} <span className="text-2xl not-italic ml-1">₺</span>
+                          {results.mtv2026.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} <span className="text-2xl not-italic ml-1">₺</span>
                        </div>
                     </div>
 
@@ -146,12 +140,12 @@ export function MtvCalculator() {
                     <div className="mt-auto p-6 bg-blue-500/5 rounded-3xl border border-blue-500/10">
                        <div className="flex justify-between items-center mb-4">
                           <span className="text-[10px] font-black text-primary uppercase italic">Karşılaştırmalı Analiz</span>
-                          <span className="text-[10px] font-black text-red-500 uppercase italic">Zam Oranı: %43.93</span>
+                          <span className="text-[10px] font-black text-red-500 uppercase italic">2026 Zam Oranı: %18.95</span>
                        </div>
                        <div className="flex flex-col gap-3">
                           <div className="flex justify-between text-[11px] font-medium italic">
-                             <span className="text-muted">2024 Yılı Toplam:</span>
-                             <span className="text-primary font-black">{results.mtv2024.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</span>
+                             <span className="text-muted">2025 Yılı Toplam:</span>
+                             <span className="text-primary font-black">{results.mtv2025.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</span>
                           </div>
                           <div className="flex justify-between text-[11px] font-medium italic">
                              <span className="text-muted">Yıllık Artış Tutarı:</span>
@@ -161,7 +155,7 @@ export function MtvCalculator() {
                     </div>
 
                     <p className="mt-6 text-[8px] text-muted/50 font-bold uppercase text-center tracking-[0.2em] leading-relaxed">
-                       * Bu hesaplama 2025 yılı için beklenen %43.93 Yeniden Değerleme Oranı baz alınarak yapılmıştır. Resmi rakamlar açıklandığında güncellenecektir.
+                       * Bu hesaplama 2026 yılı için Cumhurbaşkanı kararıyla belirlenen %18.95 MTV artış oranı baz alınarak yapılmıştır. Resmi rakamlar Ocak ayı itibarıyla yürürlüktedir.
                     </p>
                  </div>
               </div>

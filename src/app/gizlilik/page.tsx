@@ -39,7 +39,7 @@ export default function PrivacyPage() {
             </section>
 
             <div className="mt-12 p-6 bg-accent-glow rounded-2xl border border-accent-primary/20 text-center">
-               <p className="text-xs font-bold text-accent-primary uppercase tracking-[0.2em]">Son Güncelleme: 1 Ocak 2025 | Kalküla Güvenlik Departmanı</p>
+               <p className="text-xs font-bold text-accent-primary uppercase tracking-[0.2em]">Son Güncelleme: 1 Ocak 2026 | Kalküla Güvenlik Departmanı</p>
             </div>
           </div>
         </div>

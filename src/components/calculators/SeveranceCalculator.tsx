@@ -7,7 +7,7 @@ export function SeveranceCalculator() {
   const [startDate, setStartDate] = useState("2020-01-01");
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
   const [grossSalary, setGrossSalary] = useState("30000");
-  const [severanceCeiling, setSeveranceCeiling] = useState("35058.58"); // July 2024 Ceiling
+  const [severanceCeiling, setSeveranceCeiling] = useState("64948.77"); // 2026 Jan-Jun Ceiling
   const [includeNotice, setIncludeNotice] = useState(true);
   
   const [results, setResults] = useState<{
@@ -30,7 +30,7 @@ export function SeveranceCalculator() {
     const start = new Date(startDate);
     const end = new Date(endDate);
     const salary = parseFloat(grossSalary) || 0;
-    const ceiling = parseFloat(severanceCeiling) || 35058.58;
+    const ceiling = parseFloat(severanceCeiling) || 64948.77;
 
     if (isNaN(start.getTime()) || isNaN(end.getTime()) || end < start) {
       setResults(null);
@@ -88,7 +88,7 @@ export function SeveranceCalculator() {
     setStartDate("2020-01-01");
     setEndDate(new Date().toISOString().split('T')[0]);
     setGrossSalary("30000");
-    setSeveranceCeiling("35058.58");
+    setSeveranceCeiling("64948.77");
     setIncludeNotice(true);
     setResults(null);
   };

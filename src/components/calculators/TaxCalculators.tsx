@@ -161,7 +161,7 @@ export function GelirVergisiCalculator() {
     const issizlik = brut * 0.01;
     const matrah = brut - sgkIsci - issizlik;
 
-    // 2025 Gelir Vergisi Dilimleri
+    // 2026 Gelir Vergisi Dilimleri
     let vergi = 0;
     const dilimler = [
       { limit: 110000, oran: 0.15 },
@@ -197,7 +197,7 @@ export function GelirVergisiCalculator() {
       <div className="bg-amber-500/10 border-2 border-amber-500/20 p-4 rounded-xl flex items-start gap-3">
          <span className="text-xl">💡</span>
          <p className="text-xs font-medium text-amber-700 dark:text-amber-400 leading-normal">
-           2025 yılı gelir vergisi dilimlerine göre hesaplanır. Sonuçlar tahmini olup profesyonel danışmanlık yerine geçmez.
+           2026 yılı gelir vergisi dilimlerine göre hesaplanır. Sonuçlar tahmini olup profesyonel danışmanlık yerine geçmez.
          </p>
       </div>
 

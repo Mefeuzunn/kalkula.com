@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 
 export function IncomeTaxCalculator() {
-  const [brutto, setBrutto] = useState("50000"); // Aylık Brüt
+  const [brutto, setBrutto] = useState("70000"); // Aylık Brüt (2026 avg)
   const [period, setPeriod] = useState("aylik");
-  const [year, setYear] = useState("2025");
+  const [year, setYear] = useState("2026");
   
   const [results, setResults] = useState<{
     yearlyGross: number; brackets: { rate: number; taxable: number; tax: number; range: string }[];
@@ -14,7 +14,8 @@ export function IncomeTaxCalculator() {
 
   const TAX_DATA: any = {
     "2024": [ { limit: 110000, rate: 0.15 }, { limit: 230000, rate: 0.20 }, { limit: 580000, rate: 0.27 }, { limit: 3000000, rate: 0.35 }, { limit: Infinity, rate: 0.40 } ],
-    "2025": [ { limit: 158000, rate: 0.15 }, { limit: 330000, rate: 0.20 }, { limit: 840000, rate: 0.27 }, { limit: 4300000, rate: 0.35 }, { limit: Infinity, rate: 0.40 } ]
+    "2025": [ { limit: 158000, rate: 0.15 }, { limit: 330000, rate: 0.20 }, { limit: 840000, rate: 0.27 }, { limit: 4300000, rate: 0.35 }, { limit: Infinity, rate: 0.40 } ],
+    "2026": [ { limit: 190000, rate: 0.15 }, { limit: 400000, rate: 0.20 }, { limit: 1500000, rate: 0.27 }, { limit: 5300000, rate: 0.35 }, { limit: Infinity, rate: 0.40 } ]
   };
 
   const calculate = () => {
@@ -38,7 +39,7 @@ export function IncomeTaxCalculator() {
     setResults({ yearlyGross, brackets: bracketDetails, totalTax, effectiveRate: (totalTax / yearlyGross) * 100, yearlyNet, avgMonthlyNet: yearlyNet / 12 });
   };
 
-  const reset = () => { setBrutto("50000"); setPeriod("aylik"); setYear("2025"); setResults(null); };
+  const reset = () => { setBrutto("70000"); setPeriod("aylik"); setYear("2026"); setResults(null); };
 
   useEffect(() => { calculate(); }, [brutto, period, year]);
 
@@ -64,7 +65,8 @@ export function IncomeTaxCalculator() {
         <div className="calc-input-group" style={{ flex: "1" }}>
           <label className="calc-label">Vergi Yılı</label>
           <select value={year} onChange={e => setYear(e.target.value)} className="calc-select">
-            <option value="2025">2025 (Tahmini)</option>
+            <option value="2026">2026 (Güncel)</option>
+            <option value="2025">2025 (Arşiv)</option>
             <option value="2024">2024</option>
           </select>
         </div>
@@ -126,7 +128,7 @@ export function IncomeTaxCalculator() {
 
       <div className="calc-info-box">
         <span className="calc-info-box-icon">📌</span>
-        <span className="calc-info-box-text">Gelir vergisi dilim usulü hesaplanır. Üst dilime geçildiğinde kümülatif matrah dilim sınırını aşan kısmı için yüksek vergi ödenir. 2025 rakamları yeniden değerleme oranına göre tahmini girilmiştir.</span>
+        <span className="calc-info-box-text">Gelir vergisi dilim usulü hesaplanır. Üst dilime geçildiğinde kümülatif matrah dilim sınırını aşan kısmı için yüksek vergi ödenir. 2026 rakamları 332 Seri No'lu Gelir Vergisi Genel Tebliği'ne uygundur.</span>
       </div>
     </div>
   );

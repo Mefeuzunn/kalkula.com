@@ -98,11 +98,15 @@ export const calculators: CalculatorInfo[] = [
   { id: "tazminat", title: "Kıdem Tazminatı", slug: "kidem-tazminati", categoryId: "muhasebe", description: "Çalışma sürenize ve brüt maaşınıza göre alacağınız tazminat tutarı." },
   { id: "arac-gider", title: "Binek Araç Gider Kısıtlaması", slug: "binek-arac-gider", categoryId: "muhasebe", description: "Kanunen kabul edilen (KKEG) ve edilmeyen ticari binek araç giderlerini belirleyin." },
   { id: "yakit-tuketim", title: "Yakıt Hesaplama", slug: "yakit-maliyeti", categoryId: "muhasebe", description: "Aracınızın km başına kaç TL yaktığını, toplam yol masrafını analiz edin." },
-  { id: "mtv", title: "MTV Hesaplama (2025 Güncel)", slug: "mtv-hesaplama", categoryId: "araba", description: "2024 ve 2025 Ocak MTV tutarlarını araç tipi ve yaşına göre karşılaştırmalı hesaplayın." },
+  { id: "meb-ek-ders", title: "MEB Ek Ders Ücreti (2026)", slug: "meb-ek-ders-hesaplama", categoryId: "muhasebe", description: "Öğretmenler için gündüz, gece ve hafta sonu ek ders ücreti hesaplaması." },
+  { id: "acad-ek-ders", title: "Akademisyen Ek Ders (2026)", slug: "akademisyen-ek-ders-hesaplama", categoryId: "muhasebe", description: "Akademik personel için unvan bazlı ek ders ücreti hesaplama." },
+  { id: "mtv", title: "MTV Hesaplama (2026 Güncel)", slug: "mtv-hesaplama", categoryId: "muhasebe", description: "2025 ve 2026 Ocak MTV tutarlarını araç tipi ve yaşına göre karşılaştırmalı hesaplayın." },
+  { id: "tax-free", title: "Tax Free Hesaplama (2026)", slug: "tax-free-hesaplama", categoryId: "muhasebe", description: "Yabancı turistler için KDV iadesi (Tax Free) tutarını hesaplayın." },
+  { id: "desi", title: "Kargo Desi Hesaplama", slug: "kargo-desi-hesaplama", categoryId: "muhasebe", description: "Paket boyutlarına göre kargo desi (hacimsel ağırlık) hesaplaması." },
   
   // Ticari ve Vergi
   { id: "kdv", title: "KDV Hesaplama (Tevkifatlı)", slug: "kdv", categoryId: "ticari", description: "Tevkifat desteği ile KDV dahil ve hariç fatura tutarlarını hesaplayın." },
-  { id: "gelirvergisi", title: "Gelir Vergisi (2025 Projeksiyon)", slug: "gelir-vergisi", categoryId: "ticari", description: "2025 yılı beklenen vergi dilimlerine göre net maaş ve dilim dağılımı analizi." },
+  { id: "gelirvergisi", title: "Gelir Vergisi (2026 Projeksiyon)", slug: "gelir-vergisi", categoryId: "ticari", description: "2026 yılı beklenen vergi dilimlerine göre net maaş ve dilim dağılımı analizi." },
   { id: "karmarji", title: "Ticari Analiz & Kar Marjı", slug: "kar-marji", categoryId: "ticari", description: "Kar marjı, markup ve başabaş noktası (break-even) görsel analiz modülü." },
   { id: "karzarar", title: "Kar Zarar Hesaplama", slug: "kar-zarar", categoryId: "ticari", description: "Alış ve satış fiyatı üzerinden toplam kar veya zarar tutarı." },
   { id: "toptan", title: "Toptan – Perakende Fiyat", slug: "toptan-perakende", categoryId: "ticari", description: "Birim maliyet ve adet bazında toptan ile perakende fiyatlarını karşılaştırın." },
@@ -152,6 +156,7 @@ export const calculators: CalculatorInfo[] = [
   { id: "sicaklik-ceviri", title: "Sıcaklık Çevirici", slug: "sicaklik-cevirici", categoryId: "donusturuculer", description: "Celsius (°C), Fahrenheit (°F) ve Kelvin (K) ısı birimleri dönüştürücüsü." },
   { id: "alan-ceviri", title: "Alan Çevirici", slug: "alan-cevirici", categoryId: "donusturuculer", description: "Metrekare, dönüm, hektar, acre ve daha fazlası arasında anında alan dönüşümü." },
   { id: "hacim-ceviri", title: "Hacim Çevirici", slug: "hacim-cevirici", categoryId: "donusturuculer", description: "Litre, metreküp, galon ve diğer sıvı/katı hacim birimlerini anlık dönüştürün." },
+  { id: "litre-cl-ml", title: "Litre, cl, ml Hesaplama", slug: "litre-cl-ml-hesaplama", categoryId: "donusturuculer", description: "Sıvı ölçü birimleri (Litre, Santilitre, Mililitre) arası anlık dönüşüm." },
   { id: "hiz-ceviri", title: "Hız Çevirici", slug: "hiz-cevirici", categoryId: "donusturuculer", description: "Km/h, Mph, Knot, Mach vb. hız ölçüleri arasında bilimsel rotasyonlar yapın." },
   { id: "mutfak-ceviri", title: "Mutfak Birim Dönüştürücü", slug: "mutfak-donusturucu", categoryId: "donusturuculer", description: "Su bardağı, kaşık ve kahve fincanı gibi mutfak ölçülerini anlık gram/ml'ye çevirin." },
   { id: "veri-ceviri", title: "Veri (Disk) Çevirici", slug: "veri-cevirici", categoryId: "donusturuculer", description: "GB, MB, TB, KB gibi bilgisayar depolama (Byte) birimlerinin karşılıklarını edinin." },
@@ -164,7 +169,7 @@ export const calculators: CalculatorInfo[] = [
   // Vergi Hesaplamaları
   { id: "kdv", title: "KDV Hesaplama", slug: "kdv", categoryId: "vergi", description: "KDV dahil ve hariç tutarları %1, %10, %20 oranlarında anında hesaplayın." },
   { id: "damga-vergisi", title: "Damga Vergisi Hesaplama", slug: "damga-vergisi", categoryId: "vergi", description: "Sözleşme, kira, bordro ve banka evraklarının damga vergisini hesaplayın." },
-  { id: "gelir-vergisi", title: "Gelir Vergisi Hesaplama", slug: "gelir-vergisi", categoryId: "vergi", description: "2025 gelir vergisi dilimlerine göre aylık brüt maaştan net maaşa geçin." },
+  { id: "gelir-vergisi", title: "Gelir Vergisi Hesaplama (2026)", slug: "gelir-vergisi", categoryId: "vergi", description: "2026 gelir vergisi dilimlerine göre aylık brüt maaştan net maaşa geçin." },
 
   // Geliştirici, Pratik ve Eğlence Araçları (Mevcut olanları veriye bağlama)
   { id: "password-gen", title: "Gelişmiş Şifre Oluşturucu", slug: "sifre-olusturucu", categoryId: "araclar", description: "Yüksek güvenlikli, rastgele ve kırılmaz şifreler oluşturun." },

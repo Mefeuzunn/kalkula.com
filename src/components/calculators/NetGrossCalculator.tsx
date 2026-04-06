@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from "react";
 
 export function NetGrossCalculator() {
-  const [net, setNet] = useState("25000");
+  const [net, setNet] = useState("35000"); // 2026 avg net
   const [results, setResults] = useState<{ gross: number; sgk: number; tax: number; unemploy: number; stamp: number } | null>(null);
 
   const calculate = () => {
     const n = parseFloat(net);
     if (!n || n <= 0) { setResults(null); return; }
-    // SGK işçi: %14, İşsizlik: %1, Gelir Vergisi: ~%15 (taban dilim), Damga: %0.759
+    // SGK işçi: %14, İşsizlik: %1, Gelir Vergisi: ~%15 (taban dilim), Damga: %0.759 (Stardart Vergi Dilimi)
     const totalDeductionRate = 0.14 + 0.01 + 0.15 + 0.00759;
     const gross = n / (1 - totalDeductionRate);
     const sgk = gross * 0.14;
@@ -19,7 +19,7 @@ export function NetGrossCalculator() {
     setResults({ gross, sgk, tax, unemploy, stamp });
   };
 
-  const reset = () => { setNet("25000"); setResults(null); };
+  const reset = () => { setNet("35000"); setResults(null); };
 
   useEffect(() => { calculate(); }, [net]);
 

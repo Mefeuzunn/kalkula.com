@@ -110,7 +110,7 @@ export function MtvCalculator() {
       <div className="bg-blue-500/5 border border-blue-500/20 p-4 rounded-xl flex gap-3 items-center">
          <span className="text-xl">ℹ️</span>
          <p className="text-xs font-medium text-blue-600 dark:text-blue-400">
-           Bu form 2024-2025 yılı araç grupları ve ortalama kasko değerine göre referans tutarlar oluşturmaktadır.
+           Bu form 2025-2026 yılı araç grupları ve ortalama kasko değerine göre referans tutarlar oluşturmaktadır.
          </p>
       </div>
 
