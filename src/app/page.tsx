@@ -98,15 +98,40 @@ export default function Home() {
          <AdPlaceholder type="leaderboard" />
 
          <section style={{ marginBottom: "4rem" }}>
-            <h2 style={{ fontSize: "1.75rem", fontWeight: 900, marginBottom: "2rem", letterSpacing: '-0.03em' }}>⭐ Popüler Araçlar</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '1.5rem' }}>
-              {POPULAR_TOOLS.map((tool) => (
-                <Link key={tool.slug} href={`/hesapla/${tool.slug}`} className="popular-card" style={{ padding: '1.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-                  <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>{tool.icon}</div>
-                  <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{tool.title}</div>
+          <h2 style={{ fontSize: "1.75rem", fontWeight: 900, marginBottom: "2rem", letterSpacing: '-0.03em' }}>⭐ Popüler Araçlar</h2>
+          
+          <div style={{ 
+            position: 'relative', 
+            overflow: 'hidden', 
+            margin: '0 -2rem',
+            padding: '2rem 0',
+            background: 'rgba(0,0,0,0.02)',
+            borderTop: '1px solid var(--border)',
+            borderBottom: '1px solid var(--border)',
+            maskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent, black 15%, black 85%, transparent)'
+          }}>
+            <div className="animate-marquee" style={{ gap: '2rem' }}>
+              {[...POPULAR_TOOLS, ...POPULAR_TOOLS].map((tool, index) => (
+                <Link key={`${tool.slug}-${index}`} href={`/hesapla/${tool.slug}`} className="popular-card" style={{ 
+                  flexShrink: 0, 
+                  width: '200px',
+                  padding: '1.25rem', 
+                  background: 'var(--surface)', 
+                  border: '1px solid var(--border)', 
+                  borderRadius: '20px', 
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '1rem',
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
+                }}>
+                  <div style={{ fontSize: "2rem" }}>{tool.icon}</div>
+                  <div style={{ fontWeight: 800, fontSize: '0.95rem' }}>{tool.title}</div>
                 </Link>
               ))}
             </div>
+          </div>
          </section>
 
          <section id="tools">
@@ -167,36 +192,31 @@ export default function Home() {
           Kalkula profesyonel araçları ile hayatınızı kolaylaştırın.
         </p>
         
-        {/* Continuous Sliding Quick Access Circles */}
-        <div style={{ position: 'relative', margin: '0 -1.5rem', padding: '0 1.5rem' }}>
+        <div style={{ position: 'relative', overflow: 'hidden', margin: '0 -1.5rem' }}>
           <div 
+            className="animate-marquee"
             style={{ 
-              display: 'flex', 
               gap: '1rem', 
-              overflowX: 'auto', 
-              padding: '0.5rem 1rem 1rem',
+              padding: '1.5rem 1rem',
               maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-              WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-              scrollSnapType: 'x proximity'
+              WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)'
             }} 
-            className="hide-scrollbar"
           >
-            {POPULAR_TOOLS.map((tool) => (
+            {[...POPULAR_TOOLS, ...POPULAR_TOOLS].map((tool, index) => (
               <Link 
-                key={tool.slug} 
+                key={`${tool.slug}-${index}`} 
                 href={`/hesapla/${tool.slug}`} 
                 style={{ 
                   display: 'flex', 
                   flexDirection: 'column', 
                   alignItems: 'center', 
                   gap: '0.6rem', 
-                  flexShrink: 0,
-                  scrollSnapAlign: 'start'
+                  flexShrink: 0
                 }}
               >
                 <div style={{ 
-                  width: 64, 
-                  height: 64, 
+                  width: 72, 
+                  height: 72, 
                   borderRadius: '50%', 
                   background: 'rgba(255,255,255,0.08)',
                   backdropFilter: 'blur(10px)',
@@ -204,14 +224,14 @@ export default function Home() {
                   display: 'flex', 
                   alignItems: 'center', 
                   justifyContent: 'center',
-                  fontSize: '1.75rem',
+                  fontSize: '2rem',
                   boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
                   transition: 'transform 0.2s',
                 }}>
                   {tool.icon}
                 </div>
                 <span style={{ 
-                  fontSize: '0.65rem', 
+                  fontSize: '0.7rem', 
                   fontWeight: 900, 
                   textTransform: 'uppercase', 
                   letterSpacing: '0.08em',
@@ -222,16 +242,6 @@ export default function Home() {
                 </span>
               </Link>
             ))}
-            {/* Last Item (Converter) */}
-            <Link href="/converter" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', flexShrink: 0 }}>
-                <div style={{ 
-                  width: 64, height: 64, borderRadius: '50%', background: '#ffffff', 
-                  display: 'flex', alignItems: 'center', justifyContent: 'center', 
-                  fontSize: '1.75rem', color: 'var(--accent-primary)',
-                  boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-                }}>📄</div>
-                <span style={{ fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'white' }}>Dosya</span>
-            </Link>
           </div>
         </div>
       </section>
