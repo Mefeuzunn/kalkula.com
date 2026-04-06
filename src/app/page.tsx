@@ -5,6 +5,7 @@ import Link from "next/link";
 import { categories, calculators, getCalculatorBySlug } from "@/data/calculators";
 import { AdPlaceholder } from "@/components/AdPlaceholder";
 import { CategoryIcon } from "@/components/CategoryIcon";
+import { AffiliateBanner } from "@/components/AffiliateBanner";
 
 const STATS = [
   { label: "Hesaplama Aracı", value: `${calculators.length}+` },
@@ -95,6 +96,9 @@ export default function Home() {
       </div>
 
       <div className="container" style={{ padding: "4rem 1.5rem" }}>
+         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '2.5rem' }}>
+           <AffiliateBanner />
+         </div>
          <AdPlaceholder type="leaderboard" />
 
          <section style={{ marginBottom: "4rem" }}>
@@ -188,9 +192,13 @@ export default function Home() {
         }}>
           Türkiye&apos;nin En Kapsamlı<br />Hesaplama Platformu
         </h1>
-        <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.9)", maxWidth: "300px", margin: "0 auto 2.5rem", lineHeight: 1.6, fontWeight: 500 }}>
+        <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.9)", maxWidth: "300px", margin: "0 auto 1.5rem", lineHeight: 1.6, fontWeight: 500 }}>
           Kalkula profesyonel araçları ile hayatınızı kolaylaştırın.
         </p>
+        
+        <div style={{ marginBottom: "1rem" }}>
+          <AffiliateBanner />
+        </div>
         
         <div style={{ position: 'relative', overflow: 'hidden', margin: '0 -1.5rem' }}>
           <div 
