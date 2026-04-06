@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { MessageCircle, X, Send, ArrowRight, Sparkles, Headset, Circle } from "lucide-react";
+import { MessageCircle, X, Send, ArrowRight, Sparkles, Brain, Zap, Globe, Layers } from "lucide-react";
 import { calculators } from "@/data/calculators";
 
 type Message = {
@@ -19,7 +19,7 @@ export function KalkulaAI() {
     {
       id: "1",
       type: "ai",
-      text: "Merhaba! Ben Kalküla Akıllı Rehber. Platformumuzdaki 160'tan fazla araç arasından size en uygun olanı bulmak için buradayım. Size nasıl yardımcı olabilirim?",
+      text: "Sistem Aktif. Ben Kalküla 3D Holografik Asistan. Platformdaki tüm operasyonel verileri tarayıp size en hızlı çözümü sunmak için senkronize oldum. Hangi hesaplamada desteğe ihtiyacınız var?",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
@@ -95,153 +95,170 @@ export function KalkulaAI() {
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: '32px', right: '32px', zIndex: 99999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', pointerEvents: 'none' }}>
-      {/* Floating Chat Window */}
+    <div style={{ position: 'fixed', bottom: '32px', right: '32px', zIndex: 99999, perspective: '1200px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', pointerEvents: 'none' }}>
+      {/* 3D Holographic Chat Environment */}
       <div 
-        className={`glass-chat transition-all duration-500 transform ease-in-out border border-white/10 ${
-          isOpen ? "opacity-100 translate-y-0 scale-100 shadow-2xl pointer-events-auto" : "opacity-0 translate-y-10 scale-90 pointer-events-none"
+        className={`transition-all duration-700 transform ease-[cubic-bezier(0.19,1,0.22,1)] ${
+          isOpen ? "opacity-100 translate-y-0 translate-z-0 rotate-y-[-12deg] rotate-x-[5deg] scale-100 shadow-[0_50px_100px_rgba(37,99,235,0.25)] pointer-events-auto" : "opacity-0 translate-y-20 translate-z-[-200px] rotate-y-[-30deg] scale-75 pointer-events-none"
         }`}
         style={{ 
-          width: '400px', 
-          height: '600px', 
-          marginBottom: '20px', 
-          borderRadius: '24px', 
+          width: '420px', 
+          height: '660px', 
+          marginBottom: '24px', 
+          borderRadius: '40px', 
           display: 'flex', 
           flexDirection: 'column', 
           overflow: 'hidden',
-          backgroundColor: 'var(--surface)',
-          border: '1px solid var(--border)'
+          background: 'rgba(15, 23, 42, 0.8)',
+          backdropFilter: 'blur(32px)',
+          border: '1px solid rgba(59, 130, 246, 0.4)',
+          transformStyle: 'preserve-3d',
+          boxShadow: 'inset 0 0 30px rgba(59, 130, 246, 0.2), 0 30px 60px rgba(0, 0, 0, 0.5)'
         }}
       >
-        {/* Professional Header */}
-        <div className="bg-blue-600 p-6 text-white flex items-center justify-between shadow-xl">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm relative">
-              <Sparkles size={24} />
-              <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-blue-600 rounded-full"></span>
+        {/* Cyber Neon Top Bar */}
+        <div className="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-blue-500 via-pink-500 to-blue-500 animate-pulse"></div>
+
+        {/* Header - Holographic Layer */}
+        <div className="p-8 pb-6 flex items-center justify-between relative overflow-hidden group">
+          <div className="absolute inset-0 bg-blue-600/10 group-hover:bg-blue-600/20 transition-colors pointer-events-none"></div>
+          <div className="flex items-center gap-5 relative z-10">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center border border-white/20 shadow-[0_0_20px_rgba(59,130,246,0.5)] animate-pulse">
+              <Brain color="white" size={30} className="drop-shadow-[0_0_10px_rgba(255,255,255,0.8)]" />
             </div>
             <div>
-              <h3 className="font-bold text-lg tracking-tight leading-none">Akıllı Rehber</h3>
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Çevrimiçi Destek</span>
+              <h3 className="font-black text-2xl tracking-tighter text-white drop-shadow-lg leading-none">KALKÜLA AI</h3>
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="w-2.5 h-2.5 bg-green-400 rounded-full animate-ping"></span>
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-400">Quantum Intelligence Engine</span>
               </div>
             </div>
           </div>
           <button 
             onClick={() => setIsOpen(false)}
-            className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+            className="p-3 bg-white/5 hover:bg-white/10 rounded-2xl text-white/50 hover:text-white transition-all relative z-10"
           >
-            <X size={20} />
+            <X size={24} />
           </button>
         </div>
 
-        {/* Chat Feed */}
-        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5 bg-gradient-to-b from-blue-50/5 to-transparent hide-scrollbar">
+        {/* 3D Message Feed */}
+        <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-8 scroll-smooth hide-scrollbar relative">
+          {/* Background Grid Decoration */}
+          <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+          
           {messages.map((m) => (
             <div 
               key={m.id} 
-              className={`flex flex-col ${m.type === "user" ? "items-end" : "items-start"}`}
+              className={`flex flex-col ${m.type === "user" ? "items-end" : "items-start"} transform transition-all duration-300 translate-z-[20px]`}
+              style={{ transformStyle: 'preserve-3d' }}
             >
               <div 
-                className={`p-4 px-5 rounded-2xl text-[14px] font-medium leading-relaxed max-w-[300px] shadow-sm ${
+                className={`p-6 px-8 rounded-[30px] text-[15px] font-bold leading-relaxed max-w-[340px] relative transition-transform hover:translate-z-[10px] group/bubble ${
                   m.type === "ai" 
-                    ? "bg-blue-600 text-white rounded-tl-none" 
-                    : "bg-gray-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 rounded-tr-none border border-black/5 dark:border-white/5"
+                    ? "bg-gradient-to-br from-blue-600/90 to-indigo-800/90 text-white rounded-tl-none border-l-4 border-cyan-400 shadow-[0_15px_30px_rgba(0,0,0,0.3)]" 
+                    : "bg-white/5 text-zinc-100 rounded-tr-none border border-white/10 shadow-xl backdrop-blur-md"
                 }`}
               >
-                <div dangerouslySetInnerHTML={{ __html: m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                <div dangerouslySetInnerHTML={{ __html: m.text.replace(/\*\*(.*?)\*\*/g, '<span class="text-cyan-300">$1</span>') }} />
                 
                 {m.links && m.links.length > 0 && (
-                  <div className="mt-4 flex flex-col gap-2">
+                  <div className="mt-5 flex flex-col gap-2.5">
                     {m.links.map(l => (
                       <Link 
                         key={l.slug} 
                         href={`/hesapla/${l.slug}`}
-                        className="flex items-center justify-between gap-3 p-3 px-4 bg-white/10 hover:bg-white/20 rounded-xl text-[11px] font-extrabold transition-all border border-white/10 group/link"
+                        className="flex items-center justify-between gap-3 p-4 px-5 bg-white/10 hover:bg-white/20 rounded-2xl text-xs font-black transition-all border border-white/5 group/link active:scale-95"
                       >
                         {l.title}
-                        <ArrowRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
+                        <div className="w-8 h-8 rounded-full bg-cyan-400 flex items-center justify-center text-blue-900 group-hover/link:translate-x-1 transition-transform">
+                           <ArrowRight size={16} />
+                        </div>
                       </Link>
                     ))}
                   </div>
                 )}
+
+                {/* Bubble Subtle Glow */}
+                {m.type === "ai" && (
+                  <div className="absolute -inset-1 bg-cyan-400/20 blur-xl opacity-0 group-hover/bubble:opacity-100 transition-opacity rounded-full pointer-events-none"></div>
+                )}
               </div>
-              <span className="text-[9px] font-bold opacity-30 mt-1.5 px-1 uppercase tracking-widest leading-none">
-                {m.type === "ai" ? "Kalküla AI" : "Siz"}
+              <span className="text-[10px] font-black opacity-20 mt-3 px-2 uppercase tracking-[0.3em] text-white">
+                {m.type === "ai" ? "// SYSTEM ENGINE" : "// USER INPUT"}
               </span>
             </div>
           ))}
           {isTyping && (
-            <div className="flex flex-col items-start">
-               <div className="p-3 px-5 bg-gray-100 dark:bg-zinc-800 rounded-2xl rounded-tl-none flex gap-1.5 items-center">
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></div>
+            <div className="flex flex-col items-start gap-2">
+               <div className="p-4 px-8 bg-white/5 rounded-3xl rounded-tl-none flex gap-2 items-center border border-white/10">
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="w-2 h-2 bg-pink-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
                </div>
             </div>
           )}
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Action Bar */}
-        <div className="p-6 pt-0 mt-auto">
+        {/* Futuristic Action Zone */}
+        <div className="p-8 pt-0 mt-auto relative z-20">
           {messages.length === 1 && (
-            <div className="mb-4 flex flex-wrap gap-2">
-              {['Vücut Kitle Endeksi', 'Ek Ders', 'Altın Hesapla'].map(tag => (
+            <div className="mb-6 flex flex-wrap gap-2.5 animate-slide-up-chat">
+              {['Kredi Hesapla', 'Borsa Analizi', 'Döviz Dönüştür', 'Vücut Endeksi'].map(tag => (
                 <button 
                   key={tag}
                   onClick={() => setInputValue(tag)}
-                  className="p-2 px-3.5 rounded-lg text-[11px] font-bold bg-blue-50 dark:bg-blue-900/10 text-blue-600 border border-blue-100 dark:border-blue-900/20 hover:bg-blue-600 hover:text-white transition-all pointer-events-auto"
+                  className="p-3 px-5 rounded-2xl text-[11px] font-black bg-blue-500/10 text-cyan-400 border border-cyan-400/20 hover:bg-cyan-400 hover:text-blue-900 transition-all pointer-events-auto transform hover:translate-z-[15px]"
                 >
-                  {tag}
+                  {tag.toUpperCase()}
                 </button>
               ))}
             </div>
           )}
 
-          <div className="relative group pointer-events-auto">
-            <input
-              type="text"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={(e) => (e.key === "Enter" && handleSend())}
-              placeholder="Nasıl yardımcı olabilirim?"
-              className="w-full bg-gray-100 dark:bg-zinc-800 border-2 border-transparent rounded-2xl py-4 pl-5 pr-14 text-[14px] font-bold focus:border-blue-600/30 focus:bg-white dark:focus:bg-zinc-900 focus:outline-none transition-all placeholder:text-zinc-400"
-            />
-            <button 
-              onClick={handleSend}
-              className="absolute right-2 top-2 p-2.5 bg-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700 transition-all active:scale-90"
-            >
-              <Send size={20} />
-            </button>
+          <div className="relative group pointer-events-auto shadow-[0_0_50px_rgba(37,99,235,0.15)]">
+            <div className="absolute -inset-0.5 bg-gradient-to-r from-blue-600 to-pink-600 rounded-3xl opacity-30 group-focus-within:opacity-100 blur transition-all"></div>
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={(e) => (e.key === "Enter" && handleSend())}
+                placeholder="Quantum sistemine mesaj gönder..."
+                className="w-full bg-zinc-900 border-none rounded-3xl py-5 pl-7 pr-16 text-[15px] font-bold text-white focus:outline-none placeholder:text-white/20"
+              />
+              <button 
+                onClick={handleSend}
+                className="absolute right-3 p-3.5 bg-gradient-to-tr from-blue-500 to-indigo-600 text-white rounded-2xl shadow-xl hover:scale-105 active:scale-90 transition-all group/send"
+              >
+                <Zap size={22} className="group-hover:text-cyan-400 transition-colors" />
+              </button>
+            </div>
           </div>
-          <div className="mt-3 text-center text-[9px] font-black opacity-20 uppercase tracking-[0.2em]">
-            Kalküla Akıllı Hizmet Sistemi
+          <div className="mt-5 text-center text-[9px] font-black opacity-20 uppercase tracking-[0.4em] text-white">
+            Secure Intelligence // Layer 12 Powered
           </div>
         </div>
       </div>
 
-      {/* Main Toggle Bubble */}
+      {/* Futuristic Toggle Core */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group pointer-events-auto ${
-          isOpen ? "bg-red-500 text-white rotate-90" : "bg-blue-600 text-white"
+        className={`w-20 h-20 rounded-[30px] flex items-center justify-center shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 group pointer-events-auto relative overflow-hidden ${
+          isOpen ? "bg-zinc-900 rotate-90" : "bg-blue-600"
         }`}
         style={{ 
-          boxShadow: isOpen ? '0 10px 40px rgba(239, 68, 68, 0.4)' : '0 10px 40px rgba(37, 99, 235, 0.4)' 
+          transformStyle: 'preserve-3d',
+          boxShadow: isOpen ? '0 0 50px rgba(0,0,0,0.5)' : '0 20px 60px rgba(37, 99, 235, 0.5)' 
         }}
       >
-        {isOpen ? <NoIcon size={28} /> : <MessageIcon size={32} className="group-hover:rotate-12 transition-transform" />}
+        <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent animate-marquee opacity-30"></div>
+        {isOpen ? <X size={32} className="text-white relative z-10" /> : <Layers size={40} className="text-white relative z-10 group-hover:rotate-12 transition-transform" />}
+        {!isOpen && (
+          <span className="absolute -top-1 -right-1 w-5 h-5 bg-pink-500 rounded-full border-4 border-white animate-pulse"></span>
+        )}
       </button>
     </div>
   );
-}
-
-// Fixed Lucide Icons for clarity in rewrite
-function MessageIcon({ size, className }: { size: number, className: string }) {
-  return <MessageCircle size={size} className={className} />;
-}
-
-function NoIcon({ size }: { size: number }) {
-  return <X size={size} />;
 }
