@@ -14,12 +14,18 @@ const STATS = [
 ];
 
 const POPULAR_TOOLS = [
-  { slug: "kredi-hesaplama", title: "Kredi Hesaplama", icon: "🏦" },
-  { slug: "vucut-kitle-endeksi", title: "VKI (BMI)", icon: "⚖️" },
-  { slug: "yks-puan", title: "YKS Puan", icon: "📚" },
+  { slug: "doviz-altin-hesaplama", title: "Altın", icon: "🪙" },
+  { slug: "gelir-vergisi", title: "Vergi", icon: "🧾" },
+  { slug: "mtv-hesaplama", title: "MTV", icon: "🚗" },
+  { slug: "vadeli-mevduat", title: "Mevduat", icon: "💰" },
+  { slug: "vucut-kitle-endeksi", title: "VKI", icon: "⚖️" },
+  { slug: "yks-puan", title: "YKS", icon: "📚" },
+  { slug: "lgs-puan", title: "LGS", icon: "🎓" },
+  { slug: "kredi-hesaplama", title: "Kredi", icon: "🏦" },
   { slug: "enflasyon", title: "Enflasyon", icon: "📈" },
-  { slug: "doviz-altin-hesaplama", title: "Altın Hesaplama", icon: "🪙" },
-  { slug: "lgs-puan", title: "LGS Puan", icon: "🎓" },
+  { slug: "kelime-sayaci", title: "Kelime", icon: "✍️" },
+  { slug: "sifre-olusturucu", title: "Şifre", icon: "🔑" },
+  { slug: "su-ihtiyaci", title: "Su", icon: "💧" },
 ];
 
 export default function Home() {
@@ -161,31 +167,72 @@ export default function Home() {
           Kalkula profesyonel araçları ile hayatınızı kolaylaştırın.
         </p>
         
-        {/* Quick Access Circles (Instagram/App style) - Now styled for the new hero */}
-        <div style={{ display: 'flex', gap: '1.25rem', overflowX: 'auto', paddingBottom: '0.5rem' }} className="hide-scrollbar">
-          {POPULAR_TOOLS.map((tool) => (
-            <Link key={tool.slug} href={`/hesapla/${tool.slug}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-              <div style={{ 
-                width: 68, 
-                height: 68, 
-                borderRadius: '50%', 
-                background: 'var(--surface)', 
-                border: '2px solid var(--accent-primary)', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                fontSize: '1.75rem',
-                boxShadow: '0 8px 20px rgba(0,0,0,0.1)'
-              }}>
-                {tool.icon}
-              </div>
-              <span style={{ fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{tool.title.split(' ')[0]}</span>
+        {/* Continuous Sliding Quick Access Circles */}
+        <div style={{ position: 'relative', margin: '0 -1.5rem', padding: '0 1.5rem' }}>
+          <div 
+            style={{ 
+              display: 'flex', 
+              gap: '1rem', 
+              overflowX: 'auto', 
+              padding: '0.5rem 1rem 1rem',
+              maskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+              WebkitMaskImage: 'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
+              scrollSnapType: 'x proximity'
+            }} 
+            className="hide-scrollbar"
+          >
+            {POPULAR_TOOLS.map((tool) => (
+              <Link 
+                key={tool.slug} 
+                href={`/hesapla/${tool.slug}`} 
+                style={{ 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center', 
+                  gap: '0.6rem', 
+                  flexShrink: 0,
+                  scrollSnapAlign: 'start'
+                }}
+              >
+                <div style={{ 
+                  width: 64, 
+                  height: 64, 
+                  borderRadius: '50%', 
+                  background: 'rgba(255,255,255,0.08)',
+                  backdropFilter: 'blur(10px)',
+                  border: '2.5px solid rgba(255,255,255,0.3)', 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  fontSize: '1.75rem',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.15)',
+                  transition: 'transform 0.2s',
+                }}>
+                  {tool.icon}
+                </div>
+                <span style={{ 
+                  fontSize: '0.65rem', 
+                  fontWeight: 900, 
+                  textTransform: 'uppercase', 
+                  letterSpacing: '0.08em',
+                  color: 'rgba(255,255,255,0.95)',
+                  textShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                }}>
+                  {tool.title}
+                </span>
+              </Link>
+            ))}
+            {/* Last Item (Converter) */}
+            <Link href="/converter" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', flexShrink: 0 }}>
+                <div style={{ 
+                  width: 64, height: 64, borderRadius: '50%', background: '#ffffff', 
+                  display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                  fontSize: '1.75rem', color: 'var(--accent-primary)',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
+                }}>📄</div>
+                <span style={{ fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'white' }}>Dosya</span>
             </Link>
-          ))}
-          <Link href="/converter" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
-              <div style={{ width: 68, height: 68, borderRadius: '50%', background: 'var(--accent-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.75rem', color: 'white' }}>📄</div>
-              <span style={{ fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Belge</span>
-          </Link>
+          </div>
         </div>
       </section>
 
