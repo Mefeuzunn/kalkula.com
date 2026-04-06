@@ -55,21 +55,18 @@ export default function Home() {
             Tüm araçlar ücretsiz
           </div>
           <h1 style={{ 
-            fontSize: "4rem", 
+            fontSize: "4.5rem", 
             fontWeight: 900, 
-            marginBottom: "1.25rem", 
+            marginBottom: "1.5rem", 
             lineHeight: 1.1, 
-            letterSpacing: "-0.05em",
-            background: "linear-gradient(to bottom, #ffffff 30%, #cbd5e1 100%)",
+            letterSpacing: "-0.06em",
+            background: "linear-gradient(to bottom, #ffffff 40%, #cbd5e1 100%)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
-            textShadow: "0 20px 40px rgba(0,0,0,0.2)"
+            textShadow: "0 25px 50px rgba(0,0,0,0.25)"
           }}>
-            Kalkula
+            Türkiye&apos;nin En Kapsamlı<br />Hesaplama Platformu
           </h1>
-          <h2 style={{ fontSize: "1.75rem", fontWeight: 700, color: "rgba(255,255,255,0.85)", marginBottom: "2rem", letterSpacing: "-0.02em" }}>
-            Türkiye&apos;nin En Kapsamlı Hesaplama Platformu
-          </h2>
           <p style={{ fontSize: "1.2rem", color: "rgba(255,255,255,0.9)", maxWidth: "650px", margin: "0 auto 3rem", lineHeight: 1.7 }}>
             Finans, eğitim, sağlık ve daha fazlası. {calculators.length}+ profesyonel araç tek bir çatıda.
           </p>
@@ -150,7 +147,7 @@ export default function Home() {
         <h1 style={{ 
           fontSize: "2.75rem", 
           fontWeight: 900, 
-          marginBottom: "0.75rem", 
+          marginBottom: "1rem", 
           lineHeight: 1.1, 
           letterSpacing: "-0.06em",
           background: "linear-gradient(to bottom, #ffffff 40%, #cbd5e1 100%)",
@@ -158,10 +155,10 @@ export default function Home() {
           WebkitTextFillColor: "transparent",
           textShadow: "0 15px 30px rgba(0,0,0,0.2)"
         }}>
-          Kalkula
+          Türkiye&apos;nin En Kapsamlı<br />Hesaplama Platformu
         </h1>
-        <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.9)", maxWidth: "300px", margin: "0 auto 2rem", lineHeight: 1.6 }}>
-          Profesyonel hesaplama araçları tek bir çatıda.
+        <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.9)", maxWidth: "300px", margin: "0 auto 2.5rem", lineHeight: 1.6, fontWeight: 500 }}>
+          Kalkula profesyonel araçları ile hayatınızı kolaylaştırın.
         </p>
         
         {/* Quick Access Circles (Instagram/App style) - Now styled for the new hero */}
