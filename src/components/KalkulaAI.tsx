@@ -87,21 +87,23 @@ export function KalkulaAI() {
   };
 
   return (
-    <>
-      {/* Floating Toggle Bubble */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-8 right-8 z-[10001] w-16 h-16 rounded-3xl flex items-center justify-center shadow-[0_10px_40px_rgba(37,99,235,0.4)] transition-all duration-300 hover:scale-110 active:scale-95 group ${
-          isOpen ? "bg-white text-blue-600 rotate-90" : "bg-blue-600 text-white"
-        }`}
-      >
-        {isOpen ? <X size={28} /> : <MessageCircle size={32} className="group-hover:rotate-12 transition-transform" />}
-      </button>
-
+    <div style={{ position: 'fixed', bottom: '32px', right: '32px', zIndex: 99999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
       {/* Professional Pop-up Chat Window */}
       {isOpen && (
         <div 
-          className="fixed bottom-28 right-8 z-[10000] w-[420px] h-[640px] rounded-[32px] shadow-[0_25px_80px_rgba(0,0,0,0.2)] flex flex-col overflow-hidden glass-chat animate-slide-up-chat border border-white/20"
+          className="glass-chat animate-slide-up-chat border border-white/20"
+          style={{ 
+            width: '420px', 
+            height: '640px', 
+            marginBottom: '16px', 
+            borderRadius: '32px', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            overflow: 'hidden',
+            boxShadow: '0 25px 80px rgba(0,0,0,0.2)',
+            maxWidth: 'calc(100vw - 64px)',
+            maxHeight: 'calc(100vh - 120px)'
+          }}
         >
           {/* Header */}
           <div className="bg-blue-600 p-6 text-white flex items-center justify-between shadow-lg">
@@ -219,6 +221,16 @@ export function KalkulaAI() {
           </div>
         </div>
       )}
-    </>
+
+      {/* Floating Toggle Bubble */}
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className={`w-16 h-16 rounded-3xl flex items-center justify-center shadow-[0_10px_40px_rgba(37,99,235,0.4)] transition-all duration-300 hover:scale-110 active:scale-95 group ${
+          isOpen ? "bg-white text-blue-600 rotate-90" : "bg-blue-600 text-white"
+        }`}
+      >
+        {isOpen ? <X size={28} /> : <MessageCircle size={32} className="group-hover:rotate-12 transition-transform" />}
+      </button>
+    </div>
   );
 }
