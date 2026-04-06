@@ -1,5 +1,5 @@
 .container {
-  padding: 100px 0 4rem;
+  padding: 120px 1rem 8rem;
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -12,59 +12,78 @@
 }
 
 .title {
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
 }
 
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
+.btn3dContainer {
+  position: relative;
+  display: inline-block;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.15);
+  padding: 3px;
+  transition: transform 0.1s;
 }
 
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.panel {
-  padding: 3rem 2rem;
+.btn3d {
+  position: relative;
+  padding: 1rem 2.5rem;
+  border-radius: 20px;
+  border: none;
+  font-weight: 900;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: white;
+  cursor: pointer;
+  transition: all 0.1s;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
+  gap: 0.75rem;
+  transform: translateY(-6px);
+  outline: none;
 }
 
-.panelTitle {
-  font-size: 1.25rem;
-  color: var(--text-secondary);
-  margin-bottom: 2rem;
-  font-weight: 500;
+.btn3dPrimary { 
+  background: linear-gradient(to bottom, #3b82f6, #2563eb); 
+  box-shadow: 0 6px 0 #1d4ed8, 0 12px 20px rgba(59, 130, 246, 0.3); 
+}
+.btn3dSecondary { 
+  background: linear-gradient(to bottom, #4b5563, #374151); 
+  box-shadow: 0 6px 0 #1f2937, 0 12px 20px rgba(0, 0, 0, 0.15); 
+}
+.btn3dSuccess { 
+  background: linear-gradient(to bottom, #22c55e, #16a34a); 
+  box-shadow: 0 6px 0 #15803d, 0 12px 20px rgba(34, 197, 94, 0.3); 
+}
+.btn3dDanger { 
+  background: linear-gradient(to bottom, #ef4444, #dc2626); 
+  box-shadow: 0 6px 0 #b91c1c, 0 12px 20px rgba(239, 68, 68, 0.3); 
 }
 
-.countDisplay, .timeDisplay {
-  font-size: 4rem;
-  font-weight: 700;
-  margin-bottom: 3rem;
-  font-family: var(--font-mono);
-  background: var(--accent-gradient);
-  -webkit-background-clip: text;
-  color: transparent;
-  line-height: 1;
+.btn3d:active {
+  transform: translateY(-2px);
 }
 
-.timeDisplay {
-  font-size: 3.5rem;
+.btn3dPrimary:active { box-shadow: 0 2px 0 #1d4ed8, 0 5px 10px rgba(0,0,0,0.1); }
+.btn3dSecondary:active { box-shadow: 0 2px 0 #1f2937, 0 5px 10px rgba(0,0,0,0.1); }
+.btn3dSuccess:active { box-shadow: 0 2px 0 #15803d, 0 5px 10px rgba(0,0,0,0.1); }
+.btn3dDanger:active { box-shadow: 0 2px 0 #b91c1c, 0 5px 10px rgba(0,0,0,0.1); }
+
+.btn3d:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: translateY(0);
+  box-shadow: none;
 }
 
-.actions {
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-  justify-content: center;
+@keyframes pulseTimer {
+  0% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.05); }
+  100% { transform: translate(-50%, -50%) scale(1); }
 }
 
-.actions button {
-  min-width: 120px;
+.pulseEffect {
+  animation: pulseTimer 1s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }

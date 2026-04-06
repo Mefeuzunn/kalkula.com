@@ -144,38 +144,44 @@ export default function Counters() {
   return (
     <div className={styles.container}>
       <div className={styles.header}>
-        <Link href="/" className="btn-secondary rounded-full" style={{ padding: '0.5rem 1.25rem' }}>
+        <Link href="/" className="btn-secondary rounded-full" style={{ padding: '0.5rem 1.5rem', fontWeight: 800 }}>
           &larr; Ana Sayfa
         </Link>
         <div style={{ flex: 1, textAlign: 'center' }}>
           <h1 className={styles.title}>Zaman Merkezi</h1>
-          <p style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Profesyonel Kronometre ve Sayaç</p>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#22c55e' }}></span>
+            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>2026 Profesyonel Seri</span>
+          </div>
         </div>
-        <div style={{ width: '80px' }}></div>
+        <div style={{ width: '100px' }}></div>
       </div>
 
       {/* Tab Switcher */}
       <div style={{ 
         display: 'flex', 
-        background: 'var(--bg-secondary)', 
-        padding: '0.4rem', 
+        background: 'rgba(255,255,255,0.03)', 
+        padding: '0.5rem', 
         borderRadius: '100px', 
-        marginBottom: '3rem',
+        marginBottom: '4rem',
         border: '1px solid var(--border)',
         width: 'fit-content',
-        margin: '0 auto 3rem auto'
+        margin: '0 auto 4rem auto',
+        boxShadow: 'inset 0 2px 10px rgba(0,0,0,0.2)'
       }}>
         <button 
           onClick={() => setActiveTab("stopwatch")}
           style={{
-            padding: '0.6rem 2rem',
+            padding: '0.75rem 2.5rem',
             borderRadius: '100px',
             fontSize: '0.9rem',
-            fontWeight: 700,
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            fontWeight: 800,
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             background: activeTab === "stopwatch" ? 'var(--accent-primary)' : 'transparent',
             color: activeTab === "stopwatch" ? '#fff' : 'var(--text-secondary)',
-            boxShadow: activeTab === "stopwatch" ? '0 10px 20px -5px var(--accent-primary-glow)' : 'none'
+            boxShadow: activeTab === "stopwatch" ? '0 10px 25px -5px var(--accent-primary-glow)' : 'none',
+            border: 'none',
+            cursor: 'pointer'
           }}
         >
           Kronometre
@@ -183,14 +189,16 @@ export default function Counters() {
         <button 
           onClick={() => setActiveTab("timer")}
           style={{
-            padding: '0.6rem 2rem',
+            padding: '0.75rem 2.5rem',
             borderRadius: '100px',
             fontSize: '0.9rem',
-            fontWeight: 700,
-            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            fontWeight: 800,
+            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
             background: activeTab === "timer" ? 'var(--accent-primary)' : 'transparent',
             color: activeTab === "timer" ? '#fff' : 'var(--text-secondary)',
-            boxShadow: activeTab === "timer" ? '0 10px 20px -5px var(--accent-primary-glow)' : 'none'
+            boxShadow: activeTab === "timer" ? '0 10px 25px -5px var(--accent-primary-glow)' : 'none',
+            border: 'none',
+            cursor: 'pointer'
           }}
         >
           Geri Sayım
@@ -200,54 +208,51 @@ export default function Counters() {
       <div className="max-w-4xl mx-auto">
         {activeTab === "stopwatch" ? (
           <div className="fade-in">
-            <div className="panel shadow-2xl relative overflow-hidden" style={{ minHeight: '400px', padding: '4rem 2rem' }}>
-              <div className="absolute top-0 right-0 p-8 opacity-5">
-                <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 2A10 10 0 1 0 22 12A10 10 0 0 0 12 2ZM13 13H12A1 1 0 0 1 11 12V7A1 1 0 0 1 13 7V11H14A1 1 0 0 1 14 13Z" />
-                </svg>
-              </div>
-
+            <div className="panel shadow-2xl relative overflow-hidden" style={{ minHeight: '450px', padding: '5rem 2rem', borderRadius: '4rem', background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
+              
               <div className="text-center relative z-10">
-                <div style={{ fontSize: '6rem', fontWeight: 900, fontFamily: 'var(--font-mono)', letterSpacing: '-0.05em', color: 'var(--text-primary)', marginBottom: '3rem' }}>
+                <div style={{ fontSize: '7rem', fontWeight: 900, fontFamily: 'var(--font-mono)', letterSpacing: '-0.05em', color: 'var(--text-primary)', marginBottom: '4rem', textShadow: '0 10px 30px rgba(0,0,0,0.3)' }}>
                   {formatTime(swTime)}
                 </div>
 
-                <div className="flex gap-4 justify-center">
-                  <button className="btn-secondary rounded-3xl px-8 py-4 font-black" onClick={resetSw}>SIFIRLA</button>
-                  <button 
-                    className="rounded-3xl px-12 py-4 font-black text-white transition-all shadow-xl"
-                    style={{ 
-                      background: swIsRunning ? '#ef4444' : 'var(--accent-primary)',
-                      transform: swIsRunning ? 'scale(1)' : 'scale(1.05)'
-                    }}
-                    onClick={startStopSw}
-                  >
-                    {swIsRunning ? "DURDUR" : "BAŞLAT"}
-                  </button>
-                  <button 
-                    className="btn-secondary rounded-3xl px-8 py-4 font-black" 
-                    disabled={!swIsRunning && swTime === 0}
-                    onClick={recordLap}
-                  >
-                    TUR
-                  </button>
+                <div className="flex gap-6 justify-center">
+                  <div className={styles.btn3dContainer}>
+                    <button className={`${styles.btn3d} ${styles.btn3dSecondary}`} onClick={resetSw}>SIFIRLA</button>
+                  </div>
+                  <div className={styles.btn3dContainer} style={{ transform: 'scale(1.1)' }}>
+                    <button 
+                      className={`${styles.btn3d} ${swIsRunning ? styles.btn3dDanger : styles.btn3dPrimary}`} 
+                      onClick={startStopSw}
+                    >
+                      {swIsRunning ? "DURDUR" : "BAŞLAT"}
+                    </button>
+                  </div>
+                  <div className={styles.btn3dContainer}>
+                    <button 
+                      className={`${styles.btn3d} ${styles.btn3dSecondary}`} 
+                      disabled={!swIsRunning && swTime === 0}
+                      onClick={recordLap}
+                    >
+                      TUR AT
+                    </button>
+                  </div>
                 </div>
               </div>
               
               {laps.length > 0 && (
-                <div className="mt-12 w-full max-w-md mx-auto fade-in">
-                  <div style={{ borderTop: '1px solid var(--border)', paddingTop: '2rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 800, color: 'var(--text-muted)', marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                      <span># Tur</span>
-                      <span>Tur Süresi</span>
-                      <span>Toplam</span>
+                <div className="mt-16 w-full max-w-lg mx-auto fade-in">
+                  <div style={{ borderTop: '2px solid var(--border)', paddingTop: '2.5rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 900, color: 'var(--text-muted)', marginBottom: '1.5rem', textTransform: 'uppercase', letterSpacing: '0.15em' }}>
+                      <span># Kademe</span>
+                      <span>Tur Farkı</span>
+                      <span>Kümülatif</span>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', maxHeight: '300px', overflowY: 'auto', paddingRight: '0.5rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '350px', overflowY: 'auto', paddingRight: '0.75rem' }} className="custom-scrollbar">
                       {laps.map((lap, idx) => (
-                        <div key={lap.id} className="flex justify-between items-center p-3 bg-secondary/5 rounded-xl border border-border/50 animate-slide-up" style={{ animationDelay: `${idx * 0.05}s` }}>
-                          <span className="font-bold text-muted text-xs">{(laps.length - idx).toString().padStart(2, '0')}</span>
-                          <span className="font-mono font-bold text-accent-primary">+{formatTime(lap.lapTime)}</span>
-                          <span className="font-mono font-bold">{formatTime(lap.time)}</span>
+                        <div key={lap.id} className="flex justify-between items-center p-4 bg-white/5 rounded-2xl border border-white/5 hover:border-accent-primary/30 transition-all animate-slide-up" style={{ animationDelay: `${idx * 0.05}s` }}>
+                          <span className="font-black text-accent-primary/40 text-xs">{(laps.length - idx).toString().padStart(2, '0')}</span>
+                          <span className="font-mono font-black text-accent-primary">+{formatTime(lap.lapTime)}</span>
+                          <span className="font-mono font-black opacity-80">{formatTime(lap.time)}</span>
                         </div>
                       ))}
                     </div>
@@ -258,87 +263,83 @@ export default function Counters() {
           </div>
         ) : (
           <div className="fade-in">
-            <div className="panel shadow-2xl relative overflow-hidden" style={{ minHeight: '400px', padding: '4rem 2rem' }}>
+            <div className="panel shadow-2xl relative overflow-hidden" style={{ minHeight: '450px', padding: '5rem 2rem', borderRadius: '4rem', background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
               <div className="flex flex-col items-center">
                 
-                {/* SVG Progress Circle */}
-                <div className="relative mb-12">
-                   <svg width="240" height="240" style={{ transform: 'rotate(-90deg)' }}>
-                      <circle cx="120" cy="120" r="110" fill="transparent" stroke="var(--border)" strokeWidth="6" />
+                {/* SVG Progress Circle with Glow */}
+                <div className="relative mb-14">
+                   <div style={{ position: 'absolute', inset: '-20px', background: timerIsRunning ? 'var(--accent-primary-glow)' : 'transparent', borderRadius: '50%', filter: 'blur(40px)', opacity: 0.1, transition: 'all 1s' }}></div>
+                   <svg width="280" height="280" style={{ transform: 'rotate(-90deg)', filter: 'drop-shadow(0 0 10px rgba(0,0,0,0.5))' }}>
+                      <circle cx="140" cy="140" r="130" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" strokeWidth="12" />
                       <circle 
-                        cx="120" 
-                        cy="120" 
-                        r="110" 
+                        cx="140" 
+                        cy="140" 
+                        r="130" 
                         fill="transparent" 
                         stroke="var(--accent-primary)" 
-                        strokeWidth="6" 
-                        strokeDasharray={2 * Math.PI * 110}
-                        strokeDashoffset={2 * Math.PI * 110 * (1 - timerLeft / timerInitial)}
+                        strokeWidth="12" 
+                        strokeDasharray={2 * Math.PI * 130}
+                        strokeDashoffset={2 * Math.PI * 130 * (1 - timerLeft / timerInitial)}
                         strokeLinecap="round"
-                        style={{ transition: 'stroke-dashoffset 1s linear' }}
+                        style={{ transition: 'stroke-dashoffset 1s linear', filter: 'drop-shadow(0 0 5px var(--accent-primary))' }}
                       />
                    </svg>
-                   <div style={{ 
+                   <div className={timerLeft <= 10 && timerIsRunning ? styles.pulseEffect : ""} style={{ 
                      position: 'absolute', 
                      top: '50%', 
                      left: '50%', 
                      transform: 'translate(-50%, -50%)',
-                     fontSize: '3.5rem',
+                     fontSize: '4.5rem',
                      fontWeight: 900,
                      fontFamily: 'var(--font-mono)',
                      color: timerLeft <= 10 && timerIsRunning ? '#ef4444' : 'var(--text-primary)',
-                     animation: timerLeft <= 10 && timerIsRunning ? 'pulse 1s infinite' : 'none'
+                     textShadow: '0 5px 15px rgba(0,0,0,0.4)'
                    }}>
                       {formatTimer(timerLeft)}
                    </div>
                 </div>
 
-                <div className="flex gap-4 justify-center mb-10">
-                   <button 
-                    className="btn-secondary rounded-3xl px-8 py-4 font-black" 
-                    onClick={() => setPreset(timerInitial)}
-                   >
-                    Sıfırla
-                   </button>
-                   <button 
-                    className="rounded-3xl px-12 py-4 font-black text-white transition-all shadow-xl"
-                    style={{ 
-                      background: timerIsRunning ? '#ef4444' : '#22c55e',
-                      transform: timerIsRunning ? 'scale(1.05)' : 'scale(1)'
-                    }}
-                    onClick={startStopTimer}
-                  >
-                    {timerIsRunning ? "DURDUR" : "BAŞLAT"}
-                  </button>
+                <div className="flex gap-6 justify-center mb-14">
+                   <div className={styles.btn3dContainer}>
+                     <button className={`${styles.btn3d} ${styles.btn3dSecondary}`} onClick={() => setPreset(timerInitial)}>SIFIRLA</button>
+                   </div>
+                   <div className={styles.btn3dContainer} style={{ transform: 'scale(1.15)' }}>
+                     <button 
+                      className={`${styles.btn3d} ${timerIsRunning ? styles.btn3dDanger : styles.btn3dSuccess}`} 
+                      onClick={startStopTimer}
+                    >
+                      {timerIsRunning ? "DURDUR" : "BAŞLAT"}
+                    </button>
+                   </div>
                 </div>
 
-                <div className="w-full max-w-sm">
-                   <div className="text-[10px] uppercase font-black text-muted tracking-widest mb-4 text-center">HIZLI BAŞLAT</div>
-                   <div className="grid grid-cols-4 gap-2 mb-8">
-                      {[1, 5, 10, 30].map(m => (
-                        <button key={m} onClick={() => setPreset(m * 60)} className="p-2 bg-secondary/5 border border-border rounded-xl text-xs font-bold hover:border-accent-primary transition-colors">
+                <div className="w-full max-w-md">
+                   <div className="text-[10px] uppercase font-black text-muted tracking-widest mb-5 text-center">HIZLI ŞABLONLAR</div>
+                   <div className="grid grid-cols-4 gap-3 mb-10">
+                      {[1, 5, 15, 30].map(m => (
+                        <button key={m} onClick={() => setPreset(m * 60)} className="p-3 bg-white/5 border border-white/5 rounded-2xl text-xs font-black hover:border-accent-primary hover:bg-accent-primary/10 transition-all text-primary uppercase">
                           {m} Dakika
                         </button>
                       ))}
                    </div>
 
-                   <div className="p-6 bg-secondary/5 rounded-3xl border border-border">
-                      <div className="text-[10px] uppercase font-black text-muted tracking-widest mb-3">ÖZEL SÜRE AYARLA</div>
-                      <div className="grid grid-cols-3 gap-3">
-                         <div className="flex flex-col gap-1">
-                            <span className="text-[9px] font-bold text-muted ml-2">SAAT</span>
-                            <input type="number" min="0" value={timerInput.h} onChange={e => setTimerInput({...timerInput, h: parseInt(e.target.value)||0})} className="p-2 rounded-xl bg-bg-primary border border-border text-center font-bold" />
+                   <div className="p-8 bg-white/5 rounded-[3rem] border border-white/5 shadow-inner">
+                      <div className="text-[10px] uppercase font-black text-accent-primary tracking-widest mb-5 text-center">ÖZEL SÜRE YAPILANDIRMASI</div>
+                      <div className="grid grid-cols-3 gap-4">
+                         <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-black text-muted text-center tracking-tighter">SAAT</span>
+                            <input type="number" min="0" value={timerInput.h} onChange={e => setTimerInput({...timerInput, h: parseInt(e.target.value)||0})} className="p-4 rounded-2xl bg-black/40 border border-white/10 text-center font-black text-xl text-primary focus:border-accent-primary outline-none transition-all" />
                          </div>
-                         <div className="flex flex-col gap-1">
-                            <span className="text-[9px] font-bold text-muted ml-2">DK</span>
-                            <input type="number" min="0" max="59" value={timerInput.m} onChange={e => setTimerInput({...timerInput, m: parseInt(e.target.value)||0})} className="p-2 rounded-xl bg-bg-primary border border-border text-center font-bold" />
+                         <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-black text-muted text-center tracking-tighter">DAKİKA</span>
+                            <input type="number" min="0" max="59" value={timerInput.m} onChange={e => setTimerInput({...timerInput, m: parseInt(e.target.value)||0})} className="p-4 rounded-2xl bg-black/40 border border-white/10 text-center font-black text-xl text-primary focus:border-accent-primary outline-none transition-all" />
                          </div>
-                         <div className="flex flex-col gap-1">
-                            <span className="text-[9px] font-bold text-muted ml-2">SN</span>
-                            <input type="number" min="0" max="59" value={timerInput.s} onChange={e => setTimerInput({...timerInput, s: parseInt(e.target.value)||0})} className="p-2 rounded-xl bg-bg-primary border border-border text-center font-bold" />
+                         <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-black text-muted text-center tracking-tighter">SANİYE</span>
+                            <input type="number" min="0" max="59" value={timerInput.s} onChange={e => setTimerInput({...timerInput, s: parseInt(e.target.value)||0})} className="p-4 rounded-2xl bg-black/40 border border-white/10 text-center font-black text-xl text-primary focus:border-accent-primary outline-none transition-all" />
                          </div>
                       </div>
-                      <button onClick={handleTimerSet} className="w-full mt-4 bg-accent-primary text-white font-black py-3 rounded-2xl text-xs shadow-lg shadow-accent-primary/20">AYARLA VE HAZIRLA</button>
+                      <button onClick={handleTimerSet} className="w-full mt-6 bg-accent-primary text-white font-black py-4 rounded-2xl text-sm shadow-xl shadow-accent-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">SÜREYİ AYARLA</button>
                    </div>
                 </div>
               </div>
