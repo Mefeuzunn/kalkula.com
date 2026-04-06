@@ -17,7 +17,7 @@ const POPULAR_TOOLS = [
   { slug: "vucut-kitle-endeksi", title: "VKI (BMI)", icon: "⚖️" },
   { slug: "yks-puan", title: "YKS Puan", icon: "📚" },
   { slug: "enflasyon", title: "Enflasyon", icon: "📈" },
-  { slug: "altin", title: "Altın", icon: "🪙" },
+  { slug: "doviz-altin-hesaplama", title: "Altın Hesaplama", icon: "🪙" },
   { slug: "lgs-puan", title: "LGS Puan", icon: "🎓" },
 ];
 
