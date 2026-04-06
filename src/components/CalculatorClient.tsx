@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { getCalculatorBySlug, getCategoryBySlug, Category, CalculatorInfo } from "@/data/calculators";
+import { getCategoryBySlug, Category, CalculatorInfo } from "@/data/calculators";
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { RightSidebarAds } from "@/components/RightSidebarAds";
 import { AdPlaceholder } from "@/components/AdPlaceholder";
-import confetti from "canvas-confetti";
 
 // Tüm Hesaplama Bileşenlerini İçe Aktar (Orijinal dosyadan kopyalandı)
+import { BmiCalculator } from "@/components/calculators/BmiCalculator";
 import { PregnancyCalculator } from "@/components/calculators/PregnancyCalculator";
 import { CalorieCalculator } from "@/components/calculators/CalorieCalculator";
 import { LoanCalculator } from "@/components/calculators/LoanCalculator";
@@ -69,11 +69,10 @@ import { PeriodCalculator, ZodiacCalculator } from "@/components/calculators/Ext
 import { FractionsCalculator, LogarithmCalculator } from "@/components/calculators/ExtraMathCalculators";
 import { MatrixCalculator } from "@/components/calculators/MatrixCalculator";
 import { EquationSolver } from "@/components/calculators/EquationSolver";
-import { IdealWeightCalculator, SleepCycleCalculator, PowerRootCalculator, PrimeNumberCalculator } from "@/components/calculators/Phase1Calculators";
+import { IdealWeightCalculator, PowerRootCalculator, PrimeNumberCalculator } from "@/components/calculators/Phase1Calculators";
 import { GeometryCalculators } from "@/components/calculators/GeometryCalculators";
 import { OhmLawCalculator } from "@/components/calculators/OhmLawCalculator";
 import { PhysicsVisualizers } from "@/components/calculators/PhysicsVisualizers";
-import { WaterIntakeCalculator } from "@/components/calculators/WaterIntakeCalculator";
 import { ResistorCalculator } from "@/components/calculators/ResistorCalculator";
 import { FuelCostCalculator } from "@/components/calculators/Phase2Calculators";
 import { WaterIntakePremium } from "@/components/calculators/WaterIntakePremium";
@@ -115,96 +114,22 @@ import { FluidPressureCalculator } from "@/components/calculators/FluidPressureC
 import { StatisticsCalculator } from "@/components/calculators/StatisticsCalculator";
 import { PermutationCombinationCalculator } from "@/components/calculators/PermutationCombinationCalculator";
 
-// BMI Calculator
-function BMICalculator() {
-  const [weight, setWeight] = useState("");
-  const [height, setHeight] = useState("");
-  const [result, setResult] = useState<number | null>(null);
-
-  const calculate = () => {
-    const w = parseFloat(weight);
-    const h = parseFloat(height) / 100;
-    if (w > 0 && h > 0) {
-      const vke = w / (h * h);
-      setResult(vke);
-      
-      // WOW Efekti
-      confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 } });
-    }
-  };
-
-  let status = "";
-  let color = "";
-
-  if (result !== null) {
-    if (result < 18.5) { status = "Zayıf"; color = "#3b82f6"; }
-    else if (result < 24.9) { status = "Normal"; color = "#22c55e"; }
-    else if (result < 29.9) { status = "Fazla Kilolu"; color = "#eab308"; }
-    else { status = "Obez"; color = "#ef4444"; }
-  }
-
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-bold text-muted uppercase px-1">Boy (cm)</label>
-          <input 
-            type="number" 
-            placeholder="175" 
-            value={height}
-            onChange={(e) => setHeight(e.target.value)}
-            className="input-field text-xl font-bold py-4" 
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-bold text-muted uppercase px-1">Kilo (kg)</label>
-          <input 
-            type="number" 
-            placeholder="70" 
-            value={weight}
-            onChange={(e) => setWeight(e.target.value)}
-            className="input-field text-xl font-bold py-4" 
-          />
-        </div>
-      </div>
-      <button className="btn-primary py-4 text-lg font-bold shadow-xl" onClick={calculate}>
-        Hesapla
-      </button>
-
-      {result !== null && (
-        <div className="result-container-premium animate-result shadow-2xl">
-          <div className="result-card-premium">
-            <div className="result-badge" style={{ backgroundColor: `${color}11`, color, borderColor: `${color}33` }}>
-               {status}
-            </div>
-            <div className="result-value-premium" style={{ color }}>
-              {result.toFixed(1)}
-            </div>
-            <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-4">Vücut Kitle Endeksiniz</div>
-            
-            <div className="mt-8 pt-6 border-t border-border flex justify-center">
-               <div className="flex gap-1 h-3 w-full max-w-sm rounded-full overflow-hidden bg-secondary/20">
-                  <div className="h-full flex-1 bg-blue-400 opacity-60"></div>
-                  <div className="h-full flex-1 bg-green-500"></div>
-                  <div className="h-full flex-1 bg-yellow-500 opacity-60"></div>
-                  <div className="h-full flex-1 bg-red-500 opacity-60"></div>
-               </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function GenericCalculator() {
   return (
-    <div style={{ textAlign: "center", padding: "2rem", color: "var(--text-muted)" }}>
-      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ margin: "0 auto 1rem auto" }}>
-        <circle cx="12" cy="12" r="10"></circle>
-        <polyline points="12 6 12 12 16 14"></polyline>
-      </svg>
-      <p style={{ fontSize: "1.1rem" }}>Bu hesaplama aracı çok yakında form yapısıyla hizmetinizde olacak.</p>
+    <div className="animate-fade-in" style={{ textAlign: "center", padding: "4rem 2rem", background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px dashed var(--border)' }}>
+      <div style={{ position: 'relative', width: '80px', height: '80px', margin: '0 auto 2rem' }}>
+        <div className="animate-pulse" style={{ position: 'absolute', inset: 0, background: 'var(--accent-glow)', borderRadius: '50%', filter: 'blur(20px)' }}></div>
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="var(--accent-primary)" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" style={{ position: 'relative' }}>
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.77 3.77z"></path>
+        </svg>
+      </div>
+      <h2 style={{ fontSize: "1.5rem", fontWeight: 800, marginBottom: "0.75rem" }}>Başarıyla Geliştiriliyor</h2>
+      <p style={{ color: "var(--text-muted)", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: "400px", margin: "0 auto" }}>
+        Bu modül şu an 2026 standartlarına uygun şekilde optimize ediliyor. Çok yakında tam kapasite ile yayında olacak.
+      </p>
+      <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
+        {[1,2,3].map(i => <div key={i} className="animate-bounce" style={{ width: '8px', height: '8px', background: 'var(--accent-primary)', borderRadius: '50%', animationDelay: `${i * 0.2}s` }}></div>)}
+      </div>
     </div>
   );
 }
@@ -231,7 +156,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
 
   const renderCalculator = () => {
     switch (slug) {
-      case "vucut-kitle-endeksi": return <BMICalculator />;
+      case "vucut-kitle-endeksi": return <BmiCalculator />;
       case "gebelik": return <PregnancyCalculator />;
       case "vucut-yag-orani": return <BodyFatCalculator />;
       case "adet-takibi": return <PeriodCalculator />;
