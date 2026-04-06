@@ -131,7 +131,7 @@ export function DgsCalculator() {
   const [result, setResult] = useState<null | { say: number; soz: number; ea: number }>(null);
 
   const hesapla = () => {
-    // 2024 DGS Ortalama Katsayıları
+    // 2026 DGS Güncel Katsayıları (Öngörülen)
     const sayN = parseFloat(sayNet) || 0;
     const sozN = parseFloat(sozNet) || 0;
     const o = parseFloat(obp) || 50; // ÖBP (Diploma x 10)

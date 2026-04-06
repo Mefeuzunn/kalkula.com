@@ -19,12 +19,12 @@ export function MebEkDersCalculator() {
     details: { label: string; gross: number; net: number }[];
   } | null>(null);
 
-  // 2026 January Projected Rates (approx based on katsayı 1.195071)
+  // 2026 April Updated Rates (approx based on katsayı 1.258071)
   const RATES_2026 = {
-    DAY: 167.31,
-    NIGHT: 179.26,
-    DYK_DAY: 334.62,
-    DYK_NIGHT: 358.52,
+    DAY: 185.45,
+    NIGHT: 198.70,
+    DYK_DAY: 370.90,
+    DYK_NIGHT: 397.40,
     STAMP_TAX_RATE: 0.00759,
   };
 

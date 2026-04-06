@@ -155,7 +155,7 @@ export function MtvCalculator() {
                     </div>
 
                     <p className="mt-6 text-[8px] text-muted/50 font-bold uppercase text-center tracking-[0.2em] leading-relaxed">
-                       * Bu hesaplama 2026 yılı için Cumhurbaşkanı kararıyla belirlenen %18.95 MTV artış oranı baz alınarak yapılmıştır. Resmi rakamlar Ocak ayı itibarıyla yürürlüktedir.
+                       * Bu hesaplama 2026 yılı için belirlenen %18.95 (YDO Bazlı) MTV artış oranı baz alınarak yapılmıştır. Resmi rakamlar 2026 yılı için geçerli en güncel tutarları yansıtmaktadır.
                     </p>
                  </div>
               </div>

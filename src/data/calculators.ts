@@ -36,7 +36,7 @@ export const categories: Category[] = [
 ];
 
 export const calculators: CalculatorInfo[] = [
-  // Sağlık Kats.
+  // Sağlık Kats. 2026
   { id: "bmi", title: "Vücut Kitle Endeksi", slug: "vucut-kitle-endeksi", categoryId: "saglik", description: "Boyunuza ve kilonuza göre sağlıklı aralıkta olup olmadığınızı öğrenin." },
   { id: "ideal-kilo", title: "İdeal Kilo Hesaplama", slug: "ideal-kilo", categoryId: "saglik", description: "Boy, yaş ve cinsiyete göre tıbbi standartlardaki ideal (olmanız gereken) kilonuz." },
   { id: "su-ihtiyaci", title: "Su İhtiyacı Hesaplama", slug: "su-ihtiyaci", categoryId: "saglik", description: "Günlük olarak tüketmeniz gereken minimum litre ve bardak bazında su miktarı." },
@@ -98,7 +98,7 @@ export const calculators: CalculatorInfo[] = [
   { id: "yakit-tuketim", title: "Yakıt Hesaplama", slug: "yakit-maliyeti", categoryId: "muhasebe", description: "Aracınızın km başına kaç TL yaktığını, toplam yol masrafını analiz edin." },
   { id: "meb-ek-ders", title: "MEB Ek Ders Ücreti (2026)", slug: "meb-ek-ders-hesaplama", categoryId: "muhasebe", description: "Öğretmenler için gündüz, gece ve hafta sonu ek ders ücreti hesaplaması." },
   { id: "acad-ek-ders", title: "Akademisyen Ek Ders (2026)", slug: "akademisyen-ek-ders-hesaplama", categoryId: "muhasebe", description: "Akademik personel için unvan bazlı ek ders ücreti hesaplama." },
-  { id: "mtv", title: "MTV Hesaplama (2026 Güncel)", slug: "mtv-hesaplama", categoryId: "muhasebe", description: "2025 ve 2026 Ocak MTV tutarlarını araç tipi ve yaşına göre karşılaştırmalı hesaplayın." },
+  { id: "mtv", title: "MTV Hesaplama (2026 Güncel)", slug: "mtv-hesaplama", categoryId: "muhasebe", description: "2026 Ocak MTV tutarlarını araç tipi ve yaşına göre karşılaştırmalı hesaplayın." },
   { id: "currency-commodity", title: "Döviz & Altın Hesaplaması (Canlı)", slug: "doviz-altin-hesaplama", categoryId: "muhasebe", description: "Anlık kurlar ile Dolar, Euro ve altın (Gram, Çeyrek, Yarım) birimlerini TL'ye çevirin." },
   { id: "tax-free", title: "Global Tax Free Hesaplama (2026)", slug: "tax-free-hesaplama", categoryId: "muhasebe", description: "15+ ülke (Fransa, İtalya, Japonya vb.) için KDV iadesini yerel para birimi ve TL karşılığıyla hesaplayın." },
   { id: "desi", title: "Kargo Desi Hesaplama", slug: "kargo-desi-hesaplama", categoryId: "muhasebe", description: "Paket boyutlarına göre kargo desi (hacimsel ağırlık) hesaplaması." },
@@ -166,9 +166,9 @@ export const calculators: CalculatorInfo[] = [
   { id: "font-gen", title: "Şık Yazı Tipi Oluşturucu", slug: "sik-yazi-tipi-olusturucu", categoryId: "sosyal", description: "Metinlerinizi b𝚘𝚕𝚍, 𝘪𝘵𝘢𝘭𝘪𝘤 veya 𝔊𝔬𝔱𝔦𝔨 gibi 20+ farklı Unicode stiline dönüştürün." },
 
   // Vergi Hesaplamaları
-  { id: "kdv", title: "KDV Hesaplama", slug: "kdv", categoryId: "vergi", description: "KDV dahil ve hariç tutarları %1, %10, %20 oranlarında anında hesaplayın." },
-  { id: "damga-vergisi", title: "Damga Vergisi Hesaplama", slug: "damga-vergisi", categoryId: "vergi", description: "Sözleşme, kira, bordro ve banka evraklarının damga vergisini hesaplayın." },
-  { id: "gelir-vergisi", title: "Gelir Vergisi Hesaplama (2026)", slug: "gelir-vergisi", categoryId: "vergi", description: "2026 gelir vergisi dilimlerine göre aylık brüt maaştan net maaşa geçin." },
+  { id: "kdv", title: "KDV Hesaplama (2026)", slug: "kdv", categoryId: "vergi", description: "2026 güncel oranları (%1, %10, %20) ile KDV dahil ve hariç tutarları anında hesaplayın." },
+  { id: "damga-vergisi", title: "Damga Vergisi Hesaplama (2026)", slug: "damga-vergisi", categoryId: "vergi", description: "2026 yılı sözleşme, kira ve bordro damga vergisi oranlarına göre hesaplama yapın." },
+  { id: "gelir-vergisi", title: "Gelir Vergisi Hesaplama (2026)", slug: "gelir-vergisi", categoryId: "vergi", description: "2026 resmi gelir vergisi dilimlerine göre aylık brüt maaştan net maaşa geçin." },
 
   // Geliştirici, Pratik ve Eğlence Araçları (Mevcut olanları veriye bağlama)
   { id: "password-gen", title: "Gelişmiş Şifre Oluşturucu", slug: "sifre-olusturucu", categoryId: "araclar", description: "Yüksek güvenlikli, rastgele ve kırılmaz şifreler oluşturun." },

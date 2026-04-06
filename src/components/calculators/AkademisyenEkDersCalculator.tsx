@@ -16,8 +16,8 @@ export function AkademisyenEkDersCalculator() {
     totalTax: number;
   } | null>(null);
 
-  // 2026 January Points & Katsayı
-  const KATSAYI_2026 = 1.387871;
+  // 2026 April Points & Katsayı (approx based on katsayı 1.487871)
+  const KATSAYI_2026 = 1.487871;
   const POINTS = {
     prof: 300,
     assoc: 250,

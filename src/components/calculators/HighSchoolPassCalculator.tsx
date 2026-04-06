@@ -76,7 +76,7 @@ export function HighSchoolPassCalculator() {
 
       <div className="calc-info-box">
         <span className="calc-info-box-icon">💡</span>
-        <span className="calc-info-box-text">MEB 2024 yönetmeliğine göre baraj ders (genellikle Türk Dili ve Edebiyatı) kuralı çok önemlidir. Ortalamanız 50'yi geçse dahi baraj dersten kaldığınız zaman sorumlu olarak geçersiniz.</span>
+        <span className="calc-info-box-text">2025-2026 eğitim-öğretim yılı güncel yönetmeliğine göre baraj ders (Türk Dili ve Edebiyatı) kuralı çok önemlidir. Ortalamanız 50'yi geçse dahi baraj dersten kaldığınız zaman sorumlu olarak geçersiniz.</span>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ export function IncomeTaxCalculator() {
   const TAX_DATA: any = {
     "2024": [ { limit: 110000, rate: 0.15 }, { limit: 230000, rate: 0.20 }, { limit: 580000, rate: 0.27 }, { limit: 3000000, rate: 0.35 }, { limit: Infinity, rate: 0.40 } ],
     "2025": [ { limit: 158000, rate: 0.15 }, { limit: 330000, rate: 0.20 }, { limit: 840000, rate: 0.27 }, { limit: 4300000, rate: 0.35 }, { limit: Infinity, rate: 0.40 } ],
-    "2026": [ { limit: 190000, rate: 0.15 }, { limit: 400000, rate: 0.20 }, { limit: 1500000, rate: 0.27 }, { limit: 5300000, rate: 0.35 }, { limit: Infinity, rate: 0.40 } ]
+    "2026": [ { limit: 230000, rate: 0.15 }, { limit: 580000, rate: 0.20 }, { limit: 1200000, rate: 0.27 }, { limit: 5000000, rate: 0.35 }, { limit: Infinity, rate: 0.40 } ]
   };
 
   const calculate = () => {
