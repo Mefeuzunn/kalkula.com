@@ -24,11 +24,20 @@ export default function Calendar() {
   const [showModal, setShowModal] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newColor, setNewColor] = useState(COLORS[0]);
-  const [view, setView] = useState<"month" | "week">("month");
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) setEvents(JSON.parse(raw));
+    
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    
+    const todayStr = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`;
+    setSelectedDate(todayStr);
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const saveEvents = (updated: CalendarEvent[]) => {
@@ -52,36 +61,6 @@ export default function Calendar() {
 
   const deleteEvent = (id: string) => saveEvents(events.filter(e => e.id !== id));
 
-  const exportEvents = () => {
-    const content = events.map(e => `${e.date}: ${e.title}`).join("\n");
-    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "kalkula_takvim.txt";
-    a.click();
-  };
-
-  const exportICS = () => {
-    const lines = [
-      "BEGIN:VCALENDAR",
-      "VERSION:2.0",
-      "PRODID:-//Kalküla//Calendar//TR",
-      ...events.flatMap(e => [
-        "BEGIN:VEVENT",
-        `DTSTART:${e.date.replace(/-/g, "")}`,
-        `SUMMARY:${e.title}`,
-        `UID:${e.id}@kalkula`,
-        "END:VEVENT",
-      ]),
-      "END:VCALENDAR",
-    ].join("\r\n");
-    const blob = new Blob([lines], { type: "text/calendar" });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "kalkula_takvim.ics";
-    a.click();
-  };
-
   const today = new Date();
   const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
 
@@ -93,228 +72,281 @@ export default function Calendar() {
     `${current.getFullYear()}-${String(current.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
   const eventsForDate = (dateStr: string) => events.filter(e => e.date === dateStr);
-
   const selectedEvents = selectedDate ? eventsForDate(selectedDate) : [];
 
-  // Week view helpers
-  const getWeekDays = () => {
-    const d = new Date(today);
-    const day = d.getDay();
-    const diff = (day === 0 ? -6 : 1 - day);
-    d.setDate(d.getDate() + diff);
-    return Array.from({ length: 7 }, (_, i) => {
-      const wd = new Date(d);
-      wd.setDate(d.getDate() + i);
-      return wd;
-    });
-  };
-
-  const weekDays = getWeekDays();
-
-  return (
-    <div style={{ maxWidth: "980px", margin: "0 auto", padding: "2rem 1rem" }}>
-      {/* Header */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem", flexWrap: "wrap", gap: "0.75rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <Link href="/" className="btn-secondary">← Geri</Link>
-          <h1 style={{ fontSize: "1.5rem", fontWeight: 700 }}>Takvim</h1>
+  // --- PC LAYOUT ---
+  const renderPCLayout = () => (
+    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem 1.5rem" }}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2.5rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+          <Link href="/" className="btn-secondary rounded-full" style={{ padding: '0.75rem 1.5rem' }}>← Ana Sayfa</Link>
+          <h1 style={{ fontSize: "2rem", fontWeight: 900, letterSpacing: '-0.04em' }}>Profesyonel Takvim</h1>
         </div>
-        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-          <button onClick={() => setView(v => v === "month" ? "week" : "month")} className="btn-secondary" style={{ fontSize: "0.85rem" }}>
-            {view === "month" ? "Haftalık Görünüm" : "Aylık Görünüm"}
-          </button>
-          <button onClick={exportEvents} className="btn-secondary" style={{ fontSize: "0.85rem" }}>↓ TXT</button>
-          <button onClick={exportICS} className="btn-secondary" style={{ fontSize: "0.85rem" }}>↓ ICS (iCal)</button>
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button onClick={() => setCurrent(new Date())} className="btn-secondary">Bugün</button>
+          <button onClick={() => {}} className="btn-secondary">Dışa Aktar ↓</button>
         </div>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 300px", gap: "1.5rem" }}>
-        {/* Calendar Grid */}
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
-          {/* Month nav */}
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1rem 1.25rem", borderBottom: "1px solid var(--border)", background: "var(--bg-secondary)" }}>
-            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1))}
-              style={{ width: 36, height: 36, borderRadius: "8px", background: "none", border: "1px solid var(--border)", cursor: "pointer", color: "var(--text-primary)", fontWeight: 700 }}>
-              ‹
-            </button>
-            <div style={{ textAlign: "center" }}>
-              <h2 style={{ fontSize: "1.2rem", fontWeight: 700 }}>{monthNames[current.getMonth()]} {current.getFullYear()}</h2>
-            </div>
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <button onClick={() => setCurrent(new Date())} style={{ padding: "0.35rem 0.75rem", borderRadius: "6px", background: "var(--accent-glow)", border: "1px solid var(--accent-primary)", cursor: "pointer", color: "var(--accent-primary)", fontSize: "0.8rem", fontWeight: 600 }}>
-                Bugün
-              </button>
-              <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1))}
-                style={{ width: 36, height: 36, borderRadius: "8px", background: "none", border: "1px solid var(--border)", cursor: "pointer", color: "var(--text-primary)", fontWeight: 700 }}>
-                ›
-              </button>
-            </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "2.5rem" }}>
+        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "28px", overflow: "hidden", boxShadow: '0 20px 50px rgba(0,0,0,0.15)' }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1.75rem", borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.02)" }}>
+            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1))} className="btn-secondary" style={{ width: 44, height: 44, padding: 0 }}>‹</button>
+            <h2 style={{ fontSize: "1.25rem", fontWeight: 900 }}>{monthNames[current.getMonth()]} {current.getFullYear()}</h2>
+            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1))} className="btn-secondary" style={{ width: 44, height: 44, padding: 0 }}>›</button>
           </div>
 
-          {view === "month" ? (
-            <>
-              {/* Day labels */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", background: "var(--bg-tertiary)" }}>
-                {dayNames.map((d, i) => (
-                  <div key={d} style={{ padding: "0.6rem", textAlign: "center", fontSize: "0.78rem", fontWeight: 700, color: i >= 5 ? "#ef4444" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: "0.5px" }}>{d}</div>
-                ))}
-              </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", background: "rgba(255,255,255,0.01)" }}>
+            {dayNames.map((d, i) => (
+              <div key={d} style={{ padding: "1.25rem 0.5rem", textAlign: "center", fontSize: "0.75rem", fontWeight: 900, color: i >= 5 ? "#ef4444" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: "1px" }}>{d}</div>
+            ))}
+          </div>
 
-              {/* Days grid */}
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
-                {Array.from({ length: adjustedFirstDay }).map((_, i) => (
-                  <div key={`e${i}`} style={{ minHeight: "80px", backgroundColor: "var(--bg-secondary)", borderRight: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }} />
-                ))}
-                {Array.from({ length: daysInMonth }).map((_, i) => {
-                  const day = i + 1;
-                  const dateStr = getDateStr(day);
-                  const dayEvents = eventsForDate(dateStr);
-                  const isToday = dateStr === todayStr;
-                  const isSelected = dateStr === selectedDate;
-                  const colIdx = (adjustedFirstDay + i) % 7;
-                  const isWeekend = colIdx >= 5;
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
+            {Array.from({ length: adjustedFirstDay }).map((_, i) => (
+              <div key={`empty-${i}`} style={{ minHeight: "120px", background: "rgba(0,0,0,0.05)", borderRight: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }} />
+            ))}
+            {Array.from({ length: daysInMonth }).map((_, i) => {
+              const day = i + 1;
+              const dateStr = getDateStr(day);
+              const dayEvents = eventsForDate(dateStr);
+              const isToday = dateStr === todayStr;
+              const isSelected = dateStr === selectedDate;
 
-                  return (
-                    <div key={day} onClick={() => { setSelectedDate(dateStr); }}
-                      style={{
-                        minHeight: "80px",
-                        padding: "0.4rem",
-                        cursor: "pointer",
-                        borderRight: "1px solid var(--border)",
-                        borderBottom: "1px solid var(--border)",
-                        background: isSelected ? "var(--accent-glow)" : isToday ? "rgba(37,99,235,0.05)" : "var(--surface)",
-                        transition: "background 0.15s",
-                        position: "relative",
-                      }}>
-                      <div style={{
-                        width: 28, height: 28, borderRadius: "50%",
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        fontWeight: isToday ? 700 : 400,
-                        fontSize: "0.85rem",
-                        background: isToday ? "var(--accent-primary)" : "none",
-                        color: isToday ? "white" : isWeekend ? "#ef4444" : "var(--text-primary)",
-                      }}>
-                        {day}
+              return (
+                <div key={day} onClick={() => setSelectedDate(dateStr)}
+                  style={{
+                    minHeight: "120px",
+                    padding: "0.6rem",
+                    cursor: "pointer",
+                    borderRight: "1px solid var(--border)",
+                    borderBottom: "1px solid var(--border)",
+                    background: isSelected ? "var(--accent-glow)" : "var(--surface)",
+                    transition: "all 0.2s"
+                  }}>
+                  <div style={{
+                    width: 30, height: 30, borderRadius: "50%",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontWeight: 900, fontSize: "0.9rem",
+                    background: isToday ? "var(--accent-primary)" : "none",
+                    color: isToday ? "white" : "var(--text-primary)",
+                  }}>
+                    {day}
+                  </div>
+                  <div style={{ marginTop: '4px', display: "flex", flexDirection: "column", gap: "2px" }}>
+                    {dayEvents.slice(0, 3).map(ev => (
+                      <div key={ev.id} style={{ background: ev.color, color: "white", borderRadius: "4px", padding: "2px 6px", fontSize: "0.65rem", fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                        {ev.title}
                       </div>
-                      <div style={{ marginTop: "0.25rem", display: "flex", flexDirection: "column", gap: "2px" }}>
-                        {dayEvents.slice(0, 2).map(ev => (
-                          <div key={ev.id} style={{ background: ev.color, color: "white", borderRadius: "3px", padding: "1px 4px", fontSize: "0.65rem", fontWeight: 600, overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>
-                            {ev.title}
-                          </div>
-                        ))}
-                        {dayEvents.length > 2 && (
-                          <div style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}>+{dayEvents.length - 2} daha</div>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </>
-          ) : (
-            // Week view
-            <div>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", borderBottom: "1px solid var(--border)" }}>
-                {weekDays.map((d, i) => {
-                  const ds = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-                  const isToday = ds === todayStr;
-                  return (
-                    <div key={i} onClick={() => setSelectedDate(ds)} style={{ padding: "1rem 0.5rem", textAlign: "center", cursor: "pointer", borderRight: i < 6 ? "1px solid var(--border)" : "none", background: ds === selectedDate ? "var(--accent-glow)" : "none" }}>
-                      <div style={{ fontSize: "0.75rem", color: i >= 5 ? "#ef4444" : "var(--text-muted)", marginBottom: "0.25rem" }}>{dayNamesFull[i].slice(0, 3)}</div>
-                      <div style={{ width: 36, height: 36, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto", background: isToday ? "var(--accent-primary)" : "none", color: isToday ? "white" : "var(--text-primary)", fontWeight: 700, fontSize: "1.1rem" }}>
-                        {d.getDate()}
-                      </div>
-                      <div style={{ marginTop: "0.4rem", display: "flex", flexDirection: "column", gap: "2px" }}>
-                        {eventsForDate(ds).map(ev => (
-                          <div key={ev.id} style={{ background: ev.color, color: "white", borderRadius: "3px", padding: "1px 3px", fontSize: "0.65rem", fontWeight: 600 }}>{ev.title}</div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
-        {/* Side Panel */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          {/* Today info */}
-          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "12px", padding: "1.25rem" }}>
-            <div style={{ fontSize: "0.75rem", textTransform: "uppercase", color: "var(--text-muted)", letterSpacing: "1px", fontWeight: 600, marginBottom: "0.5rem" }}>Bugün</div>
-            <div style={{ fontSize: "2rem", fontWeight: 800, color: "var(--accent-primary)" }}>{today.getDate()}</div>
-            <div style={{ fontWeight: 600, color: "var(--text-primary)" }}>{dayNamesFull[(today.getDay() + 6) % 7]}</div>
-            <div style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>{monthNames[today.getMonth()]} {today.getFullYear()}</div>
+        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+          <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", borderRadius: "28px", padding: "2rem" }}>
+            <div style={{ fontSize: "0.75rem", fontWeight: 900, color: "var(--accent-primary)", letterSpacing: "2px", marginBottom: "0.75rem" }}>SEÇİLİ GÜN</div>
+            <div style={{ fontSize: "2.5rem", fontWeight: 900, color: "var(--text-primary)" }}>{selectedDate ? new Date(selectedDate + "T12:00:00").getDate() : today.getDate()}</div>
+            <div style={{ fontWeight: 800, color: "var(--text-primary)", fontSize: '1.1rem' }}>
+                {selectedDate ? new Date(selectedDate + "T12:00:00").toLocaleDateString("tr-TR", { weekday: "long" }) : dayNamesFull[(today.getDay() + 6) % 7]}
+            </div>
           </div>
 
-          {/* Selected date events */}
-          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "12px", padding: "1.25rem", flex: 1 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1rem" }}>
-              <div style={{ fontWeight: 700 }}>
-                {selectedDate ? new Date(selectedDate + "T12:00:00").toLocaleDateString("tr-TR", { day: "numeric", month: "long" }) : "Bir gün seçin"}
-              </div>
-              {selectedDate && (
-                <button onClick={() => setShowModal(true)} className="btn-primary" style={{ fontSize: "0.8rem", padding: "0.35rem 0.75rem" }}>
-                  + Etkinlik
-                </button>
-              )}
+          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "28px", padding: "2rem", flex: 1 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+              <div style={{ fontWeight: 900 }}>Etkinlikler</div>
+              <button onClick={() => setShowModal(true)} className="btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.8rem' }}>+ Yeni Ekle</button>
             </div>
-
-            {selectedDate && selectedEvents.length === 0 && (
-              <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", textAlign: "center", padding: "1.5rem 0" }}>Bu güne ait etkinlik yok.</p>
-            )}
-
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
               {selectedEvents.map(ev => (
-                <div key={ev.id} style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.6rem 0.75rem", background: "var(--bg-secondary)", borderRadius: "8px", borderLeft: `4px solid ${ev.color}` }}>
-                  <span style={{ flex: 1, fontWeight: 500, fontSize: "0.9rem" }}>{ev.title}</span>
-                  <button onClick={() => deleteEvent(ev.id)} style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", fontSize: "0.95rem" }}>✕</button>
+                <div key={ev.id} style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1.25rem", background: "rgba(255,255,255,0.03)", borderRadius: "20px", borderLeft: `6px solid ${ev.color}` }}>
+                  <span style={{ flex: 1, fontWeight: 800, fontSize: "0.9rem" }}>{ev.title}</span>
+                  <button onClick={() => deleteEvent(ev.id)} style={{ color: "#ef4444", fontSize: "1.2rem", cursor: "pointer", background: 'none', border: 'none' }}>✕</button>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* Stats */}
-          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "12px", padding: "1rem 1.25rem" }}>
-            <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: "0.5rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px" }}>İstatistik</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", textAlign: "center" }}>
-              <div><div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--accent-primary)" }}>{events.length}</div><div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Toplam Etkinlik</div></div>
-              <div><div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#22c55e" }}>{events.filter(e => e.date >= todayStr).length}</div><div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>Yaklaşan</div></div>
-            </div>
-          </div>
         </div>
       </div>
+    </div>
+  );
 
-      {/* Add Event Modal */}
+  // --- MOBILE LAYOUT ---
+  const renderMobileLayout = () => {
+    // Agenda Logic for Mobile
+    const getAgendaDays = () => {
+      const res = [];
+      const start = new Date(current.getFullYear(), current.getMonth(), 1);
+      for (let i = 0; i < daysInMonth; i++) {
+        const d = new Date(start);
+        d.setDate(start.getDate() + i);
+        res.push(d);
+      }
+      return res;
+    };
+
+    return (
+      <div style={{ padding: "1rem 0" }}>
+        {/* Mobile Header */}
+        <div style={{ padding: '0 1.25rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 900, letterSpacing: '-0.02em' }}>Takvimim</h1>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1))} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', width: 44, height: 44, color: 'white' }}>‹</button>
+            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1))} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', width: 44, height: 44, color: 'white' }}>›</button>
+          </div>
+        </div>
+
+        {/* Current Month Banner */}
+        <div style={{ padding: '0 1.25rem', marginBottom: '1.5rem' }}>
+           <div style={{ background: 'var(--accent-primary)', padding: '1.5rem', borderRadius: '24px', position: 'relative', overflow: 'hidden', boxShadow: '0 10px 30px var(--accent-primary-glow)' }}>
+              <div style={{ position: 'absolute', top: -10, right: -10, fontSize: '4rem', opacity: 0.1 }}>📅</div>
+              <h2 style={{ fontSize: '1.25rem', fontWeight: 900, color: 'white', margin: 0 }}>{monthNames[current.getMonth()]} {current.getFullYear()}</h2>
+              <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.7)', margin: '0.25rem 0 0 0' }}>{events.filter(e => e.date.startsWith(getDateStr(1).slice(0, 7))).length} etkinlik planlandı</p>
+           </div>
+        </div>
+
+        {/* Agenda View (Vertical List) */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: 'var(--border)' }}>
+          {getAgendaDays().map((d, i) => {
+            const ds = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+            const isToday = ds === todayStr;
+            const dsEvents = eventsForDate(ds);
+            
+            return (
+              <div key={ds} style={{ 
+                background: 'var(--bg-primary)', 
+                padding: '1.25rem', 
+                display: 'flex', 
+                gap: '1.25rem',
+                opacity: 1
+              }}>
+                <div style={{ textAlign: 'center', width: '50px' }}>
+                  <div style={{ fontSize: '0.7rem', fontWeight: 900, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{dayNamesFull[(d.getDay() + 6) % 7].slice(0, 3)}</div>
+                  <div style={{ 
+                    fontSize: '1.25rem', 
+                    fontWeight: 900, 
+                    color: isToday ? 'white' : 'var(--text-primary)',
+                    background: isToday ? 'var(--accent-primary)' : 'transparent',
+                    width: 40,
+                    height: 40,
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    margin: '0.25rem auto 0'
+                  }}>
+                    {d.getDate()}
+                  </div>
+                </div>
+
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                   {dsEvents.length > 0 ? (
+                      dsEvents.map(ev => (
+                        <div key={ev.id} style={{ 
+                          padding: '1rem', 
+                          background: 'var(--surface)', 
+                          borderRadius: '16px', 
+                          borderLeft: `4px solid ${ev.color}`,
+                          boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center'
+                        }}>
+                          <span style={{ fontWeight: 800, fontSize: '0.85rem' }}>{ev.title}</span>
+                          <button onClick={() => deleteEvent(ev.id)} style={{ color: '#ef4444', fontSize: '1rem', opacity: 0.5 }}>✕</button>
+                        </div>
+                      ))
+                   ) : (
+                      <button 
+                        onClick={() => { setSelectedDate(ds); setShowModal(true); }}
+                        style={{ padding: '0.8rem', border: '2px dashed var(--border)', borderRadius: '16px', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, background: 'none' }}
+                      >
+                        + Yeni Plan Ekle
+                      </button>
+                   )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Floating Action Button (FAB) Mobile */}
+        <button 
+          onClick={() => { setSelectedDate(todayStr); setShowModal(true); }}
+          style={{ 
+            position: 'fixed', 
+            bottom: '100px', 
+            right: '20px', 
+            width: '64px', 
+            height: '64px', 
+            borderRadius: '50%', 
+            background: 'var(--accent-primary)', 
+            color: 'white', 
+            fontSize: '2rem', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            boxShadow: '0 10px 40px var(--accent-primary-glow)',
+            zIndex: 100,
+            border: 'none'
+          }}
+        >
+          +
+        </button>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{ minHeight: '100vh', paddingBottom: isMobile ? '100px' : '0' }}>
+      {isMobile ? renderMobileLayout() : renderPCLayout()}
+      
+      {/* Shared Modal Logic */}
       {showModal && selectedDate && (
-        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.5)", zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}
+        <div style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", backdropFilter: 'blur(10px)', zIndex: 1000, display: "flex", alignItems: isMobile ? "flex-end" : "center", justifyContent: "center" }}
           onClick={() => setShowModal(false)}>
-          <div style={{ background: "var(--surface)", borderRadius: "16px", padding: "2rem", width: "100%", maxWidth: "420px", boxShadow: "var(--shadow-lg)" }}
+          <div style={{ 
+            background: "var(--surface)", 
+            borderRadius: isMobile ? "32px 32px 0 0" : "28px", 
+            padding: "2.5rem", 
+            width: "100%", 
+            maxWidth: "500px", 
+            boxShadow: "0 50px 100px -20px rgba(0,0,0,0.5)",
+            animation: 'slide-up 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
             onClick={e => e.stopPropagation()}>
-            <h3 style={{ fontWeight: 700, marginBottom: "0.5rem", fontSize: "1.2rem" }}>Yeni Etkinlik</h3>
-            <p style={{ color: "var(--text-muted)", fontSize: "0.875rem", marginBottom: "1.25rem" }}>
-              {new Date(selectedDate + "T12:00:00").toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+            <h3 style={{ fontWeight: 900, marginBottom: "0.5rem", fontSize: "1.75rem" }}>Plan Oluştur</h3>
+            <p style={{ color: "var(--text-muted)", fontSize: "0.9rem", fontWeight: 700, marginBottom: "2rem" }}>
+              {new Date(selectedDate + "T12:00:00").toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long" })}
             </p>
             <input type="text" value={newTitle} onChange={e => setNewTitle(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && addEvent()}
-              placeholder="Etkinlik adı..." autoFocus
-              style={{ width: "100%", padding: "0.75rem 1rem", background: "var(--bg-primary)", border: "1px solid var(--border)", borderRadius: "8px", color: "var(--text-primary)", fontSize: "1rem", fontFamily: "inherit", marginBottom: "1rem", outline: "none", boxSizing: "border-box" }} />
-            <div style={{ marginBottom: "1.25rem" }}>
-              <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Renk</div>
-              <div style={{ display: "flex", gap: "0.5rem" }}>
+              placeholder="Ne yapacaksınız?" autoFocus
+              style={{ width: "100%", padding: "1.25rem", background: "var(--bg-secondary)", border: "1px solid var(--border)", borderRadius: "20px", color: "var(--text-primary)", fontSize: "1.1rem", fontWeight: 700, marginBottom: "2rem", outline: "none", boxSizing: "border-box" }} />
+            <div style={{ marginBottom: "2.5rem" }}>
+              <div style={{ fontSize: "0.75rem", fontWeight: 900, color: "var(--text-muted)", letterSpacing: "1px", marginBottom: "1rem", textTransform: "uppercase" }}>Renk Seçimi</div>
+              <div style={{ display: "flex", gap: "1rem" }}>
                 {COLORS.map(c => (
                   <button key={c} onClick={() => setNewColor(c)}
-                    style={{ width: 28, height: 28, borderRadius: "50%", background: c, border: c === newColor ? "3px solid var(--text-primary)" : "3px solid transparent", cursor: "pointer", transition: "transform 0.15s", transform: c === newColor ? "scale(1.15)" : "scale(1)" }} />
+                    style={{ width: 44, height: 44, borderRadius: "50%", background: c, border: c === newColor ? "4px solid white" : "none", cursor: "pointer", transition: "transform 0.2s", transform: c === newColor ? "scale(1.2)" : "scale(1)" }} />
                 ))}
               </div>
             </div>
-            <div style={{ display: "flex", gap: "0.75rem" }}>
-              <button onClick={() => setShowModal(false)} className="btn-secondary" style={{ flex: 1 }}>İptal</button>
-              <button onClick={addEvent} className="btn-primary" style={{ flex: 1 }}>Ekle</button>
+            <div style={{ display: "flex", gap: "1rem" }}>
+              <button onClick={() => setShowModal(false)} className="btn-secondary" style={{ flex: 1, padding: '1.25rem', borderRadius: '20px', fontWeight: 900 }}>Vazgeç</button>
+              <button onClick={addEvent} className="btn-primary" style={{ flex: 1, padding: '1.25rem', borderRadius: '20px', fontWeight: 900 }}>Kaydet</button>
             </div>
           </div>
         </div>
       )}
+      <style jsx>{`
+        @keyframes slide-up {
+          from { transform: translateY(100%); }
+          to { transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

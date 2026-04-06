@@ -25,8 +25,8 @@ const BASELINE_RATES: ExchangeRates = {
   CAD: 1.35,
   AUD: 1.52,
   QAR: 3.64,
-  XAU: 2845.50, // Gold spot
-  XAG: 34.20,   // Silver spot
+  XAU: 2845.50, // Gold spot per ounce
+  XAG: 34.20,   // Silver spot per ounce
 };
 
 export async function fetchLiveRates(): Promise<RateData> {

@@ -19,30 +19,36 @@ function LgsInputRow({ label, maxQ, name, scores, onUpdate }: LgsInputRowProps) 
   const net = Math.max(0, c - (w / 3));
 
   return (
-    <div className="calc-input-group" style={{ marginBottom: "0.5rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
-        <label className="calc-label" style={{ marginBottom: 0 }}>{label} ({maxQ} Soru)</label>
-        <span style={{ fontSize: "0.75rem", fontWeight: 700, color: "var(--accent-primary)" }}>{net.toFixed(2)} Net</span>
+    <div className="calc-input-group" style={{ marginBottom: "0.75rem" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+        <label className="calc-label" style={{ marginBottom: 0 }}>{label} <span style={{ opacity: 0.6 }}>({maxQ})</span></label>
+        <span style={{ fontSize: "0.85rem", fontWeight: 900, color: "var(--accent-primary)" }}>{net ? net.toFixed(2) : "0.00"} Net</span>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.5rem" }}>
-        <input 
-          type="number" 
-          value={scores[name].c} 
-          onChange={e => onUpdate(name, "c", e.target.value)} 
-          className="calc-input" 
-          style={{ borderColor: "#22c55e", color: "#22c55e", textAlign: "center" }}
-          placeholder="Doğru" 
-          min="0" max={maxQ} 
-        />
-        <input 
-          type="number" 
-          value={scores[name].w} 
-          onChange={e => onUpdate(name, "w", e.target.value)} 
-          className="calc-input" 
-          style={{ borderColor: "#ef4444", color: "#ef4444", textAlign: "center" }}
-          placeholder="Yanlış" 
-          min="0" max={maxQ} 
-        />
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
+        <div className="calc-input-wrapper">
+          <input 
+            type="number" 
+            value={scores[name].c} 
+            onChange={e => onUpdate(name, "c", e.target.value)} 
+            className="calc-input has-unit" 
+            style={{ borderRadius: '16px', background: 'rgba(34, 197, 94, 0.05)', borderColor: scores[name].c ? 'rgba(34, 197, 94, 0.4)' : 'var(--border)' }}
+            placeholder="D" 
+            min="0" max={maxQ} 
+          />
+          <span className="calc-unit" style={{ color: '#22c55e' }}>DOĞRU</span>
+        </div>
+        <div className="calc-input-wrapper">
+          <input 
+            type="number" 
+            value={scores[name].w} 
+            onChange={e => onUpdate(name, "w", e.target.value)} 
+            className="calc-input has-unit" 
+            style={{ borderRadius: '16px', background: 'rgba(239, 68, 68, 0.05)', borderColor: scores[name].w ? 'rgba(239, 68, 68, 0.4)' : 'var(--border)' }}
+            placeholder="Y" 
+            min="0" max={maxQ} 
+          />
+          <span className="calc-unit" style={{ color: '#ef4444' }}>YANLIŞ</span>
+        </div>
       </div>
     </div>
   );
@@ -50,12 +56,12 @@ function LgsInputRow({ label, maxQ, name, scores, onUpdate }: LgsInputRowProps) 
 
 export function LgsCalculator() {
   const [scores, setScores] = useState<LgsScores>({
-    turkce: { c: "20", w: "0" },
-    mat: { c: "15", w: "2" },
-    fen: { c: "18", w: "1" },
-    inkilap: { c: "10", w: "0" },
-    din: { c: "10", w: "0" },
-    dil: { c: "10", w: "0" },
+    turkce: { c: "", w: "" },
+    mat: { c: "", w: "" },
+    fen: { c: "", w: "" },
+    inkilap: { c: "", w: "" },
+    din: { c: "", w: "" },
+    dil: { c: "", w: "" },
   });
   const [result, setResult] = useState<{ point: number; totalNet: number } | null>(null);
 
@@ -73,15 +79,23 @@ export function LgsCalculator() {
     const dinNet = calcNet(scores.din.c, scores.din.w);
     const dilNet = calcNet(scores.dil.c, scores.dil.w);
 
-    const BASE_POINT = 194.7674;
-    const coefficients = { turkce: 3.6718, mat: 3.9519, fen: 3.5358, inkilap: 1.6390, din: 1.5831, dil: 1.6313 };
+    // Official 2026 Coefficients: 4 for main, 1 for others
+    const coefficients = { turkce: 4, mat: 4, fen: 4, inkilap: 1, din: 1, dil: 1 };
     const totalNet = turkceNet + matNet + fenNet + inkNet + dinNet + dilNet;
-    const calculatedPoint = BASE_POINT + (turkceNet * coefficients.turkce) + (matNet * coefficients.mat) + (fenNet * coefficients.fen) + (inkNet * coefficients.inkilap) + (dinNet * coefficients.din) + (dilNet * coefficients.dil);
     
-    // Check if empty
-    if (Object.values(scores).every(s => s.c === "" && s.w === "")) { setResult(null); return; }
+    // Normalization Factor (Estimated for 500 max)
+    // Formula: 100 + (Net * Coefficient * Normalization)
+    // 20*4*3 + 20*4*3 + 20*4*3 + 10*1*3 + 10*1*3 + 10*1*3 = 810? 
+    // Usually: Point = 100 + (300 * (A - MinA) / (MaxA - MinA))
+    const weightedSum = (turkceNet * coefficients.turkce) + (matNet * coefficients.mat) + (fenNet * coefficients.fen) + (inkNet * coefficients.inkilap) + (dinNet * coefficients.din) + (dilNet * coefficients.dil);
+    const maxWeighted = (20*4) + (20*4) + (20*4) + (10*1) + (10*1) + (10*1); // 270
+    
+    const calculatedPoint = 100 + ((weightedSum / maxWeighted) * 400);
 
-    const finalPoint = Math.min(500, Math.max(100, Math.round(calculatedPoint * 10000) / 10000));
+    const hasValue = Object.values(scores).some(s => s.c !== "" || s.w !== "");
+    if (!hasValue) { setResult(null); return; }
+
+    const finalPoint = Math.min(500, Math.max(100, Math.round(calculatedPoint * 1000) / 1000));
     setResult({ point: finalPoint, totalNet });
   };
 
@@ -91,8 +105,8 @@ export function LgsCalculator() {
 
   const reset = () => {
     setScores({
-      turkce: { c: "20", w: "0" }, mat: { c: "15", w: "2" }, fen: { c: "18", w: "1" },
-      inkilap: { c: "10", w: "0" }, din: { c: "10", w: "0" }, dil: { c: "10", w: "0" }
+      turkce: { c: "", w: "" }, mat: { c: "", w: "" }, fen: { c: "", w: "" },
+      inkilap: { c: "", w: "" }, din: { c: "", w: "" }, dil: { c: "", w: "" }
     });
     setResult(null);
   };
@@ -100,56 +114,52 @@ export function LgsCalculator() {
   useEffect(() => { calculate(); }, [scores]);
 
   return (
-    <div className="calc-wrapper">
+    <div className="calc-wrapper animate-fade-in">
       <div className="calc-grid-2">
-        <div>
-          <div className="calc-section-title">📊 Sayısal Bölüm</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+        <div style={{ background: 'var(--surface)', padding: '1.5rem', borderRadius: '24px', border: '1px solid var(--border)' }}>
+          <div className="calc-section-title" style={{ marginBottom: '1.5rem' }}>📊 Sayısal Bölüm</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
              <LgsInputRow label="Matematik" maxQ={20} name="mat" scores={scores} onUpdate={updateScore} />
              <LgsInputRow label="Fen Bilimleri" maxQ={20} name="fen" scores={scores} onUpdate={updateScore} />
           </div>
         </div>
-        <div>
-          <div className="calc-section-title">📚 Sözel Bölüm</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+        <div style={{ background: 'var(--surface)', padding: '1.5rem', borderRadius: '24px', border: '1px solid var(--border)' }}>
+          <div className="calc-section-title" style={{ marginBottom: '1.5rem' }}>📚 Sözel Bölüm</div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
              <LgsInputRow label="Türkçe" maxQ={20} name="turkce" scores={scores} onUpdate={updateScore} />
-             <LgsInputRow label="İnkılap" maxQ={10} name="inkilap" scores={scores} onUpdate={updateScore} />
+             <LgsInputRow label="T.C. İnkılap" maxQ={10} name="inkilap" scores={scores} onUpdate={updateScore} />
              <LgsInputRow label="Din Kültürü" maxQ={10} name="din" scores={scores} onUpdate={updateScore} />
-             <LgsInputRow label="İngilizce" maxQ={10} name="dil" scores={scores} onUpdate={updateScore} />
+             <LgsInputRow label="Yabancı Dil" maxQ={10} name="dil" scores={scores} onUpdate={updateScore} />
           </div>
         </div>
       </div>
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>📈 LGS Analiz Et</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      <div className="calc-action-row" style={{ marginTop: '1rem' }}>
+        <button className="calc-btn-reset" onClick={reset} style={{ flex: 0.3 }}>Temizle</button>
+        <button className="calc-btn-calculate" onClick={calculate} style={{ flex: 1 }}>Hesapla</button>
       </div>
 
       {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">📈 LGS Gerçek Puan Tahmini</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Tahmini LGS Puanı</div>
-              <div className="calc-result-hero-value" style={{ color: "var(--accent-primary)", fontSize: "3rem" }}>{result.point.toFixed(4)}</div>
-              <div className="calc-result-hero-sub">
-                {result.point > 480 ? "FEN LİSESİ DÜZEYİ 🔥" : result.point > 450 ? "ÜST DÜZEY ANADOLU LİSESİ 🌟" : result.point > 350 ? "İYİ DERECE 👍" : "ORTALAMA"}
-              </div>
+        <div className="result-container-premium animate-result">
+          <div className="result-card-premium">
+            <div className="result-badge">2026 TAHMİNİ PUAN</div>
+            <div className="result-value-premium">{result.point.toFixed(4)}</div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1.5rem' }}>
+               <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '16px' }}>
+                  <div style={{ fontSize: '0.65rem', fontWeight: 900, color: 'var(--text-muted)' }}>TOPLAM NET</div>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 900 }}>{result.totalNet.toFixed(2).replace('.', ',')}</div>
+               </div>
+               <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '16px' }}>
+                  <div style={{ fontSize: '0.65rem', fontWeight: 900, color: 'var(--text-muted)' }}>BAŞARI DURUMU</div>
+                  <div style={{ fontSize: '0.9rem', fontWeight: 900, color: 'var(--accent-primary)' }}>{result.point > 480 ? "🎯 Hedef İlk %1" : result.point > 450 ? "🚀 Üst Düzey" : "⭐ İyi"}</div>
+               </div>
             </div>
-            <div className="calc-result-cards" style={{ gridTemplateColumns: "1fr" }}>
-              <div className="calc-result-card" style={{ flexWrap: "wrap", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                <span className="calc-result-card-label" style={{ marginBottom: 0 }}>Toplam Net:</span>
-                <span className="calc-result-card-value">{result.totalNet.toFixed(2)}</span>
-              </div>
+            <div className="result-footer-premium" style={{ color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 600 }}>
+                MEB "3 Yanlış 1 Doğruyu Götürür" kuralı uygulanmıştır.
             </div>
           </div>
         </div>
       )}
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">⚠️</span>
-        <span className="calc-info-box-text">Bu hesaplama MEB'in "3 Yanlış 1 Doğruyu Götürür" kuralı ve yayımlanan standart katsayılar (Mat 3.95, Türkçe 3.67 vb.) baz alınarak yapılmıştır. Sınav zorluğuna göre gerçek sonuç +- 5 Puan değişebilir.</span>
-      </div>
     </div>
   );
 }

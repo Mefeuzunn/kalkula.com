@@ -139,14 +139,16 @@ input, textarea, select {
   text-shadow: 0 1px 1px rgba(0,0,0,0.1);
 }
 
-.btn-primary:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px var(--accent-glow);
-  filter: brightness(1.05);
+@media (hover: hover) {
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px var(--accent-glow);
+    filter: brightness(1.1);
+  }
 }
 
 .btn-primary:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.98);
   box-shadow: 0 2px 4px var(--accent-glow);
 }
 
@@ -166,9 +168,25 @@ input, textarea, select {
   cursor: pointer;
 }
 
-.btn-secondary:hover {
-  background: var(--surface-hover);
-  border-color: var(--border-focus);
+@media (hover: hover) {
+  .btn-secondary:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-focus);
+    transform: translateY(-1px);
+  }
+}
+
+.btn-secondary:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+/* Utilities */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Form Elements */
@@ -1167,6 +1185,7 @@ input, textarea, select {
   background: var(--bg-tertiary);
   outline: none;
   -webkit-appearance: none;
+  appearance: none;
   cursor: pointer;
   accent-color: var(--accent-primary);
 }

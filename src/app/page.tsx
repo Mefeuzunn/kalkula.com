@@ -17,26 +17,31 @@ const POPULAR_TOOLS = [
   { slug: "vucut-kitle-endeksi", title: "VKI (BMI)", icon: "⚖️" },
   { slug: "yks-puan", title: "YKS Puan", icon: "📚" },
   { slug: "enflasyon", title: "Enflasyon", icon: "📈" },
-  { slug: "altin", title: "Altın Hesaplama", icon: "🪙" },
+  { slug: "altin", title: "Altın", icon: "🪙" },
   { slug: "lgs-puan", title: "LGS Puan", icon: "🎓" },
 ];
 
 export default function Home() {
   const [recentTools, setRecentTools] = useState<any[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    
     try {
       const stored = JSON.parse(localStorage.getItem("recent_calculators") || "[]");
       const mappedTools = stored.map((slug: string) => getCalculatorBySlug(slug)).filter(Boolean);
       setRecentTools(mappedTools);
-    } catch (e) {
-       // ignore
-    }
+    } catch (e) {}
+
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  return (
-    <div style={{ paddingBottom: "5rem" }}>
-      {/* Hero */}
+  // --- PC VERSION RENDER ---
+  const renderPCVersion = () => (
+    <>
       <section style={{
         background: "linear-gradient(135deg, var(--accent-primary) 0%, #1d4ed8 100%)",
         padding: "5rem 0 4rem",
@@ -48,136 +53,199 @@ export default function Home() {
             <span style={{ width: 8, height: 8, background: "#4ade80", borderRadius: "50%", display: "inline-block" }}></span>
             Tüm araçlar ücretsiz
           </div>
-          <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 800, marginBottom: "1.25rem", lineHeight: 1.15, letterSpacing: "-0.02em" }}>
+          <h1 style={{ fontSize: "3.5rem", fontWeight: 900, marginBottom: "1.25rem", lineHeight: 1.1, letterSpacing: "-0.04em" }}>
             Türkiye&apos;nin En Kapsamlı<br />Hesaplama Platformu
           </h1>
-          <p style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.85)", maxWidth: "580px", margin: "0 auto 2.5rem", lineHeight: 1.7 }}>
-            Finans&apos;tan eğitime, sağlıktan muhasebeye kadar {calculators.length}+ hesaplama aracı tek bir profesyonel platformda.
+          <p style={{ fontSize: "1.2rem", color: "rgba(255,255,255,0.9)", maxWidth: "650px", margin: "0 auto 3rem", lineHeight: 1.7 }}>
+            Finans, eğitim, sağlık ve daha fazlası. {calculators.length}+ profesyonel araç tek bir çatıda.
           </p>
-          <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
-            <Link href="#tools" className="hero-btn-primary">
-              Hesaplama Araçları →
-            </Link>
-            <Link href="/converter" className="hero-btn-secondary">
-              Belge Dönüştürücü
-            </Link>
+          <div style={{ display: "flex", gap: "1rem", justifyContent: "center" }}>
+            <Link href="#tools" className="hero-btn-primary" style={{ padding: '1rem 2rem', fontSize: '1rem' }}>Sistemi Keşfet →</Link>
+            <Link href="/converter" className="hero-btn-secondary" style={{ padding: '1rem 2rem', fontSize: '1rem' }}>Belge Dönüştürme</Link>
           </div>
         </div>
       </section>
 
-      {/* Stats */}
       <div style={{ background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}>
-        <div className="container stats-bar">
+        <div className="container stats-bar" style={{ display: 'flex', justifyContent: 'space-between', padding: '1.5rem 0' }}>
           {STATS.map((s, i) => (
-            <div key={i} className="stat-item">
-              <div className="stat-value">{s.value}</div>
-              <div className="stat-label">{s.label}</div>
+            <div key={i} className="stat-item" style={{ textAlign: 'center', flex: 1 }}>
+              <div className="stat-value" style={{ fontSize: '1.75rem', fontWeight: 900, color: 'var(--accent-primary)' }}>{s.value}</div>
+              <div className="stat-label" style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{s.label}</div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className="container" style={{ padding: "3rem 1.5rem" }}>
-        <AdPlaceholder type="leaderboard" />
+      <div className="container" style={{ padding: "4rem 1.5rem" }}>
+         <AdPlaceholder type="leaderboard" />
 
-        {/* Recent Tools */}
-        {recentTools.length > 0 && (
-          <section style={{ marginBottom: "3rem" }}>
-            <h2 style={{ fontSize: "1.4rem", fontWeight: 700, marginBottom: "1.25rem", color: "var(--accent-primary)" }}>🕒 Son Kullanılanlar</h2>
-            <div className="popular-grid">
-              {recentTools.map((tool) => {
-                 const cat = categories.find(c => c.id === tool.categoryId);
-                 // simple emoji fallback based on category
-                 const icon = cat?.icon === "Heart" ? "🩺" : cat?.icon === "Calculator" ? "🧮" : cat?.icon === "Clock" ? "🕒" : "🔧";
-                 return (
-                  <Link key={tool.slug} href={`/hesapla/${tool.slug}`} className="popular-card" style={{ border: "1px solid var(--accent-primary)" }}>
-                    <span style={{ fontSize: "1.3rem" }}>{icon}</span>
-                    <span>{tool.title}</span>
-                  </Link>
-                 )
-              })}
-            </div>
-          </section>
-        )}
-
-        {/* Popular Quick Access */}
-        <section style={{ marginBottom: "3rem" }}>
-          <h2 style={{ fontSize: "1.4rem", fontWeight: 700, marginBottom: "1.25rem" }}>⚡ Popüler Araçlar</h2>
-          <div className="popular-grid">
-            {POPULAR_TOOLS.map((tool) => (
-              <Link key={tool.slug} href={`/hesapla/${tool.slug}`} className="popular-card">
-                <span style={{ fontSize: "1.3rem" }}>{tool.icon}</span>
-                <span>{tool.title}</span>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Category Grid */}
-        <section id="tools">
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
-            <h2 style={{ fontSize: "1.5rem", fontWeight: 700 }}>Tüm Kategoriler</h2>
-            <span style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>{categories.length} kategori</span>
-          </div>
-
-          <div className="category-grid">
-            {categories.map((cat) => {
-              const toolCount = calculators.filter(c => c.categoryId === cat.id).length;
-              return (
-                <Link key={cat.id} href={`/kategori/${cat.slug}`} className="category-card">
-                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "0.75rem" }}>
-                    <div className="category-icon">
-                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        {cat.icon === "Bank" && <><rect x="3" y="9" width="18" height="12" rx="2"/><path d="M3 9l9-7 9 7"/><line x1="12" y1="9" x2="12" y2="21"/></>}
-                        {cat.icon === "TrendingUp" && <><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></>}
-                        {cat.icon === "Heart" && <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>}
-                        {cat.icon === "BookOpen" && <><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></>}
-                        {cat.icon === "Calculator" && <><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></>}
-                        {cat.icon === "Clock" && <><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></>}
-                        {cat.icon === "Briefcase" && <><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></>}
-                        {cat.icon === "Percent" && <><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></>}
-                        {cat.icon === "GraduationCap" && <><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></>}
-                        {cat.icon === "ShoppingCart" && <><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></>}
-                        {cat.icon === "MoreHorizontal" && <><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></>}
-                        {cat.icon === "Repeat" && <><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></>}
-                        {cat.icon === "Settings" && <><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V15a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51-1z"/></>}
-                        {cat.icon === "Smile" && <><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></>}
-                        {cat.icon === "Code" && <><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></>}
-                      </svg>
-                    </div>
-                    <span className="tool-count-badge">{toolCount} araç</span>
-                  </div>
-                  <h3 className="category-name">{cat.name}</h3>
-                  <p className="category-desc">{cat.description}</p>
+         <section style={{ marginBottom: "4rem" }}>
+            <h2 style={{ fontSize: "1.75rem", fontWeight: 900, marginBottom: "2rem", letterSpacing: '-0.03em' }}>⭐ Popüler Araçlar</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '1.5rem' }}>
+              {POPULAR_TOOLS.map((tool) => (
+                <Link key={tool.slug} href={`/hesapla/${tool.slug}`} className="popular-card" style={{ padding: '1.5rem', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '20px', textAlign: 'center', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+                  <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>{tool.icon}</div>
+                  <div style={{ fontWeight: 800, fontSize: '0.9rem' }}>{tool.title}</div>
                 </Link>
-              );
-            })}
-          </div>
-        </section>
+              ))}
+            </div>
+         </section>
 
-        <div style={{ marginTop: "3rem" }}>
-          <AdPlaceholder type="leaderboard" />
+         <section id="tools">
+           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2.5rem" }}>
+             <h2 style={{ fontSize: "1.75rem", fontWeight: 900, letterSpacing: '-0.03em' }}>Kategorilere Göz Atın</h2>
+             <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-muted)", background: 'rgba(255,255,255,0.05)', padding: '0.4rem 1rem', borderRadius: '100px' }}>{categories.length} Kategori Mevcut</span>
+           </div>
+           <div className="category-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1.5rem' }}>
+             {categories.map((cat) => {
+               const toolCount = calculators.filter(c => c.categoryId === cat.id).length;
+               return (
+                 <Link key={cat.id} href={`/kategori/${cat.slug}`} className="category-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                      <div className="category-icon" style={{ background: 'var(--accent-primary)', color: 'white', padding: '0.75rem', borderRadius: '12px' }}>
+                        {/* Dynamic Icon Helper (simplified) */}
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                      </div>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 900, color: 'var(--accent-primary)' }}>{toolCount} Araç</span>
+                   </div>
+                   <h3 style={{ fontWeight: 900, fontSize: '1.1rem', marginBottom: '0.5rem' }}>{cat.name}</h3>
+                   <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>{cat.description}</p>
+                 </Link>
+               );
+             })}
+           </div>
+         </section>
+      </div>
+    </>
+  );
+
+  // --- MOBILE VERSION RENDER ---
+  const renderMobileVersion = () => (
+    <>
+      <section style={{
+        background: "linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%)",
+        padding: "3rem 1rem 2rem",
+        borderBottom: "1px solid var(--border)"
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+          <div>
+            <h1 style={{ fontSize: "1.5rem", fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>Kalküla Explorer</h1>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Tüm araçlar elinizin altında</p>
+          </div>
+          <div style={{ padding: '0.5rem', background: 'var(--accent-primary)', borderRadius: '12px', boxShadow: '0 4px 15px var(--accent-primary-glow)' }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
         </div>
 
-        {/* Quick Tools */}
-        <section style={{ marginTop: "3rem" }}>
-          <h2 style={{ fontSize: "1.5rem", fontWeight: 700, marginBottom: "1.25rem" }}>Hızlı Araçlar</h2>
-          <div className="quick-tools-grid">
-            {[
-              { href: "/calculator", label: "🔢 Hesap Makinesi" },
-              { href: "/notepad", label: "📝 Not Defteri" },
-              { href: "/counters", label: "⏱️ Kronometre" },
-              { href: "/calendar", label: "📅 Takvim" },
-              { href: "/password-generator", label: "🔐 Şifre Oluşturucu" },
-              { href: "/converter", label: "📄 Belge Dönüştürücü" },
-            ].map(t => (
-              <Link key={t.href} href={t.href} className="quick-tool-card">
-                {t.label}
-              </Link>
-            ))}
-          </div>
-        </section>
+        {/* Quick Access Circles (Instagram/App style) */}
+        <div style={{ display: 'flex', gap: '1.25rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '0.5rem' }} className="hide-scrollbar">
+          {POPULAR_TOOLS.map((tool) => (
+            <Link key={tool.slug} href={`/hesapla/${tool.slug}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+              <div style={{ 
+                width: 68, 
+                height: 68, 
+                borderRadius: '50%', 
+                background: 'var(--surface)', 
+                border: '2px solid var(--accent-primary)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                fontSize: '1.75rem',
+                boxShadow: '0 8px 20px rgba(0,0,0,0.1)'
+              }}>
+                {tool.icon}
+              </div>
+              <span style={{ fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>{tool.title.split(' ')[0]}</span>
+            </Link>
+          ))}
+          <Link href="/converter" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+              <div style={{ width: 68, height: 68, borderRadius: '50%', background: 'var(--accent-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.75rem', color: 'white' }}>📄</div>
+              <span style={{ fontSize: '0.65rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Belge</span>
+          </Link>
+        </div>
+      </section>
+
+      <div style={{ padding: "1.5rem 1rem" }}>
+         {/* Categories - Compact List Style */}
+         <section>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 900 }}>Kategoriler</h2>
+              <Link href="/hesapla" style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-primary)' }}>Tümünü Gör</Link>
+            </div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {categories.slice(0, 8).map((cat) => (
+                <Link key={cat.id} href={`/kategori/${cat.slug}`} style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  gap: '1rem', 
+                  padding: '1rem', 
+                  background: 'var(--surface)', 
+                  borderRadius: '18px',
+                  border: '1px solid var(--border)'
+                }}>
+                  <div style={{ fontSize: '1.5rem', opacity: 0.8 }}>🔧</div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: 800, fontSize: '0.95rem' }}>{cat.name}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{calculators.filter(c => c.categoryId === cat.id).length} profesyonel araç</div>
+                  </div>
+                  <div style={{ opacity: 0.3 }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>
+                  </div>
+                </Link>
+              ))}
+            </div>
+         </section>
+
+         {/* Stats - Card Style */}
+         <section style={{ marginTop: '2.5rem' }}>
+            <div style={{ background: 'var(--bg-secondary)', padding: '1.5rem', borderRadius: '24px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+               {STATS.map((s, i) => (
+                 <div key={i}>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--accent-primary)' }}>{s.value}</div>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>{s.label}</div>
+                 </div>
+               ))}
+            </div>
+         </section>
+
+         <AdPlaceholder type="native" />
       </div>
+
+      {/* Floating Bottom Navigation */}
+      <div style={{ 
+        position: 'fixed', 
+        bottom: '20px', 
+        left: '20px', 
+        right: '20px', 
+        background: 'rgba(23,23,23,0.85)', 
+        backdropFilter: 'blur(20px)',
+        border: '1px solid rgba(255,255,255,0.1)',
+        borderRadius: '100px',
+        padding: '0.75rem 1.5rem',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        zIndex: 1000,
+        boxShadow: '0 10px 40px rgba(0,0,0,0.5)'
+      }}>
+        <Link href="/" style={{ fontSize: '1.2rem', opacity: 1 }}>🏠</Link>
+        <Link href="/counters" style={{ fontSize: '1.2rem', opacity: 0.6 }}>⏱️</Link>
+        <Link href="/calendar" style={{ fontSize: '1.2rem', opacity: 0.6 }}>📅</Link>
+        <Link href="/notepad" style={{ fontSize: '1.2rem', opacity: 0.6 }}>📝</Link>
+        <Link href="/converter" style={{ fontSize: '1.2rem', opacity: 0.6 }}>📄</Link>
+      </div>
+    </>
+  );
+
+  return (
+    <div style={{ minHeight: '100vh', paddingBottom: isMobile ? '100px' : '0' }}>
+      {isMobile ? renderMobileVersion() : renderPCVersion()}
+      <style jsx>{`
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
     </div>
   );
 }

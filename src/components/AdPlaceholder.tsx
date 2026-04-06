@@ -1,7 +1,7 @@
 import React from "react";
 import AdBanner from "./AdBanner";
 
-type AdType = "skyscraper" | "rectangle" | "leaderboard" | "fluid";
+type AdType = "skyscraper" | "rectangle" | "leaderboard" | "fluid" | "native";
 
 interface AdPlaceholderProps {
   type: AdType;
