@@ -15,6 +15,7 @@ type Message = {
 
 export function KalkulaAI() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -26,6 +27,13 @@ export function KalkulaAI() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 1024);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
@@ -33,6 +41,8 @@ export function KalkulaAI() {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  if (isMobile) return null;
 
   const handleSend = () => {
     if (!inputValue.trim()) return;
@@ -54,10 +64,8 @@ export function KalkulaAI() {
     setTimeout(() => {
       const lowerQuery = query.toLowerCase().trim();
       
-      // 1. Check for Math Expressions
       if (/^[0-9+\-*/().\s]+$/.test(lowerQuery) && /[+\-*/]/.test(lowerQuery)) {
         try {
-          // Safe eval alternative for basic math
           const result = Function(`"use strict"; return (${lowerQuery})`)();
           setMessages((prev) => [
             ...prev,
@@ -73,7 +81,6 @@ export function KalkulaAI() {
         } catch (e) {}
       }
 
-      // 2. Fuzzy Search for Tools
       const matchedTools = calculators
         .filter((c) => {
           const searchSpace = `${c.title} ${c.description} ${c.slug}`.toLowerCase();
@@ -108,124 +115,120 @@ export function KalkulaAI() {
 
   return (
     <>
-      {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-[9999] w-14 h-14 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 transform hover:scale-110 active:scale-95 ${
-          isOpen ? "bg-red-500 rotate-90" : "bg-blue-600 animate-pulse-glow"
+        className={`fixed bottom-8 right-8 z-[10001] w-16 h-16 rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-500 transform hover:scale-105 active:scale-95 group ${
+          isOpen ? "translate-x-[-380px]" : ""
         }`}
         style={{
-          background: isOpen ? "#f43f5e" : "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+          background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+          color: "white"
         }}
       >
-        {isOpen ? <X color="white" size={24} /> : <MessageCircle color="white" size={28} />}
+        {isOpen ? <X size={28} /> : <MessageCircle size={32} className="group-hover:rotate-12 transition-transform" />}
+        {!isOpen && (
+          <div className="absolute right-full mr-4 bg-black/80 text-white text-[10px] font-bold py-1 px-3 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+            Kalkula AI ile Konuş
+          </div>
+        )}
       </button>
 
-      {/* Chat Window */}
-      {isOpen && (
-        <div 
-          className="fixed bottom-24 right-6 z-[9999] w-[380px] h-[550px] rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] flex flex-col glass-chat animate-slide-up-chat overflow-hidden"
-          style={{ maxWidth: "calc(100vw - 48px)" }}
-        >
-          {/* Header */}
-          <div className="p-4 flex items-center gap-3 border-bottom" style={{ background: "linear-gradient(to right, rgba(37,99,235,0.1), transparent)", borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-            <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg">
-              <Sparkles color="white" size={20} />
-            </div>
-            <div>
-              <div className="font-extrabold text-sm tracking-tight" style={{ color: 'var(--text-primary)' }}>KALKULA AI</div>
-              <div className="text-[10px] uppercase font-bold text-blue-500 tracking-widest flex items-center gap-1">
-                <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Çevrimiçi Asistan
-              </div>
-            </div>
+      <div 
+        className={`fixed top-0 right-0 z-[10000] w-[450px] h-screen shadow-[-20px_0_50px_rgba(0,0,0,0.1)] flex flex-col glass-chat transition-transform duration-500 ease-in-out ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        <div className="p-8 pb-4 flex items-center gap-4 border-bottom" style={{ background: "linear-gradient(to right, rgba(37,99,235,0.05), transparent)", borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+          <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-xl">
+            <Sparkles color="white" size={24} />
           </div>
-
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 hide-scrollbar">
-            {messages.map((m) => (
-              <div 
-                key={m.id} 
-                className={`flex flex-col ${m.type === "user" ? "items-end" : "items-start"}`}
-              >
-                <div 
-                  className={`max-w-[85%] p-3 px-4 rounded-2xl text-sm font-medium leading-relaxed shadow-sm ${
-                    m.type === "ai" ? "chat-bubble-ai" : "chat-bubble-user"
-                  }`}
-                >
-                  <div dangerouslySetInnerHTML={{ __html: m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-                  
-                  {m.links && m.links.length > 0 && (
-                    <div className="mt-3 flex flex-col gap-1">
-                      {m.links.map(l => (
-                        <Link 
-                          key={l.slug} 
-                          href={`/hesapla/${l.slug}`}
-                          className="flex items-center justify-between gap-2 p-2 px-3 bg-white/10 hover:bg-white/20 rounded-lg text-xs font-bold transition-colors group"
-                        >
-                          {l.title}
-                          <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </div>
-                <div className="text-[9px] font-bold opacity-30 mt-1 uppercase tracking-tighter">
-                  {m.type === "ai" ? "Kalkula Asistan" : "Siz"}
-                </div>
-              </div>
-            ))}
-            {isTyping && (
-              <div className="flex items-center gap-1 p-2 px-4 bg-gray-500/10 rounded-full w-fit animate-pulse">
-                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
-                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
-                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full"></span>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Quick Actions */}
-          {messages.length === 1 && (
-            <div className="px-4 pb-2 flex flex-wrap gap-1.5">
-              {['BMI', 'Ek Ders', 'MTV', 'Döviz'].map(tag => (
-                <button 
-                  key={tag}
-                  onClick={() => {
-                    setInputValue(tag);
-                    // Focus logic would go here
-                  }}
-                  className="p-1 px-3 border border-blue-500/30 rounded-full text-[10px] font-extrabold hover:bg-blue-500 hover:text-white transition-all text-blue-600"
-                >
-                  #{tag}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Input Area */}
-          <div className="p-4 border-t" style={{ borderColor: 'rgba(255,255,255,0.1)' }}>
-            <div className="relative flex items-center">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSend()}
-                placeholder="Bir hesaplama aracı sorun..."
-                className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-2xl py-3 pl-4 pr-12 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all"
-              />
-              <button 
-                onClick={handleSend}
-                className="absolute right-2 p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-lg transition-transform active:scale-90"
-              >
-                <Send size={18} />
-              </button>
-            </div>
-            <div className="mt-2 text-center text-[10px] font-bold opacity-30 uppercase tracking-widest">
-              Kalkula Akıllı Asistan Sistemi
+          <div>
+            <div className="font-black text-xl tracking-tighter" style={{ color: 'var(--text-primary)' }}>KALKULA AI</div>
+            <div className="text-[11px] uppercase font-bold text-blue-500 tracking-widest flex items-center gap-1.5">
+              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span> Sistem Aktif
             </div>
           </div>
         </div>
-      )}
+
+        <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-6 hide-scrollbar">
+          {messages.map((m) => (
+            <div 
+              key={m.id} 
+              className={`flex flex-col ${m.type === "user" ? "items-end" : "items-start"}`}
+            >
+              <div 
+                className={`max-w-[90%] p-4 px-6 rounded-3xl text-[15px] font-medium leading-relaxed shadow-sm ${
+                  m.type === "ai" ? "chat-bubble-ai" : "chat-bubble-user"
+                }`}
+              >
+                <div dangerouslySetInnerHTML={{ __html: m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                
+                {m.links && m.links.length > 0 && (
+                  <div className="mt-4 flex flex-col gap-2">
+                    {m.links.map(l => (
+                      <Link 
+                        key={l.slug} 
+                        href={`/hesapla/${l.slug}`}
+                        className="flex items-center justify-between gap-3 p-3 px-4 bg-white/10 hover:bg-white/20 rounded-xl text-xs font-bold transition-all group/link"
+                      >
+                        {l.title}
+                        <ArrowRight size={16} className="group-hover/link:translate-x-1 transition-transform" />
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="text-[10px] font-bold opacity-30 mt-2 uppercase tracking-widest mx-2">
+                {m.type === "ai" ? "Assistant" : "User"}
+              </div>
+            </div>
+          ))}
+          {isTyping && (
+            <div className="flex items-center gap-1.5 p-3 px-6 bg-gray-500/10 rounded-full w-fit animate-pulse ml-2">
+              <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
+              <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
+              <span className="w-2 h-2 bg-gray-400 rounded-full"></span>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        {messages.length === 1 && (
+          <div className="px-8 pb-6 flex flex-wrap gap-2">
+            {['BMI Hesapla', 'Ek Ders Ücreti', 'MTV 2026', 'Dolar Kaç TL?'].map(tag => (
+              <button 
+                key={tag}
+                onClick={() => setInputValue(tag)}
+                className="p-2 px-4 border border-blue-500/20 rounded-xl text-[11px] font-black hover:bg-blue-600 hover:text-white transition-all text-blue-600 bg-blue-500/5 hover:border-transparent"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="p-8 pt-0 mt-auto">
+          <div className="relative flex items-center">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleSend()}
+              placeholder="Mesajınızı yazın..."
+              className="w-full bg-black/5 dark:bg-white/5 border border-black/10 dark:border-white/10 rounded-3xl py-4 pl-6 pr-14 text-sm font-bold focus:outline-none focus:ring-4 focus:ring-blue-500/20 transition-all placeholder:opacity-40"
+            />
+            <button 
+              onClick={handleSend}
+              className="absolute right-2.5 p-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl shadow-xl transition-all active:scale-90"
+            >
+              <Send size={20} />
+            </button>
+          </div>
+          <div className="mt-4 text-center text-[10px] font-black opacity-20 uppercase tracking-[0.2em]">
+            Powered by Kalkula Intelligent Engine
+          </div>
+        </div>
+      </div>
     </>
   );
 }
