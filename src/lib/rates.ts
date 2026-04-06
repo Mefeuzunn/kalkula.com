@@ -22,6 +22,9 @@ const BASELINE_RATES: ExchangeRates = {
   SAR: 3.75,
   AED: 3.67,
   JPY: 153.20,
+  CAD: 1.35,
+  AUD: 1.52,
+  QAR: 3.64,
   XAU: 2845.50, // Gold spot
   XAG: 34.20,   // Silver spot
 };

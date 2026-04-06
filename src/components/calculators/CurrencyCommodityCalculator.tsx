@@ -4,10 +4,11 @@ import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
 
 interface LiveRates {
+  [key: string]: number | string;
   USD: number;
   EUR: number;
-  XAU: number; // Gram 24k in TRY
-  XAG: number; // Gram Silver in TRY
+  XAU: number; 
+  XAG: number;
   TRY: number;
   lastUpdated: string;
 }
@@ -16,7 +17,7 @@ export function CurrencyCommodityCalculator() {
   const [rates, setRates] = useState<LiveRates | null>(null);
   const [loading, setLoading] = useState(true);
   const [amount, setAmount] = useState("1");
-  const [selectedUnit, setSelectedUnit] = useState<"USD" | "EUR" | "XAU_GRAM" | "XAU_CEYREK" | "XAU_YARIM" | "XAU_TAM" | "XAU_ATA">("USD");
+  const [selectedUnit, setSelectedUnit] = useState<string>("USD");
 
   const [results, setResults] = useState<{
     tryValue: number;
@@ -33,20 +34,39 @@ export function CurrencyCommodityCalculator() {
     XAU_ATA: { name: "Ata Altın (22k)", weight: 6.608, carat: 22 },      // Fine gold equiv
   };
 
+  const CURRENCY_LABELS: Record<string, { label: string, name: string }> = {
+    USD: { label: "$", name: "ABD Doları" },
+    EUR: { label: "€", name: "Euro" },
+    GBP: { label: "£", name: "İngiliz Sterlini" },
+    CHF: { label: "₣", name: "İsviçre Frangı" },
+    JPY: { label: "¥", name: "Japon Yeni" },
+    SAR: { label: "SR", name: "Suudi Riyali" },
+    AED: { label: "د.إ", name: "BAE Dirhemi" },
+    CAD: { label: "C$", name: "Kanada Doları" },
+    AUD: { label: "A$", name: "Avustralya Doları" },
+    QAR: { label: "QR", name: "Katar Riyali" },
+  };
+
   const fetchRates = async () => {
     try {
       setLoading(true);
       const res = await fetch("/api/rates");
       const data = await res.json();
-      if (data.tryRates) {
-        setRates({
-          USD: data.tryRates.USD,
-          EUR: data.tryRates.EUR,
-          XAU: data.tryRates.XAU,
-          XAG: data.tryRates.XAG,
-          TRY: 1,
-          lastUpdated: data.lastUpdated,
+      if (data.rates) {
+        // Convert all rates to TRY based rates
+        const usdToTry = data.rates["TRY"] || 49.30;
+        const newRates: any = { TRY: 1, lastUpdated: data.lastUpdated };
+        
+        // Calculate each currency's TRY value
+        Object.keys(data.rates).forEach(code => {
+           newRates[code] = (1 / data.rates[code]) * usdToTry;
         });
+
+        newRates["TRY_RATE"] = usdToTry; // 1 USD in TRY
+        newRates["XAU"] = data.tryRates.XAU;
+        newRates["XAG"] = data.tryRates.XAG;
+
+        setRates(newRates);
       }
     } catch (e) {
       console.error("Failed to load rates", e);
@@ -64,15 +84,13 @@ export function CurrencyCommodityCalculator() {
     let desc = "";
     const metrics: { label: string; value: string }[] = [];
 
-    if (selectedUnit === "USD") {
-      tryValue = qty * rates.USD;
-      desc = `${qty} ABD Doları`;
-    } else if (selectedUnit === "EUR") {
-      tryValue = qty * rates.EUR;
-      desc = `${qty} Euro`;
+    if (CURRENCY_LABELS[selectedUnit]) {
+      const c = CURRENCY_LABELS[selectedUnit];
+      tryValue = qty * (rates[selectedUnit] as number);
+      desc = `${qty} ${c.name}`;
     } else if (selectedUnit.startsWith("XAU")) {
       const g = GOLD_UNITS[selectedUnit as keyof typeof GOLD_UNITS];
-      tryValue = qty * g.weight * rates.XAU;
+      tryValue = qty * g.weight * (rates.XAU as number);
       desc = `${qty} Adet ${g.name}`;
       metrics.push({ label: "Has Altın Karşılığı", value: `${(qty * g.weight).toFixed(3)} gr` });
       metrics.push({ label: "Ayar", value: `${g.carat}K` });
@@ -91,10 +109,11 @@ export function CurrencyCommodityCalculator() {
       <div className="calc-grid-2">
         <div className="calc-input-group">
           <label className="calc-label">Varlık Türü</label>
-          <select value={selectedUnit} onChange={e => setSelectedUnit(e.target.value as any)} className="calc-select">
+          <select value={selectedUnit} onChange={e => setSelectedUnit(e.target.value)} className="calc-select">
             <optgroup label="Döviz">
-              <option value="USD">ABD Doları ($)</option>
-              <option value="EUR">Euro (€)</option>
+              {Object.entries(CURRENCY_LABELS).map(([code, info]) => (
+                <option key={code} value={code}>{info.name} ({info.label})</option>
+              ))}
             </optgroup>
             <optgroup label="Altın Birimleri">
               <option value="XAU_GRAM">Gram Altın (24 Ayar)</option>

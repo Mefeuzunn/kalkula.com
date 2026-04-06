@@ -62,8 +62,6 @@ export const calculators: CalculatorInfo[] = [
   { id: "gastro", title: "Hassas Mutfak Dönüştürücü", slug: "mutfak-donusturucu", categoryId: "saglik", description: "Un, şeker, yağ gibi malzemeleri malzemeye özel özkütle ile birimler arası dönüştürün." },
   { id: "eurobond", title: "Eurobond Hesaplama", slug: "eurobond", categoryId: "finans", description: "Eurobond yatırımınızın getirisini ve pazar fiyatlamasını hesaplayın." },
   { id: "npv", title: "Net Bugünkü Değer Hesaplama", slug: "net-bugunku-deger", categoryId: "finans", description: "Bir nakit akışını paranın maliyeti ile indirgeyerek bugünkü değerini hesaplayın." },
-  { id: "altin", title: "Altın Hesaplama", slug: "altin", categoryId: "finans", description: "Gram, çeyrek, yarım ve tam altın gibi türlerin güncel kur bazlı hesaplaması." },
-  { id: "doviz", title: "Döviz Hesaplama", slug: "doviz", categoryId: "finans", description: "Dolar, Euro, Sterlin gibi majör para birimleri arası kur çevirici." },
   { id: "cagr", title: "Bileşik Büyüme (CAGR) Hesaplama", slug: "bilesik-buyume", categoryId: "finans", description: "Bir yatırımın belirli yıllar arasındaki yıllık bileşik büyüme oranını hesaplar." },
   { id: "enflasyon", title: "Enflasyon Hesaplama", slug: "enflasyon", categoryId: "finans", description: "Paranın geçmiş ve gelecek yıllara göre alım gücündeki değişimler." },
   { id: "birikim", title: "Birikim Hesaplama", slug: "birikim", categoryId: "finans", description: "Aylık düzenli ödemeler ile gelecekteki anapara ve faizli birikim tutarınız." },

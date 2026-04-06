@@ -30,8 +30,6 @@ import { PriceCalculator } from "@/components/calculators/PriceCalculator";
 import { DayOfYearCalculator } from "@/components/calculators/DayOfYearCalculator";
 import { BmrCalculator } from "./calculators/BmrCalculator";
 import { MacroCalculator } from "./calculators/MacroCalculator";
-import { GoldCalculator } from "@/components/calculators/GoldCalculator";
-import { CurrencyCalculator } from "@/components/calculators/CurrencyCalculator";
 import { CagrCalculator } from "@/components/calculators/CagrCalculator";
 import { SavingsCalculator } from "@/components/calculators/SavingsCalculator";
 import { BillCalculator } from "@/components/calculators/BillCalculator";
@@ -277,8 +275,6 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "fiyat": return <PriceCalculator />;
       case "yilin-kacinci-gunu": return <DayOfYearCalculator />;
       case "net-bugunku-deger": return <IrrNpvCalculator />;
-      case "altin": return <GoldCalculator />;
-      case "doviz": return <CurrencyCalculator />;
       case "bilesik-buyume": return <CagrCalculator />;
       case "birikim": return <SavingsCalculator />;
       case "bono": return <BillCalculator />;
