@@ -32,7 +32,7 @@ export default function Notepad() {
       if (parsed.length > 0) setActiveId(parsed[0].id);
     } else {
       // Default first note
-      const first: Note = { id: generateId(), title: "İlk Notum", content: "Merhaba! Kalküla Not Defterine hoş geldiniz.\n\nBuraya istediğiniz notları yazabilir, TXT veya Markdown olarak indirebilirsiniz.", createdAt: Date.now(), updatedAt: Date.now() };
+      const first: Note = { id: generateId(), title: "İlk Notum", content: "Merhaba! Kalkula Not Defterine hoş geldiniz.\n\nBuraya istediğiniz notları yazabilir, TXT veya Markdown olarak indirebilirsiniz.", createdAt: Date.now(), updatedAt: Date.now() };
       setNotes([first]);
       setActiveId(first.id);
     }

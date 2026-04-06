@@ -43,7 +43,7 @@ export function WordCounter() {
            style={{ resize: "vertical" }}
          />
          <div className="absolute bottom-6 right-8 text-[10px] font-black text-muted uppercase tracking-[0.3em] italic z-20 pointer-events-none opacity-40">
-            Kalküla AI Word Analysis Engine
+            Kalkula AI Word Analysis Engine
          </div>
       </div>
 

@@ -74,7 +74,7 @@ export function QRCodeGenerator() {
                  
                  <div className="p-8 bg-white rounded-[3rem] shadow-2xl inline-block mb-10 border-[12px] border-white/10 group hover:rotate-1 hover:scale-105 transition-all">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={qrReady} alt="Kalküla QR Code" width={280} height={280} className="mix-blend-multiply" />
+                    <img src={qrReady} alt="Kalkula QR Code" width={280} height={280} className="mix-blend-multiply" />
                  </div>
                  
                  <p className="text-muted text-xs mb-4 max-w-sm mx-auto leading-relaxed italic text-center">

@@ -7,13 +7,13 @@ interface ShareResultButtonProps {
   resultText: string;
 }
 
-export function ShareResultButton({ title = "Kalküla Hesaplama Sonucu", resultText }: ShareResultButtonProps) {
+export function ShareResultButton({ title = "Kalkula Hesaplama Sonucu", resultText }: ShareResultButtonProps) {
   const [copied, setCopied] = useState(false);
 
   const handleShare = async () => {
     const shareData = {
       title: title,
-      text: resultText + "\\n\\nKalküla ile hesapladım: https://kalkula.com.tr",
+      text: resultText + "\\n\\nKalkula ile hesapladım: https://kalkula.com.tr",
     };
 
     if (navigator.share && /mobile|android|iphone|ipad/i.test(navigator.userAgent)) {

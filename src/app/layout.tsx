@@ -27,19 +27,19 @@ export const viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL("https://kalkula.com"),
   title: {
-    default: "Kalküla | Türkiye'nin En Kapsamlı Hesaplama Platformu",
-    template: "%s | Kalküla"
+    default: "Kalkula | Türkiye'nin En Kapsamlı Hesaplama Platformu",
+    template: "%s | Kalkula"
   },
-  description: "Kalküla ile finans, eğitim, sağlık, vergi ve daha fazlasını kapsayan 60+ ücretsiz hesaplama aracı, not defteri, takvim ve belge dönüştürücü tek platformda.",
-  keywords: ["hesaplama", "hesap makinesi", "kredi hesaplama", "vergi hesaplama", "kalküla", "birim dönüştürücü"],
+  description: "Kalkula ile finans, eğitim, sağlık, vergi ve daha fazlasını kapsayan 60+ ücretsiz hesaplama aracı, not defteri, takvim ve belge dönüştürücü tek platformda.",
+  keywords: ["hesaplama", "hesap makinesi", "kredi hesaplama", "vergi hesaplama", "kalkula", "birim dönüştürücü"],
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Kalküla | Türkiye'nin En Kapsamlı Hesaplama Platformu",
+    title: "Kalkula | Türkiye'nin En Kapsamlı Hesaplama Platformu",
     description: "160+ profesyonel hesaplama aracı tek platformda.",
     url: "https://kalkula.com",
-    siteName: "Kalküla",
+    siteName: "Kalkula",
     locale: "tr_TR",
     type: "website",
   },
@@ -55,7 +55,7 @@ export default function RootLayout({
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "Kalküla",
+    "name": "Kalkula",
     "url": "https://kalkula.com",
     "potentialAction": {
       "@type": "SearchAction",

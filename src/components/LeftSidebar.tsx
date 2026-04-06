@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { categories } from "@/data/calculators";
+import { CategoryIcon } from "@/components/CategoryIcon";
 
 export function LeftSidebar() {
   const pathname = usePathname();
@@ -24,19 +25,20 @@ export function LeftSidebar() {
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  gap: "0.5rem",
+                  gap: "0.75rem",
                   padding: "0.5rem 0.75rem",
                   borderRadius: "7px",
-                  color: isActive ? "var(--accent-primary)" : "var(--text-secondary)",
-                  fontWeight: isActive ? 700 : 400,
-                  fontSize: "0.9rem",
-                  background: isActive ? "var(--accent-glow)" : "transparent",
-                  borderLeft: isActive ? "3px solid var(--accent-primary)" : "3px solid transparent",
+                  color: isActive ? (cat.color || "var(--accent-primary)") : "var(--text-secondary)",
+                  fontWeight: isActive ? 800 : 500,
+                  fontSize: "0.875rem",
+                  background: isActive ? `${cat.color}11` : "transparent",
+                  borderLeft: isActive ? `3px solid ${cat.color || "var(--accent-primary)"}` : "3px solid transparent",
                   transition: "all 0.15s",
                   textDecoration: "none",
                 }}
                 className="sidebar-link"
               >
+                <CategoryIcon id={cat.id} size={18} color={isActive ? (cat.color || "var(--accent-primary)") : "var(--text-muted)"} strokeWidth={isActive ? 2.5 : 2} />
                 {cat.name}
               </Link>
             );

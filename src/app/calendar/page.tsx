@@ -76,107 +76,136 @@ export default function Calendar() {
 
   // --- PC LAYOUT ---
   const renderPCLayout = () => (
-    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "2rem 1.5rem" }}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2.5rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "1.5rem" }}>
+    <>
+      <section style={{
+        background: "linear-gradient(135deg, var(--accent-primary) 0%, #1d4ed8 100%)",
+        padding: "4rem 0 3rem",
+        textAlign: "center",
+        color: "white",
+        marginBottom: "3rem"
+      }}>
+        <div className="container">
+          <div style={{ marginBottom: "1rem", display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.15)", borderRadius: "9999px", padding: "0.3rem 1rem", fontSize: "0.85rem", fontWeight: 600 }}>
+            <span style={{ width: 8, height: 8, background: "#4ade80", borderRadius: "50%", display: "inline-block" }}></span>
+            Kalkula Takvim
+          </div>
+          <h1 style={{ 
+            fontSize: "3.5rem", 
+            fontWeight: 900, 
+            marginBottom: "1rem", 
+            lineHeight: 1.1, 
+            letterSpacing: "-0.05em",
+            background: "linear-gradient(to bottom, #ffffff 30%, #cbd5e1 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textShadow: "0 20px 40px rgba(0,0,0,0.2)"
+          }}>
+            Takvim
+          </h1>
+          <p style={{ fontSize: "1.1rem", color: "rgba(255,255,255,0.9)", maxWidth: "600px", margin: "0 auto 0.5rem", lineHeight: 1.7 }}>
+            Planlarınızı ve önemli günlerinizi profesyonelce yönetin.
+          </p>
+        </div>
+      </section>
+
+      <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem 4rem" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2.5rem" }}>
           <Link href="/" className="btn-secondary rounded-full" style={{ padding: '0.75rem 1.5rem' }}>← Ana Sayfa</Link>
-          <h1 style={{ fontSize: "2rem", fontWeight: 900, letterSpacing: '-0.04em' }}>Profesyonel Takvim</h1>
-        </div>
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button onClick={() => setCurrent(new Date())} className="btn-secondary">Bugün</button>
-          <button onClick={() => {}} className="btn-secondary">Dışa Aktar ↓</button>
-        </div>
-      </div>
-
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "2.5rem" }}>
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "28px", overflow: "hidden", boxShadow: '0 20px 50px rgba(0,0,0,0.15)' }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1.75rem", borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.02)" }}>
-            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1))} className="btn-secondary" style={{ width: 44, height: 44, padding: 0 }}>‹</button>
-            <h2 style={{ fontSize: "1.25rem", fontWeight: 900 }}>{monthNames[current.getMonth()]} {current.getFullYear()}</h2>
-            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1))} className="btn-secondary" style={{ width: 44, height: 44, padding: 0 }}>›</button>
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", background: "rgba(255,255,255,0.01)" }}>
-            {dayNames.map((d, i) => (
-              <div key={d} style={{ padding: "1.25rem 0.5rem", textAlign: "center", fontSize: "0.75rem", fontWeight: 900, color: i >= 5 ? "#ef4444" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: "1px" }}>{d}</div>
-            ))}
-          </div>
-
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
-            {Array.from({ length: adjustedFirstDay }).map((_, i) => (
-              <div key={`empty-${i}`} style={{ minHeight: "120px", background: "rgba(0,0,0,0.05)", borderRight: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }} />
-            ))}
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const day = i + 1;
-              const dateStr = getDateStr(day);
-              const dayEvents = eventsForDate(dateStr);
-              const isToday = dateStr === todayStr;
-              const isSelected = dateStr === selectedDate;
-
-              return (
-                <div key={day} onClick={() => setSelectedDate(dateStr)}
-                  style={{
-                    minHeight: "120px",
-                    padding: "0.6rem",
-                    cursor: "pointer",
-                    borderRight: "1px solid var(--border)",
-                    borderBottom: "1px solid var(--border)",
-                    background: isSelected ? "var(--accent-glow)" : "var(--surface)",
-                    transition: "all 0.2s"
-                  }}>
-                  <div style={{
-                    width: 30, height: 30, borderRadius: "50%",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontWeight: 900, fontSize: "0.9rem",
-                    background: isToday ? "var(--accent-primary)" : "none",
-                    color: isToday ? "white" : "var(--text-primary)",
-                  }}>
-                    {day}
-                  </div>
-                  <div style={{ marginTop: '4px', display: "flex", flexDirection: "column", gap: "2px" }}>
-                    {dayEvents.slice(0, 3).map(ev => (
-                      <div key={ev.id} style={{ background: ev.color, color: "white", borderRadius: "4px", padding: "2px 6px", fontSize: "0.65rem", fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
-                        {ev.title}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
+          <div style={{ display: 'flex', gap: '0.75rem' }}>
+            <button onClick={() => setCurrent(new Date())} className="btn-secondary">Bugün</button>
+            <button onClick={() => {}} className="btn-secondary">Dışa Aktar ↓</button>
           </div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-          <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", borderRadius: "28px", padding: "2rem" }}>
-            <div style={{ fontSize: "0.75rem", fontWeight: 900, color: "var(--accent-primary)", letterSpacing: "2px", marginBottom: "0.75rem" }}>SEÇİLİ GÜN</div>
-            <div style={{ fontSize: "2.5rem", fontWeight: 900, color: "var(--text-primary)" }}>{selectedDate ? new Date(selectedDate + "T12:00:00").getDate() : today.getDate()}</div>
-            <div style={{ fontWeight: 800, color: "var(--text-primary)", fontSize: '1.1rem' }}>
-                {selectedDate ? new Date(selectedDate + "T12:00:00").toLocaleDateString("tr-TR", { weekday: "long" }) : dayNamesFull[(today.getDay() + 6) % 7]}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 340px", gap: "2.5rem" }}>
+          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "28px", overflow: "hidden", boxShadow: '0 20px 50px rgba(0,0,0,0.15)' }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1.75rem", borderBottom: "1px solid var(--border)", background: "rgba(255,255,255,0.02)" }}>
+              <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1))} className="btn-secondary" style={{ width: 44, height: 44, padding: 0 }}>‹</button>
+              <h2 style={{ fontSize: "1.25rem", fontWeight: 900 }}>{monthNames[current.getMonth()]} {current.getFullYear()}</h2>
+              <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1))} className="btn-secondary" style={{ width: 44, height: 44, padding: 0 }}>›</button>
             </div>
-          </div>
 
-          <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "28px", padding: "2rem", flex: 1 }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
-              <div style={{ fontWeight: 900 }}>Etkinlikler</div>
-              <button onClick={() => setShowModal(true)} className="btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.8rem' }}>+ Yeni Ekle</button>
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              {selectedEvents.map(ev => (
-                <div key={ev.id} style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1.25rem", background: "rgba(255,255,255,0.03)", borderRadius: "20px", borderLeft: `6px solid ${ev.color}` }}>
-                  <span style={{ flex: 1, fontWeight: 800, fontSize: "0.9rem" }}>{ev.title}</span>
-                  <button onClick={() => deleteEvent(ev.id)} style={{ color: "#ef4444", fontSize: "1.2rem", cursor: "pointer", background: 'none', border: 'none' }}>✕</button>
-                </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", background: "rgba(255,255,255,0.01)" }}>
+              {dayNames.map((d, i) => (
+                <div key={d} style={{ padding: "1.25rem 0.5rem", textAlign: "center", fontSize: "0.75rem", fontWeight: 900, color: i >= 5 ? "#ef4444" : "var(--text-muted)", textTransform: "uppercase", letterSpacing: "1px" }}>{d}</div>
               ))}
             </div>
+
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)" }}>
+              {Array.from({ length: adjustedFirstDay }).map((_, i) => (
+                <div key={`empty-${i}`} style={{ minHeight: "120px", background: "rgba(0,0,0,0.05)", borderRight: "1px solid var(--border)", borderBottom: "1px solid var(--border)" }} />
+              ))}
+              {Array.from({ length: daysInMonth }).map((_, i) => {
+                const day = i + 1;
+                const dateStr = getDateStr(day);
+                const dayEvents = eventsForDate(dateStr);
+                const isToday = dateStr === todayStr;
+                const isSelected = dateStr === selectedDate;
+
+                return (
+                  <div key={day} onClick={() => setSelectedDate(dateStr)}
+                    style={{
+                      minHeight: "120px",
+                      padding: "0.6rem",
+                      cursor: "pointer",
+                      borderRight: "1px solid var(--border)",
+                      borderBottom: "1px solid var(--border)",
+                      background: isSelected ? "var(--accent-glow)" : "var(--surface)",
+                      transition: "all 0.2s"
+                    }}>
+                    <div style={{
+                      width: 30, height: 30, borderRadius: "50%",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontWeight: 900, fontSize: "0.9rem",
+                      background: isToday ? "var(--accent-primary)" : "none",
+                      color: isToday ? "white" : "var(--text-primary)",
+                    }}>
+                      {day}
+                    </div>
+                    <div style={{ marginTop: '4px', display: "flex", flexDirection: "column", gap: "2px" }}>
+                      {dayEvents.slice(0, 3).map(ev => (
+                        <div key={ev.id} style={{ background: ev.color, color: "white", borderRadius: "4px", padding: "2px 6px", fontSize: "0.65rem", fontWeight: 800, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {ev.title}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+            <div style={{ background: "var(--bg-secondary)", border: "1px solid var(--border)", borderRadius: "28px", padding: "2rem" }}>
+              <div style={{ fontSize: "0.75rem", fontWeight: 900, color: "var(--accent-primary)", letterSpacing: "2px", marginBottom: "0.75rem" }}>SEÇİLİ GÜN</div>
+              <div style={{ fontSize: "2.5rem", fontWeight: 900, color: "var(--text-primary)" }}>{selectedDate ? new Date(selectedDate + "T12:00:00").getDate() : today.getDate()}</div>
+              <div style={{ fontWeight: 800, color: "var(--text-primary)", fontSize: '1.1rem' }}>
+                  {selectedDate ? new Date(selectedDate + "T12:00:00").toLocaleDateString("tr-TR", { weekday: "long" }) : dayNamesFull[(today.getDay() + 6) % 7]}
+              </div>
+            </div>
+
+            <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "28px", padding: "2rem", flex: 1 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
+                <div style={{ fontWeight: 900 }}>Etkinlikler</div>
+                <button onClick={() => setShowModal(true)} className="btn-primary" style={{ padding: '0.5rem 1.25rem', fontSize: '0.8rem' }}>+ Yeni Ekle</button>
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {selectedEvents.map(ev => (
+                  <div key={ev.id} style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1.25rem", background: "rgba(255,255,255,0.03)", borderRadius: "20px", borderLeft: `6px solid ${ev.color}` }}>
+                    <span style={{ flex: 1, fontWeight: 800, fontSize: "0.9rem" }}>{ev.title}</span>
+                    <button onClick={() => deleteEvent(ev.id)} style={{ color: "#ef4444", fontSize: "1.2rem", cursor: "pointer", background: 'none', border: 'none' }}>✕</button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 
   // --- MOBILE LAYOUT ---
   const renderMobileLayout = () => {
-    // Agenda Logic for Mobile
     const getAgendaDays = () => {
       const res = [];
       const start = new Date(current.getFullYear(), current.getMonth(), 1);
@@ -189,17 +218,38 @@ export default function Calendar() {
     };
 
     return (
-      <div style={{ padding: "1rem 0" }}>
-        {/* Mobile Header */}
-        <div style={{ padding: '0 1.25rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 900, letterSpacing: '-0.02em' }}>Takvimim</h1>
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1))} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', width: 44, height: 44, color: 'white' }}>‹</button>
-            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1))} style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '12px', width: 44, height: 44, color: 'white' }}>›</button>
+      <div style={{ padding: "0" }}>
+        <section style={{
+          background: "linear-gradient(135deg, var(--accent-primary) 0%, #1d4ed8 100%)",
+          padding: "3rem 1.25rem 2.5rem",
+          textAlign: "center",
+          color: "white",
+          marginBottom: "1.5rem"
+        }}>
+          <div style={{ marginBottom: "0.75rem", display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.15)", borderRadius: "9999px", padding: "0.2rem 0.8rem", fontSize: "0.75rem", fontWeight: 600 }}>
+            <span style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", display: "inline-block" }}></span>
+            Kalkula Takvim
           </div>
-        </div>
+          <h1 style={{ 
+            fontSize: "2.5rem", 
+            fontWeight: 900, 
+            marginBottom: "0.5rem", 
+            lineHeight: 1.1, 
+            letterSpacing: "-0.06em",
+            background: "linear-gradient(to bottom, #ffffff 40%, #cbd5e1 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textShadow: "0 15px 30px rgba(0,0,0,0.2)"
+          }}>
+            Takvim
+          </h1>
+          
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginTop: "1.5rem" }}>
+            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() - 1, 1))} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px', width: 44, height: 44, color: 'white' }}>‹</button>
+            <button onClick={() => setCurrent(new Date(current.getFullYear(), current.getMonth() + 1, 1))} style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '12px', width: 44, height: 44, color: 'white' }}>›</button>
+          </div>
+        </section>
 
-        {/* Current Month Banner */}
         <div style={{ padding: '0 1.25rem', marginBottom: '1.5rem' }}>
            <div style={{ background: 'var(--accent-primary)', padding: '1.5rem', borderRadius: '24px', position: 'relative', overflow: 'hidden', boxShadow: '0 10px 30px var(--accent-primary-glow)' }}>
               <div style={{ position: 'absolute', top: -10, right: -10, fontSize: '4rem', opacity: 0.1 }}>📅</div>

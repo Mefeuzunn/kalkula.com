@@ -9,14 +9,14 @@ export default function PrivacyPage() {
             <section className="bg-secondary/5 p-8 rounded-3xl border border-border/50">
                <h2 className="text-lg font-black uppercase tracking-widest text-accent-primary mb-4">1. Veri Sorumlusu ve Gizlilik Taahhüdü</h2>
                <p className="text-muted leading-relaxed font-medium">
-                  Kalküla SaaS Hub ("Platform"), Mehmet Efe Uzun tarafından geliştirilmiştir. Platform olarak kullanıcı gizliliği ve veri güvenliği en üst önceliğimizdir. Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) ve GDPR uyumluluğu kapsamında hazırlanmıştır.
+                  Kalkula SaaS Hub ("Platform"), Mehmet Efe Uzun tarafından geliştirilmiştir. Platform olarak kullanıcı gizliliği ve veri güvenliği en üst önceliğimizdir. Bu metin, 6698 sayılı Kişisel Verilerin Korunması Kanunu (KVKK) ve GDPR uyumluluğu kapsamında hazırlanmıştır.
                </p>
             </section>
 
             <section>
                <h2 className="text-xl font-black text-primary mb-4 italic">2. "Privacy-First" Hesaplama İlkesi</h2>
                <p className="text-muted leading-relaxed">
-                  Kalküla'nın çalışma prensibi <b>Uçtan Uca Yerel Hesaplama (End-to-End Client-side Calculation)</b> üzerinedir. Hesaplama araçlarına girdiğiniz hiçbir veri (maaş, kredi tutarı, sağlık verileri vb.) sunucularımıza gönderilmez, bir veritabanında saklanmaz ve 3. taraflarla paylaşılmaz. Tüm işlemler doğrudan tarayıcınızda gerçekleşir.
+                  Kalkula'nın çalışma prensibi <b>Uçtan Uca Yerel Hesaplama (End-to-End Client-side Calculation)</b> üzerinedir. Hesaplama araçlarına girdiğiniz hiçbir veri (maaş, kredi tutarı, sağlık verileri vb.) sunucularımıza gönderilmez, bir veritabanında saklanmaz ve 3. taraflarla paylaşılmaz. Tüm işlemler doğrudan tarayıcınızda gerçekleşir.
                </p>
             </section>
 
@@ -39,7 +39,7 @@ export default function PrivacyPage() {
             </section>
 
             <div className="mt-12 p-6 bg-accent-glow rounded-2xl border border-accent-primary/20 text-center">
-               <p className="text-xs font-bold text-accent-primary uppercase tracking-[0.2em]">Son Güncelleme: 1 Ocak 2026 | Kalküla Güvenlik Departmanı</p>
+               <p className="text-xs font-bold text-accent-primary uppercase tracking-[0.2em]">Son Güncelleme: 1 Ocak 2026 | Kalkula Güvenlik Departmanı</p>
             </div>
           </div>
         </div>

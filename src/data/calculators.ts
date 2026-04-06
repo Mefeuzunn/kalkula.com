@@ -4,6 +4,7 @@ export type Category = {
   slug: string;
   description: string;
   icon: string;
+  color?: string; // Kategoriye özel renk
 };
 
 export type CalculatorInfo = {
@@ -12,27 +13,26 @@ export type CalculatorInfo = {
   slug: string;
   categoryId: string;
   description: string;
-  // Buralara form config veya endpoint tipi gelecek
 };
 
 export const categories: Category[] = [
-  { id: "kredi", name: "Kredi", slug: "kredi", description: "İhtiyaç, konut, taşıt ve ticari kredi hesaplamaları.", icon: "Bank" },
-  { id: "finans", name: "Finans", slug: "finans", description: "Faiz, döviz, enflasyon ve yatırım getirisi hesaplamaları.", icon: "TrendingUp" },
-  { id: "saglik", name: "Sağlık", slug: "saglik", description: "İdeal kilo, su ihtiyacı, vücut kitle endeksi, gebelik ve yaş.", icon: "Heart" },
-  { id: "egitim", name: "Eğitim", slug: "egitim", description: "Ders notu, ortalama ve okul başlangıç yaşı vb. okul hesaplamaları.", icon: "BookOpen" },
-  { id: "matematik", name: "Matematik", slug: "matematik", description: "Alan, hacim, yüzdelik oran, denklem çözümleri ve dönüştürücüler.", icon: "Calculator" },
-  { id: "donusturuculer", name: "Dönüştürücüler", slug: "donusturucu", description: "Uzunluk, ağırlık ve sıcaklık gibi çeşitli birim çevirme araçları.", icon: "Repeat" },
-  { id: "sure", name: "Zaman", slug: "zaman", description: "Tarihler arası gün, hafta, saat, namaz saatleri ve yaş.", icon: "Clock" },
-  { id: "muhasebe", name: "Muhasebe", slug: "muhasebe", description: "Maaş, tazminat, mesai ve asgari geçim hesaplamaları.", icon: "Briefcase" },
-  { id: "vergi", name: "Vergi", slug: "vergi", description: "KDV, damga vergisi, emlak, gelir ve ÖTV hesaplamaları.", icon: "Percent" },
-  { id: "sinav", name: "Sınav Hesaplamaları", slug: "sinav", description: "ÖSYM, MEB, AGS, YKS, Hâkimlik ve diğer giriş sınavı puan hesaplamaları.", icon: "GraduationCap" },
-  { id: "ticari", name: "Ticari", slug: "ticari", description: "Kar marjı, fiyat belirleme, KDV dahil/hariç ticari ölçümler.", icon: "ShoppingCart" },
-  { id: "diger", name: "Diğer", slug: "diger", description: "Kuşak hesaplama, burç hesabı ve diğer spesifik araçlar.", icon: "MoreHorizontal" },
-  { id: "araclar", name: "Pratik Araçlar", slug: "pratik-araclar", description: "Şifre oluşturucu, kelime sayacı ve QR kod üretici gibi günlük hayatınızı kolaylaştıran web araçları.", icon: "Settings" },
-  { id: "eglence", name: "Eğlence & Çekiliş", slug: "eglence", description: "Çekiliş yapıcı, zar atma, şanslı kelime ve rastgele sayı üretici (RNG) tarzı eğlence oyunları.", icon: "Smile" },
-  { id: "gelistirici", name: "Geliştirici Araçları", slug: "gelistirici-araclari", description: "JSON formatlayıcı, Hash/MD5 şifreleyici, Base64 ve Renk (HEX/RGB) kod dönüştürücü programcı modülleri.", icon: "Code" },
-  { id: "muhendislik", name: "Mühendislik", slug: "muhendislik-araclari", description: "Direnç renk kodları, Ohm kanunu ve teknik hesaplama araçları.", icon: "Cpu" },
-  { id: "sosyal", name: "Sosyal Medya", slug: "sosyal-medya-araclari", description: "X (Twitter) karakter sayacı, dekoratif yazı oluşturucu ve içerik araçları.", icon: "Share2" }
+  { id: "kredi", name: "Kredi", slug: "kredi", description: "İhtiyaç, konut, taşıt ve ticari kredi hesaplamaları.", icon: "Bank", color: "#10b981" },
+  { id: "finans", name: "Finans", slug: "finans", description: "Faiz, döviz, enflasyon ve yatırım getirisi hesaplamaları.", icon: "TrendingUp", color: "#3b82f6" },
+  { id: "saglik", name: "Sağlık", slug: "saglik", description: "İdeal kilo, su ihtiyacı, vücut kitle endeksi, gebelik ve yaş.", icon: "Heart", color: "#ef4444" },
+  { id: "egitim", name: "Eğitim", slug: "egitim", description: "Ders notu, ortalama ve okul başlangıç yaşı vb. okul hesaplamaları.", icon: "BookOpen", color: "#f59e0b" },
+  { id: "matematik", name: "Matematik", slug: "matematik", description: "Alan, hacim, yüzdelik oran, denklem çözümleri ve dönüştürücüler.", icon: "Calculator", color: "#8b5cf6" },
+  { id: "donusturuculer", name: "Dönüştürücüler", slug: "donusturucu", description: "Uzunluk, ağırlık ve sıcaklık gibi çeşitli birim çevirme araçları.", icon: "Repeat", color: "#06b6d4" },
+  { id: "sure", name: "Zaman", slug: "zaman", description: "Tarihler arası gün, hafta, saat, namaz saatleri ve yaş.", icon: "Clock", color: "#6366f1" },
+  { id: "muhasebe", name: "Muhasebe", slug: "muhasebe", description: "Maaş, tazminat, mesai ve asgari geçim hesaplamaları.", icon: "Briefcase", color: "#475569" },
+  { id: "vergi", name: "Vergi", slug: "vergi", description: "KDV, damga vergisi, emlak, gelir ve ÖTV hesaplamaları.", icon: "Percent", color: "#b91c1c" },
+  { id: "sinav", name: "Sınav Hesaplamaları", slug: "sinav", description: "ÖSYM, MEB, AGS, YKS, Hâkimlik ve diğer giriş sınavı puan hesaplamaları.", icon: "GraduationCap", color: "#1d4ed8" },
+  { id: "ticari", name: "Ticari", slug: "ticari", description: "Kar marjı, fiyat belirleme, KDV dahil/hariç ticari ölçümler.", icon: "ShoppingCart", color: "#f97316" },
+  { id: "diger", name: "Diğer", slug: "diger", description: "Kuşak hesaplama, burç hesabı ve diğer spesifik araçlar.", icon: "MoreHorizontal", color: "#ec4899" },
+  { id: "araclar", name: "Pratik Araçlar", slug: "pratik-araclar", description: "Şifre oluşturucu, kelime sayacı ve QR kod üretici gibi günlük hayatınızı kolaylaştıran web araçları.", icon: "Settings", color: "#14b8a6" },
+  { id: "eglence", name: "Eğlence & Çekiliş", slug: "eglence", description: "Çekiliş yapıcı, zar atma, şanslı kelime ve rastgele sayı üretici (RNG) tarzı eğlence oyunları.", icon: "Smile", color: "#d946ef" },
+  { id: "gelistirici", name: "Geliştirici Araçları", slug: "gelistirici-araclari", description: "JSON formatlayıcı, Hash/MD5 şifreleyici, Base64 ve Renk (HEX/RGB) kod dönüştürücü programcı modülleri.", icon: "Code", color: "#000000" },
+  { id: "muhendislik", name: "Mühendislik", slug: "muhendislik-araclari", description: "Direnç renk kodları, Ohm kanunu ve teknik hesaplama araçları.", icon: "Cpu", color: "#a855f7" },
+  { id: "sosyal", name: "Sosyal Medya", slug: "sosyal-medya-araclari", description: "X (Twitter) karakter sayacı, dekoratif yazı oluşturucu ve içerik araçları.", icon: "Share2", color: "#38bdf8" }
 ];
 
 export const calculators: CalculatorInfo[] = [

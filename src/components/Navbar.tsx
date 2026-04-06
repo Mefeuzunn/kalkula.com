@@ -69,7 +69,13 @@ export default function Navbar() {
               <path d="M8 6v12M16 6l-6 6 6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <span className={styles.logoText}>Kalküla</span>
+          <span className={styles.logoText} style={{ 
+            background: "linear-gradient(to bottom, #ffffff 40%, #cbd5e1 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            letterSpacing: "-0.03em"
+          }}>Kalkula</span>
         </Link>
 
         {/* Desktop search */}

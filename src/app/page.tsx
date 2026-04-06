@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { categories, calculators, getCalculatorBySlug } from "@/data/calculators";
 import { AdPlaceholder } from "@/components/AdPlaceholder";
+import { CategoryIcon } from "@/components/CategoryIcon";
 
 const STATS = [
   { label: "Hesaplama Aracı", value: `${calculators.length}+` },
@@ -53,9 +54,22 @@ export default function Home() {
             <span style={{ width: 8, height: 8, background: "#4ade80", borderRadius: "50%", display: "inline-block" }}></span>
             Tüm araçlar ücretsiz
           </div>
-          <h1 style={{ fontSize: "3.5rem", fontWeight: 900, marginBottom: "1.25rem", lineHeight: 1.1, letterSpacing: "-0.04em" }}>
-            Türkiye&apos;nin En Kapsamlı<br />Hesaplama Platformu
+          <h1 style={{ 
+            fontSize: "4rem", 
+            fontWeight: 900, 
+            marginBottom: "1.25rem", 
+            lineHeight: 1.1, 
+            letterSpacing: "-0.05em",
+            background: "linear-gradient(to bottom, #ffffff 30%, #cbd5e1 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            textShadow: "0 20px 40px rgba(0,0,0,0.2)"
+          }}>
+            Kalkula
           </h1>
+          <h2 style={{ fontSize: "1.75rem", fontWeight: 700, color: "rgba(255,255,255,0.85)", marginBottom: "2rem", letterSpacing: "-0.02em" }}>
+            Türkiye&apos;nin En Kapsamlı Hesaplama Platformu
+          </h2>
           <p style={{ fontSize: "1.2rem", color: "rgba(255,255,255,0.9)", maxWidth: "650px", margin: "0 auto 3rem", lineHeight: 1.7 }}>
             Finans, eğitim, sağlık ve daha fazlası. {calculators.length}+ profesyonel araç tek bir çatıda.
           </p>
@@ -103,11 +117,10 @@ export default function Home() {
                return (
                  <Link key={cat.id} href={`/kategori/${cat.slug}`} className="category-card" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                      <div className="category-icon" style={{ background: 'var(--accent-primary)', color: 'white', padding: '0.75rem', borderRadius: '12px' }}>
-                        {/* Dynamic Icon Helper (simplified) */}
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                      <div className="category-icon" style={{ background: cat.color || 'var(--accent-primary)', color: 'white', padding: '0.75rem', borderRadius: '12px' }}>
+                        <CategoryIcon id={cat.id} size={24} color="white" />
                       </div>
-                      <span style={{ fontSize: '0.8rem', fontWeight: 900, color: 'var(--accent-primary)' }}>{toolCount} Araç</span>
+                      <span style={{ fontSize: '0.8rem', fontWeight: 900, color: cat.color || 'var(--accent-primary)' }}>{toolCount} Araç</span>
                    </div>
                    <h3 style={{ fontWeight: 900, fontSize: '1.1rem', marginBottom: '0.5rem' }}>{cat.name}</h3>
                    <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>{cat.description}</p>
@@ -124,22 +137,35 @@ export default function Home() {
   const renderMobileVersion = () => (
     <>
       <section style={{
-        background: "linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%)",
-        padding: "3rem 1rem 2rem",
-        borderBottom: "1px solid var(--border)"
+        background: "linear-gradient(135deg, var(--accent-primary) 0%, #1d4ed8 100%)",
+        padding: "3.5rem 1rem 3rem",
+        textAlign: "center",
+        color: "white",
+        borderBottom: "1px solid rgba(255,255,255,0.1)"
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
-          <div>
-            <h1 style={{ fontSize: "1.5rem", fontWeight: 900, letterSpacing: '-0.02em', margin: 0 }}>Kalküla Explorer</h1>
-            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: 0 }}>Tüm araçlar elinizin altında</p>
-          </div>
-          <div style={{ padding: '0.5rem', background: 'var(--accent-primary)', borderRadius: '12px', boxShadow: '0 4px 15px var(--accent-primary-glow)' }}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          </div>
+        <div style={{ marginBottom: "1rem", display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.15)", borderRadius: "9999px", padding: "0.2rem 0.8rem", fontSize: "0.75rem", fontWeight: 600 }}>
+          <span style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", display: "inline-block" }}></span>
+          Tüm araçlar ücretsiz
         </div>
-
-        {/* Quick Access Circles (Instagram/App style) */}
-        <div style={{ display: 'flex', gap: '1.25rem', overflowX: 'auto', paddingBottom: '1rem', marginBottom: '0.5rem' }} className="hide-scrollbar">
+        <h1 style={{ 
+          fontSize: "2.75rem", 
+          fontWeight: 900, 
+          marginBottom: "0.75rem", 
+          lineHeight: 1.1, 
+          letterSpacing: "-0.06em",
+          background: "linear-gradient(to bottom, #ffffff 40%, #cbd5e1 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          textShadow: "0 15px 30px rgba(0,0,0,0.2)"
+        }}>
+          Kalkula
+        </h1>
+        <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.9)", maxWidth: "300px", margin: "0 auto 2rem", lineHeight: 1.6 }}>
+          Profesyonel hesaplama araçları tek bir çatıda.
+        </p>
+        
+        {/* Quick Access Circles (Instagram/App style) - Now styled for the new hero */}
+        <div style={{ display: 'flex', gap: '1.25rem', overflowX: 'auto', paddingBottom: '0.5rem' }} className="hide-scrollbar">
           {POPULAR_TOOLS.map((tool) => (
             <Link key={tool.slug} href={`/hesapla/${tool.slug}`} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
               <div style={{ 
@@ -170,8 +196,8 @@ export default function Home() {
          {/* Categories - Compact List Style */}
          <section>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-              <h2 style={{ fontSize: '1.1rem', fontWeight: 900 }}>Kategoriler</h2>
-              <Link href="/hesapla" style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-primary)' }}>Tümünü Gör</Link>
+              <h2 style={{ fontSize: '1.1rem', fontWeight: 900, letterSpacing: '-0.02em' }}>Kategoriler</h2>
+              <Link href="/kategoriler" style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-primary)', background: 'var(--accent-glow)', padding: '0.4rem 0.8rem', borderRadius: '100px' }}>Tümünü Gör</Link>
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
@@ -183,12 +209,23 @@ export default function Home() {
                   padding: '1rem', 
                   background: 'var(--surface)', 
                   borderRadius: '18px',
-                  border: '1px solid var(--border)'
+                  border: '1px solid var(--border)',
+                  borderLeft: `5px solid ${cat.color || 'var(--accent-primary)'}`
                 }}>
-                  <div style={{ fontSize: '1.5rem', opacity: 0.8 }}>🔧</div>
+                  <div style={{ 
+                    padding: '0.5rem', 
+                    background: `${cat.color}11`, 
+                    borderRadius: '10px', 
+                    color: cat.color || 'var(--accent-primary)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <CategoryIcon id={cat.id} size={22} strokeWidth={2.5} color={cat.color} />
+                  </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 800, fontSize: '0.95rem' }}>{cat.name}</div>
-                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{calculators.filter(c => c.categoryId === cat.id).length} profesyonel araç</div>
+                    <div style={{ fontWeight: 900, fontSize: '0.95rem' }}>{cat.name}</div>
+                    <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>{calculators.filter(c => c.categoryId === cat.id).length} profesyonel araç</div>
                   </div>
                   <div style={{ opacity: 0.3 }}>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M9 18l6-6-6-6"/></svg>

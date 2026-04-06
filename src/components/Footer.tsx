@@ -20,10 +20,10 @@ export default function Footer() {
                   <path d="M8 6v12M16 6l-6 6 6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </div>
-              <span style={{ fontWeight: 800, fontSize: "1.25rem", color: "var(--text-primary)", letterSpacing: "-0.02em" }}>Kalküla</span>
+              <span style={{ fontWeight: 800, fontSize: "1.25rem", color: "var(--text-primary)", letterSpacing: "-0.02em" }}>Kalkula</span>
             </div>
             <p style={{ fontSize: "0.875rem", color: "var(--text-muted)", lineHeight: 1.7, maxWidth: "240px" }}>
-              Kalküla, Türkiye&apos;nin en kapsamlı ücretsiz hesaplama platformudur. Finanstan eğitime, sağlıktan muhasebeye kadar 160&apos;tan fazla profesyonel hesaplama aracını tek bir yerde sunuyoruz.
+              Kalkula, Türkiye&apos;nin en kapsamlı ücretsiz hesaplama platformudur. Finanstan eğitime, sağlıktan muhasebeye kadar 160&apos;tan fazla profesyonel hesaplama aracını tek bir yerde sunuyoruz.
             </p>
             <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem", alignItems: "center" }}>
               <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#22c55e" }}></div>
@@ -90,7 +90,7 @@ export default function Footer() {
         }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "1rem" }}>
              <p style={{ color: "var(--text-muted)", fontSize: "0.8rem", maxWidth: "600px" }}>
-               © 2026 Kalküla SaaS Hub. Tüm hakları saklıdır. Bu platformdaki tüm hesaplama motorları ve görsel bileşenler fikri mülkiyet koruması altındadır. | Geliştirici: <Link href="/hakkimizda" style={{ color: "var(--accent-primary)", fontWeight: 700 }}>Mehmet Efe Uzun</Link>
+               © 2026 Kalkula SaaS Hub. Tüm hakları saklıdır. Bu platformdaki tüm hesaplama motorları ve görsel bileşenler fikri mülkiyet koruması altındadır. | Geliştirici: <Link href="/hakkimizda" style={{ color: "var(--accent-primary)", fontWeight: 700 }}>Mehmet Efe Uzun</Link>
              </p>
              <div style={{ display: "flex", gap: "1rem", alignItems: "center", opacity: 0.7 }}>
                 <div title="SSL Secured" style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.7rem", color: "#22c55e", fontWeight: "bold", padding: "4px 10px", background: "#22c55e11", borderRadius: "100px", border: "1px solid #22c55e33" }}>
@@ -110,7 +110,7 @@ export default function Footer() {
           
           <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", borderTop: "1px solid var(--border)", paddingTop: "1rem" }}>
              <p style={{ color: "var(--text-muted)", fontSize: "0.75rem", fontStyle: "italic", flex: 1 }}>
-               * Kalküla, girilen hiçbir veriyi sunucularında saklamaz. Tüm hesaplamalar uçtan uca şifreli bir şekilde tarayıcınızda (Client-side) gerçekleşir. Gizliliğiniz bizim için en üst önceliktir.
+               * Kalkula, girilen hiçbir veriyi sunucularında saklamaz. Tüm hesaplamalar uçtan uca şifreli bir şekilde tarayıcınızda (Client-side) gerçekleşir. Gizliliğiniz bizim için en üst önceliktir.
              </p>
              <div style={{ display: "flex", gap: "1rem" }}>
                 <Link href="/gizlilik" style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: "bold" }} className="hover:text-primary">Gizlilik Politikası</Link>

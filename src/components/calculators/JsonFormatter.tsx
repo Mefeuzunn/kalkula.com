@@ -50,7 +50,7 @@ export function JsonFormatter() {
         <div className="relative group">
            <div className="absolute -inset-1 bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 rounded-3xl blur-lg opacity-10 group-focus-within:opacity-30 transition-all"></div>
            <textarea 
-             placeholder='{"id": 1, "name": "Kalküla", "status": "active"}' 
+             placeholder='{"id": 1, "name": "Kalkula", "status": "active"}' 
              value={input} 
              onChange={e => setInput(e.target.value)} 
              className="input-field !font-mono !text-sm !py-8 !px-8 border-4 border-border rounded-3xl min-h-[250px] leading-relaxed shadow-inner placeholder:opacity-20 relative z-10 focus:border-accent-primary transition-all"
@@ -87,7 +87,7 @@ export function JsonFormatter() {
                  </button>
               </div>
               <div className="p-2 bg-[#0d1117] relative">
-                 <div className="absolute top-4 right-4 text-[8px] font-black text-white/10 uppercase italic">Kalküla Code Engine v1.0</div>
+                 <div className="absolute top-4 right-4 text-[8px] font-black text-white/10 uppercase italic">Kalkula Code Engine v1.0</div>
                  <textarea 
                    value={output} 
                    readOnly

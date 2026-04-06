@@ -3,6 +3,7 @@ import { getCategoryBySlug, getCalculatorsByCategory, categories } from "@/data/
 import { notFound } from "next/navigation";
 import { AdPlaceholder } from "@/components/AdPlaceholder";
 import { LeftSidebar } from "@/components/LeftSidebar";
+import { CategoryIcon } from "@/components/CategoryIcon";
 
 export default async function CategoryPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -30,16 +31,21 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         </nav>
 
         {/* Header */}
-        <div style={{ marginBottom: "2rem", padding: "2rem", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "12px", borderLeft: "4px solid var(--accent-primary)" }}>
-          <h1 style={{ fontSize: "1.75rem", fontWeight: 800, marginBottom: "0.5rem" }}>
-            {category.name} Hesaplamaları
-          </h1>
-          <p style={{ color: "var(--text-secondary)", fontSize: "1rem", lineHeight: 1.6 }}>
-            {category.description}
-          </p>
-          <div style={{ marginTop: "0.75rem", display: "inline-flex", alignItems: "center", gap: "0.4rem", fontSize: "0.85rem", color: "var(--text-muted)", background: "var(--bg-tertiary)", padding: "0.3rem 0.75rem", borderRadius: "9999px" }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/></svg>
-            {calcs.length} hesaplama aracı
+        <div style={{ marginBottom: "2rem", padding: "2rem", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "12px", borderLeft: `6px solid ${category.color || 'var(--accent-primary)'}`, display: 'flex', alignItems: 'center', gap: '2rem' }}>
+          <div style={{ padding: '1rem', background: category.color || 'var(--accent-primary)', borderRadius: '16px', color: 'white', boxShadow: `0 8px 24px -6px ${category.color}44` }}>
+             <CategoryIcon id={category.id} size={48} color="white" />
+          </div>
+          <div>
+            <h1 style={{ fontSize: "2rem", fontWeight: 900, marginBottom: "0.25rem", letterSpacing: '-0.02em' }}>
+              {category.name} Hesaplamaları
+            </h1>
+            <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: '600px' }}>
+              {category.description}
+            </p>
+            <div style={{ marginTop: "1rem", display: "inline-flex", alignItems: "center", gap: "0.5rem", fontSize: "0.85rem", fontWeight: 700, color: category.color || 'var(--accent-primary)', background: `${category.color}11`, padding: "0.4rem 1rem", borderRadius: "9999px" }}>
+              <CategoryIcon id={category.id} size={14} color={category.color} strokeWidth={3} />
+              {calcs.length} profesyonel araç
+            </div>
           </div>
         </div>
 
@@ -53,12 +59,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             {calcs.map((calc) => (
               <Link key={calc.id} href={`/hesapla/${calc.slug}`} className="tool-card">
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "0.5rem" }}>
-                  <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: "var(--accent-glow)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--accent-primary)", flexShrink: 0 }}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="4" y="2" width="16" height="20" rx="2"/>
-                      <line x1="8" y1="8" x2="16" y2="8"/>
-                      <line x1="8" y1="12" x2="16" y2="12"/>
-                    </svg>
+                  <div style={{ width: "36px", height: "36px", borderRadius: "8px", background: `${category.color}18`, display: "flex", alignItems: "center", justifyContent: "center", color: category.color || 'var(--accent-primary)', flexShrink: 0 }}>
+                    <CategoryIcon id={category.id} size={18} strokeWidth={2.5} />
                   </div>
                   <h3 className="tool-card-title">{calc.title}</h3>
                 </div>

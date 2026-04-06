@@ -208,7 +208,7 @@ export function GeometryCalculators() {
             {results && (
                <div className="result-container-premium !animate-none h-full">
                   <div className="result-card-premium !p-8 h-full bg-accent-primary border-4 border-indigo-500 shadow-2xl relative overflow-hidden group">
-                     <div className="absolute top-0 right-0 p-4 font-black italic text-[8px] text-white/20 tracking-widest rotate-6">Kalküla Geo-Analysis</div>
+                     <div className="absolute top-0 right-0 p-4 font-black italic text-[8px] text-white/20 tracking-widest rotate-6">Kalkula Geo-Analysis</div>
                      <div className="flex flex-col gap-8 text-white">
                         <div className="p-6 bg-white/10 rounded-[2rem] border border-white/20 backdrop-blur-sm group-hover:scale-[1.03] transition-transform">
                            <span className="text-[10px] font-black uppercase tracking-[0.3em] mb-2 block opacity-80">{results.label1}</span>

@@ -15,7 +15,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (!calc) {
     return {
-      title: "Araç Bulunamadı | Kalküla",
+      title: "Araç Bulunamadı | Kalkula",
     };
   }
 
@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       canonical: `https://kalkula.com/hesapla/${slug}`,
     },
     openGraph: {
-      title: `${calc.title} | Kalküla`,
+      title: `${calc.title} | Kalkula`,
       description: calc.description,
       url: `https://kalkula.com/hesapla/${slug}`,
     },

@@ -2,8 +2,8 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Hakkımızda | Kalküla",
-  description: "Kalküla — Türkiye'nin en kapsamlı ücretsiz hesaplama platformu hakkında bilgi edinin.",
+  title: "Hakkımızda | Kalkula",
+  description: "Kalkula — Türkiye'nin en kapsamlı ücretsiz hesaplama platformu hakkında bilgi edinin.",
 };
 
 export default function Hakkimizda() {
@@ -19,10 +19,10 @@ export default function Hakkimizda() {
       {/* Hero */}
       <div style={{ marginBottom: "3rem" }}>
         <h1 style={{ fontSize: "2.5rem", fontWeight: 800, marginBottom: "1rem", letterSpacing: "-0.02em" }}>
-          Kalküla Hakkında
+          Kalkula Hakkında
         </h1>
         <p style={{ fontSize: "1.15rem", color: "var(--text-secondary)", lineHeight: 1.8, maxWidth: "680px" }}>
-          Kalküla, Türkiye&apos;nin en kapsamlı ücretsiz hesaplama platformudur. 
+          Kalkula, Türkiye&apos;nin en kapsamlı ücretsiz hesaplama platformudur. 
           Finanstan eğitime, sağlıktan muhasebeye kadar 60&apos;tan fazla profesyonel 
           hesaplama aracını tek bir yerde sunuyoruz.
         </p>
@@ -34,7 +34,7 @@ export default function Hakkimizda() {
         <p style={{ color: "var(--text-secondary)", lineHeight: 1.8 }}>
           Karmaşık hesaplamaları herkes için erişilebilir ve anlaşılır kılmak. 
           İster kredi hesaplıyor, ister sınav puanınızı öğreniyor, ister altın yatırımınızı 
-          analiz ediyor olun — Kalküla her adımda yanınızda.
+          analiz ediyor olun — Kalkula her adımda yanınızda.
         </p>
       </div>
 
@@ -60,7 +60,7 @@ export default function Hakkimizda() {
         {[
           { title: "🔒 Güvenilirlik", text: "Tüm hesaplama formülleri TCMB, MEB ve ÖSYM gibi resmi kaynaklardan derlenmektedir." },
           { title: "⚡ Hız", text: "Hiçbir hesaplama aracımız sunucu gerektirmez — tüm işlemler anlık tarayıcınızda gerçekleşir." },
-          { title: "🆓 Ücretsizlik", text: "Kalküla'daki tüm araçlara kayıt olmadan, sınırsız biçimde erişebilirsiniz." },
+          { title: "🆓 Ücretsizlik", text: "Kalkula'daki tüm araçlara kayıt olmadan, sınırsız biçimde erişebilirsiniz." },
           { title: "🔐 Gizlilik", text: "Girdiğiniz veriler hiçbir sunucuya gönderilmez; tüm veriler yalnızca cihazınızda kalır." },
         ].map(v => (
           <div key={v.title} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1.25rem 1.5rem" }}>

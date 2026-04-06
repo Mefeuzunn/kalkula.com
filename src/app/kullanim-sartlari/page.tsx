@@ -9,14 +9,14 @@ export default function TermsPage() {
             <section className="bg-secondary/5 p-8 rounded-3xl border border-border/50">
                <h2 className="text-lg font-black uppercase tracking-widest text-accent-primary mb-4">1. Hizmet Kapsamı</h2>
                <p className="text-muted leading-relaxed font-medium">
-                  Kalküla SaaS Hub ("Platform"), kullanıcılara finans, mühendislik, sağlık ve eğitim alanlarında çeşitli hesaplama araçları sunan bir yardımcı servisdir. Platformu kullanan her birey, bu kullanım şartlarını peşinen kabul etmiş sayılır.
+                  Kalkula SaaS Hub ("Platform"), kullanıcılara finans, mühendislik, sağlık ve eğitim alanlarında çeşitli hesaplama araçları sunan bir yardımcı servisdir. Platformu kullanan her birey, bu kullanım şartlarını peşinen kabul etmiş sayılır.
                </p>
             </section>
 
             <section>
                <h2 className="text-xl font-black text-primary mb-4 italic">2. Hesaplamalar ve Bilgilendirme Amacı</h2>
                <p className="text-muted leading-relaxed italic border-l-4 border-accent-primary pl-6">
-                  Platformda sunulan tüm hesaplama sonuçları yalnızca bilgilendirme ve tahmini analiz amaçlıdır. Kalküla, resmi kurum, banka, noter veya hukuk danışmanlığı yerine geçmez. 
+                  Platformda sunulan tüm hesaplama sonuçları yalnızca bilgilendirme ve tahmini analiz amaçlıdır. Kalkula, resmi kurum, banka, noter veya hukuk danışmanlığı yerine geçmez. 
                   <b> Hesaplama sonuçlarına dayanarak yapılacak hiçbir işlemden dolayı platformumuz ve geliştiricimiz sorumlu tutulamaz.</b>
                </p>
             </section>
