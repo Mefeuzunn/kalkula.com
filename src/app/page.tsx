@@ -19,6 +19,7 @@ const POPULAR_TOOLS = [
   { slug: "enflasyon", title: "Enflasyon", icon: "📈" },
   { slug: "kelime-sayaci", title: "Kelime", icon: "✍️" },
   { slug: "sifre-olusturucu", title: "Şifre", icon: "🔑" },
+  { slug: "2048", title: "2048", icon: "🎮" },
   { slug: "meb-ek-ders-hesaplama", title: "Ek Ders", icon: "👨‍🏫" },
 ];
 
@@ -245,7 +246,7 @@ export default function Home() {
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {categories.slice(0, 8).map((cat) => (
+              {categories.slice(0, 12).map((cat) => (
                 <Link key={cat.id} href={`/kategori/${cat.slug}`} style={{ 
                   display: 'flex', 
                   alignItems: 'center', 

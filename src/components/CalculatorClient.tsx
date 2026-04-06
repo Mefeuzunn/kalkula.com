@@ -114,6 +114,13 @@ import { FluidPressureCalculator } from "@/components/calculators/FluidPressureC
 import { StatisticsCalculator } from "@/components/calculators/StatisticsCalculator";
 import { PermutationCombinationCalculator } from "@/components/calculators/PermutationCombinationCalculator";
 
+// Yeni Araçlar ve Oyunlar
+import { Game2048 } from "@/components/games/Game2048";
+import { PdfMerge } from "@/components/calculators/PdfMerge";
+import { PdfSplit } from "@/components/calculators/PdfSplit";
+import { ImageToPdf } from "@/components/calculators/ImageToPdf";
+import { GlassGenerator } from "@/components/calculators/GlassGenerator";
+
 function GenericCalculator() {
   return (
     <div className="animate-fade-in" style={{ textAlign: "center", padding: "4rem 2rem", background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px dashed var(--border)' }}>
@@ -283,6 +290,18 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "sivi-basinci-hesaplama": return <FluidPressureCalculator />;
       case "istatistik-hesaplama": return <StatisticsCalculator />;
       case "permutasyon-kombinasyon-hesaplama": return <PermutationCombinationCalculator />;
+      
+      // PDF Araçları
+      case "pdf-birlestir": return <PdfMerge />;
+      case "pdf-bolme": return <PdfSplit />;
+      case "image-to-pdf": return <ImageToPdf />;
+      
+      // Geliştirici & Tasarımcı
+      case "glassmorphism-generator": return <GlassGenerator />;
+
+      // Oyunlar
+      case "2048": return <Game2048 />;
+
       default: return <GenericCalculator />;
     }
   };

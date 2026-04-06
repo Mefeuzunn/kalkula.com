@@ -32,7 +32,9 @@ export const categories: Category[] = [
   { id: "eglence", name: "Eğlence & Çekiliş", slug: "eglence", description: "Çekiliş yapıcı, zar atma, şanslı kelime ve rastgele sayı üretici (RNG) tarzı eğlence oyunları.", icon: "Smile", color: "#d946ef" },
   { id: "gelistirici", name: "Geliştirici Araçları", slug: "gelistirici-araclari", description: "JSON formatlayıcı, Hash/MD5 şifreleyici, Base64 ve Renk (HEX/RGB) kod dönüştürücü programcı modülleri.", icon: "Code", color: "#000000" },
   { id: "muhendislik", name: "Mühendislik", slug: "muhendislik-araclari", description: "Direnç renk kodları, Ohm kanunu ve teknik hesaplama araçları.", icon: "Cpu", color: "#a855f7" },
-  { id: "sosyal", name: "Sosyal Medya", slug: "sosyal-medya-araclari", description: "X (Twitter) karakter sayacı, dekoratif yazı oluşturucu ve içerik araçları.", icon: "Share2", color: "#38bdf8" }
+  { id: "sosyal", name: "Sosyal Medya", slug: "sosyal-medya-araclari", description: "X (Twitter) karakter sayacı, dekoratif yazı oluşturucu ve içerik araçları.", icon: "Share2", color: "#38bdf8" },
+  { id: "pdf", name: "PDF Araçları", slug: "pdf-araclari", description: "PDF birleştirme, bölme, sayfa ayıklama ve görsele dönüştürme gibi döküman yönetim araçları.", icon: "FileText", color: "#ef4444" },
+  { id: "oyun", name: "Oyunlar", slug: "oyunlar", description: "2048 gibi zeka oyunları ve platform içi eğlenceli vakit geçirme modülleri.", icon: "Gamepad2", color: "#8b5cf6" }
 ];
 
 export const calculators: CalculatorInfo[] = [
@@ -181,6 +183,8 @@ export const calculators: CalculatorInfo[] = [
   { id: "json-fmt", title: "JSON Formatlayıcı (Prettier)", slug: "json-formatter", categoryId: "gelistirici", description: "Karmaşık JSON verilerini okunaklı hale getirin, küçültün ve doğrulayın." },
   { id: "hash-gen", title: "Base64 & Hash İşleyici", slug: "hash-generator", categoryId: "gelistirici", description: "Metinlerinizi Base64 formatına çevirin veya şifrelenmiş verileri geri çözün." },
   { id: "color-conv", title: "Renk Dönüştürücü (HEX/RGB)", slug: "renk-donusturucu", categoryId: "gelistirici", description: "Tasarımcılar için HEX, RGB ve CMYK renk kodlarını anlık dönüştürün." },
+  { id: "glass-gen", title: "Glassmorphism Generator", slug: "glassmorphism-generator", categoryId: "gelistirici", description: "Modern UI tasarımları için cam efekti (backdrop-filter) kodları üretin." },
+
   
   { id: "mod", title: "Mod Alma", slug: "mod-alma", categoryId: "matematik", description: "Bir sayının diğerine bölümünden kalanını bulun." },
   { id: "matris", title: "Matris Hesaplayıcı", slug: "matris-hesaplama", categoryId: "matematik", description: "Matris toplama, çarpma, determinant ve ters matris işlemleri." },
@@ -196,7 +200,16 @@ export const calculators: CalculatorInfo[] = [
   { id: "motor-gucu", title: "Motor Gücü ve Tork Hesaplama", slug: "motor-gucu-hesaplama", categoryId: "muhendislik", description: "Elektrik motorları için nominal güç, RPM ve gerilim bazlı tork ve akım analizi." },
   { id: "metal-agirlik", title: "Metal ve Çelik Ağırlık Hesaplama", slug: "metal-agirlik-hesaplama", categoryId: "muhendislik", description: "Plaka, dolu mil ve boru tipi metal malzemelerin boyutlarına göre teorik ağırlığını hesaplayın." },
   { id: "kinetik-enerji", title: "Kinetik ve Potansiyel Enerji", slug: "kinetik-enerji-hesaplama", categoryId: "muhendislik", description: "Kütle, hız ve yükseklik parametrelerine göre mekanik enerji analizini yapın." },
-  { id: "sivi-basinci", title: "Sıvı (Hidrostatik) Basıncı", slug: "sivi-basinci-hesaplama", categoryId: "muhendislik", description: "Derinlik ve özkütleye göre sıvı basıncını animasyonlu tank görseliyle hesaplayın." }
+  { id: "sivi-basinci", title: "Sıvı (Hidrostatik) Basıncı", slug: "sivi-basinci-hesaplama", categoryId: "muhendislik", description: "Derinlik ve özkütleye göre sıvı basıncını animasyonlu tank görseliyle hesaplayın." },
+  
+  // PDF Araçları
+  { id: "pdf-merge", title: "PDF Birleştir", slug: "pdf-birlestir", categoryId: "pdf", description: "Birden fazla PDF dosyasını tek tıkla güvenle birleştirin." },
+  { id: "pdf-split", title: "PDF Böl / Sayfa Ayıkla", slug: "pdf-bolme", categoryId: "pdf", description: "Büyük PDF dosyalarından belirli sayfaları ayıklayın veya dökümanı bölün." },
+  { id: "pdf-to-img", title: "PDF'den Görsele", slug: "pdf-to-image", categoryId: "pdf", description: "PDF sayfalarını yüksek çözünürlüklü JPEG veya PNG görsellerine dönüştürün." },
+  { id: "img-to-pdf", title: "Görselden PDF'e", slug: "image-to-pdf", categoryId: "pdf", description: "Fotoğraflarınızı ve görsellerinizi tek bir PDF dökümanı haline getirin." },
+
+  // Oyunlar
+  { id: "game-2048", title: "2048 Oyunu", slug: "2048", categoryId: "oyun", description: "Klasik 2048 zeka oyunu. Sayıları birleştirin, 2048'e ulaşın!" }
 ];
 
 export function getCalculatorsByCategory(categoryId: string) {

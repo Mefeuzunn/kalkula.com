@@ -1,102 +1,75 @@
-import React, { useState } from "react";
-import confetti from "canvas-confetti";
+"use client";
+
+import React, { useState, useEffect } from "react";
 
 export function JsonFormatter() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
-  const format = (spaces: number = 4) => {
+  const format = (mode: 'pretty' | 'minify') => {
     if (!input.trim()) return;
     try {
       const parsed = JSON.parse(input);
-      setOutput(JSON.stringify(parsed, null, spaces));
-      setError(null);
-      confetti({ 
-        particleCount: 40, 
-        spread: 50, 
-        origin: { y: 0.8 }, 
-        colors: ["#3b82f6", "#60a5fa"] 
-      });
-    } catch (e: any) {
-      setError("Hatalı JSON Formatı: " + e.message);
+      const formatted = mode === 'pretty' ? JSON.stringify(parsed, null, 2) : JSON.stringify(parsed);
+      setOutput(formatted);
+      setError("");
+    } catch (e) {
+      setError("Hatalı JSON Formatı: " + (e as Error).message);
       setOutput("");
     }
   };
 
-  const minify = () => {
-    if (!input.trim()) return;
-    try {
-      const parsed = JSON.parse(input);
-      setOutput(JSON.stringify(parsed));
-      setError(null);
-    } catch (e: any) {
-      setError("Hatalı JSON Formatı: " + e.message);
-      setOutput("");
-    }
-  };
-
-  const copyToClipboard = () => {
+  const copy = () => {
     navigator.clipboard.writeText(output);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-4">
-        <div className="flex justify-between items-center px-4">
-           <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] italic">Girdi (Raw JSON)</label>
-           <span className="text-[10px] font-bold text-accent-primary animate-pulse">JSON VALIDATOR ACTIVE</span>
+    <div className="calc-wrapper">
+      <div className="calc-grid-2">
+        <div className="calc-input-group">
+          <label className="calc-label text-[10px] font-black">Giriş (Raw JSON)</label>
+          <textarea 
+            className="calc-input h-64 font-mono text-xs !bg-secondary/5 resize-none border-2 focus:border-accent-primary transition-all p-4 rounded-3xl"
+            placeholder='{"key": "value"}'
+            value={input}
+            onChange={e => setInput(e.target.value)}
+          />
         </div>
-        <div className="relative group">
-           <div className="absolute -inset-1 bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 rounded-3xl blur-lg opacity-10 group-focus-within:opacity-30 transition-all"></div>
-           <textarea 
-             placeholder='{"id": 1, "name": "Kalkula", "status": "active"}' 
-             value={input} 
-             onChange={e => setInput(e.target.value)} 
-             className="input-field !font-mono !text-sm !py-8 !px-8 border-4 border-border rounded-3xl min-h-[250px] leading-relaxed shadow-inner placeholder:opacity-20 relative z-10 focus:border-accent-primary transition-all"
-           />
+
+        <div className="calc-input-group">
+          <label className="calc-label text-[10px] font-black">Çıkış (Formatlanmış)</label>
+          <textarea 
+            readOnly
+            className={`calc-input h-64 font-mono text-xs !bg-secondary/10 resize-none border-2 ${error ? "border-red-500/30" : "border-border"} p-4 rounded-3xl`}
+            value={output || error}
+          />
+           {output && (
+             <button 
+               onClick={copy} 
+               className="absolute right-4 bottom-4 p-2 bg-accent-primary text-white text-[9px] font-black rounded-lg uppercase tracking-widest shadow-lg hover:scale-105 active:scale-95 transition-all"
+             >
+               {copied ? "KOPYALANDI" : "KOPYALA"}
+             </button>
+           )}
         </div>
       </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-         <button className="btn-primary py-4 text-sm font-black uppercase tracking-widest italic" onClick={() => format(4)}>4 Boşlukla Düzenle</button>
-         <button className="btn-secondary py-4 text-sm font-black border-accent-primary/20 text-accent-primary uppercase tracking-widest" onClick={() => format(2)}>2 Boşlukla Düzenle</button>
-         <button className="btn-secondary py-4 text-sm font-black border-accent-secondary/20 text-accent-secondary uppercase tracking-widest hover:bg-accent-secondary hover:text-white" onClick={minify}>Minify (Sıkıştır)</button>
+
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={() => format('pretty')}>✨ Güzel Formatla</button>
+        <button className="calc-btn-calculate !bg-black" onClick={() => format('minify')}>⚡ Küçült (Minify)</button>
+        <button className="calc-btn-reset" onClick={() => { setInput(""); setOutput(""); setError(""); }}>↺ Temizle</button>
       </div>
 
-      {error && (
-        <div className="p-6 bg-red-500/5 border-2 border-red-500/20 text-red-500 rounded-2xl text-xs font-mono leading-relaxed animate-shake italic shadow-xl">
-           <div className="font-black mb-1 uppercase tracking-widest text-[10px]">Syntax Error Detected</div>
-           <p className="opacity-80">⚠️ {error}</p>
-        </div>
-      )}
-
-      {output && (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium !text-left !p-0 border-2 border-accent-primary/20 shadow-[0_0_50px_rgba(59,130,246,0.1)]">
-              <div className="flex justify-between items-center bg-secondary/10 p-5 border-b border-border">
-                 <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-accent-primary animate-pulse"></span>
-                    <span className="text-[10px] font-black text-primary uppercase tracking-widest italic">İşlenmiş JSON Çıktısı</span>
-                 </div>
-                 <button 
-                   onClick={copyToClipboard}
-                   className="px-6 py-2 bg-accent-primary text-white text-[10px] font-black rounded-full hover:scale-105 transition-all shadow-lg shadow-accent-primary/20 active:scale-95"
-                 >
-                   KODU KOPYALA
-                 </button>
-              </div>
-              <div className="p-2 bg-[#0d1117] relative">
-                 <div className="absolute top-4 right-4 text-[8px] font-black text-white/10 uppercase italic">Kalkula Code Engine v1.0</div>
-                 <textarea 
-                   value={output} 
-                   readOnly
-                   className="w-full bg-transparent border-0 font-mono text-[13px] text-blue-100 leading-relaxed p-8 min-h-[400px] outline-none scrollbar-custom"
-                 />
-              </div>
-           </div>
-        </div>
-      )}
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">🛠️</span>
+        <span className="calc-info-box-text">
+          <b>Profesyonel Veri İşleme:</b> JSON verilerinizi anında okunaklı hale getirin veya sunucu performansı için tek satıra indirgeyin. Hatalı JSON girişlerinde otomatik validasyon sağlar.
+        </span>
+      </div>
     </div>
   );
 }

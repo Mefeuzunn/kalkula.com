@@ -37,33 +37,42 @@ export function DesiCalculator() {
     <div className="calc-wrapper">
       <div className="calc-grid-3">
         <div className="calc-input-group">
-          <label className="calc-label">Genişlik (см)</label>
-          <input type="number" value={width} onChange={e => setWidth(e.target.value)} className="calc-input" placeholder="30" />
+          <label className="calc-label">Genişlik (cm)</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={width} onChange={e => setWidth(e.target.value)} className="calc-input has-unit" placeholder="30" />
+            <span className="calc-unit">cm</span>
+          </div>
         </div>
         <div className="calc-input-group">
-          <label className="calc-label">Uzunluk (см)</label>
-          <input type="number" value={length} onChange={e => setLength(e.target.value)} className="calc-input" placeholder="40" />
+          <label className="calc-label">Uzunluk (cm)</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={length} onChange={e => setLength(e.target.value)} className="calc-input has-unit" placeholder="40" />
+            <span className="calc-unit">cm</span>
+          </div>
         </div>
         <div className="calc-input-group">
-          <label className="calc-label">Yükseklik (см)</label>
-          <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="calc-input" placeholder="20" />
+          <label className="calc-label">Yükseklik (cm)</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="calc-input has-unit" placeholder="20" />
+            <span className="calc-unit">cm</span>
+          </div>
         </div>
       </div>
 
       <div className="calc-input-group">
         <label className="calc-label">Hesaplama Standartı</label>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="calc-toggle-group">
           <button 
-            className={`calc-input border-2 transition-all ${divisor === "3000" ? "border-accent-primary bg-accent-primary/10" : "border-border"}`}
+            className={`calc-toggle-btn ${divisor === "3000" ? "active" : ""}`}
             onClick={() => setDivisor("3000")}
           >
-            <div className="font-bold">Yurtiçi (3000)</div>
+            Yurtiçi (3000)
           </button>
           <button 
-            className={`calc-input border-2 transition-all ${divisor === "5000" ? "border-accent-primary bg-accent-primary/10" : "border-border"}`}
+            className={`calc-toggle-btn ${divisor === "5000" ? "active" : ""}`}
             onClick={() => setDivisor("5000")}
           >
-            <div className="font-bold">Yurtdışı (5000)</div>
+            Yurtdışı (5000)
           </button>
         </div>
       </div>
@@ -74,18 +83,18 @@ export function DesiCalculator() {
       </div>
 
       {result !== null && (
-        <div className="calc-result-panel">
+        <div className="calc-result-panel animate-result">
           <div className="calc-result-header">🔢 Kargo Desi Hacmi</div>
           <div className="calc-result-body">
             <div className="calc-result-hero">
               <div className="calc-result-hero-label">Hesaplanan Desi</div>
-              <div className="calc-result-hero-value" style={{ color: "#f59e0b" }}>{result.toFixed(2)}</div>
+              <div className="calc-result-hero-value warning">{result.toFixed(2)}</div>
               <div className="calc-result-hero-sub">Hacim: {((parseFloat(width)*parseFloat(length)*parseFloat(height))/1000).toFixed(1)} Litre</div>
             </div>
             
             <div className="calc-result-row">
-              <span className="calc-result-row-label">Formül</span>
-              <span className="calc-result-row-value italic opacity-60">(E x B x Y) / {divisor}</span>
+              <span className="calc-result-row-label">Hesaplama Formülü</span>
+              <span className="calc-result-row-value accent">(EksBxY) / {divisor}</span>
             </div>
           </div>
         </div>

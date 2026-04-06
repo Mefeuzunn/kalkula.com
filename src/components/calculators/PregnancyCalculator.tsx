@@ -43,35 +43,37 @@ export function PregnancyCalculator() {
       </div>
 
       <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>🤱 Hesapla</button>
+        <button className="calc-btn-calculate" onClick={calculate}>🤰 Gebeliği Takip Et</button>
         <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
       </div>
 
       {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">🤰 Gebelik Takibi</div>
+        <div className="calc-result-panel animate-result">
+          <div className="calc-result-header">🤰 Gebelik Takip Özeti</div>
           <div className="calc-result-body">
             <div className="calc-result-hero">
               <div className="calc-result-hero-label">Tahmini Doğum Tarihi</div>
-              <div className="calc-result-hero-value" style={{ color: "var(--accent-primary)", fontSize: "2.25rem" }}>{result.dueDate}</div>
-              <div className="calc-result-hero-sub" style={{ color: result.trimesterColor, fontWeight: 700 }}>{result.trimester}</div>
+              <div className="calc-result-hero-value accent">{result.dueDate}</div>
+              <div className="calc-result-hero-sub" style={{ color: result.trimesterColor }}>{result.trimester}</div>
             </div>
+
             <div className="calc-result-cards">
               <div className="calc-result-card">
-                <div className="calc-result-card-label">📅 Gebelik Haftası</div>
+                <div className="calc-result-card-label">Haftalık İlerleme</div>
                 <div className="calc-result-card-value" style={{ color: result.trimesterColor }}>{result.weeks}</div>
-                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>hafta</div>
+                <div className="calc-result-card-unit">Haftalık</div>
               </div>
               <div className="calc-result-card">
-                <div className="calc-result-card-label">⏳ Kalan Süre</div>
+                <div className="calc-result-card-label">Kalan Süre</div>
                 <div className="calc-result-card-value">{result.daysLeft}</div>
-                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>gün</div>
+                <div className="calc-result-card-unit">Gün</div>
               </div>
             </div>
-            <div style={{ padding: "0.5rem 0" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-                <span className="calc-result-row-label">Gebelik Süreci</span>
-                <span style={{ fontSize: "0.8rem", fontWeight: 700, color: result.trimesterColor }}>%{Math.min(100, ((result.weeks / 40) * 100)).toFixed(0)}</span>
+
+            <div className="calc-result-section">
+              <div className="calc-result-row">
+                <span className="calc-result-row-label">Tamamlanma Oranı</span>
+                <span className="calc-result-row-value accent">%{Math.min(100, ((result.weeks / 40) * 100)).toFixed(0)}</span>
               </div>
               <div className="calc-scale-bar">
                 <div className="calc-scale-fill" style={{ width: `${Math.min(100, (result.weeks / 40) * 100)}%`, background: result.trimesterColor }} />
@@ -83,7 +85,7 @@ export function PregnancyCalculator() {
 
       <div className="calc-info-box">
         <span className="calc-info-box-icon">🏥</span>
-        <span className="calc-info-box-text">Tahmini doğum tarihi, son adet baş tarihinden 280 gün (40 hafta) sonrasına karşılık gelir. Kesin bilgi için doktorunuza danışınız.</span>
+        <span className="calc-info-box-text">Tahmini doğum tarihi, son adet baş tarihinden 280 gün (40 hafta) sonrasına karşılık gelir. Gebelik süreci kişiden kişiye farklılık gösterebilir, detaylar için doktorunuza başvurunuz.</span>
       </div>
     </div>
   );
