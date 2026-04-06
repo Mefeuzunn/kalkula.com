@@ -39,7 +39,6 @@ export const metadata: Metadata = {
 };
 
 import { TimerProvider } from "@/context/TimerContext";
-import { MiniTimer } from "@/components/MiniTimer";
 
 export default function RootLayout({
   children,
@@ -89,7 +88,6 @@ export default function RootLayout({
             </main>
             <Footer />
             <CookieConsent />
-            <MiniTimer />
           </TimerProvider>
         </ThemeProvider>
       </body>

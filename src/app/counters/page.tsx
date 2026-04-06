@@ -226,36 +226,36 @@ export default function Counters() {
                       <div className="grid grid-cols-3 gap-6 mb-8">
                          <div className="flex flex-col items-center gap-2">
                             <span style={{ fontSize: '0.65rem', fontWeight: 900, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>SAAT</span>
-                            <div className="relative w-full">
+                            <div className="w-full">
                               <input 
                                 type="number" min="0" 
                                 value={timerInput.h} 
                                 onChange={e => setTimerInput({...timerInput, h: parseInt(e.target.value)||0})} 
-                                className="w-full p-4 rounded-2xl bg-black/50 border border-white/10 text-center font-black text-2xl text-primary focus:border-accent-primary outline-none transition-all shadow-inner" 
+                                className="w-full p-4 rounded-2xl bg-white/5 border border-white/5 text-center font-black text-2xl text-primary focus:border-accent-primary/50 outline-none transition-all" 
                                 style={{ appearance: 'none', margin: 0 }}
                               />
                             </div>
                          </div>
                          <div className="flex flex-col items-center gap-2">
                             <span style={{ fontSize: '0.65rem', fontWeight: 900, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>DAKİKA</span>
-                            <div className="relative w-full">
+                            <div className="w-full">
                               <input 
                                 type="number" min="0" max="59" 
                                 value={timerInput.m} 
                                 onChange={e => setTimerInput({...timerInput, m: parseInt(e.target.value)||0})} 
-                                className="w-full p-4 rounded-2xl bg-black/50 border border-white/10 text-center font-black text-2xl text-primary focus:border-accent-primary outline-none transition-all shadow-inner" 
+                                className="w-full p-4 rounded-2xl bg-white/5 border border-white/5 text-center font-black text-2xl text-primary focus:border-accent-primary/50 outline-none transition-all" 
                                 style={{ appearance: 'none', margin: 0 }}
                               />
                             </div>
                          </div>
                          <div className="flex flex-col items-center gap-2">
                             <span style={{ fontSize: '0.65rem', fontWeight: 900, color: 'var(--text-muted)', letterSpacing: '0.05em' }}>SANİYE</span>
-                            <div className="relative w-full">
+                            <div className="w-full">
                               <input 
                                 type="number" min="0" max="59" 
                                 value={timerInput.s} 
                                 onChange={e => setTimerInput({...timerInput, s: parseInt(e.target.value)||0})} 
-                                className="w-full p-4 rounded-2xl bg-black/50 border border-white/10 text-center font-black text-2xl text-primary focus:border-accent-primary outline-none transition-all shadow-inner" 
+                                className="w-full p-4 rounded-2xl bg-white/5 border border-white/5 text-center font-black text-2xl text-primary focus:border-accent-primary/50 outline-none transition-all" 
                                 style={{ appearance: 'none', margin: 0 }}
                               />
                             </div>

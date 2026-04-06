@@ -149,6 +149,8 @@ export function TimerProvider({ children }: { children: React.ReactNode }) {
   };
 
   // --- Persistence ---
+  const lastSavedRef = useRef<number>(0);
+
   useEffect(() => {
     const saved = localStorage.getItem("kalkula_timer_hub");
     if (saved) {
@@ -163,8 +165,12 @@ export function TimerProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    const data = { swTime, laps, timerLeft, timerInitial };
-    localStorage.setItem("kalkula_timer_hub", JSON.stringify(data));
+    const now = Date.now();
+    if (now - lastSavedRef.current >= 1000) {
+      const data = { swTime, laps, timerLeft, timerInitial };
+      localStorage.setItem("kalkula_timer_hub", JSON.stringify(data));
+      lastSavedRef.current = now;
+    }
   }, [swTime, laps, timerLeft, timerInitial]);
 
   // --- Formats ---
