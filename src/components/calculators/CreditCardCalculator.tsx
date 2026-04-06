@@ -1,52 +1,77 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function CreditCardCalculator() {
-  const [debt, setDebt] = useState("");
-  const [limit, setLimit] = useState("");
-  const [result, setResult] = useState<number | null>(null);
+  const [debt, setDebt] = useState("15000");
+  const [limit, setLimit] = useState("50000");
+  const [result, setResult] = useState<{ minPayment: number; ratio: number; remaining: number } | null>(null);
 
   const calculate = () => {
     const d = parseFloat(debt);
     const l = parseFloat(limit);
-    if (!d || !l) return;
-
-    // Asgari ödeme oranı limiti 25.000 TL ve altı için %20, üstü için %40 vb. kurallar vardır.
-    let ratio = 0.20;
-    if (l > 25000) {
-      ratio = 0.40;
-    }
-
-    setResult(d * ratio);
+    if (!d || !l || d <= 0 || l <= 0) { setResult(null); return; }
+    const ratio = l > 25000 ? 0.40 : 0.20;
+    const minPayment = d * ratio;
+    const remaining = d - minPayment;
+    setResult({ minPayment, ratio, remaining });
   };
 
+  const reset = () => { setDebt("15000"); setLimit("50000"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [debt, limit]);
+
+  const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Kredi Kartı Limiti (₺)</label>
-        <input type="number" value={limit} onChange={e => setLimit(e.target.value)} className="input-field" placeholder="Örn: 50000" />
-      </div>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Dönem Borcu (₺)</label>
-        <input type="number" value={debt} onChange={e => setDebt(e.target.value)} className="input-field" placeholder="Örn: 15000" />
-      </div>
-
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>
-        Hesapla
-      </button>
-
-      {result !== null && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", textAlign: "center", borderTop: "4px solid var(--accent-primary)" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Ödenmesi Gereken Asgari Tutar</h3>
-          <div style={{ fontSize: "2.5rem", fontWeight: "bold", color: "var(--accent-primary)" }}>
-            {result.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+    <div className="calc-wrapper">
+      <div className="calc-grid-2">
+        <div className="calc-input-group">
+          <label className="calc-label">Kredi Kartı Limiti</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={limit} onChange={e => setLimit(e.target.value)} className="calc-input has-unit" placeholder="50000" min="0" />
+            <span className="calc-unit">₺</span>
           </div>
-          <p style={{ marginTop: "1rem", fontSize: "0.9rem", color: "var(--text-muted)" }}>
-            * BDDK kurallarına göre kart limiti 25.000 TL ve altında olanlar için asgari ödeme oranı %20, üstünde olanlar için %40'tır.
-          </p>
+        </div>
+        <div className="calc-input-group">
+          <label className="calc-label">Dönem Borcu</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={debt} onChange={e => setDebt(e.target.value)} className="calc-input has-unit" placeholder="15000" min="0" />
+            <span className="calc-unit">₺</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>💳 Hesapla</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
+
+      {result && (
+        <div className="calc-result-panel">
+          <div className="calc-result-header">💳 Asgari Ödeme Tutarı</div>
+          <div className="calc-result-body">
+            <div className="calc-result-hero">
+              <div className="calc-result-hero-label">Ödenmesi Gereken Asgari Tutar</div>
+              <div className="calc-result-hero-value">{fmt(result.minPayment)}</div>
+              <div className="calc-result-hero-sub">Uygulanan Oran: %{(result.ratio * 100).toFixed(0)} — BDDK kuralı</div>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Kalan Borç (Asgari Sonrası)</span>
+              <span className="calc-result-row-value danger">{fmt(result.remaining)}</span>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Toplam Dönem Borcu</span>
+              <span className="calc-result-row-value">{fmt(parseFloat(debt))}</span>
+            </div>
+          </div>
         </div>
       )}
+
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">📋</span>
+        <span className="calc-info-box-text">BDDK kuralına göre kart limiti 25.000 ₺ ve altında %20, üzerinde ise %40 asgari ödeme oranı uygulanır. Sadece asgari ödeme yapılması faiz yükünü artırır.</span>
+      </div>
     </div>
   );
 }

@@ -1,69 +1,126 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function PercentageCalculator() {
-  const [val1, setVal1] = useState("");
-  const [val2, setVal2] = useState("");
-  const [result1, setResult1] = useState<string | null>(null);
+  const [val1, setVal1] = useState("500");
+  const [val2, setVal2] = useState("20");
+  const [val3, setVal3] = useState("50");
+  const [val4, setVal4] = useState("200");
+  const [val5, setVal5] = useState("100");
+  const [val6, setVal6] = useState("150");
 
-  const [val3, setVal3] = useState("");
-  const [val4, setVal4] = useState("");
-  const [result2, setResult2] = useState<string | null>(null);
+  const [res1, setRes1] = useState<string | null>(null);
+  const [res2, setRes2] = useState<string | null>(null);
+  const [res3, setRes3] = useState<string | null>(null);
 
-  const calc1 = () => {
-    const x = parseFloat(val1);
-    const y = parseFloat(val2);
-    if (!isNaN(x) && !isNaN(y)) {
-      setResult1(`${x} sayısının %${y}'si = ${(x * y) / 100}`);
-    }
-  };
+  useEffect(() => {
+    const x = parseFloat(val1), y = parseFloat(val2);
+    if (!isNaN(x) && !isNaN(y)) setRes1(((x * y) / 100).toLocaleString("tr-TR", { maximumFractionDigits: 4 }));
+    else setRes1(null);
+  }, [val1, val2]);
 
-  const calc2 = () => {
-    const x = parseFloat(val3);
-    const y = parseFloat(val4);
-    if (!isNaN(x) && !isNaN(y) && x !== 0) {
-      setResult2(`${x} sayısı, ${y} sayısının %${(x / y) * 100} kadarıdır.`);
-    }
+  useEffect(() => {
+    const x = parseFloat(val3), y = parseFloat(val4);
+    if (!isNaN(x) && !isNaN(y) && y !== 0) setRes2(((x / y) * 100).toLocaleString("tr-TR", { maximumFractionDigits: 4 }) + "%");
+    else setRes2(null);
+  }, [val3, val4]);
+
+  useEffect(() => {
+    const start = parseFloat(val5), end = parseFloat(val6);
+    if (!isNaN(start) && !isNaN(end) && start !== 0) {
+      const change = ((end - start) / Math.abs(start)) * 100;
+      setRes3((change >= 0 ? "+" : "") + change.toLocaleString("tr-TR", { maximumFractionDigits: 2 }) + "%");
+    } else setRes3(null);
+  }, [val5, val6]);
+
+  const reset = () => {
+    setVal1("500"); setVal2("20"); setVal3("50"); setVal4("200"); setVal5("100"); setVal6("150");
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
-      
-      {/* 1. Kısım */}
-      <div className="panel" style={{ padding: "1.5rem" }}>
-        <h4 style={{ marginBottom: "1rem", fontWeight: 600 }}>A Sayısının %B'si Kaçtır?</h4>
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
-          <div>
-            <label style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "0.2rem", display: "block" }}>A Sayısı</label>
-            <input type="number" value={val1} onChange={e => setVal1(e.target.value)} className="input-field" placeholder="Örn: 500" />
+    <div className="calc-wrapper">
+      {/* Bölüm 1 */}
+      <div className="calc-section">
+        <div className="calc-section-title">📌 A sayısının %B'si kaçtır?</div>
+        <div className="calc-grid-2">
+          <div className="calc-input-group">
+            <label className="calc-label">A Sayısı</label>
+            <input type="number" value={val1} onChange={e => setVal1(e.target.value)} className="calc-input" placeholder="500" />
           </div>
-          <div>
-            <label style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "0.2rem", display: "block" }}>B Yüzdesi (%)</label>
-            <input type="number" value={val2} onChange={e => setVal2(e.target.value)} className="input-field" placeholder="Örn: 20" />
+          <div className="calc-input-group">
+            <label className="calc-label">B Yüzdesi</label>
+            <div className="calc-input-wrapper">
+              <input type="number" value={val2} onChange={e => setVal2(e.target.value)} className="calc-input has-unit" placeholder="20" />
+              <span className="calc-unit">%</span>
+            </div>
           </div>
-          <button className="btn-primary" onClick={calc1} style={{ padding: "0.75rem 1.5rem" }}>Hesapla</button>
         </div>
-        {result1 && <div style={{ marginTop: "1rem", padding: "1rem", background: "var(--surface-light)", borderRadius: "8px", fontWeight: 500 }}>{result1}</div>}
+        {res1 && (
+          <div className="calc-result-panel">
+            <div className="calc-result-body">
+              <div className="calc-result-row" style={{ borderBottom: "none" }}>
+                <span className="calc-result-row-label">{val1} sayısının %{val2}'si</span>
+                <span className="calc-result-row-value accent" style={{ fontSize: "1.4rem" }}>{res1}</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
-      {/* 2. Kısım */}
-      <div className="panel" style={{ padding: "1.5rem" }}>
-        <h4 style={{ marginBottom: "1rem", fontWeight: 600 }}>A Sayısı B Sayısının Yüzde Kaçıdır?</h4>
-        <div style={{ display: "flex", gap: "1rem", alignItems: "flex-end" }}>
-          <div>
-            <label style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "0.2rem", display: "block" }}>A Sayısı</label>
-            <input type="number" value={val3} onChange={e => setVal3(e.target.value)} className="input-field" placeholder="Örn: 50" />
+      {/* Bölüm 2 */}
+      <div className="calc-section">
+        <div className="calc-section-title">📌 A sayısı, B'nin yüzde kaçıdır?</div>
+        <div className="calc-grid-2">
+          <div className="calc-input-group">
+            <label className="calc-label">A Sayısı</label>
+            <input type="number" value={val3} onChange={e => setVal3(e.target.value)} className="calc-input" placeholder="50" />
           </div>
-          <div>
-            <label style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginBottom: "0.2rem", display: "block" }}>B Sayısı</label>
-            <input type="number" value={val4} onChange={e => setVal4(e.target.value)} className="input-field" placeholder="Örn: 200" />
+          <div className="calc-input-group">
+            <label className="calc-label">B Sayısı</label>
+            <input type="number" value={val4} onChange={e => setVal4(e.target.value)} className="calc-input" placeholder="200" />
           </div>
-          <button className="btn-secondary" onClick={calc2} style={{ padding: "0.75rem 1.5rem" }}>Hesapla</button>
         </div>
-        {result2 && <div style={{ marginTop: "1rem", padding: "1rem", background: "var(--surface-light)", borderRadius: "8px", fontWeight: 500 }}>{result2}</div>}
+        {res2 && (
+          <div className="calc-result-panel">
+            <div className="calc-result-body">
+              <div className="calc-result-row" style={{ borderBottom: "none" }}>
+                <span className="calc-result-row-label">{val3}, {val4} sayısının</span>
+                <span className="calc-result-row-value accent" style={{ fontSize: "1.4rem" }}>{res2}</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
+      {/* Bölüm 3 */}
+      <div className="calc-section">
+        <div className="calc-section-title">📌 A'dan B'ye yüzde değişim kaçtır?</div>
+        <div className="calc-grid-2">
+          <div className="calc-input-group">
+            <label className="calc-label">Başlangıç Değeri (A)</label>
+            <input type="number" value={val5} onChange={e => setVal5(e.target.value)} className="calc-input" placeholder="100" />
+          </div>
+          <div className="calc-input-group">
+            <label className="calc-label">Son Değer (B)</label>
+            <input type="number" value={val6} onChange={e => setVal6(e.target.value)} className="calc-input" placeholder="150" />
+          </div>
+        </div>
+        {res3 && (
+          <div className="calc-result-panel">
+            <div className="calc-result-body">
+              <div className="calc-result-row" style={{ borderBottom: "none" }}>
+                <span className="calc-result-row-label">Yüzde Değişim</span>
+                <span className="calc-result-row-value" style={{ fontSize: "1.4rem", color: parseFloat(res3) >= 0 ? "#22c55e" : "#ef4444" }}>{res3}</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="calc-action-row">
+        <button className="calc-btn-reset" onClick={reset} style={{ flex: 1 }}>↺ Tümünü Sıfırla</button>
+      </div>
     </div>
   );
 }

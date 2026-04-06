@@ -106,6 +106,10 @@ import { IrrNpvCalculator } from "@/components/calculators/IrrNpvCalculator";
 import { BtuCalculator } from "@/components/calculators/BtuCalculator";
 import { MotorPowerCalculator } from "@/components/calculators/MotorPowerCalculator";
 import { SteelWeightCalculator } from "@/components/calculators/SteelWeightCalculator";
+import { KineticEnergyCalculator } from "@/components/calculators/KineticEnergyCalculator";
+import { FluidPressureCalculator } from "@/components/calculators/FluidPressureCalculator";
+import { StatisticsCalculator } from "@/components/calculators/StatisticsCalculator";
+import { PermutationCombinationCalculator } from "@/components/calculators/PermutationCombinationCalculator";
 
 // BMI Calculator
 function BMICalculator() {
@@ -304,7 +308,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "universite-not-ortalamasi": return <UniversityGPACalculator />;
       case "okula-baslama-yasi": return <SchoolAgeCalculator />;
       case "kdv": return <VatCalculator />;
-      case "direnc-renk-kodlari": return <ResistorCalculator />;
+      case "direnc-hesaplama": return <ResistorCalculator />;
       case "ohm-kanunu": return <OhmLawCalculator />;
       case "gelir-vergisi": return <IncomeTaxCalculator />;
       case "damga-vergisi": return <DamgaVergisiCalculator />;
@@ -342,6 +346,10 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "btu-hesaplama": return <BtuCalculator />;
       case "motor-gucu-hesaplama": return <MotorPowerCalculator />;
       case "metal-agirlik-hesaplama": return <SteelWeightCalculator />;
+      case "kinetik-enerji-hesaplama": return <KineticEnergyCalculator />;
+      case "sivi-basinci-hesaplama": return <FluidPressureCalculator />;
+      case "istatistik-hesaplama": return <StatisticsCalculator />;
+      case "permutasyon-kombinasyon-hesaplama": return <PermutationCombinationCalculator />;
       default: return <GenericCalculator />;
     }
   };

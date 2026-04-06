@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function HsyCalculator() {
-  const [gkgyCorrect, setGkgyCorrect] = useState("");
-  const [gkgyWrong, setGkgyWrong] = useState("");
-  const [alanCorrect, setAlanCorrect] = useState("");
-  const [alanWrong, setAlanWrong] = useState("");
-  const [result, setResult] = useState<{ point: number } | null>(null);
+  const [gkgyCorrect, setGkgyCorrect] = useState("22");
+  const [gkgyWrong, setGkgyWrong] = useState("4");
+  const [alanCorrect, setAlanCorrect] = useState("55");
+  const [alanWrong, setAlanWrong] = useState("10");
+  const [result, setResult] = useState<{ gkNet: number; alNet: number; gkPoint: number; alPoint: number; totalPoint: number } | null>(null);
 
   const calculate = () => {
     const gkC = parseFloat(gkgyCorrect) || 0;
@@ -15,61 +15,85 @@ export function HsyCalculator() {
     const alC = parseFloat(alanCorrect) || 0;
     const alW = parseFloat(alanWrong) || 0;
 
-    // Her 4 yanlış 1 doğruyu götürür
     const gkNet = Math.max(0, gkC - (gkW / 4));
     const alNet = Math.max(0, alC - (alW / 4));
 
-    // GYGK maks 30 Soru (%20 etki) -> Max 20 puan
-    // Alan maks 70 Soru (%80 etki) -> Max 80 puan
     const gkPoint = (gkNet / 30) * 20;
     const alPoint = (alNet / 70) * 80;
 
-    const totalPoint = gkPoint + alPoint;
-
-    setResult({ point: totalPoint });
+    setResult({ gkNet, alNet, gkPoint, alPoint, totalPoint: gkPoint + alPoint });
   };
 
+  const reset = () => { setGkgyCorrect("22"); setGkgyWrong("4"); setAlanCorrect("55"); setAlanWrong("10"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [gkgyCorrect, gkgyWrong, alanCorrect, alanWrong]);
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Hâkim ve Savcı Yardımcılığı Sınavı netlerinizi giriniz (4 yanlış 1 doğruyu götürür).</p>
-      
-      <div className="panel" style={{ padding: "1.5rem" }}>
-        <h4 style={{ marginBottom: "1rem" }}>Genel Yetenek - Genel Kültür (30 Soru)</h4>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <div style={{ flex: 1 }}>
-            <label style={{ display: "block", marginBottom: "0.2rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>Doğru</label>
-            <input type="number" value={gkgyCorrect} onChange={e => setGkgyCorrect(e.target.value)} className="input-field" placeholder="Örn: 22" />
+    <div className="calc-wrapper">
+      <div className="calc-section">
+        <div className="calc-section-title">🏛️ GY-GK (30 Soru — Etki: %20)</div>
+        <div className="calc-grid-2">
+          <div className="calc-input-group">
+            <label className="calc-label">Doğru</label>
+            <input type="number" value={gkgyCorrect} onChange={e => setGkgyCorrect(e.target.value)} className="calc-input" placeholder="22" min="0" max="30" />
           </div>
-          <div style={{ flex: 1 }}>
-            <label style={{ display: "block", marginBottom: "0.2rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>Yanlış</label>
-            <input type="number" value={gkgyWrong} onChange={e => setGkgyWrong(e.target.value)} className="input-field" placeholder="Örn: 4" />
+          <div className="calc-input-group">
+            <label className="calc-label">Yanlış</label>
+            <input type="number" value={gkgyWrong} onChange={e => setGkgyWrong(e.target.value)} className="calc-input" placeholder="4" min="0" max="30" />
           </div>
         </div>
       </div>
 
-      <div className="panel" style={{ padding: "1.5rem" }}>
-        <h4 style={{ marginBottom: "1rem" }}>Alan Bilgisi Testi (70 Soru)</h4>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <div style={{ flex: 1 }}>
-            <label style={{ display: "block", marginBottom: "0.2rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>Doğru</label>
-            <input type="number" value={alanCorrect} onChange={e => setAlanCorrect(e.target.value)} className="input-field" placeholder="Örn: 55" />
+      <div className="calc-section">
+        <div className="calc-section-title">⚖️ Alan Bilgisi (70 Soru — Etki: %80)</div>
+        <div className="calc-grid-2">
+          <div className="calc-input-group">
+            <label className="calc-label">Doğru</label>
+            <input type="number" value={alanCorrect} onChange={e => setAlanCorrect(e.target.value)} className="calc-input" placeholder="55" min="0" max="70" />
           </div>
-          <div style={{ flex: 1 }}>
-            <label style={{ display: "block", marginBottom: "0.2rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>Yanlış</label>
-            <input type="number" value={alanWrong} onChange={e => setAlanWrong(e.target.value)} className="input-field" placeholder="Örn: 10" />
+          <div className="calc-input-group">
+            <label className="calc-label">Yanlış</label>
+            <input type="number" value={alanWrong} onChange={e => setAlanWrong(e.target.value)} className="calc-input" placeholder="10" min="0" max="70" />
           </div>
         </div>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>Tahmini Puanı Hesapla</button>
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>⚖️ Tahmini Puanı Hesapla</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
 
       {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", textAlign: "center", borderTop: "4px solid #22c55e" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)" }}>Tahmini Sınav Puanı (100 üzerinden)</h3>
-          <div style={{ fontSize: "3rem", fontWeight: "bold", color: "#22c55e" }}>{result.point.toFixed(2)}</div>
-          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "1rem" }}>* Formül %20 GY-GK ve %80 Alan net bazlı hesaplanır. ÖSYM Standart sapması hariçtir.</p>
+        <div className="calc-result-panel">
+          <div className="calc-result-header">⚖️ HSY Sınav Sonucu Projeksiyonu</div>
+          <div className="calc-result-body">
+            <div className="calc-result-hero">
+              <div className="calc-result-hero-label">Tahmini Puan (Standart Sapma Hariç)</div>
+              <div className="calc-result-hero-value" style={{ color: result.totalPoint >= 70 ? "#22c55e" : "#ef4444" }}>
+                {result.totalPoint.toFixed(2)}
+              </div>
+              <div className="calc-result-hero-sub">Mülakata çağrılma taban puanı her yıl değişmekle birlikte genellikle 70+ beklenir</div>
+            </div>
+            <div className="calc-result-cards">
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">GY-GK Net</div>
+                <div className="calc-result-card-value">{result.gkNet}</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>Katkı: {result.gkPoint.toFixed(1)}/20</div>
+              </div>
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">Alan Bilgisi Net</div>
+                <div className="calc-result-card-value">{result.alNet}</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>Katkı: {result.alPoint.toFixed(1)}/80</div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
+
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">ℹ️</span>
+        <span className="calc-info-box-text">ÖSYM sisteminde her 4 yanlış 1 doğruyu götürür. Yukarıdaki puanlama varsayımsal net üzerinden yapılmıştır; gerçek sonuçlarda Türkiye geneli standart sapma puan tablosunu değiştirebilir.</span>
+      </div>
     </div>
   );
 }

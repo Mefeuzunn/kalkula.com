@@ -45,7 +45,6 @@ export const calculators: CalculatorInfo[] = [
   { id: "gebelik", title: "Gebelik Hesaplama", slug: "gebelik", categoryId: "saglik", description: "Doğum tarihi ve gebelik haftanızı ortalama değerlere göre hesaplayın." },
   { id: "adet-takibi", title: "Adet (Regl) Takibi ve Yumurtlama", slug: "adet-takibi", categoryId: "saglik", description: "Sonraki adet döngünüzü, yumurtlama (ovulasyon) günü ve doğurganlık tarihinizi hesaplayın." },
   { id: "kalori", title: "Günlük Kalori İhtiyacı", slug: "gunluk-kalori-ihtiyaci", categoryId: "saglik", description: "Boy, kilo ve hareket durumunuza göre almanız gereken kalori." },
-  { id: "kalori", title: "Günlük Kalori İhtiyacı", slug: "gunluk-kalori-ihtiyaci", categoryId: "saglik", description: "Boy, kilo ve hareket durumuna göre almanız gereken kalori." },
   
   // Finans ve Kredi
   { id: "kredi", title: "Kredi Hesaplama", slug: "kredi-hesaplama", categoryId: "kredi", description: "Aylık taksit tutarlarınızı, anapara ve faiz oranınıza göre detaylı hesaplayın." },
@@ -182,6 +181,8 @@ export const calculators: CalculatorInfo[] = [
   { id: "mod", title: "Mod Alma", slug: "mod-alma", categoryId: "matematik", description: "Bir sayının diğerine bölümünden kalanını bulun." },
   { id: "matris", title: "Matris Hesaplayıcı", slug: "matris-hesaplama", categoryId: "matematik", description: "Matris toplama, çarpma, determinant ve ters matris işlemleri." },
   { id: "denklem", title: "Denklem Çözücü (Adım Adım)", slug: "denklem-cozucu", categoryId: "matematik", description: "2. dereceden denklemleri çözüm yoluyla birlikte analiz edin." },
+  { id: "istatistik", title: "İstatistik Pro", slug: "istatistik-hesaplama", categoryId: "matematik", description: "Ortalama, medyan, standart sapma ve varyans dökümünü içeren veri analiz aracı." },
+  { id: "perm-komb", title: "Permütasyon ve Kombinasyon", slug: "permutasyon-kombinasyon-hesaplama", categoryId: "matematik", description: "n ve r elemanlı kümeler için sıralama ve seçim olasılıklarını hesaplayın." },
 
   // Mühendislik & Fizik
   { id: "direnc", title: "Direnç/Renk Kodları", slug: "direnc-hesaplama", categoryId: "muhendislik", description: "Direnç renk bantlarına göre ohm değerini interaktif görselle bulun." },
@@ -189,7 +190,9 @@ export const calculators: CalculatorInfo[] = [
   { id: "ohm", title: "Ohm Kanunu", slug: "ohm-kanunu", categoryId: "muhendislik", description: "Volt, Amper ve Direnç arasındaki elektriksel ilişkiyi hesaplayın." },
   { id: "btu", title: "Klima BTU Hesaplama", slug: "btu-hesaplama", categoryId: "muhendislik", description: "Oda alanına ve bölge verilerine göre ihtiyacınız olan klima kapasitesini (BTU) belirleyin." },
   { id: "motor-gucu", title: "Motor Gücü ve Tork Hesaplama", slug: "motor-gucu-hesaplama", categoryId: "muhendislik", description: "Elektrik motorları için nominal güç, RPM ve gerilim bazlı tork ve akım analizi." },
-  { id: "metal-agirlik", title: "Metal ve Çelik Ağırlık Hesaplama", slug: "metal-agirlik-hesaplama", categoryId: "muhendislik", description: "Plaka, dolu mil ve boru tipi metal malzemelerin boyutlarına göre teorik ağırlığını hesaplayın." }
+  { id: "metal-agirlik", title: "Metal ve Çelik Ağırlık Hesaplama", slug: "metal-agirlik-hesaplama", categoryId: "muhendislik", description: "Plaka, dolu mil ve boru tipi metal malzemelerin boyutlarına göre teorik ağırlığını hesaplayın." },
+  { id: "kinetik-enerji", title: "Kinetik ve Potansiyel Enerji", slug: "kinetik-enerji-hesaplama", categoryId: "muhendislik", description: "Kütle, hız ve yükseklik parametrelerine göre mekanik enerji analizini yapın." },
+  { id: "sivi-basinci", title: "Sıvı (Hidrostatik) Basıncı", slug: "sivi-basinci-hesaplama", categoryId: "muhendislik", description: "Derinlik ve özkütleye göre sıvı basıncını animasyonlu tank görseliyle hesaplayın." }
 ];
 
 export function getCalculatorsByCategory(categoryId: string) {

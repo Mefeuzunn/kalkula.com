@@ -1,58 +1,77 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function EbobEkokCalculator() {
-  const [num1, setNum1] = useState("");
-  const [num2, setNum2] = useState("");
+  const [num1, setNum1] = useState("24");
+  const [num2, setNum2] = useState("36");
   const [result, setResult] = useState<{ ebob: number; ekok: number } | null>(null);
 
-  const gcd = (a: number, b: number): number => {
-    return b === 0 ? a : gcd(b, a % b);
-  };
+  const gcd = (a: number, b: number): number => b === 0 ? a : gcd(b, a % b);
 
   const calculate = () => {
     const a = parseInt(num1);
     const b = parseInt(num2);
-
-    if (isNaN(a) || isNaN(b) || a <= 0 || b <= 0) return;
-
+    if (isNaN(a) || isNaN(b) || a <= 0 || b <= 0) { setResult(null); return; }
     const ebob = gcd(a, b);
     const ekok = (a * b) / ebob;
-
     setResult({ ebob, ekok });
   };
 
+  const reset = () => { setNum1("24"); setNum2("36"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [num1, num2]);
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-secondary)", marginBottom: "1rem" }}>İki pozitif tam sayı giriniz.</p>
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>1. Sayı</label>
-          <input type="number" value={num1} onChange={e => setNum1(e.target.value)} className="input-field" placeholder="Örn: 24" />
+    <div className="calc-wrapper">
+      <div className="calc-grid-2">
+        <div className="calc-input-group">
+          <label className="calc-label">1. Sayı</label>
+          <input type="number" value={num1} onChange={e => setNum1(e.target.value)} className="calc-input" placeholder="24" min="1" step="1" />
         </div>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>2. Sayı</label>
-          <input type="number" value={num2} onChange={e => setNum2(e.target.value)} className="input-field" placeholder="Örn: 36" />
+        <div className="calc-input-group">
+          <label className="calc-label">2. Sayı</label>
+          <input type="number" value={num2} onChange={e => setNum2(e.target.value)} className="calc-input" placeholder="36" min="1" step="1" />
         </div>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>
-        Hesapla
-      </button>
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>🔢 Hesapla</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
 
       {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", display: "flex", justifyContent: "space-around" }}>
-          <div style={{ textAlign: "center" }}>
-            <h4 style={{ color: "var(--text-muted)", marginBottom: "0.5rem" }}>EBOB</h4>
-            <div style={{ fontSize: "2rem", fontWeight: "bold", color: "var(--accent-primary)" }}>{result.ebob}</div>
-          </div>
-          <div style={{ textAlign: "center", borderLeft: "1px solid var(--border)", paddingLeft: "3rem" }}>
-            <h4 style={{ color: "var(--text-muted)", marginBottom: "0.5rem" }}>EKOK</h4>
-            <div style={{ fontSize: "2rem", fontWeight: "bold", color: "var(--accent-primary)" }}>{result.ekok}</div>
+        <div className="calc-result-panel">
+          <div className="calc-result-header">🔢 EBOB & EKOK Sonuçları</div>
+          <div className="calc-result-body">
+            <div className="calc-result-cards">
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">🔵 EBOB</div>
+                <div className="calc-result-card-value" style={{ fontSize: "2.5rem", color: "var(--accent-primary)" }}>{result.ebob}</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>En Büyük Ortak Bölen</div>
+              </div>
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">🟢 EKOK</div>
+                <div className="calc-result-card-value" style={{ fontSize: "2.5rem", color: "#22c55e" }}>{result.ekok}</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>En Küçük Ortak Kat</div>
+              </div>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">EBOB × EKOK</span>
+              <span className="calc-result-row-value">{(result.ebob * result.ekok).toLocaleString("tr-TR")}</span>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">{num1} × {num2}</span>
+              <span className="calc-result-row-value">{(parseInt(num1) * parseInt(num2)).toLocaleString("tr-TR")} ✓</span>
+            </div>
           </div>
         </div>
       )}
+
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">💡</span>
+        <span className="calc-info-box-text">EBOB × EKOK = A × B özelliği her zaman geçerlidir. Öklid Algoritması kullanılarak hesaplanmaktadır.</span>
+      </div>
     </div>
   );
 }

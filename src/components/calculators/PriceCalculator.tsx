@@ -1,44 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function PriceCalculator() {
-  const [cost, setCost] = useState("");
-  const [margin, setMargin] = useState("");
-  const [tax, setTax] = useState("18"); // KDV oranı varsayılan
-  const [result, setResult] = useState<{ salePriceBeforeTax: number; salePriceWithTax: number; profitAmount: number } | null>(null);
+  const [cost, setCost] = useState("100");
+  const [margin, setMargin] = useState("30");
+  const [tax, setTax] = useState("20");
+  const [result, setResult] = useState<{ profitAmount: number; priceExTax: number; priceWithTax: number; taxAmount: number } | null>(null);
 
   const calculate = () => {
     const c = parseFloat(cost) || 0;
     const m = parseFloat(margin) || 0;
     const t = parseFloat(tax) || 0;
-
-    if (c <= 0 || m < 0) return;
-
-    // Kâr = Maliyet * Kâr Marjı
+    if (c <= 0) { setResult(null); return; }
     const profitAmount = c * (m / 100);
-    const salePriceBeforeTax = c + profitAmount;
-    
-    // KDV'li satış fiyatı
-    const salePriceWithTax = salePriceBeforeTax * (1 + (t / 100));
-
-    setResult({ salePriceBeforeTax, salePriceWithTax, profitAmount });
+    const priceExTax = c + profitAmount;
+    const taxAmount = priceExTax * (t / 100);
+    const priceWithTax = priceExTax + taxAmount;
+    setResult({ profitAmount, priceExTax, taxAmount, priceWithTax });
   };
 
+  const reset = () => { setCost("100"); setMargin("30"); setTax("20"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [cost, margin, tax]);
+
+  const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Ürün Birim Maliyeti (₺)</label>
-        <input type="number" value={cost} onChange={e => setCost(e.target.value)} className="input-field" placeholder="Örn: 100" />
-      </div>
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Hedeflenen Kâr Marjı (%)</label>
-          <input type="number" value={margin} onChange={e => setMargin(e.target.value)} className="input-field" placeholder="Örn: 25" />
+    <div className="calc-wrapper">
+      <div className="calc-input-group">
+        <label className="calc-label">Ürün Birim Maliyeti</label>
+        <div className="calc-input-wrapper">
+          <input type="number" value={cost} onChange={e => setCost(e.target.value)} className="calc-input has-unit" placeholder="100" min="0" />
+          <span className="calc-unit">₺</span>
         </div>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>KDV Oranı (%)</label>
-          <select value={tax} onChange={e => setTax(e.target.value)} className="input-field">
+      </div>
+      <div className="calc-grid-2">
+        <div className="calc-input-group">
+          <label className="calc-label">Hedeflenen Kâr Marjı</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={margin} onChange={e => setMargin(e.target.value)} className="calc-input has-unit" placeholder="30" min="0" />
+            <span className="calc-unit">%</span>
+          </div>
+        </div>
+        <div className="calc-input-group">
+          <label className="calc-label">KDV Oranı</label>
+          <select value={tax} onChange={e => setTax(e.target.value)} className="calc-select">
             <option value="0">%0 KDV</option>
             <option value="1">%1 KDV</option>
             <option value="10">%10 KDV</option>
@@ -47,26 +54,40 @@ export function PriceCalculator() {
         </div>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>SonSatış Fiyatını Hesapla</button>
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>🏷️ Fiyat Hesapla</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
 
       {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "1.5rem", textAlign: "center" }}>Fiyatlandırma Özeti</h3>
-          
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-            <span style={{ color: "var(--text-muted)" }}>Birim Başına Net Kâr:</span>
-            <span style={{ fontWeight: "bold", color: "#22c55e" }}>{result.profitAmount.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", paddingBottom: "1rem", borderBottom: "1px solid var(--border)" }}>
-            <span style={{ color: "var(--text-muted)" }}>KDV Hariç Satış Fiyatı:</span>
-            <span style={{ fontWeight: "bold" }}>{result.salePriceBeforeTax.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "var(--text-muted)", fontSize: "1.2rem", fontWeight: "bold" }}>KDV Dahil Satış Fiyatı:</span>
-            <span style={{ fontWeight: "bold", fontSize: "1.4rem", color: "var(--accent-primary)" }}>{result.salePriceWithTax.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}</span>
+        <div className="calc-result-panel">
+          <div className="calc-result-header">🏷️ Fiyatlandırma Özeti</div>
+          <div className="calc-result-body">
+            <div className="calc-result-hero">
+              <div className="calc-result-hero-label">KDV Dahil Satış Fiyatı</div>
+              <div className="calc-result-hero-value">{fmt(result.priceWithTax)}</div>
+              <div className="calc-result-hero-sub">KDV Hariç: {fmt(result.priceExTax)}</div>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Birim Maliyet</span>
+              <span className="calc-result-row-value">{fmt(parseFloat(cost))}</span>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Birim Kâr (%{margin})</span>
+              <span className="calc-result-row-value success">+{fmt(result.profitAmount)}</span>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">KDV Tutarı (%{tax})</span>
+              <span className="calc-result-row-value warning">+{fmt(result.taxAmount)}</span>
+            </div>
           </div>
         </div>
       )}
+
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">💡</span>
+        <span className="calc-info-box-text">Kâr marjı, maliyetin üzerine eklenen yüzde oranıdır. Örneğin %30 marj ile 100 ₺'lik ürün 130 ₺'ye satılır, kâr payı 30 ₺'dir.</span>
+      </div>
     </div>
   );
 }

@@ -1,74 +1,92 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function InterestCalculator() {
-  const [principal, setPrincipal] = useState("");
-  const [rate, setRate] = useState(""); // Yıllık faiz oranı %
-  const [days, setDays] = useState("");
-  const [result, setResult] = useState<{ netInterest: number; totalAmount: number } | null>(null);
+  const [principal, setPrincipal] = useState("100000");
+  const [rate, setRate] = useState("48.5");
+  const [days, setDays] = useState("32");
+  const [result, setResult] = useState<{ grossInterest: number; netInterest: number; totalAmount: number; taxAmount: number } | null>(null);
 
   const calculate = () => {
     const p = parseFloat(principal);
     const r = parseFloat(rate) / 100;
     const d = parseInt(days);
-
-    if (!p || !r || !d) return;
-
-    // Basit günlük faiz getirisi = Anapara * (Yıllık Faiz / 365) * Gün
+    if (!p || !r || !d || p <= 0 || r <= 0 || d <= 0) { setResult(null); return; }
     const grossInterest = p * (r / 365) * d;
-    
-    // Stopaj vergisi genelde %5 ila %15 civarı değişiyor, simülasyon için %5 kabul edelim.
     const taxRate = 0.05;
+    const taxAmount = grossInterest * taxRate;
     const netInterest = grossInterest * (1 - taxRate);
-    
     const totalAmount = p + netInterest;
-
-    setResult({ netInterest, totalAmount });
+    setResult({ grossInterest, netInterest, totalAmount, taxAmount });
   };
 
+  const reset = () => { setPrincipal("100000"); setRate("48.5"); setDays("32"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [principal, rate, days]);
+
+  const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Yatırılacak Tutar (₺)</label>
-        <input type="number" value={principal} onChange={e => setPrincipal(e.target.value)} className="input-field" placeholder="Örn: 200000" />
-      </div>
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Yıllık Faiz Oranı (%)</label>
-          <input type="number" step="0.1" value={rate} onChange={e => setRate(e.target.value)} className="input-field" placeholder="Örn: 48.5" />
+    <div className="calc-wrapper">
+      <div className="calc-input-group">
+        <label className="calc-label">Yatırılacak Tutar</label>
+        <div className="calc-input-wrapper">
+          <input type="number" value={principal} onChange={e => setPrincipal(e.target.value)} className="calc-input has-unit" placeholder="100000" min="0" />
+          <span className="calc-unit">₺</span>
         </div>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Vade (Gün)</label>
-          <input type="number" value={days} onChange={e => setDays(e.target.value)} className="input-field" placeholder="Örn: 32" />
+      </div>
+      <div className="calc-grid-2">
+        <div className="calc-input-group">
+          <label className="calc-label">Yıllık Faiz Oranı</label>
+          <div className="calc-input-wrapper">
+            <input type="number" step="0.1" value={rate} onChange={e => setRate(e.target.value)} className="calc-input has-unit" placeholder="48.5" min="0" />
+            <span className="calc-unit">%</span>
+          </div>
+        </div>
+        <div className="calc-input-group">
+          <label className="calc-label">Vade</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={days} onChange={e => setDays(e.target.value)} className="calc-input has-unit" placeholder="32" min="1" />
+            <span className="calc-unit">GÜN</span>
+          </div>
         </div>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>
-        Getiriyi Hesapla
-      </button>
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>⚡ Getiriyi Hesapla</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
 
       {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "1.5rem", textAlign: "center" }}>Vadeli Mevduat Kazancı</h3>
-          
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", paddingBottom: "1rem", borderBottom: "1px solid var(--border)" }}>
-            <span style={{ color: "var(--text-muted)" }}>Vade Sonu Net Getiri:</span>
-            <span style={{ fontWeight: "bold", fontSize: "1.2rem", color: "#22c55e" }}>
-              +{result.netInterest.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-            </span>
+        <div className="calc-result-panel">
+          <div className="calc-result-header">💰 Vadeli Mevduat Getirisi</div>
+          <div className="calc-result-body">
+            <div className="calc-result-hero">
+              <div className="calc-result-hero-label">Vade Sonu Net Getiri</div>
+              <div className="calc-result-hero-value" style={{ color: "#22c55e" }}>+{fmt(result.netInterest)}</div>
+              <div className="calc-result-hero-sub">%5 stopaj kesintisi uygulandı</div>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Brüt Faiz Getirisi</span>
+              <span className="calc-result-row-value">{fmt(result.grossInterest)}</span>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Stopaj Vergisi (%5)</span>
+              <span className="calc-result-row-value danger">−{fmt(result.taxAmount)}</span>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Vade Sonu Toplam Tutar</span>
+              <span className="calc-result-row-value accent">{fmt(result.totalAmount)}</span>
+            </div>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <span style={{ color: "var(--text-muted)" }}>Toplam Tutar:</span>
-            <span style={{ fontWeight: "bold", fontSize: "1.2rem", color: "var(--accent-primary)" }}>
-               {result.totalAmount.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-            </span>
-          </div>
-          <p style={{ marginTop: "1rem", fontSize: "0.8rem", color: "var(--text-muted)", textAlign: "center" }}>
-            * %5 standart stopaj kesintisi hesaba katılmıştır. Banka bazlı değişiklik gösterebilir.
-          </p>
         </div>
       )}
+
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">ℹ️</span>
+        <span className="calc-info-box-text">Stopaj oranı banka ve vadeye göre %5–%15 arasında değişebilir. Bu hesaplama %5 stopaj esas alınmıştır.</span>
+      </div>
     </div>
   );
 }

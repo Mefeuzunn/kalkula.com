@@ -1,55 +1,88 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function CagrCalculator() {
-  const [initialValue, setInitialValue] = useState("");
-  const [finalValue, setFinalValue] = useState("");
-  const [years, setYears] = useState("");
-  const [result, setResult] = useState<number | null>(null);
+  const [initialValue, setInitialValue] = useState("10000");
+  const [finalValue, setFinalValue] = useState("25000");
+  const [years, setYears] = useState("5");
+  const [result, setResult] = useState<{ cagr: number; totalReturn: number } | null>(null);
 
   const calculate = () => {
     const start = parseFloat(initialValue);
     const end = parseFloat(finalValue);
     const y = parseFloat(years);
-
     if (start > 0 && end > 0 && y > 0) {
-      // CAGR Formülü: (Son Değer / İlk Değer)^(1 / Yıl) - 1
       const cagr = (Math.pow(end / start, 1 / y) - 1) * 100;
-      setResult(cagr);
-    }
+      const totalReturn = ((end - start) / start) * 100;
+      setResult({ cagr, totalReturn });
+    } else setResult(null);
   };
 
+  const reset = () => { setInitialValue("10000"); setFinalValue("25000"); setYears("5"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [initialValue, finalValue, years]);
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Ortalama yıllık Bileşik Büyüme Oranınızı (CAGR) hesaplayın.</p>
-      
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Başlangıç Değeri (İlk Değer)</label>
-        <input type="number" value={initialValue} onChange={e => setInitialValue(e.target.value)} className="input-field" placeholder="Örn: 10000" />
+    <div className="calc-wrapper">
+      <div className="calc-input-group">
+        <label className="calc-label">Başlangıç Değeri</label>
+        <div className="calc-input-wrapper">
+          <input type="number" value={initialValue} onChange={e => setInitialValue(e.target.value)} className="calc-input has-unit" placeholder="10000" min="0" />
+          <span className="calc-unit">₺</span>
+        </div>
       </div>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Bitiş Değeri (Son Değer)</label>
-        <input type="number" value={finalValue} onChange={e => setFinalValue(e.target.value)} className="input-field" placeholder="Örn: 25000" />
+      <div className="calc-input-group">
+        <label className="calc-label">Bitiş Değeri</label>
+        <div className="calc-input-wrapper">
+          <input type="number" value={finalValue} onChange={e => setFinalValue(e.target.value)} className="calc-input has-unit" placeholder="25000" min="0" />
+          <span className="calc-unit">₺</span>
+        </div>
       </div>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Geçen Yıl Sayısı</label>
-        <input type="number" value={years} onChange={e => setYears(e.target.value)} className="input-field" placeholder="Örn: 5" />
+      <div className="calc-input-group">
+        <label className="calc-label">Geçen Süre</label>
+        <div className="calc-input-wrapper">
+          <input type="number" value={years} onChange={e => setYears(e.target.value)} className="calc-input has-unit" placeholder="5" min="1" />
+          <span className="calc-unit">YIL</span>
+        </div>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>CAGR Hesapla</button>
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>📈 CAGR Hesapla</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
 
-      {result !== null && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", textAlign: "center", borderTop: "4px solid var(--accent-primary)" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)" }}>Bileşik Yıllık Büyüme Oranı</h3>
-          <div style={{ fontSize: "3rem", fontWeight: "bold", color: "var(--accent-primary)", marginTop: "0.5rem" }}>
-            %{result.toFixed(2)}
+      {result && (
+        <div className="calc-result-panel">
+          <div className="calc-result-header">📊 Bileşik Büyüme Analizi</div>
+          <div className="calc-result-body">
+            <div className="calc-result-hero">
+              <div className="calc-result-hero-label">Yıllık Bileşik Büyüme Oranı (CAGR)</div>
+              <div className="calc-result-hero-value" style={{ color: result.cagr >= 0 ? "#22c55e" : "#ef4444" }}>
+                %{result.cagr.toFixed(2)}
+              </div>
+              <div className="calc-result-hero-sub">{years} yıllık dönem için yıllıklandırılmış getiri</div>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Toplam Getiri</span>
+              <span className="calc-result-row-value" style={{ color: result.totalReturn >= 0 ? "#22c55e" : "#ef4444" }}>
+                {result.totalReturn >= 0 ? "+" : ""}{result.totalReturn.toFixed(1)}%
+              </span>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Net Kazanç</span>
+              <span className="calc-result-row-value success">
+                +{(parseFloat(finalValue) - parseFloat(initialValue)).toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
+              </span>
+            </div>
           </div>
-          <p style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "1rem" }}>
-            Bu oran, yatırımınızın belirttiğiniz yıllar boyunca her yıl sabit olarak büyümesi durumunda elde edilecek yıllık yüzde büyümesini gösterir.
-          </p>
         </div>
       )}
+
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">💡</span>
+        <span className="calc-info-box-text">CAGR (Bileşik Yıllık Büyüme Oranı), farklı sürelerdeki yatırımları karşılaştırmak için kullanılır. Gerçek getirinin her yıl sabit kaldığını varsayar.</span>
+      </div>
     </div>
   );
 }

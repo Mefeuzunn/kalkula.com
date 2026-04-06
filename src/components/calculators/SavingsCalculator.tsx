@@ -1,86 +1,111 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function SavingsCalculator() {
-  const [initialAmount, setInitialAmount] = useState("");
-  const [monthlyContribution, setMonthlyContribution] = useState("");
-  const [years, setYears] = useState("");
-  const [annualInterestRate, setAnnualInterestRate] = useState("");
-  const [result, setResult] = useState<{ totalValue: number; totalInterest: number; totalContributions: number } | null>(null);
+  const [initialAmount, setInitialAmount] = useState("10000");
+  const [monthlyContribution, setMonthlyContribution] = useState("1000");
+  const [years, setYears] = useState("5");
+  const [annualRate, setAnnualRate] = useState("40");
+  const [result, setResult] = useState<{ totalValue: number; totalPrincipal: number; totalInterest: number; growthRate: number } | null>(null);
 
   const calculate = () => {
     const p = parseFloat(initialAmount) || 0;
     const pmt = parseFloat(monthlyContribution) || 0;
     const y = parseFloat(years) || 0;
-    const r = parseFloat(annualInterestRate) / 100 || 0;
-
-    if (y <= 0) return;
-
-    // Aylık faiz oranı
+    const r = parseFloat(annualRate) / 100 || 0;
+    if (y <= 0) { setResult(null); return; }
     const monthlyRate = r / 12;
     const totalMonths = y * 12;
-
-    // Bileşik Faizli Gelecek Değer: FV = P(1+r)^n + PMT [ ((1+r)^n - 1) / r ]
-    let futureValueOfPrincipal = p * Math.pow(1 + monthlyRate, totalMonths);
-    
-    let futureValueOfContributions = 0;
-    if (monthlyRate > 0) {
-      futureValueOfContributions = pmt * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate);
-    } else {
-      futureValueOfContributions = pmt * totalMonths;
-    }
-
-    const totalValue = futureValueOfPrincipal + futureValueOfContributions;
-    const totalContributions = p + (pmt * totalMonths);
-    const totalInterest = totalValue - totalContributions;
-
-    setResult({ totalValue, totalInterest, totalContributions });
+    const fvPrincipal = p * Math.pow(1 + monthlyRate, totalMonths);
+    const fvContributions = monthlyRate > 0
+      ? pmt * ((Math.pow(1 + monthlyRate, totalMonths) - 1) / monthlyRate)
+      : pmt * totalMonths;
+    const totalValue = fvPrincipal + fvContributions;
+    const totalPrincipal = p + (pmt * totalMonths);
+    const totalInterest = totalValue - totalPrincipal;
+    const growthRate = totalPrincipal > 0 ? (totalInterest / totalPrincipal) * 100 : 0;
+    setResult({ totalValue, totalPrincipal, totalInterest, growthRate });
   };
 
+  const reset = () => { setInitialAmount("10000"); setMonthlyContribution("1000"); setYears("5"); setAnnualRate("40"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [initialAmount, monthlyContribution, years, annualRate]);
+
+  const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Aylık düzenli yatırımlarınızın faiz getirisiyle birlikte gelecekteki değerini görün.</p>
-      
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Başlangıç Birikimi (Mevcut Para) (₺)</label>
-        <input type="number" value={initialAmount} onChange={e => setInitialAmount(e.target.value)} className="input-field" placeholder="Örn: 5000" />
-      </div>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Aylık Düzenli Tasarruf (Eklenen Katkı) (₺)</label>
-        <input type="number" value={monthlyContribution} onChange={e => setMonthlyContribution(e.target.value)} className="input-field" placeholder="Örn: 1000" />
-      </div>
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Yatırım Süresi (Yıl)</label>
-          <input type="number" value={years} onChange={e => setYears(e.target.value)} className="input-field" placeholder="Örn: 10" />
+    <div className="calc-wrapper">
+      <div className="calc-grid-2">
+        <div className="calc-input-group">
+          <label className="calc-label">Başlangıç Birikimi</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={initialAmount} onChange={e => setInitialAmount(e.target.value)} className="calc-input has-unit" placeholder="10000" min="0" />
+            <span className="calc-unit">₺</span>
+          </div>
         </div>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Yıllık Ortalama Faiz (%)</label>
-          <input type="number" value={annualInterestRate} onChange={e => setAnnualInterestRate(e.target.value)} className="input-field" placeholder="Örn: 25" />
+        <div className="calc-input-group">
+          <label className="calc-label">Aylık Katkı</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={monthlyContribution} onChange={e => setMonthlyContribution(e.target.value)} className="calc-input has-unit" placeholder="1000" min="0" />
+            <span className="calc-unit">₺</span>
+          </div>
+        </div>
+        <div className="calc-input-group">
+          <label className="calc-label">Yatırım Süresi</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={years} onChange={e => setYears(e.target.value)} className="calc-input has-unit" placeholder="5" min="1" />
+            <span className="calc-unit">YIL</span>
+          </div>
+        </div>
+        <div className="calc-input-group">
+          <label className="calc-label">Yıllık Faiz Oranı</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={annualRate} onChange={e => setAnnualRate(e.target.value)} className="calc-input has-unit" placeholder="40" min="0" />
+            <span className="calc-unit">%</span>
+          </div>
         </div>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>Birikimi Hesapla</button>
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>📈 Birikimi Hesapla</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
 
       {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "1rem", textAlign: "center" }}>Birikim Sonucu</h3>
-          
-          <div style={{ fontSize: "2.5rem", fontWeight: "bold", color: "var(--accent-primary)", textAlign: "center", marginBottom: "1.5rem" }}>
-            {result.totalValue.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-          </div>
-
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem", borderBottom: "1px solid var(--border)", paddingBottom: "0.5rem" }}>
-            <span style={{ color: "var(--text-muted)" }}>Sizin Toplam Yatırdığınız Tutar:</span>
-            <span style={{ fontWeight: "bold" }}>{result.totalContributions.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}</span>
-          </div>
-          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "1rem", borderBottom: "1px solid var(--border)", paddingBottom: "0.5rem" }}>
-            <span style={{ color: "var(--text-muted)", fontWeight: "bold" }}>Elde Edilen Faiz Getirisi:</span>
-            <span style={{ fontWeight: "bold", color: "#22c55e" }}>+{result.totalInterest.toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}</span>
+        <div className="calc-result-panel">
+          <div className="calc-result-header">💰 Birikim Projeksiyonu</div>
+          <div className="calc-result-body">
+            <div className="calc-result-hero">
+              <div className="calc-result-hero-label">{years} Yıl Sonraki Toplam Değer</div>
+              <div className="calc-result-hero-value">{fmt(result.totalValue)}</div>
+              <div className="calc-result-hero-sub">Toplam büyüme: %{result.growthRate.toFixed(0)}</div>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Toplam Yatırdığınız (Anapara)</span>
+              <span className="calc-result-row-value">{fmt(result.totalPrincipal)}</span>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">Toplam Faiz Getirisi</span>
+              <span className="calc-result-row-value success">+{fmt(result.totalInterest)}</span>
+            </div>
+            <div style={{ paddingTop: "1rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Faiz / Anapara Oranı</span>
+                <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#22c55e" }}>%{result.growthRate.toFixed(0)}</span>
+              </div>
+              <div className="calc-scale-bar">
+                <div className="calc-scale-fill" style={{ width: `${Math.min(result.growthRate, 100)}%` }} />
+              </div>
+            </div>
           </div>
         </div>
       )}
+
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">📊</span>
+        <span className="calc-info-box-text">Bileşik faiz hesaplaması yapılmaktadır. Aylık faiz aylık anaparaya eklenerek büyüme sağlanır. Gerçek getiri enflasyona göre farklılık gösterebilir.</span>
+      </div>
     </div>
   );
 }

@@ -1,85 +1,88 @@
-import React, { useState } from "react";
-import confetti from "canvas-confetti";
+"use client";
+
+import React, { useState, useEffect } from "react";
 
 export function DiscountCalculator() {
-  const [faceValue, setFaceValue] = useState("");
-  const [rate, setRate] = useState("");
-  const [days, setDays] = useState("");
+  const [faceValue, setFaceValue] = useState("50000");
+  const [rate, setRate] = useState("36");
+  const [days, setDays] = useState("90");
   const [result, setResult] = useState<{ dsDiscount: number; isDiscount: number; dsNet: number; isNet: number } | null>(null);
 
   const calculate = () => {
     const fv = parseFloat(faceValue);
     const r = parseFloat(rate) / 100;
     const d = parseFloat(days);
-
     if (fv > 0 && r > 0 && d > 0) {
       const t = d / 365;
-      
       const dsDiscount = fv * r * t;
       const dsNet = fv - dsDiscount;
-
       const isDiscount = (fv * r * t) / (1 + (r * t));
       const isNet = fv - isDiscount;
-
       setResult({ dsDiscount, isDiscount, dsNet, isNet });
-      confetti({ particleCount: 40, spread: 50, origin: { y: 0.8 } });
+    } else {
+      setResult(null);
     }
   };
+
+  const reset = () => { setFaceValue("50000"); setRate("36"); setDays("90"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [faceValue, rate, days]);
 
   const fmt = (val: number) => val.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2 col-span-1 md:col-span-2">
-          <label className="text-xs font-bold text-muted uppercase px-1">Senetin Nominal Değeri (Vadedeki Tutar)</label>
-          <input type="number" value={faceValue} onChange={e => setFaceValue(e.target.value)} className="input-field py-4 font-bold" placeholder="50.000" />
+    <div className="calc-wrapper">
+      <div className="calc-input-group">
+        <label className="calc-label">Senetin Nominal Değeri (Vadedeki Tutar)</label>
+        <div className="calc-input-wrapper">
+          <input type="number" value={faceValue} onChange={e => setFaceValue(e.target.value)} className="calc-input has-unit" placeholder="50000" min="0" />
+          <span className="calc-unit">₺</span>
         </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-bold text-muted uppercase px-1">Yıllık İskonto Oranı (%)</label>
-          <input type="number" value={rate} onChange={e => setRate(e.target.value)} className="input-field py-4 font-bold" placeholder="36" />
+      </div>
+      <div className="calc-grid-2">
+        <div className="calc-input-group">
+          <label className="calc-label">Yıllık İskonto Oranı</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={rate} onChange={e => setRate(e.target.value)} className="calc-input has-unit" placeholder="36" step="0.1" min="0" />
+            <span className="calc-unit">%</span>
+          </div>
         </div>
-        <div className="flex flex-col gap-2">
-          <label className="text-xs font-bold text-muted uppercase px-1">Vadeye Kalan Gün</label>
-          <input type="number" value={days} onChange={e => setDays(e.target.value)} className="input-field py-4 font-bold" placeholder="90" />
+        <div className="calc-input-group">
+          <label className="calc-label">Vadeye Kalan Gün</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={days} onChange={e => setDays(e.target.value)} className="calc-input has-unit" placeholder="90" min="1" />
+            <span className="calc-unit">GÜN</span>
+          </div>
         </div>
       </div>
 
-      <button className="btn-primary py-4 text-lg font-bold shadow-xl" onClick={calculate}>Kesintileri Hesapla</button>
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>📉 Kesintileri Hesapla</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
 
       {result && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-result">
-           <div className="result-container-premium !mt-0 group">
-              <div className="result-card-premium !text-left h-full border-2 border-border group-hover:border-accent-primary/40 transition-all">
-                 <div className="result-badge !bg-accent-primary/10 !text-accent-primary !border-accent-primary/20">İç İskonto (Gerçek)</div>
-                 <div className="text-[10px] font-black text-muted uppercase mb-1 tracking-widest">Net Ele Geçen</div>
-                 <div className="result-value-premium !text-accent-primary !text-3xl mb-6">{fmt(result.isNet)}</div>
-                 
-                 <div className="pt-4 border-t border-border flex justify-between items-center">
-                    <span className="text-xs font-bold text-muted uppercase">Toplam Kesinti</span>
-                    <span className="font-bold text-primary">{fmt(result.isDiscount)}</span>
-                 </div>
-                 <p className="mt-4 text-[11px] text-muted leading-relaxed italic border-l-2 border-accent-primary/30 pl-2">
-                    Matematiksel olarak en adil yöntemdir. Senetin peşin değeri üzerinden ayrılan faizi baz alır.
-                 </p>
+        <div className="calc-result-panel">
+          <div className="calc-result-header">📉 İskonto (Kırdırma) Analizi</div>
+          <div className="calc-result-body">
+            <div className="calc-result-cards" style={{ gridTemplateColumns: "1fr 1fr" }}>
+              <div className="calc-result-card" style={{ borderTop: "4px solid var(--accent-primary)" }}>
+                <div className="calc-result-card-label" style={{ color: "var(--accent-primary)" }}>İç İskonto (Net Kazanılan)</div>
+                <div className="calc-result-card-value font-bold">{fmt(result.isNet)}</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Kesinti: {fmt(result.isDiscount)}</div>
               </div>
-           </div>
-
-           <div className="result-container-premium !mt-0 group">
-              <div className="result-card-premium !text-left h-full border-2 border-border group-hover:border-red-500/40 transition-all shadow-[0_0_20px_rgba(239,68,68,0.05)]">
-                 <div className="result-badge !bg-red-500/10 !text-red-500 !border-red-500/20">Dış İskonto (Ticari)</div>
-                 <div className="text-[10px] font-black text-muted uppercase mb-1 tracking-widest">Net Ele Geçen</div>
-                 <div className="result-value-premium !text-red-500 !text-3xl mb-6">{fmt(result.dsNet)}</div>
-                 
-                 <div className="pt-4 border-t border-border flex justify-between items-center">
-                    <span className="text-xs font-bold text-muted uppercase">Toplam Kesinti</span>
-                    <span className="font-bold text-red-500">{fmt(result.dsDiscount)}</span>
-                 </div>
-                 <p className="mt-4 text-[11px] text-muted leading-relaxed italic border-l-2 border-red-500/30 pl-2">
-                    Bankaların genellikle kullandığı yöntemdir. Nominal değer üzerinden hesaplandığı için kesinti daha yüksektir.
-                 </p>
+              <div className="calc-result-card" style={{ borderTop: "4px solid #ef4444" }}>
+                <div className="calc-result-card-label" style={{ color: "#ef4444" }}>Dış İskonto (Net Kazanılan)</div>
+                <div className="calc-result-card-value font-bold">{fmt(result.dsNet)}</div>
+                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Kesinti: {fmt(result.dsDiscount)}</div>
               </div>
-           </div>
+            </div>
+            
+            <div style={{ marginTop: "1rem", fontSize: "0.8rem", color: "var(--text-muted)", background: "var(--surface)", padding: "1rem", borderRadius: "8px", border: "1px solid var(--border)" }}>
+              <p style={{ marginBottom: "0.5rem" }}><span style={{ color: "var(--accent-primary)", fontWeight: "bold" }}>İç İskonto: </span>Matematiksel olarak en adil yöntemdir. Senetin peşin değeri üzerinden ayrılan faizi baz alır.</p>
+              <p><span style={{ color: "#ef4444", fontWeight: "bold" }}>Dış İskonto: </span>Bankaların genellikle kullandığı (ticari) yöntemdir. Nominal değer üzerinden hesaplandığı için banka lehine kesinti daha yüksektir.</p>
+            </div>
+          </div>
         </div>
       )}
     </div>

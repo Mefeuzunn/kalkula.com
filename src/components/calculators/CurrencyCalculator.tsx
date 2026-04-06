@@ -1,76 +1,90 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
+const CURRENCIES = [
+  { code: "USD", label: "Dolar", emoji: "🇺🇸", rate: 1 },
+  { code: "TRY", label: "Türk Lirası", emoji: "🇹🇷", rate: 32.5 },
+  { code: "EUR", label: "Euro", emoji: "🇪🇺", rate: 0.92 },
+  { code: "GBP", label: "Sterlin", emoji: "🇬🇧", rate: 0.79 },
+  { code: "JPY", label: "Japon Yeni", emoji: "🇯🇵", rate: 151.2 },
+  { code: "CHF", label: "İsviçre Frangı", emoji: "🇨🇭", rate: 0.90 },
+];
 
 export function CurrencyCalculator() {
-  const [amount, setAmount] = useState("");
+  const [amount, setAmount] = useState("1000");
   const [from, setFrom] = useState("USD");
   const [to, setTo] = useState("TRY");
-  const [result, setResult] = useState<number | null>(null);
-
-  // Exchange rates relative to base (USD = 1)
-  const rates: Record<string, number> = {
-    USD: 1,
-    TRY: 32.5,
-    EUR: 0.92,
-    GBP: 0.79,
-    JPY: 151.2
-  };
+  const [result, setResult] = useState<{ converted: number; rate: number } | null>(null);
 
   const calculate = () => {
     const qty = parseFloat(amount);
-    if (!qty || qty <= 0) return;
-    
-    // Convert to USD first, then to target
-    const amountInUsd = qty / rates[from];
-    const finalAmount = amountInUsd * rates[to];
-    setResult(finalAmount);
+    if (!qty || qty <= 0) { setResult(null); return; }
+    const fromRate = CURRENCIES.find(c => c.code === from)!.rate;
+    const toRate = CURRENCIES.find(c => c.code === to)!.rate;
+    const amountInUsd = qty / fromRate;
+    const converted = amountInUsd * toRate;
+    const rate = converted / qty;
+    setResult({ converted, rate });
   };
 
+  const swap = () => { const tmp = from; setFrom(to); setTo(tmp); };
+  const reset = () => { setAmount("1000"); setFrom("USD"); setTo("TRY"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [amount, from, to]);
+
+  const fromCur = CURRENCIES.find(c => c.code === from)!;
+  const toCur = CURRENCIES.find(c => c.code === to)!;
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Majör para birimleri arası kur çevrimi yapın (sabit oranlı).</p>
-      
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Çevrilecek Miktar</label>
-        <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="input-field" placeholder="Örn: 1000" />
+    <div className="calc-wrapper">
+      <div className="calc-input-group">
+        <label className="calc-label">Çevrilecek Miktar</label>
+        <input type="number" step="0.01" value={amount} onChange={e => setAmount(e.target.value)} className="calc-input" placeholder="1000" min="0" />
       </div>
 
-      <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Girdi Para Birimi</label>
-          <select value={from} onChange={e => setFrom(e.target.value)} className="input-field">
-            <option value="USD">Dolar (USD)</option>
-            <option value="TRY">Türk Lirası (TRY)</option>
-            <option value="EUR">Euro (EUR)</option>
-            <option value="GBP">Sterlin (GBP)</option>
-            <option value="JPY">Japon Yeni (JPY)</option>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: "0.75rem", alignItems: "end" }}>
+        <div className="calc-input-group">
+          <label className="calc-label">Kaynak Para Birimi</label>
+          <select value={from} onChange={e => setFrom(e.target.value)} className="calc-select">
+            {CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.emoji} {c.code} — {c.label}</option>)}
           </select>
         </div>
-        <div style={{ fontSize: "1.5rem", color: "var(--text-muted)", marginTop: "1rem" }}>&rarr;</div>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Hedef Para Birimi</label>
-          <select value={to} onChange={e => setTo(e.target.value)} className="input-field">
-            <option value="TRY">Türk Lirası (TRY)</option>
-            <option value="USD">Dolar (USD)</option>
-            <option value="EUR">Euro (EUR)</option>
-            <option value="GBP">Sterlin (GBP)</option>
-            <option value="JPY">Japon Yeni (JPY)</option>
+        <button onClick={swap} className="calc-btn-reset" style={{ marginBottom: 0, height: "52px" }} title="Dövizleri Ters Çevir">⇄</button>
+        <div className="calc-input-group">
+          <label className="calc-label">Hedef Para Birimi</label>
+          <select value={to} onChange={e => setTo(e.target.value)} className="calc-select">
+            {CURRENCIES.map(c => <option key={c.code} value={c.code}>{c.emoji} {c.code} — {c.label}</option>)}
           </select>
         </div>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>Döviz Çevir</button>
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>💱 Döviz Çevir</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
 
-      {result !== null && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", textAlign: "center" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)" }}>Çevrilen Tutar</h3>
-          <div style={{ fontSize: "2.5rem", fontWeight: "bold", color: "var(--accent-primary)", marginTop: "0.5rem" }}>
-            {result.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {to}
+      {result && (
+        <div className="calc-result-panel">
+          <div className="calc-result-header">💱 Dönüştürme Sonucu</div>
+          <div className="calc-result-body">
+            <div className="calc-result-hero">
+              <div className="calc-result-hero-label">{fromCur.emoji} {amount} {from} =</div>
+              <div className="calc-result-hero-value">{result.converted.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} {to}</div>
+              <div className="calc-result-hero-sub">{toCur.emoji} {toCur.label}</div>
+            </div>
+            <div className="calc-result-row">
+              <span className="calc-result-row-label">1 {from} =</span>
+              <span className="calc-result-row-value accent">{result.rate.toFixed(4)} {to}</span>
+            </div>
           </div>
-          <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "1rem" }}>* API entegrasyonu olmadığı için varsayımsal sabit oranlarla çalışır.</p>
         </div>
       )}
+
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">⚠️</span>
+        <span className="calc-info-box-text">Gösterilen kurlar gerçek zamanlı değil, sabit referans oranlardır. Anlık kur için TCMB veya yetkili döviz bürosu güncel kurlarını kullanın.</span>
+      </div>
     </div>
   );
 }

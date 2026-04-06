@@ -1,84 +1,119 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 export function CalorieCalculator() {
-  const [gender, setGender] = useState("male");
-  const [weight, setWeight] = useState("");
-  const [height, setHeight] = useState("");
-  const [age, setAge] = useState("");
+  const [gender, setGender] = useState<"male" | "female">("male");
+  const [weight, setWeight] = useState("70");
+  const [height, setHeight] = useState("175");
+  const [age, setAge] = useState("30");
   const [activity, setActivity] = useState("1.2");
-  const [result, setResult] = useState<number | null>(null);
+  const [result, setResult] = useState<{ bmr: number; tdee: number; lose: number; gain: number } | null>(null);
+
+  const ACTIVITIES = [
+    { value: "1.2", label: "Hareketsiz (Masa başı)" },
+    { value: "1.375", label: "Hafif aktif (1-3 gün/hafta)" },
+    { value: "1.55", label: "Orta aktif (3-5 gün/hafta)" },
+    { value: "1.725", label: "Çok aktif (6-7 gün/hafta)" },
+    { value: "1.9", label: "Ekstra aktif (Fiziksel iş)" },
+  ];
 
   const calculate = () => {
     const w = parseFloat(weight);
     const h = parseFloat(height);
     const a = parseFloat(age);
-    if (!w || !h || !a) return;
-
-    // Harris-Benedict Equation
-    let bmr;
-    if (gender === "male") {
-      bmr = 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * a);
-    } else {
-      bmr = 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a);
-    }
-
-    const tdee = bmr * parseFloat(activity);
-    setResult(Math.round(tdee));
+    if (!w || !h || !a || w <= 0 || h <= 0 || a <= 0) { setResult(null); return; }
+    let bmr = gender === "male"
+      ? 88.362 + (13.397 * w) + (4.799 * h) - (5.677 * a)
+      : 447.593 + (9.247 * w) + (3.098 * h) - (4.330 * a);
+    const tdee = Math.round(bmr * parseFloat(activity));
+    setResult({ bmr: Math.round(bmr), tdee, lose: tdee - 500, gain: tdee + 500 });
   };
 
+  const reset = () => { setGender("male"); setWeight("70"); setHeight("175"); setAge("30"); setActivity("1.2"); setResult(null); };
+
+  useEffect(() => { calculate(); }, [gender, weight, height, age, activity]);
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Cinsiyet</label>
-          <select value={gender} onChange={e => setGender(e.target.value)} className="input-field">
-            <option value="male">Erkek</option>
-            <option value="female">Kadın</option>
-          </select>
-        </div>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Yaş</label>
-          <input type="number" value={age} onChange={e => setAge(e.target.value)} className="input-field" placeholder="Örn: 25" />
+    <div className="calc-wrapper">
+      <div className="calc-input-group">
+        <label className="calc-label">Cinsiyet</label>
+        <div className="calc-toggle-group">
+          <button className={`calc-toggle-btn ${gender === "male" ? "active" : ""}`} onClick={() => setGender("male")}>♂ Erkek</button>
+          <button className={`calc-toggle-btn ${gender === "female" ? "active" : ""}`} onClick={() => setGender("female")}>♀ Kadın</button>
         </div>
       </div>
-      <div style={{ display: "flex", gap: "1rem" }}>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Kilo (kg)</label>
-          <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="input-field" placeholder="Örn: 70" />
+
+      <div className="calc-grid-3">
+        <div className="calc-input-group">
+          <label className="calc-label">Kilo</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="calc-input has-unit" placeholder="70" min="1" />
+            <span className="calc-unit">KG</span>
+          </div>
         </div>
-        <div style={{ flex: 1 }}>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Boy (cm)</label>
-          <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="input-field" placeholder="Örn: 175" />
+        <div className="calc-input-group">
+          <label className="calc-label">Boy</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="calc-input has-unit" placeholder="175" min="1" />
+            <span className="calc-unit">CM</span>
+          </div>
+        </div>
+        <div className="calc-input-group">
+          <label className="calc-label">Yaş</label>
+          <div className="calc-input-wrapper">
+            <input type="number" value={age} onChange={e => setAge(e.target.value)} className="calc-input has-unit" placeholder="30" min="1" />
+            <span className="calc-unit">YAŞ</span>
+          </div>
         </div>
       </div>
-      <div>
-        <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Hareket Seviyesi</label>
-        <select value={activity} onChange={e => setActivity(e.target.value)} className="input-field">
-          <option value="1.2">Masa başı veya hareketsiz</option>
-          <option value="1.375">Hafif egzersiz (1-3 gün/hafta)</option>
-          <option value="1.55">Orta derece egzersiz (3-5 gün/hafta)</option>
-          <option value="1.725">Ağır egzersiz (6-7 gün/hafta)</option>
-          <option value="1.9">Çok ağır egzersiz veya fiziksel iş</option>
+
+      <div className="calc-input-group">
+        <label className="calc-label">Hareket Seviyesi</label>
+        <select value={activity} onChange={e => setActivity(e.target.value)} className="calc-select">
+          {ACTIVITIES.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
         </select>
       </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>
-        Hesapla
-      </button>
+      <div className="calc-action-row">
+        <button className="calc-btn-calculate" onClick={calculate}>⚡ Hesapla</button>
+        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
+      </div>
 
       {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", textAlign: "center", borderTop: "4px solid #22c55e" }}>
-          <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Günlük İhtiyacınız</h3>
-          <div style={{ fontSize: "3rem", fontWeight: "bold", color: "#22c55e" }}>
-            {result} <span style={{ fontSize: "1.2rem", color: "var(--text-muted)" }}>kcal</span>
+        <div className="calc-result-panel">
+          <div className="calc-result-header">🔥 Günlük Kalori İhtiyacı</div>
+          <div className="calc-result-body">
+            <div className="calc-result-hero">
+              <div className="calc-result-hero-label">Günlük Toplam Enerji (TDEE)</div>
+              <div className="calc-result-hero-value" style={{ color: "#22c55e" }}>{result.tdee} <span style={{ fontSize: "1.5rem" }}>kcal</span></div>
+              <div className="calc-result-hero-sub">Bazal Metabolizma (BMR): {result.bmr} kcal</div>
+            </div>
+            <div className="calc-result-cards">
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">⬇️ Kilo Vermek</div>
+                <div className="calc-result-card-value" style={{ color: "#3b82f6" }}>{result.lose}</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>kcal/gün</div>
+              </div>
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">✅ Kilo Korumak</div>
+                <div className="calc-result-card-value" style={{ color: "#22c55e" }}>{result.tdee}</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>kcal/gün</div>
+              </div>
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">⬆️ Kilo Almak</div>
+                <div className="calc-result-card-value" style={{ color: "#f59e0b" }}>{result.gain}</div>
+                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>kcal/gün</div>
+              </div>
+            </div>
           </div>
-          <p style={{ marginTop: "1rem", fontSize: "0.9rem", color: "var(--text-muted)" }}>
-            Kilo vermek için günde ~{result - 500} kcal, kilo almak için ~{result + 500} kcal almalısınız.
-          </p>
         </div>
       )}
+
+      <div className="calc-info-box">
+        <span className="calc-info-box-icon">🏃</span>
+        <span className="calc-info-box-text">Harris-Benedict denklemi kullanılmaktadır. Kilo vermek için günlük 500 kcal açık, kilo almak için 500 kcal fazla almanız önerilir.</span>
+      </div>
     </div>
   );
 }
