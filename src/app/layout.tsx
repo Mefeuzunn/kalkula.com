@@ -38,6 +38,9 @@ export const metadata: Metadata = {
   },
 };
 
+import { TimerProvider } from "@/context/TimerContext";
+import { MiniTimer } from "@/components/MiniTimer";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -79,12 +82,15 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-          <Navbar />
-          <main style={{ paddingTop: "64px", minHeight: "calc(100vh - 200px)" }}>
-            {children}
-          </main>
-          <Footer />
-          <CookieConsent />
+          <TimerProvider>
+            <Navbar />
+            <main style={{ paddingTop: "64px", minHeight: "calc(100vh - 200px)" }}>
+              {children}
+            </main>
+            <Footer />
+            <CookieConsent />
+            <MiniTimer />
+          </TimerProvider>
         </ThemeProvider>
       </body>
     </html>
