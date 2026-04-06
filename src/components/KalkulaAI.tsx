@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import { MessageCircle, X, Send, ArrowRight, Sparkles, Minus, Maximize2 } from "lucide-react";
+import { MessageCircle, X, Send, ArrowRight, Sparkles, Headset, Circle } from "lucide-react";
 import { calculators } from "@/data/calculators";
 
 type Message = {
@@ -19,7 +19,7 @@ export function KalkulaAI() {
     {
       id: "1",
       type: "ai",
-      text: "Merhaba! Ben Kalkula Akıllı İş Birliği Asistanı. Platformdaki 160'tan fazla araç arasından ihtiyacınız olanı bulmanıza yardımcı olabilirim.",
+      text: "Merhaba! Ben Kalküla Akıllı Rehber. Platformumuzdaki 160'tan fazla araç arasından size en uygun olanı bulmak için buradayım. Size nasıl yardımcı olabilirim?",
     },
   ]);
   const [inputValue, setInputValue] = useState("");
@@ -33,9 +33,13 @@ export function KalkulaAI() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  useEffect(() => {
+  const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isTyping]);
+  };
+
+  useEffect(() => {
+    if (isOpen) scrollToBottom();
+  }, [messages, isTyping, isOpen]);
 
   if (isMobile) return null;
 
@@ -50,7 +54,7 @@ export function KalkulaAI() {
   const processAI = (query: string) => {
     setIsTyping(true);
     setTimeout(() => {
-      const q = query.toLowerCase();
+      const q = query.toLowerCase().trim();
       
       // Math handling
       if (/^[0-9+\-*/().\s]+$/.test(q) && /[+\-*/]/.test(q)) {
@@ -64,16 +68,20 @@ export function KalkulaAI() {
 
       // Tool search
       const matches = calculators.filter(c => 
-        c.title.toLowerCase().includes(q) || c.description.toLowerCase().includes(q)
+        c.title.toLowerCase().includes(q) || 
+        c.description.toLowerCase().includes(q) ||
+        c.categoryId.toLowerCase().includes(q)
       ).slice(0, 3);
 
       let txt = "";
       if (matches.length > 0) {
-        txt = "Aradığınız kriterlere uygun en profesyonel araçları listeledim:";
+        txt = "Aramanızla ilgili en profesyonel araçları aşağıda listeledim:";
       } else if (q.includes("selam") || q.includes("merhaba")) {
-        txt = "Size de merhaba. Kalkula çözüm odaklı asistanıyım. Hangi operasyonel hesaplamada desteğe ihtiyacınız var?";
+        txt = "Merhaba, ben Kalküla Akıllı Rehber. Hangi hesaplama veya finansal işlemde size destek olabilirim?";
+      } else if (q.includes("teşekkür")) {
+        txt = "Rica ederim, her zaman buradayım. Başka bir işlemde yardımcı olmamı ister misiniz?";
       } else {
-        txt = "Üzgünüm, bu konuda spesifik bir araç bulamadım. Ancak kategorilerimize göz atarak tüm modüllere erişebilirsiniz.";
+        txt = "Üzgünüm, bu konuda tam eşleşen bir araç bulamadım. Ancak ana sayfadaki kategorilerimize göz atarak ihtiyacınız olan hesaplamayı bulabilirsiniz.";
       }
 
       setMessages(p => [...p, { 
@@ -83,112 +91,107 @@ export function KalkulaAI() {
         links: matches.map(m => ({ title: m.title, slug: m.slug })) 
       }]);
       setIsTyping(false);
-    }, 1000);
+    }, 1200);
   };
 
   return (
-    <div style={{ position: 'fixed', bottom: '32px', right: '32px', zIndex: 99999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-      {/* Professional Pop-up Chat Window */}
-      {isOpen && (
-        <div 
-          className="glass-chat animate-slide-up-chat border border-white/20"
-          style={{ 
-            width: '420px', 
-            height: '640px', 
-            marginBottom: '16px', 
-            borderRadius: '32px', 
-            display: 'flex', 
-            flexDirection: 'column', 
-            overflow: 'hidden',
-            boxShadow: '0 25px 80px rgba(0,0,0,0.2)',
-            maxWidth: 'calc(100vw - 64px)',
-            maxHeight: 'calc(100vh - 120px)'
-          }}
-        >
-          {/* Header */}
-          <div className="bg-blue-600 p-6 text-white flex items-center justify-between shadow-lg">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 relative">
-                <Sparkles size={24} />
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 border-2 border-blue-600 rounded-full animate-pulse"></span>
-              </div>
-              <div>
-                <h3 className="font-bold text-lg leading-tight">Kalkula Intelligence</h3>
-                <p className="text-[11px] opacity-70 font-semibold tracking-widest uppercase">Operasyonel Destek</p>
-              </div>
+    <div style={{ position: 'fixed', bottom: '32px', right: '32px', zIndex: 99999, display: 'flex', flexDirection: 'column', alignItems: 'flex-end', pointerEvents: 'none' }}>
+      {/* Floating Chat Window */}
+      <div 
+        className={`glass-chat transition-all duration-500 transform ease-in-out border border-white/10 ${
+          isOpen ? "opacity-100 translate-y-0 scale-100 shadow-2xl pointer-events-auto" : "opacity-0 translate-y-10 scale-90 pointer-events-none"
+        }`}
+        style={{ 
+          width: '400px', 
+          height: '600px', 
+          marginBottom: '20px', 
+          borderRadius: '24px', 
+          display: 'flex', 
+          flexDirection: 'column', 
+          overflow: 'hidden',
+          backgroundColor: 'var(--surface)',
+          border: '1px solid var(--border)'
+        }}
+      >
+        {/* Professional Header */}
+        <div className="bg-blue-600 p-6 text-white flex items-center justify-between shadow-xl">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center border border-white/30 backdrop-blur-sm relative">
+              <Sparkles size={24} />
+              <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-blue-600 rounded-full"></span>
             </div>
-            <div className="flex gap-2 opacity-40">
-              <Minus size={20} className="cursor-pointer hover:opacity-100" />
-              <Maximize2 size={16} className="cursor-pointer hover:opacity-100" />
+            <div>
+              <h3 className="font-bold text-lg tracking-tight leading-none">Akıllı Rehber</h3>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider opacity-80">Çevrimiçi Destek</span>
+              </div>
             </div>
           </div>
+          <button 
+            onClick={() => setIsOpen(false)}
+            className="p-2 hover:bg-white/10 rounded-xl transition-colors"
+          >
+            <X size={20} />
+          </button>
+        </div>
 
-          {/* Messages (Professional Style) */}
-          <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6 scroll-smooth bg-gradient-to-b from-blue-50/10 to-transparent dark:from-blue-900/5 hide-scrollbar">
-            {messages.map((m) => (
+        {/* Chat Feed */}
+        <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-5 bg-gradient-to-b from-blue-50/5 to-transparent hide-scrollbar">
+          {messages.map((m) => (
+            <div 
+              key={m.id} 
+              className={`flex flex-col ${m.type === "user" ? "items-end" : "items-start"}`}
+            >
               <div 
-                key={m.id} 
-                className={`flex gap-3 ${m.type === "user" ? "flex-row-reverse" : "flex-row text-left"}`}
+                className={`p-4 px-5 rounded-2xl text-[14px] font-medium leading-relaxed max-w-[300px] shadow-sm ${
+                  m.type === "ai" 
+                    ? "bg-blue-600 text-white rounded-tl-none" 
+                    : "bg-gray-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 rounded-tr-none border border-black/5 dark:border-white/5"
+                }`}
               >
-                {m.type === "ai" && (
-                  <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex-shrink-0 flex items-center justify-center text-blue-600">
-                    <Sparkles size={16} />
+                <div dangerouslySetInnerHTML={{ __html: m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+                
+                {m.links && m.links.length > 0 && (
+                  <div className="mt-4 flex flex-col gap-2">
+                    {m.links.map(l => (
+                      <Link 
+                        key={l.slug} 
+                        href={`/hesapla/${l.slug}`}
+                        className="flex items-center justify-between gap-3 p-3 px-4 bg-white/10 hover:bg-white/20 rounded-xl text-[11px] font-extrabold transition-all border border-white/10 group/link"
+                      >
+                        {l.title}
+                        <ArrowRight size={14} className="group-hover/link:translate-x-1 transition-transform" />
+                      </Link>
+                    ))}
                   </div>
                 )}
-                <div className={`flex flex-col ${m.type === "user" ? "items-end" : "items-start"}`}>
-                  <div 
-                    className={`p-4 px-5 rounded-[22px] text-[15px] font-medium leading-relaxed max-w-[320px] shadow-sm ${
-                      m.type === "ai" 
-                        ? "bg-blue-600 text-white rounded-tl-none" 
-                        : "bg-white dark:bg-zinc-800 text-zinc-800 dark:text-zinc-100 rounded-tr-none border border-zinc-100 dark:border-zinc-700"
-                    }`}
-                  >
-                    <div dangerouslySetInnerHTML={{ __html: m.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-                    
-                    {m.links && m.links.length > 0 && (
-                      <div className="mt-4 flex flex-col gap-2">
-                        {m.links.map(l => (
-                          <Link 
-                            key={l.slug} 
-                            href={`/hesapla/${l.slug}`}
-                            className="flex items-center justify-between gap-3 p-3 px-4 bg-white/15 dark:bg-black/20 hover:bg-white/25 rounded-xl text-xs font-bold transition-all border border-white/10 group/item"
-                          >
-                            {l.title}
-                            <ArrowRight size={16} className="group-hover/item:translate-x-1 transition-transform" />
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                  <span className="text-[10px] font-bold opacity-30 mt-2 px-1 uppercase tracking-widest leading-none">
-                    {m.type === "ai" ? "Kalkula Engine" : "Siz"}
-                  </span>
-                </div>
               </div>
-            ))}
-            {isTyping && (
-              <div className="flex gap-3">
-                 <div className="w-8 h-8 rounded-lg bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
-                    <Sparkles size={16} className="text-blue-600 animate-pulse" />
-                 </div>
-                 <div className="p-3 px-6 bg-blue-100/50 dark:bg-blue-900/20 rounded-full animate-pulse flex gap-1">
-                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce"></span>
-                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce delay-75"></span>
-                    <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce delay-150"></span>
-                 </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
+              <span className="text-[9px] font-bold opacity-30 mt-1.5 px-1 uppercase tracking-widest leading-none">
+                {m.type === "ai" ? "Kalküla AI" : "Siz"}
+              </span>
+            </div>
+          ))}
+          {isTyping && (
+            <div className="flex flex-col items-start">
+               <div className="p-3 px-5 bg-gray-100 dark:bg-zinc-800 rounded-2xl rounded-tl-none flex gap-1.5 items-center">
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                  <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce"></div>
+               </div>
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
 
-          {/* Quick Professional Suggestions */}
+        {/* Action Bar */}
+        <div className="p-6 pt-0 mt-auto">
           {messages.length === 1 && (
-            <div className="px-6 py-2 flex flex-wrap gap-2">
-              {['BMI Analizi', 'Ek Ders 2026', 'Döviz Dönüştür'].map(tag => (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {['Vücut Kitle Endeksi', 'Ek Ders', 'Altın Hesapla'].map(tag => (
                 <button 
                   key={tag}
                   onClick={() => setInputValue(tag)}
-                  className="p-2 px-4 rounded-full text-[11px] font-bold bg-blue-500/10 text-blue-600 border border-blue-200 dark:border-blue-800 hover:bg-blue-600 hover:text-white transition-all"
+                  className="p-2 px-3.5 rounded-lg text-[11px] font-bold bg-blue-50 dark:bg-blue-900/10 text-blue-600 border border-blue-100 dark:border-blue-900/20 hover:bg-blue-600 hover:text-white transition-all pointer-events-auto"
                 >
                   {tag}
                 </button>
@@ -196,41 +199,49 @@ export function KalkulaAI() {
             </div>
           )}
 
-          {/* Footer Input Area */}
-          <div className="p-6 pt-2 bg-white/50 dark:bg-zinc-900/50 border-t border-zinc-100 dark:border-zinc-800">
-            <div className="relative group">
-              <input
-                type="text"
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                onKeyPress={(e) => (e.key === "Enter" && handleSend())}
-                placeholder="Nasıl yardımcı olabilirim?"
-                className="w-full bg-zinc-100 dark:bg-zinc-800 border-none rounded-2xl py-4 pl-5 pr-14 text-sm font-semibold focus:ring-2 focus:ring-blue-600 transition-all placeholder:text-zinc-400 dark:placeholder:text-zinc-500"
-              />
-              <button 
-                onClick={handleSend}
-                className="absolute right-2 top-2 p-2.5 bg-blue-600 text-white rounded-xl shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0 transition-all disabled:opacity-50"
-                disabled={!inputValue.trim()}
-              >
-                <Send size={18} />
-              </button>
-            </div>
-            <p className="mt-3 text-center text-[10px] font-bold text-zinc-400 dark:text-zinc-600 tracking-widest uppercase">
-              Secure Intelligence Pipeline
-            </p>
+          <div className="relative group pointer-events-auto">
+            <input
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              onKeyPress={(e) => (e.key === "Enter" && handleSend())}
+              placeholder="Nasıl yardımcı olabilirim?"
+              className="w-full bg-gray-100 dark:bg-zinc-800 border-2 border-transparent rounded-2xl py-4 pl-5 pr-14 text-[14px] font-bold focus:border-blue-600/30 focus:bg-white dark:focus:bg-zinc-900 focus:outline-none transition-all placeholder:text-zinc-400"
+            />
+            <button 
+              onClick={handleSend}
+              className="absolute right-2 top-2 p-2.5 bg-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700 transition-all active:scale-90"
+            >
+              <Send size={20} />
+            </button>
+          </div>
+          <div className="mt-3 text-center text-[9px] font-black opacity-20 uppercase tracking-[0.2em]">
+            Kalküla Akıllı Hizmet Sistemi
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Floating Toggle Bubble */}
+      {/* Main Toggle Bubble */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-16 h-16 rounded-3xl flex items-center justify-center shadow-[0_10px_40px_rgba(37,99,235,0.4)] transition-all duration-300 hover:scale-110 active:scale-95 group ${
-          isOpen ? "bg-white text-blue-600 rotate-90" : "bg-blue-600 text-white"
+        className={`w-16 h-16 rounded-full flex items-center justify-center shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group pointer-events-auto ${
+          isOpen ? "bg-red-500 text-white rotate-90" : "bg-blue-600 text-white"
         }`}
+        style={{ 
+          boxShadow: isOpen ? '0 10px 40px rgba(239, 68, 68, 0.4)' : '0 10px 40px rgba(37, 99, 235, 0.4)' 
+        }}
       >
-        {isOpen ? <X size={28} /> : <MessageCircle size={32} className="group-hover:rotate-12 transition-transform" />}
+        {isOpen ? <NoIcon size={28} /> : <MessageIcon size={32} className="group-hover:rotate-12 transition-transform" />}
       </button>
     </div>
   );
+}
+
+// Fixed Lucide Icons for clarity in rewrite
+function MessageIcon({ size, className }: { size: number, className: string }) {
+  return <MessageCircle size={size} className={className} />;
+}
+
+function NoIcon({ size }: { size: number }) {
+  return <X size={size} />;
 }
