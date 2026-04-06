@@ -1,22 +1,37 @@
 import React from "react";
 import AdBanner from "./AdBanner";
 
-type AdType = "skyscraper" | "rectangle" | "leaderboard" | "fluid" | "native";
+type AdType = "skyscraper" | "rectangle" | "leaderboard" | "fluid" | "native" | "multiplex";
 
 interface AdPlaceholderProps {
   type: AdType;
   className?: string;
+  style?: React.CSSProperties;
 }
 
-export function AdPlaceholder({ type, className = "" }: AdPlaceholderProps) {
-  // Kullanıcının sağladığı slot ID: 9909102653
+/**
+ * Kalkula 2026 AdSense Entegrasyon Bileşeni.
+ * CLS (Layout Shift) önlemek için sabit min-height kullanımı içerir.
+ */
+export function AdPlaceholder({ type, className = "", style }: AdPlaceholderProps) {
+  // Global AdSense Slot ID
   const AD_SLOT = "9909102653";
 
   return (
-    <div className={`ad-container ad-${type} ${className}`} style={{ minHeight: type === "leaderboard" ? "90px" : "250px" }}>
+    <div 
+      className={`ad-container ad-${type} ${className}`} 
+      style={{ 
+        ...style 
+      }}
+    >
       <AdBanner 
         adSlot={AD_SLOT} 
-        adFormat={type === "skyscraper" ? "vertical" : type === "leaderboard" ? "horizontal" : "auto"}
+        adFormat={
+          type === "skyscraper" ? "vertical" : 
+          type === "leaderboard" ? "horizontal" : 
+          type === "rectangle" ? "rectangle" : 
+          "auto"
+        }
       />
     </div>
   );

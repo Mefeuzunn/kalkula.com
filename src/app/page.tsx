@@ -135,6 +135,7 @@ export default function Home() {
          </section>
 
          <section id="tools">
+           <AdPlaceholder type="fluid" style={{ marginBottom: '3rem' }} />
            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "2.5rem" }}>
              <h2 style={{ fontSize: "1.75rem", fontWeight: 900, letterSpacing: '-0.03em' }}>Kategorilere Göz Atın</h2>
              <span style={{ fontSize: "0.9rem", fontWeight: 700, color: "var(--text-muted)", background: 'rgba(255,255,255,0.05)', padding: '0.4rem 1rem', borderRadius: '100px' }}>{categories.length} Kategori Mevcut</span>
@@ -155,6 +156,11 @@ export default function Home() {
                  </Link>
                );
              })}
+           </div>
+           
+           <div style={{ marginTop: '4rem' }}>
+             <h3 style={{ fontSize: "1.25rem", fontWeight: 800, marginBottom: "1.5rem", textAlign: 'center', opacity: 0.8 }}>Sizin İçin Önerilenler</h3>
+             <AdPlaceholder type="multiplex" />
            </div>
          </section>
       </div>

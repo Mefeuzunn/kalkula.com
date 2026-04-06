@@ -74,7 +74,14 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           </div>
         )}
 
-        <AdPlaceholder type="fluid" />
+        <AdPlaceholder type="native" style={{ marginTop: '2rem' }} />
+        <AdPlaceholder type="fluid" style={{ marginTop: '2rem' }} />
+
+        {/* Multiplex Ads for Recommendations */}
+        <div style={{ marginTop: '3rem' }}>
+          <h3 style={{ fontSize: "1.1rem", fontWeight: 800, marginBottom: "1.5rem", opacity: 0.8 }}>Önerilen İçerikler</h3>
+          <AdPlaceholder type="multiplex" />
+        </div>
 
         {/* Related Categories */}
         <div style={{ marginTop: "2rem" }}>

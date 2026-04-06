@@ -311,13 +311,22 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
               {calc.description}
             </p>
           </div>
+          
+          <div style={{ padding: "1.5rem 2.5rem" }}>
+             <AdPlaceholder type="native" />
+          </div>
 
           <div style={{ padding: "2.5rem" }}>
             {renderCalculator()}
           </div>
         </div>
         
-        <AdPlaceholder type="fluid" />
+        <AdPlaceholder type="fluid" style={{ marginTop: '2rem' }} />
+
+        <div style={{ marginTop: '3rem' }}>
+          <h3 style={{ fontSize: "1.1rem", fontWeight: 800, marginBottom: "1.5rem", opacity: 0.8 }}>Sizin İçin Seçtiklerimiz</h3>
+          <AdPlaceholder type="multiplex" />
+        </div>
       </div>
 
       <RightSidebarAds />

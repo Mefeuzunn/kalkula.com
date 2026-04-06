@@ -285,45 +285,68 @@ input, textarea, select {
   top: 5rem; 
 }
 
-/* Ad Placement Mock Styles */
+/* Ad Placement Styling - Premium 2026 Ready */
 .ad-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface-light);
-  border: 1px dashed var(--text-muted);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px dashed var(--border);
   color: var(--text-muted);
-  font-size: 0.85rem;
-  letter-spacing: 1px;
-  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  font-weight: 800;
   text-transform: uppercase;
-  border-radius: var(--radius-sm);
+  border-radius: 16px;
   overflow: hidden;
+  position: relative;
+  transition: all var(--transition-normal);
+  margin: 1.5rem 0;
+}
+
+.ad-container::before {
+  content: "REKLAM";
+  position: absolute;
+  top: 8px;
+  right: 12px;
+  font-size: 0.6rem;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.dark .ad-container {
+  background: rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 .ad-skyscraper {
-  height: 600px;
+  min-height: 600px;
+  max-width: 300px;
   width: 100%;
-  margin-bottom: 2rem;
 }
 
 .ad-rectangle {
-  height: 250px;
+  min-height: 250px;
   width: 100%;
-  margin-bottom: 2rem;
 }
 
 .ad-leaderboard {
-  height: 90px;
+  min-height: 90px;
   width: 100%;
-  max-width: 728px;
-  margin: 0 auto 2rem auto;
+  max-width: 970px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .ad-fluid {
   min-height: 100px;
   width: 100%;
-  margin: 2rem 0;
+}
+
+.ad-native {
+  min-height: 150px;
+  background: transparent;
+  border: 1px solid var(--border);
 }
 
 /* Homepage Styles */
