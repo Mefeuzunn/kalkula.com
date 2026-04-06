@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 
 export function NetGrossCalculator() {
   const [net, setNet] = useState("25000");
-  const [result, setResult] = useState<{ gross: number; sgk: number; tax: number; unemploy: number; stamp: number } | null>(null);
+  const [results, setResults] = useState<{ gross: number; sgk: number; tax: number; unemploy: number; stamp: number } | null>(null);
 
   const calculate = () => {
     const n = parseFloat(net);
-    if (!n || n <= 0) { setResult(null); return; }
+    if (!n || n <= 0) { setResults(null); return; }
     // SGK işçi: %14, İşsizlik: %1, Gelir Vergisi: ~%15 (taban dilim), Damga: %0.759
     const totalDeductionRate = 0.14 + 0.01 + 0.15 + 0.00759;
     const gross = n / (1 - totalDeductionRate);
@@ -16,10 +16,10 @@ export function NetGrossCalculator() {
     const unemploy = gross * 0.01;
     const tax = gross * 0.15;
     const stamp = gross * 0.00759;
-    setResult({ gross, sgk, tax, unemploy, stamp });
+    setResults({ gross, sgk, tax, unemploy, stamp });
   };
 
-  const reset = () => { setNet("25000"); setResult(null); };
+  const reset = () => { setNet("25000"); setResults(null); };
 
   useEffect(() => { calculate(); }, [net]);
 
@@ -40,30 +40,30 @@ export function NetGrossCalculator() {
         <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
       </div>
 
-      {result && (
+      {results && (
         <div className="calc-result-panel">
           <div className="calc-result-header">💼 Tahmini Maaş Bileşenleri</div>
           <div className="calc-result-body">
             <div className="calc-result-hero">
               <div className="calc-result-hero-label">Tahmini Brüt Maaş</div>
-              <div className="calc-result-hero-value">{fmt(result.gross)}</div>
+              <div className="calc-result-hero-value">{fmt(results.gross)}</div>
               <div className="calc-result-hero-sub">İşveren maliyeti ayrıca %22.5 SGK işveren payı eklenecektir</div>
             </div>
             <div className="calc-result-row">
               <span className="calc-result-row-label">SGK İşçi Payı (%14)</span>
-              <span className="calc-result-row-value danger">−{fmt(result.sgk)}</span>
+              <span className="calc-result-row-value danger">−{fmt(results.sgk)}</span>
             </div>
             <div className="calc-result-row">
               <span className="calc-result-row-label">İşsizlik Sigortası (%1)</span>
-              <span className="calc-result-row-value danger">−{fmt(result.unemploy)}</span>
+              <span className="calc-result-row-value danger">−{fmt(results.unemploy)}</span>
             </div>
             <div className="calc-result-row">
               <span className="calc-result-row-label">Gelir Vergisi (Taban %15)</span>
-              <span className="calc-result-row-value danger">−{fmt(result.tax)}</span>
+              <span className="calc-result-row-value danger">−{fmt(results.tax)}</span>
             </div>
             <div className="calc-result-row">
               <span className="calc-result-row-label">Damga Vergisi (%0.759)</span>
-              <span className="calc-result-row-value danger">−{fmt(result.stamp)}</span>
+              <span className="calc-result-row-value danger">−{fmt(results.stamp)}</span>
             </div>
           </div>
         </div>

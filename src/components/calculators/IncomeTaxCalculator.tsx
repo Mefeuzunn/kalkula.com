@@ -38,7 +38,7 @@ export function IncomeTaxCalculator() {
     setResults({ yearlyGross, brackets: bracketDetails, totalTax, effectiveRate: (totalTax / yearlyGross) * 100, yearlyNet, avgMonthlyNet: yearlyNet / 12 });
   };
 
-  const reset = () => { setBrutto("50000"); setPeriod("aylik"); setYear("2025"); setResult(null); };
+  const reset = () => { setBrutto("50000"); setPeriod("aylik"); setYear("2025"); setResults(null); };
 
   useEffect(() => { calculate(); }, [brutto, period, year]);
 

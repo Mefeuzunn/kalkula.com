@@ -27,7 +27,7 @@ export function RentIncreaseCalculator() {
     });
   };
 
-  const reset = () => { setCurrentRent("15000"); setPropertyType("konut"); setInflationRate("65.93"); setResult(null); };
+  const reset = () => { setCurrentRent("15000"); setPropertyType("konut"); setInflationRate("65.93"); setResults(null); };
 
   useEffect(() => { calculate(); }, [currentRent, propertyType, inflationRate]);
 

@@ -7,14 +7,14 @@ export function SavingsCalculator() {
   const [monthlyContribution, setMonthlyContribution] = useState("1000");
   const [years, setYears] = useState("5");
   const [annualRate, setAnnualRate] = useState("40");
-  const [result, setResult] = useState<{ totalValue: number; totalPrincipal: number; totalInterest: number; growthRate: number } | null>(null);
+  const [results, setResults] = useState<{ totalValue: number; totalPrincipal: number; totalInterest: number; growthRate: number } | null>(null);
 
   const calculate = () => {
     const p = parseFloat(initialAmount) || 0;
     const pmt = parseFloat(monthlyContribution) || 0;
     const y = parseFloat(years) || 0;
     const r = parseFloat(annualRate) / 100 || 0;
-    if (y <= 0) { setResult(null); return; }
+    if (y <= 0) { setResults(null); return; }
     const monthlyRate = r / 12;
     const totalMonths = y * 12;
     const fvPrincipal = p * Math.pow(1 + monthlyRate, totalMonths);
@@ -25,10 +25,10 @@ export function SavingsCalculator() {
     const totalPrincipal = p + (pmt * totalMonths);
     const totalInterest = totalValue - totalPrincipal;
     const growthRate = totalPrincipal > 0 ? (totalInterest / totalPrincipal) * 100 : 0;
-    setResult({ totalValue, totalPrincipal, totalInterest, growthRate });
+    setResults({ totalValue, totalPrincipal, totalInterest, growthRate });
   };
 
-  const reset = () => { setInitialAmount("10000"); setMonthlyContribution("1000"); setYears("5"); setAnnualRate("40"); setResult(null); };
+  const reset = () => { setInitialAmount("10000"); setMonthlyContribution("1000"); setYears("5"); setAnnualRate("40"); setResults(null); };
 
   useEffect(() => { calculate(); }, [initialAmount, monthlyContribution, years, annualRate]);
 
@@ -72,30 +72,30 @@ export function SavingsCalculator() {
         <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
       </div>
 
-      {result && (
+      {results && (
         <div className="calc-result-panel">
           <div className="calc-result-header">💰 Birikim Projeksiyonu</div>
           <div className="calc-result-body">
             <div className="calc-result-hero">
               <div className="calc-result-hero-label">{years} Yıl Sonraki Toplam Değer</div>
-              <div className="calc-result-hero-value">{fmt(result.totalValue)}</div>
-              <div className="calc-result-hero-sub">Toplam büyüme: %{result.growthRate.toFixed(0)}</div>
+              <div className="calc-result-hero-value">{fmt(results.totalValue)}</div>
+              <div className="calc-result-hero-sub">Toplam büyüme: %{results.growthRate.toFixed(0)}</div>
             </div>
             <div className="calc-result-row">
               <span className="calc-result-row-label">Toplam Yatırdığınız (Anapara)</span>
-              <span className="calc-result-row-value">{fmt(result.totalPrincipal)}</span>
+              <span className="calc-result-row-value">{fmt(results.totalPrincipal)}</span>
             </div>
             <div className="calc-result-row">
               <span className="calc-result-row-label">Toplam Faiz Getirisi</span>
-              <span className="calc-result-row-value success">+{fmt(result.totalInterest)}</span>
+              <span className="calc-result-row-value success">+{fmt(results.totalInterest)}</span>
             </div>
             <div style={{ paddingTop: "1rem" }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
                 <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Faiz / Anapara Oranı</span>
-                <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#22c55e" }}>%{result.growthRate.toFixed(0)}</span>
+                <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#22c55e" }}>%{results.growthRate.toFixed(0)}</span>
               </div>
               <div className="calc-scale-bar">
-                <div className="calc-scale-fill" style={{ width: `${Math.min(result.growthRate, 100)}%` }} />
+                <div className="calc-scale-fill" style={{ width: `${Math.min(results.growthRate, 100)}%` }} />
               </div>
             </div>
           </div>
