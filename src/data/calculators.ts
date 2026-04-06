@@ -210,7 +210,8 @@ export const calculators: CalculatorInfo[] = [
   { id: "pdf-compress", title: "PDF Sıkıştır", slug: "pdf-sikistir", categoryId: "pdf", description: "PDF dökümanlarınızın dosya boyutunu kaliteden aşırı ödün vermeden optimize edin." },
 
   // Oyunlar
-  { id: "game-2048", title: "2048 Oyunu", slug: "2048", categoryId: "oyun", description: "Klasik 2048 zeka oyunu. Sayıları birleştirin, 2048'e ulaşın!" }
+  { id: "game-2048", title: "2048 Oyunu", slug: "2048", categoryId: "oyun", description: "Klasik 2048 zeka oyunu. Sayıları birleştirin, 2048'e ulaşın!" },
+  { id: "game-sudoku", title: "Sudoku Premium", slug: "sudoku", categoryId: "oyun", description: "Zekanızı test edin. Tamamen tarayıcı üzerinde üretilen benzersiz bulmacalar!" }
 ];
 
 export function getCalculatorsByCategory(categoryId: string) {

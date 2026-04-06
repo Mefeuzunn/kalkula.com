@@ -116,6 +116,7 @@ import { PermutationCombinationCalculator } from "@/components/calculators/Permu
 
 // Yeni Araçlar ve Oyunlar
 import { Game2048 } from "@/components/games/Game2048";
+import { Sudoku } from "@/components/games/Sudoku";
 import { PdfMerge } from "@/components/calculators/PdfMerge";
 import { PdfSplit } from "@/components/calculators/PdfSplit";
 import { ImageToPdf } from "@/components/calculators/ImageToPdf";
@@ -305,6 +306,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
 
       // Oyunlar
       case "2048": return <Game2048 />;
+      case "sudoku": return <Sudoku />;
 
       default: return <GenericCalculator />;
     }
