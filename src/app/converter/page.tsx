@@ -5,16 +5,58 @@ import ToolCard from "@/components/ToolCard";
 export default function ConverterHub() {
   const converters = [
     {
-      title: "PDF'den Word'e",
-      description: "PDF belgelerinizi düzenlenebilir Word (.docx) dosyalarına dönüştürün.",
-      href: "/converter/pdf-to-word",
+      title: "PDF Birleştir",
+      description: "Birden fazla PDF dökümanını tek bir dosyada güvenle birleştirin.",
+      href: "/converter/pdf-merge",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-          <polyline points="14 2 14 8 20 8"></polyline>
-          <line x1="16" y1="13" x2="8" y2="13"></line>
-          <line x1="16" y1="17" x2="8" y2="17"></line>
-          <polyline points="10 9 9 9 8 9"></polyline>
+          <path d="M14 2v6h6"></path>
+          <path d="M11 13h6"></path>
+          <path d="M11 17h6"></path>
+          <path d="M7 13h2"></path>
+          <path d="M7 17h2"></path>
+          <rect x="4" y="4" width="8" height="8" rx="1" fill="var(--accent-primary)" fillOpacity="0.1"></rect>
+        </svg>
+      )
+    },
+    {
+      title: "PDF Sayfa Ayıkla/Böl",
+      description: "Büyük bir PDF dosyasından belirli sayfaları ayıklayın veya bölün.",
+      href: "/converter/pdf-split",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <path d="M14 2v6h6"></path>
+          <line x1="12" y1="12" x2="12" y2="20" strokeDasharray="4 2"></line>
+          <path d="M8 15l4-4 4 4"></path>
+        </svg>
+      )
+    },
+    {
+      title: "Görselden WebP'ye",
+      description: "Görsellerinizi SEO uyumlu, yüksek sıkıştırmalı WebP formatına çevirin.",
+      href: "/converter/to-webp",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+          <path d="M12 9v6"></path>
+          <path d="M9 12h6"></path>
+        </svg>
+      )
+    },
+    {
+      title: "Resim Boyutlandırıcı",
+      description: "Görsellerinizin boyutlarını (px) kalite kaybı olmadan değiştirin.",
+      href: "/converter/image-resize",
+      icon: (
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M4 14V4h10"></path>
+          <path d="M20 10v10H10"></path>
+          <path d="M15 15l5 5"></path>
+          <path d="M4 4l5 5"></path>
         </svg>
       )
     },
@@ -41,42 +83,6 @@ export default function ConverterHub() {
           <path d="M8 13h8"></path>
           <path d="M8 17h8"></path>
           <path d="M12 11v8"></path>
-        </svg>
-      )
-    },
-    {
-      title: "PDF'den Excel'e",
-      description: "PDF içerisindeki tablo verilerini Excel'e aktarın.",
-      href: "/converter/pdf-to-excel",
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          <line x1="3" y1="9" x2="21" y2="9"></line>
-          <line x1="9" y1="21" x2="9" y2="9"></line>
-        </svg>
-      )
-    },
-    {
-      title: "JPG'den PDF'e",
-      description: "Görsellerinizi tek bir PDF dosyası olarak birleştirin.",
-      href: "/converter/jpg-to-pdf",
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          <circle cx="8.5" cy="8.5" r="1.5"></circle>
-          <polyline points="21 15 16 10 5 21"></polyline>
-        </svg>
-      )
-    },
-    {
-      title: "PDF'den JPG'e",
-      description: "PDF sayfalarınızı yüksek çözünürlüklü görsellere çevirin.",
-      href: "/converter/pdf-to-jpg",
-      icon: (
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="17 8 12 3 7 8"></polyline>
-          <line x1="12" y1="3" x2="12" y2="15"></line>
         </svg>
       )
     }

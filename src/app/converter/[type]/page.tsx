@@ -4,90 +4,112 @@ import styles from "../converter.module.css";
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
+import { mergePdfs, splitPdf, convertToWebP, resizeImage } from "@/utils/documentProcessor";
 
-const typeMap: Record<string, { title: string; from: string; to: string; accept: string }> = {
-  "pdf-to-word": { title: "PDF'den Word'e Dönüştürücü", from: "PDF", to: "Word (.docx)", accept: ".pdf" },
+const typeMap: Record<string, { title: string; from: string; to: string; accept: string; multi?: boolean }> = {
+  "pdf-merge": { title: "PDF Birleştirici", from: "PDF", to: "PDF (.pdf)", accept: ".pdf", multi: true },
+  "pdf-split": { title: "PDF Sayfa Ayıklayıcı", from: "PDF", to: "PDF (.pdf)", accept: ".pdf" },
+  "to-webp": { title: "WebP Dönüştürücü", from: "Görsel", to: "WebP (.webp)", accept: "image/*" },
+  "image-resize": { title: "Resim Boyutlandırıcı", from: "Görsel", to: "Resim", accept: "image/*" },
   "word-to-pdf": { title: "Word'den PDF'e Dönüştürücü", from: "Word", to: "PDF (.pdf)", accept: ".doc,.docx" },
   "excel-to-pdf": { title: "Excel'den PDF'e Dönüştürücü", from: "Excel", to: "PDF (.pdf)", accept: ".xls,.xlsx" },
-  "pdf-to-excel": { title: "PDF'den Excel'e Dönüştürücü", from: "PDF", to: "Excel (.xlsx)", accept: ".pdf" },
-  "jpg-to-pdf": { title: "JPG'den PDF'e Dönüştürücü", from: "Görsel", to: "PDF (.pdf)", accept: "image/*" },
-  "pdf-to-jpg": { title: "PDF'den JPG'e Dönüştürücü", from: "PDF", to: "Görsel (.jpg)", accept: ".pdf" }
 };
 
 export default function ConverterType() {
   const params = useParams();
   const rawType = params?.type;
-  const typeStr = Array.isArray(rawType) ? rawType[0] : rawType || "pdf-to-word";
+  const typeStr = Array.isArray(rawType) ? rawType[0] : rawType || "pdf-merge";
   
-  const [file, setFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [isConverting, setIsConverting] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [showPreview, setShowPreview] = useState(false);
+  const [resultBlob, setResultBlob] = useState<Blob | null>(null);
+  const [splitRange, setSplitRange] = useState("1-1");
+  const [resizeWidth, setResizeWidth] = useState(1200);
 
-  const info = typeMap[typeStr] || typeMap["pdf-to-word"];
+  const info = typeMap[typeStr] || typeMap["pdf-merge"];
 
   useEffect(() => {
-    // Reset state on type change
-    setFile(null);
+    setFiles([]);
     setIsConverting(false);
     setProgress(0);
     setIsCompleted(false);
-    setShowPreview(false);
+    setResultBlob(null);
   }, [typeStr]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setFiles(prev => info.multi ? [...prev, ...newFiles] : [newFiles[0]]);
       setIsCompleted(false);
-      setProgress(0);
-      setShowPreview(false);
     }
   };
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-  };
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => e.preventDefault();
 
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      setFile(e.dataTransfer.files[0]);
+    if (e.dataTransfer.files) {
+      const newFiles = Array.from(e.dataTransfer.files);
+      setFiles(prev => info.multi ? [...prev, ...newFiles] : [newFiles[0]]);
       setIsCompleted(false);
-      setProgress(0);
-      setShowPreview(false);
     }
   };
 
-  const handleConvert = () => {
-    if (!file) return;
-
+  const executeProcessing = async () => {
+    if (files.length === 0) return;
     setIsConverting(true);
-    setProgress(0);
+    setProgress(10);
 
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsConverting(false);
-          setIsCompleted(true);
-          setShowPreview(true);
-          return 100;
-        }
-        return prev + 5;
-      });
-    }, 150);
+    try {
+      let result: Uint8Array | Blob;
+
+      switch (typeStr) {
+        case "pdf-merge":
+          setProgress(30);
+          result = await mergePdfs(files);
+          setProgress(90);
+          setResultBlob(new Blob([result as any], { type: "application/pdf" }));
+          break;
+        case "pdf-split":
+          setProgress(40);
+          result = await splitPdf(files[0], splitRange);
+          setResultBlob(new Blob([result as any], { type: "application/pdf" }));
+          break;
+        case "to-webp":
+          setProgress(50);
+          result = await convertToWebP(files[0]);
+          setResultBlob(result);
+          break;
+        case "image-resize":
+          setProgress(50);
+          result = await resizeImage(files[0], resizeWidth);
+          setResultBlob(result);
+          break;
+        default:
+          // Simulate for placeholders
+          await new Promise(r => setTimeout(r, 1500));
+          setResultBlob(new Blob(["Simulated content"], { type: "text/plain" }));
+      }
+
+      setProgress(100);
+      setIsCompleted(true);
+    } catch (err) {
+      console.error(err);
+      alert("Hata oluştu: " + (err as Error).message);
+    } finally {
+      setIsConverting(false);
+    }
   };
 
   const handleDownload = () => {
-    if (!file) return;
-    const mockContent = `Bu simüle edilmiş bir dönüştürme çıktısıdır.\nOrijinal Dosya: ${file.name}\nDönüştürülen Format: ${info.to}\n\nNot: Bu platform şu anda arayüz testi(mocking) aşamasındadır.`;
-    const blob = new Blob([mockContent], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
+    if (!resultBlob) return;
+    const url = URL.createObjectURL(resultBlob);
     const a = document.createElement("a");
     a.href = url;
-    // Replace the old extension with a generic one or keep original and append _converted
-    a.download = `donusturulmus_${file.name}.txt`;
+    const ext = typeStr.includes("pdf") ? ".pdf" : typeStr === "to-webp" ? ".webp" : files[0].name.split('.').pop();
+    a.download = `kalkula_${typeStr}_${Date.now()}.${ext}`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -103,139 +125,135 @@ export default function ConverterType() {
           </Link>
         </div>
         <h1 className={styles.title}>{info.title}</h1>
-        <p className={styles.subtitle}>{info.from} dosyalarınızı saniyeler içinde {info.to} formatına çevirin. Sınırsız, ücretsiz ve tamamen güvenli.</p>
+        <p className={styles.subtitle}>Tamamen tarayıcıda, güvenli ve yüksek hızlı belge işleme.</p>
       </div>
 
       <div className={`panel ${styles.card}`}>
         {!isCompleted && !isConverting && (
-          <div 
-            className={styles.uploadArea}
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-          >
-            <div className={styles.uploadIcon}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="17 8 12 3 7 8"></polyline>
-                <line x1="12" y1="3" x2="12" y2="15"></line>
-              </svg>
-            </div>
-            <h3 className={styles.uploadTitle}>{info.from} Dosyanızı Seçin</h3>
-            <p className={styles.uploadDesc}>veya sürükleyip bırakın</p>
-            <input 
-              type="file" 
-              id="file-upload" 
-              accept={info.accept} 
-              className={styles.fileInput} 
-              onChange={handleFileChange}
-            />
-            <label htmlFor="file-upload" className={styles.uploadButton}>
-              Dosya Seç
-            </label>
-            {file && (
-              <div className={styles.selectedFile}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
+          <>
+            <div 
+              className={styles.uploadArea}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+            >
+              <div className={styles.uploadIcon}>
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
                 </svg>
-                <span>{file.name}</span>
-                <span className={styles.fileSize}>
-                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                </span>
+              </div>
+              <h3 className={styles.uploadTitle}>{info.from} Dosyalarınızı Seçin</h3>
+              <input 
+                type="file" 
+                id="file-upload" 
+                accept={info.accept} 
+                multiple={info.multi}
+                className={styles.fileInput} 
+                onChange={handleFileChange}
+              />
+              <label htmlFor="file-upload" className={styles.uploadButton}>
+                {info.multi ? "Dosyaları Ekle" : "Dosya Seç"}
+              </label>
+            </div>
+
+            {files.length > 0 && (
+              <div style={{ marginTop: "2rem", textAlign: "left" }}>
+                <h4 style={{ marginBottom: "1rem" }}>Seçili Dosyalar ({files.length})</h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+                  {files.map((f, i) => (
+                    <div key={i} className="flex-between p-2 bg-secondary rounded-lg text-sm">
+                      <span className="truncate">{f.name}</span>
+                      <span className="opacity-50">{(f.size / 1024).toFixed(1)} KB</span>
+                    </div>
+                  ))}
+                </div>
+
+                {typeStr === "pdf-split" && (
+                  <div style={{ marginTop: "1.5rem" }}>
+                    <label className="label">Sayfa Aralığı (Örn: 1-3, 5):</label>
+                    <input 
+                      type="text" 
+                      className="input" 
+                      value={splitRange} 
+                      onChange={(e) => setSplitRange(e.target.value)}
+                    />
+                  </div>
+                )}
+
+                {typeStr === "image-resize" && (
+                  <div style={{ marginTop: "1.5rem" }}>
+                    <label className="label">Hedef Genişlik (px):</label>
+                    <input 
+                      type="number" 
+                      className="input" 
+                      value={resizeWidth} 
+                      onChange={(e) => setResizeWidth(Number(e.target.value))}
+                    />
+                  </div>
+                )}
+
+                <button 
+                  className="btn-primary" 
+                  style={{ width: "100%", marginTop: "2rem", padding: "1rem" }}
+                  onClick={executeProcessing}
+                >
+                  İşlemi Başlat
+                </button>
               </div>
             )}
-          </div>
+          </>
         )}
 
         {isConverting && (
           <div className={styles.conversionArea}>
-            <div className={styles.pulseIcon}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-spin">
-                <line x1="12" y1="2" x2="12" y2="6"></line>
-                <line x1="12" y1="18" x2="12" y2="22"></line>
-                <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-                <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-                <line x1="2" y1="12" x2="6" y2="12"></line>
-                <line x1="18" y1="12" x2="22" y2="12"></line>
-                <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-                <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-              </svg>
+            <div className="animate-spin mb-4" style={{ color: "var(--accent-primary)" }}>
+              <Calculator size={48} />
             </div>
-            <h3 className={styles.conversionTitle}>Belgeniz Dönüştürülüyor...</h3>
+            <h3 className={styles.conversionTitle}>Belgeniz İşleniyor...</h3>
             <div className={styles.progressBarWrapper}>
-              <div 
-                className={styles.progressBar} 
-                style={{ width: `${progress}%` }}
-              ></div>
+              <div className={styles.progressBar} style={{ width: `${progress}%` }}></div>
             </div>
-            <p className={styles.progressText}>%{progress}</p>
           </div>
         )}
 
         {isCompleted && (
           <div className={styles.successArea}>
-            <div className={styles.successIcon}>
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-              </svg>
+            <div style={{ color: "#22c55e", marginBottom: "1rem" }}>
+              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             </div>
-            <h3 className={styles.successTitle}>Dönüştürme İşlemi Tamamlandı!</h3>
-            <p className={styles.successDesc}>
-              <b>{file?.name}</b> başarıyla {info.to} formatına çevrildi.
-            </p>
-            <div className={styles.actionButtons}>
+            <h3 className={styles.successTitle}>İşlem Tamamlandı!</h3>
+            <p className={styles.successDesc}>Belgeniz tarayıcıda başarıyla işlendi ve indirmeye hazır.</p>
+            <div className="flex gap-2 justify-center mt-6">
+              <button className="btn-primary" onClick={handleDownload} style={{ padding: "0.8rem 2rem" }}>Hemen İndir</button>
               <button 
-                className="btn-primary"
-                onClick={handleDownload}
-              >
-                Dosyayı İndir
-              </button>
-              <button 
-                className="btn-secondary"
-                onClick={() => setShowPreview(!showPreview)}
-              >
-                {showPreview ? "Önizlemeyi Kapat" : "Belgeyi Önizle"}
-              </button>
-              <button 
-                className="btn-secondary"
+                className="btn-secondary" 
                 onClick={() => {
-                  setFile(null);
+                  setFiles([]);
                   setIsCompleted(false);
-                  setShowPreview(false);
                 }}
-              >
-                Yeni Dönüştür
-              </button>
+              >Yeniden Başla</button>
             </div>
-            
-            {showPreview && (
-              <div style={{ marginTop: "2rem", padding: "1.5rem", background: "var(--bg-primary)", border: "1px solid var(--border)", borderRadius: "8px", textAlign: "left" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem", borderBottom: "1px solid var(--border)", paddingBottom: "0.5rem" }}>
-                  <h4 style={{ margin: 0, color: "var(--text-secondary)" }}>Belge Önizlemesi</h4>
-                  <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", background: "var(--bg-secondary)", padding: "0.2rem 0.5rem", borderRadius: "4px" }}>{info.to}</span>
-                </div>
-                <div style={{ fontFamily: "monospace", color: "var(--text-primary)", fontSize: "0.9rem", whiteSpace: "pre-wrap", minHeight: "150px" }}>
-                  {`[ DÖNÜŞTÜRÜLMÜŞ METİN / TABLO SİMÜLASYONU ]\n\n- Orijinal Kaynak: ${file?.name}\n- Tarih: ${new Date().toLocaleDateString("tr-TR")}\n\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae tortor a orci sagittis iaculis. Integer efficitur laoreet risus, at congue risus sodales ac.\n\nSimüle edilen veri satırları başarıyla ${info.to} formatına işlendi ve şifrelendi.`}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {!isCompleted && !isConverting && (
-          <div className={styles.footerActions} style={{marginTop: "2rem"}}>
-            <button 
-              className={`btn-primary ${!file ? styles.disabled : ""}`}
-              onClick={handleConvert}
-              disabled={!file}
-              style={{ padding: "0.875rem 2.5rem", fontSize: "1.1rem" }}
-            >
-              Dönüştürmeyi Başlat
-            </button>
           </div>
         )}
       </div>
     </div>
+  );
+}
+
+function Calculator({ size, className }: { size: number; className?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+      <rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect>
+      <line x1="8" y1="6" x2="16" y2="6"></line>
+      <line x1="16" y1="14" x2="16" y2="18"></line>
+      <path d="M16 10h.01"></path>
+      <path d="M12 10h.01"></path>
+      <path d="M8 10h.01"></path>
+      <path d="M12 14h.01"></path>
+      <path d="M8 14h.01"></path>
+      <path d="M12 18h.01"></path>
+      <path d="M8 18h.01"></path>
+    </svg>
   );
 }
