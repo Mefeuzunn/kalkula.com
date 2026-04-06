@@ -131,6 +131,64 @@ export async function imagesToPdf(files: File[]): Promise<Uint8Array> {
 }
 
 /**
+ * 🖼️ Görselden WebP'ye Dönüştürücü
+ */
+export async function convertToWebP(file: File, quality: number = 0.8): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject('Canvas context error');
+        ctx.drawImage(img, 0, 0);
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject('Conversion error');
+        }, 'image/webp', quality);
+      };
+      img.onerror = reject;
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
+ * 📏 Görsel Boyutlandırıcı
+ */
+export async function resizeImage(file: File, targetWidth: number): Promise<Blob> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const aspectRatio = img.height / img.width;
+        const targetHeight = Math.round(targetWidth * aspectRatio);
+        const canvas = document.createElement('canvas');
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return reject('Canvas context error');
+        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+          else reject('Resizing error');
+        }, file.type, 0.9);
+      };
+      img.onerror = reject;
+      img.src = e.target?.result as string;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+/**
  * 💾 Dosya İndirme Yardımcıları
  */
 export function downloadUint8Array(data: Uint8Array, filename: string, type: string = 'application/pdf') {
