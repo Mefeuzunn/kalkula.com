@@ -56,23 +56,19 @@ export default function Home() {
         color: "white",
       }}>
         <div className="container">
-          <div style={{ marginBottom: "1rem", display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.15)", borderRadius: "9999px", padding: "0.3rem 1rem", fontSize: "0.85rem", fontWeight: 500 }}>
-            <span style={{ width: 8, height: 8, background: "#4ade80", borderRadius: "50%", display: "inline-block" }}></span>
-            Tüm araçlar ücretsiz
-          </div>
-          <h1 style={{ 
-            fontSize: "4.5rem", 
-            fontWeight: 900, 
-            marginBottom: "1.5rem", 
-            lineHeight: 1.1, 
-            letterSpacing: "-0.06em",
-            background: "linear-gradient(to bottom, #ffffff 40%, #cbd5e1 100%)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent",
-            textShadow: "0 25px 50px rgba(0,0,0,0.25)"
-          }}>
-            Türkiye&apos;nin En Kapsamlı<br />Hesaplama Platformu
-          </h1>
+            <h1 style={{ 
+              fontSize: "3.75rem", 
+              fontWeight: 900, 
+              marginBottom: "1.5rem", 
+              lineHeight: 1.1, 
+              letterSpacing: "-0.06em",
+              background: "linear-gradient(to bottom, #ffffff 40%, #cbd5e1 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              textShadow: "0 20px 40px rgba(0,0,0,0.3)"
+            }}>
+              Türkiye&apos;nin En Kapsamlı<br />Hesaplama Platformu
+            </h1>
           <p style={{ fontSize: "1.2rem", color: "rgba(255,255,255,0.9)", maxWidth: "650px", margin: "0 auto 3rem", lineHeight: 1.7 }}>
             Finans, eğitim, sağlık ve daha fazlası. {calculators.length}+ profesyonel araç tek bir çatıda.
           </p>
@@ -177,10 +173,6 @@ export default function Home() {
         color: "white",
         borderBottom: "1px solid rgba(255,255,255,0.1)"
       }}>
-        <div style={{ marginBottom: "1rem", display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.15)", borderRadius: "9999px", padding: "0.2rem 0.8rem", fontSize: "0.75rem", fontWeight: 600 }}>
-          <span style={{ width: 6, height: 6, background: "#4ade80", borderRadius: "50%", display: "inline-block" }}></span>
-          Tüm araçlar ücretsiz
-        </div>
         <h1 style={{ 
           fontSize: "2.75rem", 
           fontWeight: 900, 
