@@ -207,6 +207,7 @@ export const calculators: CalculatorInfo[] = [
   { id: "pdf-split", title: "PDF Böl / Sayfa Ayıkla", slug: "pdf-bolme", categoryId: "pdf", description: "Büyük PDF dosyalarından belirli sayfaları ayıklayın veya dökümanı bölün." },
   { id: "pdf-to-img", title: "PDF'den Görsele", slug: "pdf-to-image", categoryId: "pdf", description: "PDF sayfalarını yüksek çözünürlüklü JPEG veya PNG görsellerine dönüştürün." },
   { id: "img-to-pdf", title: "Görselden PDF'e", slug: "image-to-pdf", categoryId: "pdf", description: "Fotoğraflarınızı ve görsellerinizi tek bir PDF dökümanı haline getirin." },
+  { id: "pdf-compress", title: "PDF Sıkıştır", slug: "pdf-sikistir", categoryId: "pdf", description: "PDF dökümanlarınızın dosya boyutunu kaliteden aşırı ödün vermeden optimize edin." },
 
   // Oyunlar
   { id: "game-2048", title: "2048 Oyunu", slug: "2048", categoryId: "oyun", description: "Klasik 2048 zeka oyunu. Sayıları birleştirin, 2048'e ulaşın!" }

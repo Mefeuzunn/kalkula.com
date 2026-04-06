@@ -1,6 +1,15 @@
 import { PDFDocument } from 'pdf-lib';
 
 /**
+ * 📄 PDF Sayfa Sayısını Al
+ */
+export async function getPdfPageCount(file: File): Promise<number> {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await PDFDocument.load(arrayBuffer);
+  return pdf.getPageCount();
+}
+
+/**
  * 📄 PDF Birleştirme (Merge)
  * Birden fazla PDF dosyasını tek bir dökümanda birleştirir.
  */
@@ -15,6 +24,38 @@ export async function mergePdfs(files: File[]): Promise<Uint8Array> {
   }
   
   return await mergedPdf.save();
+}
+
+/**
+ * 🎞️ PDF'den Görsellere (PDF to Image)
+ * PDF dökümanının her bir sayfasını JPG görseline dönüştürür.
+ */
+export async function pdfToImages(file: File): Promise<Blob[]> {
+  const pdfjs = await import('pdfjs-dist');
+  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const loadingTask = pdfjs.getDocument({ data: arrayBuffer });
+  const pdf = await loadingTask.promise;
+  const images: Blob[] = [];
+
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const viewport = page.getViewport({ scale: 2.0 });
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    if (!context) continue;
+
+    canvas.height = viewport.height;
+    canvas.width = viewport.width;
+
+    await page.render({ canvasContext: context, viewport }).promise;
+    
+    const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+    if (blob) images.push(blob);
+  }
+
+  return images;
 }
 
 /**
@@ -52,84 +93,22 @@ export async function splitPdf(file: File, range: string): Promise<Uint8Array> {
 }
 
 /**
- * 🖼️ Görselden WebP'ye Dönüştürücü
- * Tarayıcı Canvas API kullanarak görselleri WebP formatına çevirir.
+ * 🗜️ PDF Sıkıştırma (Compress - Basic)
  */
-export async function convertToWebP(file: File, quality: number = 0.8): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return reject('Canvas context error');
-        
-        ctx.drawImage(img, 0, 0);
-        canvas.toBlob(
-          (blob) => {
-            if (blob) resolve(blob);
-            else reject('Conversion error');
-          },
-          'image/webp',
-          quality
-        );
-      };
-      img.onerror = reject;
-      img.src = e.target?.result as string;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
-}
-
-/**
- * 📏 Görsel Boyutlandırıcı
- * Belirli bir genişliğe göre (aspect ratio koruyarak) görseli boyutlandırır.
- */
-export async function resizeImage(file: File, targetWidth: number): Promise<Blob> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const img = new Image();
-      img.onload = () => {
-        const aspectRatio = img.height / img.width;
-        const targetHeight = Math.round(targetWidth * aspectRatio);
-        
-        const canvas = document.createElement('canvas');
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const ctx = canvas.getContext('2d');
-        if (!ctx) return reject('Canvas context error');
-        
-        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
-        canvas.toBlob(
-          (blob) => {
-            if (blob) resolve(blob);
-            else reject('Resizing error');
-          },
-          file.type,
-          0.9
-        );
-      };
-      img.onerror = reject;
-      img.src = e.target?.result as string;
-    };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+export async function compressPdf(file: File): Promise<Uint8Array> {
+  const arrayBuffer = await file.arrayBuffer();
+  const pdf = await PDFDocument.load(arrayBuffer);
+  const compressed = await PDFDocument.create();
+  const copiedPages = await compressed.copyPages(pdf, pdf.getPageIndices());
+  copiedPages.forEach(p => compressed.addPage(p));
+  return await compressed.save({ useObjectStreams: true });
 }
 
 /**
  * 📂 Görsellerden PDF Oluşturucu
- * Birden fazla görseli tek bir PDF dökümanına ekler.
  */
 export async function imagesToPdf(files: File[]): Promise<Uint8Array> {
-  const { PDFDocument } = await import('pdf-lib');
   const pdfDoc = await PDFDocument.create();
-  
   for (const file of files) {
     const arrayBuffer = await file.arrayBuffer();
     try {
@@ -141,20 +120,31 @@ export async function imagesToPdf(files: File[]): Promise<Uint8Array> {
       } else {
         continue;
       }
-
       const { width, height } = image.scale(1);
       const page = pdfDoc.addPage([width, height]);
-      page.drawImage(image, {
-        x: 0,
-        y: 0,
-        width: width,
-        height: height,
-      });
+      page.drawImage(image, { x: 0, y: 0, width, height });
     } catch (e) {
-      console.error("PDF embedding error:", e);
+      console.error(e);
     }
   }
-  
   return await pdfDoc.save();
 }
 
+/**
+ * 💾 Dosya İndirme Yardımcıları
+ */
+export function downloadUint8Array(data: Uint8Array, filename: string, type: string = 'application/pdf') {
+  const blob = new Blob([data.buffer as ArrayBuffer], { type });
+  downloadBlob(blob, filename);
+}
+
+export function downloadBlob(blob: Blob, filename: string) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}

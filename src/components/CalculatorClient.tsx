@@ -119,6 +119,8 @@ import { Game2048 } from "@/components/games/Game2048";
 import { PdfMerge } from "@/components/calculators/PdfMerge";
 import { PdfSplit } from "@/components/calculators/PdfSplit";
 import { ImageToPdf } from "@/components/calculators/ImageToPdf";
+import { PdfCompress } from "@/components/calculators/PdfCompress";
+import { PdfToImage } from "@/components/calculators/PdfToImage";
 import { GlassGenerator } from "@/components/calculators/GlassGenerator";
 
 function GenericCalculator() {
@@ -295,6 +297,8 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "pdf-birlestir": return <PdfMerge />;
       case "pdf-bolme": return <PdfSplit />;
       case "image-to-pdf": return <ImageToPdf />;
+      case "pdf-sikistir": return <PdfCompress />;
+      case "pdf-to-image": return <PdfToImage />;
       
       // Geliştirici & Tasarımcı
       case "glassmorphism-generator": return <GlassGenerator />;
