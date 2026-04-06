@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Footer from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
+import { KalkulaAI } from "@/components/KalkulaAI";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -95,6 +96,7 @@ export default function RootLayout({
             </main>
             <Footer />
             <CookieConsent />
+            <KalkulaAI />
           </TimerProvider>
         </ThemeProvider>
       </body>
