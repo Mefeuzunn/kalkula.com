@@ -101,7 +101,8 @@ export const calculators: CalculatorInfo[] = [
   { id: "meb-ek-ders", title: "MEB Ek Ders Ücreti (2026)", slug: "meb-ek-ders-hesaplama", categoryId: "muhasebe", description: "Öğretmenler için gündüz, gece ve hafta sonu ek ders ücreti hesaplaması." },
   { id: "acad-ek-ders", title: "Akademisyen Ek Ders (2026)", slug: "akademisyen-ek-ders-hesaplama", categoryId: "muhasebe", description: "Akademik personel için unvan bazlı ek ders ücreti hesaplama." },
   { id: "mtv", title: "MTV Hesaplama (2026 Güncel)", slug: "mtv-hesaplama", categoryId: "muhasebe", description: "2025 ve 2026 Ocak MTV tutarlarını araç tipi ve yaşına göre karşılaştırmalı hesaplayın." },
-  { id: "tax-free", title: "Tax Free Hesaplama (2026)", slug: "tax-free-hesaplama", categoryId: "muhasebe", description: "Yabancı turistler için KDV iadesi (Tax Free) tutarını hesaplayın." },
+  { id: "currency-commodity", title: "Döviz & Altın Hesaplaması (Canlı)", slug: "doviz-altin-hesaplama", categoryId: "muhasebe", description: "Anlık kurlar ile Dolar, Euro ve altın (Gram, Çeyrek, Yarım) birimlerini TL'ye çevirin." },
+  { id: "tax-free", title: "Global Tax Free Hesaplama (2026)", slug: "tax-free-hesaplama", categoryId: "muhasebe", description: "15+ ülke (Fransa, İtalya, Japonya vb.) için KDV iadesini yerel para birimi ve TL karşılığıyla hesaplayın." },
   { id: "desi", title: "Kargo Desi Hesaplama", slug: "kargo-desi-hesaplama", categoryId: "muhasebe", description: "Paket boyutlarına göre kargo desi (hacimsel ağırlık) hesaplaması." },
   
   // Ticari ve Vergi
