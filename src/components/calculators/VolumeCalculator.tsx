@@ -41,46 +41,40 @@ export function VolumeCalculator() {
   };
 
   return (
-    <div className="calc-wrapper">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {[
-          { label: "Litre (L)", val: valL, update: updateFromL, unit: "L" },
-          { label: "Santilitre (cl)", val: valCl, update: updateFromCl, unit: "cl" },
-          { label: "Mililitre (ml)", val: valMl, update: updateFromMl, unit: "ml" },
-          { label: "Metreküp (m³)", val: valM3, update: updateFromM3, unit: "m³" }
+          { label: "LİTRE (L)", val: valL, update: updateFromL, unit: "L" },
+          { label: "SANTİLİTRE (CL)", val: valCl, update: updateFromCl, unit: "cl" },
+          { label: "MİLİLİTRE (ML)", val: valMl, update: updateFromMl, unit: "ml" },
+          { label: "METREKÜP (M³)", val: valM3, update: updateFromM3, unit: "m³" }
         ].map((item, i) => (
-          <div key={i} className="group relative">
-             <div className="relative bg-surface border-2 border-border rounded-3xl transition-all duration-200 
-               shadow-[0_10px_0_rgba(0,0,0,0.08)] dark:shadow-[0_10px_0_rgba(0,0,0,0.4)]
-               group-focus-within:-translate-y-1 group-focus-within:shadow-[0_6px_0_rgba(0,0,0,0.1)]
-               hover:-translate-y-1 hover:shadow-[0_14px_0_rgba(0,0,0,0.06)]
-               overflow-hidden">
-                <div className="bg-secondary/20 p-3 border-b-2 border-border flex items-center justify-between px-6">
-                   <label className="text-[9px] font-black uppercase tracking-widest italic opacity-60">{item.label}</label>
-                   <span className="text-[10px] font-black text-accent-primary">{item.unit}</span>
-                </div>
-                <input 
-                  type="number" 
-                  value={item.val} 
-                  onChange={e => item.update(e.target.value)} 
-                  className="w-full bg-transparent border-none outline-none text-4xl font-black p-6 text-center italic tracking-tighter" 
-                  placeholder="0" 
-                />
-             </div>
+          <div key={i} className="flex flex-col">
+            <label className="calc-input-label">{item.label}</label>
+            <div className="calc-input-key">
+               <div className="absolute top-4 right-6 text-[10px] font-black text-accent-primary italic opacity-40">{item.unit}</div>
+               <input 
+                 type="number" 
+                 value={item.val} 
+                 onChange={e => item.update(e.target.value)} 
+                 className="calc-input-field" 
+                 placeholder="0" 
+               />
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="p-8 bg-secondary/5 border-2 border-dashed border-border rounded-[2rem] text-center mt-6">
-        <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] mb-3 block italic opacity-60">Matematiksel Karşılık</label>
-        <div className="font-mono text-lg font-black text-primary tracking-tighter flex items-center justify-center gap-3">
-          <span className="text-accent-primary italic">1 Litre = 100 cl = 1000 ml</span>
+      <div className="panel p-8 bg-secondary/5 border-2 border-dashed border-border rounded-[2.5rem] text-center mt-6">
+        <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] mb-4 block italic opacity-60">Matematiksel Karşılık</label>
+        <div className="font-mono text-xl font-black text-primary tracking-tighter flex items-center justify-center gap-4">
+          <span className="text-3xl text-accent-primary italic drop-shadow-sm">1 Litre = 100 cl = 1000 ml</span>
         </div>
       </div>
 
-      <div className="calc-info-box mt-6">
-        <span className="calc-info-box-icon">💡</span>
-        <span className="calc-info-box-text">Birimlerden herhangi birine değer girdiğinizde diğerleri anlık olarak hesaplanır. Endüstriyel mutfak ve laboratuvar ölçümleri için idealdir.</span>
+      <div className="mt-8 p-6 bg-accent-glow border-2 border-dashed border-accent-primary/20 rounded-3xl flex gap-4 items-center">
+        <span className="text-2xl">💡</span>
+        <p className="text-xs font-bold text-muted italic">Birimlerden herhangi birine değer girdiğinizde diğerleri anlık olarak hesaplanır. Endüstriyel mutfak ve laboratuvar ölçümleri için idealdir.</p>
       </div>
     </div>
   );

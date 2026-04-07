@@ -66,87 +66,69 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
   };
 
   return (
-    <div className="flex flex-col gap-12 py-6">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-10 items-center">
+    <div className="flex flex-col gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-end">
         
-        {/* SOL ÜNİTE - 3D KEY */}
-        <div className="group relative">
-           <div className={`relative bg-surface border-2 border-border rounded-[3rem] transition-all duration-200 
-             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
-             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(0,0,0,0.1)]
-             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)] dark:hover:shadow-[0_16px_0_rgba(0,0,0,0.5)]
-             overflow-hidden`}>
-              <div className="bg-secondary/20 p-4 border-b-2 border-border flex items-center justify-between px-8 text-accent-primary">
+        <div className="flex flex-col">
+          <label className="calc-input-label">{units[leftUnit].name.toUpperCase()}</label>
+          <div className="calc-input-key">
+              <div className="bg-secondary/10 p-3 border-b border-border">
                  <select 
                     value={leftUnit} 
                     onChange={e => { setLeftUnit(e.target.value); handleLeftChange(leftValue, e.target.value, rightUnit); }} 
-                    className="w-full bg-transparent border-none outline-none font-black text-[11px] uppercase tracking-widest cursor-pointer appearance-none"
+                    className="w-full bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer appearance-none text-center"
                  >
                     {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
                  </select>
-                 <span className="text-[10px] opacity-40">▼</span>
               </div>
-              <div className="p-12">
-                 <input 
-                    type="number" 
-                    value={leftValue} 
-                    onChange={e => handleLeftChange(e.target.value)} 
-                    className="w-full bg-transparent border-none outline-none text-6xl font-black text-center text-primary italic tracking-tighter"
-                    placeholder="0"
-                 />
-              </div>
-           </div>
+              <input 
+                type="number" 
+                value={leftValue} 
+                onChange={e => handleLeftChange(e.target.value)} 
+                className="calc-input-field !text-5xl py-8"
+                placeholder="0"
+              />
+          </div>
         </div>
 
-        {/* SWAP / TAKAS - 3D KEY */}
-        <div className="flex justify-center z-20">
+        <div className="pb-4 flex justify-center">
            <button 
               onClick={swapUnits}
-              className="w-20 h-20 rounded-3xl bg-surface border-2 border-border flex items-center justify-center cursor-pointer text-muted hover:text-accent-primary hover:border-accent-primary/40 transition-all 
-              shadow-[0_8px_0_rgba(0,0,0,0.05)] dark:shadow-[0_8px_0_rgba(0,0,0,0.3)]
-              hover:-translate-y-1 hover:shadow-[0_12px_0_rgba(0,0,0,0.08)]
-              active:translate-y-1 active:shadow-none group/btn"
+              className="w-16 h-16 rounded-2xl bg-surface border-2 border-border flex items-center justify-center cursor-pointer text-muted hover:text-accent-primary hover:border-accent-primary transition-all 
+              shadow-[0_6px_0_var(--border)] active:translate-y-1 active:shadow-none group/btn"
            >
-             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 rotate-90 lg:rotate-0 transition-transform group-active/btn:scale-90"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
            </button>
         </div>
 
-        {/* SAĞ ÜNİTE - 3D KEY */}
-        <div className="group relative">
-           <div className={`relative bg-surface border-2 border-border rounded-[3rem] transition-all duration-200 
-             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
-             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(37,99,235,0.15)]
-             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)] dark:hover:shadow-[0_16px_0_rgba(0,0,0,0.5)]
-             overflow-hidden`}>
-              <div className="bg-secondary/20 p-4 border-b-2 border-border flex items-center justify-between px-8 text-accent-primary">
+        <div className="flex flex-col">
+          <label className="calc-input-label">{units[rightUnit].name.toUpperCase()}</label>
+          <div className="calc-input-key">
+              <div className="bg-secondary/10 p-3 border-b border-border">
                  <select 
                     value={rightUnit} 
                     onChange={e => { setRightUnit(e.target.value); handleLeftChange(leftValue, leftUnit, e.target.value); }} 
-                    className="w-full bg-transparent border-none outline-none font-black text-[11px] uppercase tracking-widest cursor-pointer appearance-none"
+                    className="w-full bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer appearance-none text-center"
                  >
                     {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
                  </select>
-                 <span className="text-[10px] opacity-40">▼</span>
               </div>
-              <div className="p-12">
-                 <input 
-                    type="number" 
-                    value={rightValue} 
-                    onChange={e => handleRightChange(e.target.value)} 
-                    className="w-full bg-transparent border-none outline-none text-6xl font-black text-center text-accent-primary italic tracking-tighter"
-                    placeholder="0"
-                 />
-              </div>
-           </div>
+              <input 
+                type="number" 
+                value={rightValue} 
+                onChange={e => handleRightChange(e.target.value)} 
+                className="calc-input-field !text-5xl py-8 text-accent-primary"
+                placeholder="0"
+              />
+          </div>
         </div>
-
       </div>
 
-      <div className="p-10 bg-secondary/10 border-2 border-dashed border-border rounded-[2.5rem] text-center relative group shadow-inner">
-        <label className="text-[10px] font-black text-muted uppercase tracking-[0.4em] mb-4 block italic opacity-60">Dönüşüm Katsayısı ve Formülü</label>
+      <div className="panel p-8 bg-secondary/5 border-2 border-dashed border-border rounded-[2.5rem] text-center mt-6">
+        <label className="text-[10px] font-black text-muted uppercase tracking-[0.4em] mb-4 block italic opacity-60">Dönüşüm Katsayısı</label>
         <div className="font-mono text-xl font-black text-primary tracking-tighter flex items-center justify-center gap-4">
           <span className="opacity-40 whitespace-nowrap">1 {units[leftUnit].id.toUpperCase()} =</span>
-          <span className="text-3xl text-accent-primary italic drop-shadow-sm">{convert("1", leftUnit, rightUnit)}</span>
+          <span className="text-4xl text-accent-primary italic drop-shadow-sm">{convert("1", leftUnit, rightUnit)}</span>
           <span className="opacity-40 whitespace-nowrap">{units[rightUnit].id.toUpperCase()}</span>
         </div>
       </div>

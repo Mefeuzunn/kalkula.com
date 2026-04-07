@@ -105,104 +105,101 @@ export function CurrencyCommodityCalculator() {
   if (loading) return <div className="p-20 text-center font-black animate-pulse text-muted">KUR VERİLERİ YÜKLENİYOR...</div>;
 
   return (
-    <div className="calc-wrapper">
-    <div className="flex flex-col gap-10 py-4">
-      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-8 items-end">
-        <div className="group relative">
-           <div className={`relative bg-surface border-2 border-border rounded-3xl transition-all duration-200 
-             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
-             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(0,0,0,0.1)]
-             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)]
-             overflow-hidden`}>
-              <div className="bg-secondary/20 p-3 border-b-2 border-border text-amber-500 flex items-center justify-between px-6">
-                 <label className="text-[10px] font-black uppercase tracking-widest italic opacity-60">Varlık Türü</label>
+    <div className="flex flex-col gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-8">
+        <div className="flex flex-col">
+          <label className="calc-input-label">VARLIK TÜRÜ</label>
+          <div className="calc-input-key">
+              <div className="bg-secondary/10 p-4 border-b border-border flex justify-between items-center px-8">
+                 <span className="text-[10px] font-bold text-muted uppercase tracking-widest italic opacity-40">Döviz veya Altın Birimi Seçin</span>
               </div>
-              <select value={selectedUnit} onChange={e => setSelectedUnit(e.target.value)} className="w-full bg-transparent border-none outline-none font-black text-lg py-5 px-6 appearance-none cursor-pointer">
-                <optgroup label="Döviz">
+              <select value={selectedUnit} onChange={e => setSelectedUnit(e.target.value)} className="calc-input-field !text-xl py-6 appearance-none cursor-pointer">
+                <optgroup label="DÖVİZ BİRİMLERİ">
                   {Object.entries(CURRENCY_LABELS).map(([code, info]) => (
-                    <option key={code} value={code}>{info.name} ({info.label})</option>
+                    <option key={code} value={code} className="bg-surface text-primary">{info.name} ({info.label})</option>
                   ))}
                 </optgroup>
-                <optgroup label="Altın Birimleri">
-                  <option value="XAU_GRAM">Gram Altın (24 Ayar)</option>
-                  <option value="XAU_CEYREK">Çeyrek Altın</option>
-                  <option value="XAU_YARIM">Yarım Altın</option>
-                  <option value="XAU_TAM">Tam / Cumhuriyet</option>
-                  <option value="XAU_ATA">Ata Altın / Reşat</option>
+                <optgroup label="ALTIN BİRİMLERİ">
+                  <option value="XAU_GRAM" className="bg-surface text-primary">Gram Altın (24 Ayar)</option>
+                  <option value="XAU_CEYREK" className="bg-surface text-primary">Çeyrek Altın</option>
+                  <option value="XAU_YARIM" className="bg-surface text-primary">Yarım Altın</option>
+                  <option value="XAU_TAM" className="bg-surface text-primary">Tam / Cumhuriyet Altını</option>
+                  <option value="XAU_ATA" className="bg-surface text-primary">Ata Altın / Reşat</option>
                 </optgroup>
               </select>
-           </div>
+          </div>
         </div>
 
-        <div className="group relative">
-           <div className={`relative bg-surface border-2 border-border rounded-3xl transition-all duration-200 
-             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
-             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(0,0,0,0.1)]
-             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)] 
-             overflow-hidden`}>
-              <div className="bg-secondary/20 p-3 border-b-2 border-border text-amber-500 flex items-center justify-between px-6">
-                 <label className="text-[10px] font-black uppercase tracking-widest italic opacity-60">Miktar / Adet</label>
-              </div>
+        <div className="flex flex-col">
+          <label className="calc-input-label">MİKTAR / ADET</label>
+          <div className="calc-input-key">
               <input 
                 type="number" 
                 value={amount} 
                 onChange={e => setAmount(e.target.value)} 
-                className="w-full bg-transparent border-none outline-none text-4xl font-black p-5 text-center italic tracking-tighter" 
+                className="calc-input-field !text-5xl py-8" 
                 placeholder="1" 
               />
-           </div>
+          </div>
         </div>
       </div>
 
       <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>🔄 Hesaplamayı Güncelle</button>
-        <button className="calc-btn-reset" onClick={() => setAmount("1")}>↺ Sıfırla</button>
+        <button className="calc-btn-calculate" onClick={calculate}>
+          <span>🔄</span> Hesaplamayı Güncelle
+        </button>
+        <button className="calc-btn-reset" onClick={() => setAmount("1")}>
+          <span>↺</span> Sıfırla
+        </button>
       </div>
 
       {results && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header flex justify-between items-center">
-            <span className="font-black italic">HESAPLANAN TL KARŞILIĞI</span>
+        <div className="panel p-0 bg-transparent border-none shadow-none mt-4">
+          <div className="calc-result-header flex justify-between items-center w-full">
+            <div className="flex items-center gap-2">
+              <span>📉</span> HESAPLANAN TL KARŞILIĞI
+            </div>
             {rates && (
-              <span className="text-[9px] opacity-40 italic">
-                Son Güncelleme: {new Date(rates.lastUpdated).toLocaleTimeString("tr-TR")}
+              <span className="text-[9px] opacity-40 italic lowercase">
+                son güncelleme: {new Date(rates.lastUpdated).toLocaleTimeString("tr-TR")}
               </span>
             )}
           </div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">{results.description}</div>
-              <div className="calc-result-hero-value" style={{ color: "#f59e0b" }}>
-                {results.tryValue.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
-              </div>
-              <div className="calc-result-hero-sub">Anlık Piyasa Verileri Uygulanmıştır</div>
-            </div>
 
-            <div className="calc-result-cards">
-               {results.metrics.map((m, i) => (
-                 <div key={i} className="calc-result-card">
-                   <div className="calc-result-card-label">{m.label}</div>
-                   <div className="calc-result-card-value">{m.value}</div>
-                 </div>
-               ))}
-               <div className="calc-result-card">
-                  <div className="calc-result-card-label">Birim Fiyat</div>
-                  <div className="calc-result-card-value">
-                     {(results.tryValue / (parseFloat(amount) || 1)).toLocaleString('tr-TR')} ₺
-                  </div>
-               </div>
-            </div>
+          <div className="calc-result-card !bg-secondary/5 border-amber-500/20 mb-8 !items-start overflow-hidden">
+             <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+                <svg width="120" height="120" viewBox="0 0 24 24" fill="currentColor" className="text-amber-500"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.97 0-1.82 1.28-3.26 3.11-3.66V3.33h2.67v1.92c1.39.2 2.62 1.23 2.98 2.56h-2.03c-.27-.69-.74-1.13-1.68-1.13-.96 0-1.73.51-1.73 1.38 0 .81.65 1.2 2.76 1.71 2.5.61 4.1 1.77 4.1 4.09 0 2.26-1.8 3.54-3.5 3.91z"/></svg>
+             </div>
+             <div className="calc-result-card-label text-amber-500">{results.description}</div>
+             <div className="calc-result-card-value text-amber-500 !text-6xl md:!text-7xl">
+                {results.tryValue.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}
+             </div>
+             <div className="calc-result-card-desc italic mt-2">Serbest Piyasa Verileri Uygulanmıştır</div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             {results.metrics.map((m, i) => (
+                <div key={i} className="panel p-6 bg-secondary/5 flex flex-col justify-center border-border/40 hover:border-amber-500/30 transition-all">
+                   <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">{m.label}</div>
+                   <div className="text-xl font-black text-primary italic lowercase">{m.value}</div>
+                </div>
+             ))}
+             <div className="panel p-6 bg-secondary/5 flex flex-col justify-center border-border/40 hover:border-amber-500/30 transition-all">
+                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">BİRİM FİYAT</div>
+                <div className="text-xl font-black text-primary italic lowercase">
+                   {(results.tryValue / (parseFloat(amount) || 1)).toLocaleString('tr-TR')} ₺
+                </div>
+             </div>
           </div>
         </div>
       )}
 
-      <div className="calc-info-box">
-         <span className="calc-info-box-icon">📉</span>
-         <div className="calc-info-box-text">
-            <p className="font-bold mb-1">Kur Bildirimi:</p>
-            <p className="opacity-80 text-sm">Veriler Frankfurter ve Global Spot piyasalardan 2026 1. Çeyrek verileriyle senkronize edilerek sunulmaktadır. Çeyrek, Yarım ve Tam altın hesaplamaları standart 22 ayar ağırlıkları ve darphane baskı farkları (yaklaşık) gözetilerek has altın karşılığı üzerinden yapılmaktadır.</p>
-         </div>
-      </div>
+      <div className="mt-10 p-8 bg-secondary/5 border-2 border-border rounded-[2.5rem] flex flex-col gap-4">
+          <div className="flex items-center gap-3">
+             <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+             <span className="text-xs font-black uppercase tracking-widest">Veri Bildirimi</span>
+          </div>
+          <p className="opacity-80 text-sm font-bold italic text-muted leading-relaxed">Veriler Frankfurter ve Global Spot piyasalardan 2026 Q1 verileriyle senkronize edilerek sunulmaktadır. Çeyrek, Yarım ve Tam altın hesaplamaları standart 22 ayar ağırlıkları ve darphane baskı farkları (yaklaşık) gözetilerek has altın karşılığı üzerinden yapılmaktadır.</p>
       </div>
     </div>
   );
