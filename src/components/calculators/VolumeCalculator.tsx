@@ -42,38 +42,33 @@ export function VolumeCalculator() {
 
   return (
     <div className="calc-wrapper">
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Litre (L)</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={valL} onChange={e => updateFromL(e.target.value)} className="calc-input has-unit" />
-            <span className="calc-unit">L</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        {[
+          { label: "Litre (L)", val: valL, update: updateFromL, unit: "L" },
+          { label: "Santilitre (cl)", val: valCl, update: updateFromCl, unit: "cl" },
+          { label: "Mililitre (ml)", val: valMl, update: updateFromMl, unit: "ml" },
+          { label: "Metreküp (m³)", val: valM3, update: updateFromM3, unit: "m³" }
+        ].map((item, i) => (
+          <div key={i} className="group relative">
+             <div className="relative bg-surface border-2 border-border rounded-3xl transition-all duration-200 
+               shadow-[0_10px_0_rgba(0,0,0,0.08)] dark:shadow-[0_10px_0_rgba(0,0,0,0.4)]
+               group-focus-within:-translate-y-1 group-focus-within:shadow-[0_6px_0_rgba(0,0,0,0.1)]
+               hover:-translate-y-1 hover:shadow-[0_14px_0_rgba(0,0,0,0.06)]
+               overflow-hidden">
+                <div className="bg-secondary/20 p-3 border-b-2 border-border flex items-center justify-between px-6">
+                   <label className="text-[9px] font-black uppercase tracking-widest italic opacity-60">{item.label}</label>
+                   <span className="text-[10px] font-black text-accent-primary">{item.unit}</span>
+                </div>
+                <input 
+                  type="number" 
+                  value={item.val} 
+                  onChange={e => item.update(e.target.value)} 
+                  className="w-full bg-transparent border-none outline-none text-4xl font-black p-6 text-center italic tracking-tighter" 
+                  placeholder="0" 
+                />
+             </div>
           </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Santilitre (cl)</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={valCl} onChange={e => updateFromCl(e.target.value)} className="calc-input has-unit" />
-            <span className="calc-unit">cl</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Mililitre (ml)</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={valMl} onChange={e => updateFromMl(e.target.value)} className="calc-input has-unit" />
-            <span className="calc-unit">ml</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Metreküp (m³)</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={valM3} onChange={e => updateFromM3(e.target.value)} className="calc-input has-unit" />
-            <span className="calc-unit">m³</span>
-          </div>
-        </div>
+        ))}
       </div>
 
       <div className="p-8 bg-secondary/5 border-2 border-dashed border-border rounded-[2rem] text-center mt-6">
