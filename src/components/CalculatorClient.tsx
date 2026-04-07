@@ -75,10 +75,10 @@ const KarZararCalculator = dynamic(() => import("@/components/calculators/Commer
 const TopPriceCalculator = dynamic(() => import("@/components/calculators/CommercialCalculators").then(m => m.TopPriceCalculator), { loading: () => <LoadingCalculator /> });
 const CommercialAnalytics = dynamic(() => import("@/components/calculators/CommercialAnalytics").then(m => m.CommercialAnalytics), { loading: () => <LoadingCalculator /> });
 const BreakEvenCalculator = CommercialAnalytics;
-const DateDiffCalculator = dynamic(() => import("@/components/calculators/TimeCalculators").then(m => m.DateDiffCalculator), { loading: () => <LoadingCalculator /> });
-const AgeCalculator = dynamic(() => import("@/components/calculators/TimeCalculators").then(m => m.AgeCalculator), { loading: () => <LoadingCalculator /> });
-const TimeCalculator = dynamic(() => import("@/components/calculators/TimeCalculators").then(m => m.TimeCalculator), { loading: () => <LoadingCalculator /> });
-const WorkHoursCalculator = dynamic(() => import("@/components/calculators/TimeCalculators").then(m => m.WorkHoursCalculator), { loading: () => <LoadingCalculator /> });
+const DateDiffCalculator = GenericCalculator;
+const AgeCalculator = GenericCalculator;
+const TimeCalculator = GenericCalculator;
+const WorkHoursCalculator = GenericCalculator;
 const KpssCalculator = dynamic(() => import("@/components/calculators/OsymCalculators").then(m => m.KpssCalculator), { loading: () => <LoadingCalculator /> });
 const AlesCalculator = dynamic(() => import("@/components/calculators/OsymCalculators").then(m => m.AlesCalculator), { loading: () => <LoadingCalculator /> });
 const DgsCalculator = dynamic(() => import("@/components/calculators/OsymCalculators").then(m => m.DgsCalculator), { loading: () => <LoadingCalculator /> });
@@ -198,7 +198,6 @@ const SmokingCostCalculator = dynamic(() => import("@/components/calculators/Hea
 const BraSizeCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.BraSizeCalculator), { loading: () => <LoadingCalculator /> });
 const LifeExpectancyCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.LifeExpectancyCalculator), { loading: () => <LoadingCalculator /> });
 const OvulationCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.OvulationCalculator), { loading: () => <LoadingCalculator /> });
-const StandbyClock = dynamic(() => import("@/components/calculators/StandbyClock").then(m => m.StandbyClock), { loading: () => <LoadingCalculator /> });
 
 function GenericCalculator() {
   return (
@@ -267,7 +266,6 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "sutyen-bedeni": return <BraSizeCalculator />;
       case "yasam-suresi": return <LifeExpectancyCalculator />;
       case "yumurtlama-donemi": return <OvulationCalculator />;
-      case "bekleme-ekrani": return <StandbyClock />;
       case "kredi-hesaplama": return <LoanCalculator />;
       case "kredi-odeme-plani": return <LoanAmortization />;
       case "kredi-karti-asgari": return <CreditCardCalculator />;

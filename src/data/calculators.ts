@@ -70,7 +70,6 @@ export const calculators: CalculatorInfo[] = [
   { id: "sutyen", title: "Sütyen Bedeni Hesaplama", slug: "sutyen-bedeni", categoryId: "saglik", description: "Gövde ve göğüs çevrenize göre en uygun sütyen bedenini bulun." },
   { id: "yasam-sure", title: "Yaşam Süresi Hesaplama", slug: "yasam-suresi", categoryId: "saglik", description: "Yaşam tarzı alışkanlıklarınıza göre tahmini ömür süresi testi." },
   { id: "yumurtlama", title: "Yumurtlama Dönemi", slug: "yumurtlama-donemi", categoryId: "saglik", description: "Hamilelik şansının en yüksek olduğu doğurganlık günlerini hesaplayın." },
-  { id: "bekleme-ekrani", title: "3D Bekleme Ekranı (Masaüstü Saat)", slug: "bekleme-ekrani", categoryId: "pratik", description: "Bilgisayarınız şarj olurken veya masanızda şık bir aksesuar olarak kullanabileceğiniz 3D dijital saat." },
 
   // Gastro & Mutfak
   { id: "tarif", title: "Tarif Ölçekleyici (Portiyonlama)", slug: "tarif-olcekleyici", categoryId: "saglik", description: "Kişi sayısına göre tarifteki tüm malzemeleri anlık olarak yeniden oranlayın." },
