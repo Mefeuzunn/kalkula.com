@@ -1,81 +1,12 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { 
-  Text, 
-  Float, 
-  MeshDistortMaterial, 
-  Stars, 
-  PerspectiveCamera, 
-  Environment,
-  PresentationControls,
-  ContactShadows,
-  Html
-} from "@react-three/drei";
-import * as THREE from "three";
-import { Maximize2, Minimize2, Palette, Zap, Battery, Calendar as CalendarIcon, Clock } from "lucide-react";
-
-// --- Sub-components for 3D Clock ---
-
-function Digit({ value, position, color }: { value: string, position: [number, number, number], color: string }) {
-  return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-      <Text
-        font="/fonts/Inter-Bold.woff" // Fallback to system font if not found, but Drei handled this well usually
-        fontSize={1.5}
-        color={color}
-        position={position}
-        anchorX="center"
-        anchorY="middle"
-      >
-        {value}
-        <meshStandardMaterial 
-          emissive={color} 
-          emissiveIntensity={2} 
-          toneMapped={false} 
-        />
-      </Text>
-    </Float>
-  );
-}
-
-function AnimatedBackground({ theme }: { theme: string }) {
-  const starsRef = useRef<any>(null);
-  
-  useFrame((state) => {
-    if (starsRef.current) {
-      starsRef.current.rotation.y += 0.0005;
-      starsRef.current.rotation.x += 0.0002;
-    }
-  });
-
-  return (
-    <>
-      <Stars 
-        ref={starsRef}
-        radius={100} 
-        depth={50} 
-        count={5000} 
-        factor={4} 
-        saturation={0} 
-        fade 
-        speed={1} 
-      />
-      <ambientLight intensity={0.5} />
-      <pointLight position={[10, 10, 10]} intensity={1} />
-      <spotLight position={[-10, 10, 10]} angle={0.15} penumbra={1} intensity={2} color={theme === 'neon' ? '#ff00ff' : '#ffffff'} />
-    </>
-  );
-}
-
-// --- Main Standby Clock Component ---
+import React, { useState, useEffect } from "react";
+import { Maximize2, Minimize2, Battery, Zap } from "lucide-react";
 
 export function StandbyClock() {
   const [time, setTime] = useState(new Date());
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const [theme, setTheme] = useState<'neon' | 'minimal' | 'gold'>('neon');
-  const containerRef = useRef<HTMLDivElement>(null);
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const timer = setInterval(() => setTime(new Date()), 1000);
@@ -92,105 +23,155 @@ export function StandbyClock() {
     }
   };
 
-  const themeColors = {
-    neon: "#00f2ff",
-    minimal: "#ffffff",
-    gold: "#ffcc00"
-  };
+  // Clock calculations
+  const seconds = time.getSeconds();
+  const minutes = time.getMinutes();
+  const hours = time.getHours();
 
-  const hourStr = time.getHours().toString().padStart(2, '0');
-  const minStr = time.getMinutes().toString().padStart(2, '0');
-  const secStr = time.getSeconds().toString().padStart(2, '0');
+  const secDegrees = (seconds / 60) * 360;
+  const minDegrees = ((minutes + seconds / 60) / 60) * 360;
+  const hourDegrees = (((hours % 12) + minutes / 60) / 12) * 360;
+
+  // Calendar calculations
+  const monthNames = ["OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL", "EKİM", "KASIM", "ARALIK"];
+  const dayNamesShort = ["P", "S", "Ç", "P", "C", "C", "P"];
+  
+  const currentMonth = time.getMonth();
+  const currentYear = time.getFullYear();
+  const today = time.getDate();
+  
+  const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+  // Adjust for Monday start: 0 (Sun) becomes 6, 1 (Mon) becomes 0
+  const adjustedStartDay = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  
+  const days = [];
+  for (let i = 0; i < adjustedStartDay; i++) days.push(null);
+  for (let i = 1; i <= daysInMonth; i++) days.push(i);
+
+  // Generate ticks for clock
+  const ticks = Array.from({ length: 60 }, (_, i) => {
+    const rotate = i * 6;
+    const isMajor = i % 5 === 0;
+    return (
+      <div 
+        key={i} 
+        className="absolute bottom-1/2 left-1/2 w-[2px] origin-bottom"
+        style={{ 
+          height: isMajor ? '12px' : '6px',
+          transform: `translateX(-50%) rotate(${rotate}deg) translateY(-85px)`,
+          backgroundColor: isMajor ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.3)'
+        }}
+      />
+    );
+  });
+
+  // Generate numbers for clock
+  const numbers = [12, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num, i) => {
+    const angle = i * 30;
+    return (
+      <div 
+        key={num}
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full p-8 text-center text-xl font-bold text-white flex items-start justify-center"
+        style={{ transform: `rotate(${angle}deg)` }}
+      >
+        <span style={{ transform: `rotate(${-angle}deg)`, display: 'inline-block' }}>{num}</span>
+      </div>
+    );
+  });
 
   return (
     <div 
       ref={containerRef}
-      className={`relative w-full h-[600px] overflow-hidden rounded-3xl bg-black border border-white/10 group transition-all duration-700 ${isFullscreen ? 'fixed inset-0 z-[9999] rounded-none h-screen' : ''}`}
+      className={`relative w-full h-[500px] overflow-hidden rounded-[40px] bg-black group transition-all duration-700 flex items-center justify-center ${isFullscreen ? 'fixed inset-0 z-[9999] rounded-none h-screen' : ''}`}
     >
-      {/* 3D Scene */}
-      <Canvas gl={{ antialias: true }} dpr={[1, 2]}>
-        <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-        <AnimatedBackground theme={theme} />
+      <div className="flex flex-col md:flex-row items-center justify-center gap-16 md:gap-32 px-12 w-full max-w-6xl">
         
-        <PresentationControls
-          global
-          snap
-          rotation={[0, 0, 0]}
-          polar={[-Math.PI / 4, Math.PI / 4]}
-          azimuth={[-Math.PI / 4, Math.PI / 4]}
-        >
-          <group position={[0, 0, 0]}>
-            {/* Hours */}
-            <Digit value={hourStr[0]} position={[-2.2, 0, 0]} color={themeColors[theme]} />
-            <Digit value={hourStr[1]} position={[-1.2, 0, 0]} color={themeColors[theme]} />
-            
-            {/* Colon */}
-            <Text position={[-0.45, 0, 0]} fontSize={1} color={themeColors[theme]} fillOpacity={time.getSeconds() % 2 === 0 ? 1 : 0.2}>:</Text>
-            
-            {/* Minutes */}
-            <Digit value={minStr[0]} position={[0.3, 0, 0]} color={themeColors[theme]} />
-            <Digit value={minStr[1]} position={[1.3, 0, 0]} color={themeColors[theme]} />
+        {/* Analog Clock Face */}
+        <div className="relative w-64 h-64 flex-shrink-0">
+          {/* Outer circle */}
+          <div className="absolute inset-0 rounded-full border border-white/5 bg-gradient-to-br from-white/5 to-transparent"></div>
+          
+          {/* Ticks & Numbers */}
+          <div className="absolute inset-0">{ticks}</div>
+          <div className="absolute inset-0">{numbers}</div>
 
-            {/* Seconds (Smaller) */}
-            <group position={[2.4, -0.4, 0]} scale={0.4}>
-               <Digit value={secStr[0]} position={[0, 0, 0]} color={themeColors[theme]} />
-               <Digit value={secStr[1]} position={[1, 0, 0]} color={themeColors[theme]} />
-            </group>
-          </group>
-        </PresentationControls>
+          {/* Hands */}
+          {/* Hour Hand */}
+          <div 
+            className="absolute bottom-1/2 left-1/2 w-[6px] h-16 bg-white rounded-full origin-bottom -translate-x-1/2 transition-transform duration-1000 ease-in-out"
+            style={{ transform: `translateX(-50%) rotate(${hourDegrees}deg)` }}
+          ></div>
+          
+          {/* Minute Hand */}
+          <div 
+            className="absolute bottom-1/2 left-1/2 w-[4px] h-24 bg-white rounded-full origin-bottom -translate-x-1/2 transition-transform duration-1000 ease-in-out"
+            style={{ transform: `translateX(-50%) rotate(${minDegrees}deg)` }}
+          ></div>
+          
+          {/* Second Hand (Orange) */}
+          <div 
+            className="absolute bottom-1/2 left-1/2 w-[2px] h-[110px] bg-[#ff9500] origin-bottom -translate-x-1/2 transition-transform duration-100 ease-linear"
+            style={{ transform: `translateX(-50%) rotate(${secDegrees}deg)` }}
+          >
+             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-4 h-4 bg-[#ff9500] rounded-full -translate-y-2 opacity-20 blur-sm"></div>
+          </div>
 
-        <ContactShadows position={[0, -2, 0]} opacity={0.4} scale={10} blur={2} far={4.5} />
-      </Canvas>
+          {/* Center Point */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 bg-[#ff9500] rounded-full border-2 border-black z-10"></div>
+        </div>
 
-      {/* UI Overlays */}
-      <div className="absolute top-8 left-8 flex flex-col gap-1 pointer-events-none">
-        <div className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">Standby Mode</div>
-        <div className="text-white text-xl font-bold flex items-center gap-2">
-           <CalendarIcon className="w-4 h-4 text-accent-primary" />
-           {time.toLocaleDateString("tr-TR", { day: 'numeric', month: 'long', year: 'numeric' })}
+        {/* Calendar Side */}
+        <div className="w-full md:w-[320px] select-none text-left">
+           <h2 className="text-[#ff3b30] text-3xl font-black mb-6 tracking-tighter uppercase">
+             {monthNames[currentMonth]}
+           </h2>
+           
+           <div className="grid grid-cols-7 gap-y-4 gap-x-2 text-center">
+              {dayNamesShort.map((day, idx) => (
+                <div key={idx} className="text-white/40 text-xs font-black uppercase tracking-widest">{day}</div>
+              ))}
+              
+              {days.map((day, idx) => (
+                <div 
+                  key={idx} 
+                  className={`text-xl font-bold flex items-center justify-center w-10 h-10 rounded-full transition-all ${day === today ? 'bg-[#ff3b30] text-white' : day ? 'text-white/90 hover:text-white' : ''}`}
+                >
+                  {day}
+                </div>
+              ))}
+           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-8 flex items-center gap-6 pointer-events-none">
+      {/* Floating Status Bar (Apple style) */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-8 px-8 py-3 rounded-full bg-white/5 border border-white/10 backdrop-blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500">
          <div className="flex items-center gap-2">
-            <Battery className="w-4 h-4 text-green-500 animate-pulse" />
-            <span className="text-white/60 text-[10px] font-bold uppercase">Charging / PC Active</span>
+            <Battery className="w-4 h-4 text-[#34c759]" />
+            <span className="text-white/60 text-[10px] font-black uppercase tracking-widest">Charged</span>
          </div>
+         <div className="w-[1px] h-4 bg-white/10"></div>
          <div className="flex items-center gap-2">
-            <Zap className="w-4 h-4 text-amber-500" />
-            <span className="text-white/60 text-[10px] font-bold uppercase">Power Optimized</span>
+            <Zap className="w-4 h-4 text-[#ffcc00]" />
+            <span className="text-white/60 text-[10px] font-black uppercase tracking-widest">Active</span>
          </div>
+         <div className="w-[1px] h-4 bg-white/10"></div>
+         <button 
+           onClick={toggleFullscreen}
+           className="text-white/60 hover:text-white transition-colors"
+         >
+           {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+         </button>
       </div>
 
-      {/* Controls */}
-      <div className="absolute top-8 right-8 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        <button 
-          onClick={() => setTheme(t => t === 'neon' ? 'gold' : t === 'gold' ? 'minimal' : 'neon')}
-          className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center backdrop-blur-md transition-all active:scale-95"
-          title="Temayı Değiştir"
-        >
-          <Palette className="w-5 h-5 text-white" />
-        </button>
-        <button 
-          onClick={toggleFullscreen}
-          className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center backdrop-blur-md transition-all active:scale-95"
-          title={isFullscreen ? "Çık" : "Tam Ekran"}
-        >
-          {isFullscreen ? <Minimize2 className="w-5 h-5 text-white" /> : <Maximize2 className="w-5 h-5 text-white" />}
-        </button>
+      {/* Background Decor */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
+         <div className="absolute -top-1/4 -left-1/4 w-1/2 h-1/2 bg-[#ff3b30] rounded-full blur-[150px] opacity-10"></div>
+         <div className="absolute -bottom-1/4 -right-1/4 w-1/2 h-1/2 bg-[#5856d6] rounded-full blur-[150px] opacity-10"></div>
       </div>
 
-      {/* Exit hint for fullscreen */}
-      {isFullscreen && (
-         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-0 animate-pulse-slow">
-            <div className="bg-black/80 px-6 py-3 rounded-full border border-white/20 text-white/40 text-[10px] uppercase font-black tracking-widest backdrop-blur-xl">
-               ESC tuşu ile çıkabilirsiniz
-            </div>
-         </div>
-      )}
-
-      {/* Dark Overlay gradient for edges */}
-      <div className="absolute inset-0 pointer-events-none bg-radial-vignette opacity-60"></div>
+      {/* Vignette */}
+      <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_150px_rgba(0,0,0,0.9)]"></div>
     </div>
   );
 }
