@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="extension-wrapper">
+    <header>
+      <div class="logo">
+        <span class="logo-icon">K</span>
+        <span class="logo-text">Kalkula</span>
+      </div>
+      <div class="search-bar">
+        <input type="text" id="toolSearch" placeholder="Ara: YKS, Maaş, MTV...">
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="kdv">KDV</button>
+      <button class="tab-btn" data-tab="yuzde">YÜZDE</button>
+      <button class="tab-btn" data-tab="doviz">DÖVİZ</button>
+    </div>
+
+    <main id="mainContent">
+      <!-- KDV Tab -->
+      <section id="kdvTab" class="tab-content active">
+        <div class="input-group">
+          <label>Tutar (TL)</label>
+          <input type="number" id="vatAmount" placeholder="0.00">
+        </div>
+        <div class="input-group">
+          <label>KDV Oranı (%)</label>
+          <select id="vatRate">
+            <option value="1">1</option>
+            <option value="10">10</option>
+            <option value="20" selected>20</option>
+          </select>
+        </div>
+        <div class="result-area" id="vatResult">
+           <div class="result-box">
+              <span class="label">KDV TUTARI</span>
+              <span class="value" id="vatValue">0.00 ₺</span>
+           </div>
+           <div class="result-box highlighted">
+              <span class="label">GENEL TOPLAM</span>
+              <span class="value" id="vatTotal">0.00 ₺</span>
+           </div>
+        </div>
+      </section>
+
+      <!-- Yüzde Tab -->
+      <section id="yuzdeTab" class="tab-content">
+        <div class="input-group">
+          <label>Sayı (A)</label>
+          <input type="number" id="percVal1" placeholder="500">
+        </div>
+        <div class="input-group">
+          <label>Yüzde (B)</label>
+          <input type="number" id="percVal2" placeholder="20">
+        </div>
+        <div class="result-area">
+           <div class="result-box highlighted">
+              <span class="label">SONUÇ (A'nın %B'si)</span>
+              <span class="value" id="percResult">0.00</span>
+           </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <a href="https://kalkula.com.tr" target="_blank" class="web-link">Tüm Araçları Gör →</a>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

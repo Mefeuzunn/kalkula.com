@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Award, LayoutDashboard, TrendingUp, CheckCircle2, RotateCcw, Calculator, FileText, Share2 } from "lucide-react";
+import confetti from "canvas-confetti";
+
 
 type ScoreCategory = { c: string; w: string };
 
@@ -24,7 +27,6 @@ function InputRow({ label, maxQ, name, dict, setDict }: InputRowProps) {
         const nc = parseFloat(nextVal.c) || 0;
         const nw = parseFloat(nextVal.w) || 0;
         
-        // Strict Validation: D + Y <= Soru Sayısı
         if (nc + nw > maxQ) return prev;
         
         nextDict[name] = nextVal;
@@ -33,28 +35,41 @@ function InputRow({ label, maxQ, name, dict, setDict }: InputRowProps) {
   };
 
   return (
-    <div className="calc-input-group" style={{ marginBottom: "0.75rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
-        <label className="calc-label" style={{ marginBottom: 0 }}>{label} <span style={{opacity: 0.6}}>({maxQ})</span></label>
-        <span style={{ fontSize: "0.85rem", fontWeight: 900, color: "var(--accent-primary)" }}>{net.toFixed(2)} Net</span>
+    <div className="calc-input-group">
+      <div className="flex justify-between items-center mb-1">
+        <label className="calc-label">{label} <span className="opacity-40">({maxQ})</span></label>
+        <span className="text-xs font-bold px-2 py-1 bg-blue-500/10 text-blue-500 rounded-full">{net.toFixed(2)} Net</span>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem" }}>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <input type="number" value={dict[name].c} onChange={e => handleChange("c", e.target.value)} className="calc-input" 
-            style={{ borderRadius: '12px', textAlign: 'center', background: 'rgba(34, 197, 94, 0.03)', borderColor: dict[name].c ? '#22c55e' : 'var(--border)' }} 
-            placeholder="D" min="0" max={maxQ} />
-          <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#22c55e', textAlign: 'center' }}>DOĞRU</span>
+      <div className="grid grid-cols-2 gap-3">
+        <div className="calc-input-wrapper">
+          <input 
+            type="number" 
+            value={dict[name].c} 
+            onChange={e => handleChange("c", e.target.value)} 
+            className="calc-input" 
+            placeholder="D" 
+            min="0" 
+            max={maxQ} 
+          />
+          <span className="calc-unit" style={{ color: '#22c55e', opacity: 0.8 }}>D</span>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-          <input type="number" value={dict[name].w} onChange={e => handleChange("w", e.target.value)} className="calc-input" 
-            style={{ borderRadius: '12px', textAlign: 'center', background: 'rgba(239, 68, 68, 0.03)', borderColor: dict[name].w ? '#ef4444' : 'var(--border)' }} 
-            placeholder="Y" min="0" max={maxQ} />
-          <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#ef4444', textAlign: 'center' }}>YANLIŞ</span>
+        <div className="calc-input-wrapper">
+          <input 
+            type="number" 
+            value={dict[name].w} 
+            onChange={e => handleChange("w", e.target.value)} 
+            className="calc-input" 
+            placeholder="Y" 
+            min="0" 
+            max={maxQ} 
+          />
+          <span className="calc-unit" style={{ color: '#ef4444', opacity: 0.8 }}>Y</span>
         </div>
       </div>
     </div>
   );
 }
+
 
 export function YksCalculator() {
   const [activeTab, setActiveTab] = useState<"TYT" | "AYT" | "YDT" | "SONUC">("TYT");
@@ -105,11 +120,19 @@ export function YksCalculator() {
     const soz = Math.min(500, basePuan + tytEffect + (aEdebiyat * 3.0) + (aTarih1 * 2.8) + (aCog1 * 3.33) + (aTarih2 * 2.91) + (aCog2 * 2.91) + (aFelsefe * 3.0) + (aDin * 3.33));
     const dil = Math.min(500, basePuan + tytEffect + (dilNetValue * 3.0));
 
-    setResults({
+   setResults({
       tytNet, obp,
       tytPuan: tytHamPuan, sayPuan: say, eaPuan: ea, sozPuan: soz, dilPuan: dil,
     });
+
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#3b82f6', '#22c55e', '#8b5cf6']
+    });
   };
+
 
   const reset = () => {
     setTyt({ turkce: { c: "", w: "" }, sosyal: { c: "", w: "" }, mat: { c: "", w: "" }, fen: { c: "", w: "" } });
@@ -128,96 +151,177 @@ export function YksCalculator() {
 
   return (
     <div className="calc-wrapper animate-fade-in">
-      <div style={{ background: 'var(--surface)', padding: '1.5rem', borderRadius: '24px', border: '1px solid var(--border)', marginBottom: '1.5rem' }}>
+      <div className="calc-section">
+        <div className="calc-section-title flex items-center gap-2">
+          <Award className="w-4 h-4" /> Ortaöğretim Başarı Puanı
+        </div>
         <div className="calc-input-group">
-            <label className="calc-label">Diploma Notu (OBP)</label>
-            <input type="number" value={diploma} onChange={e => setDiploma(e.target.value)} className="calc-input" placeholder="85" min="50" max="100" style={{ borderRadius: '16px' }} />
+            <label className="calc-label">Diploma Notu (50-100)</label>
+            <div className="calc-input-wrapper">
+              <input type="number" value={diploma} onChange={e => setDiploma(e.target.value)} className="calc-input" placeholder="85" min="50" max="100" />
+              <span className="calc-unit">OBP</span>
+            </div>
         </div>
       </div>
 
-      <div className="calc-toggle-group" style={{ marginBottom: "1.5rem", padding: '8px', borderRadius: '20px' }}>
-        {["TYT", "AYT", "YDT", "SONUC"].map((tab) => (
-          <button key={tab} onClick={() => setActiveTab(tab as any)} className={`calc-toggle-btn ${activeTab === tab ? "active" : ""}`} style={{ borderRadius: '12px' }}>
-            {tab === "SONUC" ? "📋 SONUÇ ANALİZİ" : tab}
+      <div className="calc-toggle-group">
+        {[
+          { id: "TYT", label: "TYT", icon: <FileText className="w-4 h-4" /> },
+          { id: "AYT", label: "AYT", icon: <TrendingUp className="w-4 h-4" /> },
+          { id: "YDT", label: "YDT", icon: <Calculator className="w-4 h-4" /> },
+          { id: "SONUC", label: "ANALİZ", icon: <LayoutDashboard className="w-4 h-4" /> }
+        ].map((tab) => (
+          <button key={tab.id} onClick={() => setActiveTab(tab.id as any)} className={`calc-toggle-btn ${activeTab === tab.id ? "active" : ""}`}>
+            <span className="flex items-center gap-2">{tab.icon} {tab.label}</span>
           </button>
         ))}
       </div>
 
       {activeTab === "TYT" && (
-        <div className="calc-grid-2">
-          <InputRow label="Türkçe" maxQ={40} name="turkce" dict={tyt} setDict={setTyt} />
-          <InputRow label="Temel Matematik" maxQ={40} name="mat" dict={tyt} setDict={setTyt} />
-          <InputRow label="Sosyal Bilimler" maxQ={20} name="sosyal" dict={tyt} setDict={setTyt} />
-          <InputRow label="Fen Bilimleri" maxQ={20} name="fen" dict={tyt} setDict={setTyt} />
+        <div className="calc-section animate-slide-up">
+           <div className="calc-section-title">Temel Yeterlilik Testi Soruları</div>
+           <div className="calc-grid-2">
+            <InputRow label="Türkçe" maxQ={40} name="turkce" dict={tyt} setDict={setTyt} />
+            <InputRow label="Temel Matematik" maxQ={40} name="mat" dict={tyt} setDict={setTyt} />
+            <InputRow label="Sosyal Bilimler" maxQ={20} name="sosyal" dict={tyt} setDict={setTyt} />
+            <InputRow label="Fen Bilimleri" maxQ={20} name="fen" dict={tyt} setDict={setTyt} />
+          </div>
         </div>
       )}
 
       {activeTab === "AYT" && (
-        <div className="calc-grid-2">
-          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1.25rem', borderRadius: '20px' }}>
-            <div className="calc-section-title">Sayısal & EA</div>
-            <InputRow label="AYT Matematik" maxQ={40} name="mat" dict={ayt} setDict={setAyt} />
-            <div className="calc-section-title" style={{ marginTop: "1.5rem" }}>Fen Bilimleri (SAY)</div>
-            <InputRow label="Fizik" maxQ={14} name="fizik" dict={ayt} setDict={setAyt} />
-            <InputRow label="Kimya" maxQ={13} name="kimya" dict={ayt} setDict={setAyt} />
-            <InputRow label="Biyoloji" maxQ={13} name="biyo" dict={ayt} setDict={setAyt} />
+        <div className="flex flex-col gap-6 animate-slide-up">
+          <div className="calc-section">
+            <div className="calc-section-title">Matematik & Fen Bilimleri (SAY)</div>
+            <div className="calc-grid-2">
+              <InputRow label="AYT Matematik" maxQ={40} name="mat" dict={ayt} setDict={setAyt} />
+              <InputRow label="Fizik" maxQ={14} name="fizik" dict={ayt} setDict={setAyt} />
+              <InputRow label="Kimya" maxQ={13} name="kimya" dict={ayt} setDict={setAyt} />
+              <InputRow label="Biyoloji" maxQ={13} name="biyo" dict={ayt} setDict={setAyt} />
+            </div>
           </div>
-          <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1.25rem', borderRadius: '20px' }}>
-            <div className="calc-section-title">Edebiyat & Sosyal (EA/SÖZ)</div>
-            <InputRow label="Türk Dili Ed." maxQ={24} name="edebiyat" dict={ayt} setDict={setAyt} />
-            <InputRow label="Tarih - 1" maxQ={10} name="tarih1" dict={ayt} setDict={setAyt} />
-            <InputRow label="Coğrafya - 1" maxQ={6} name="cog1" dict={ayt} setDict={setAyt} />
-            <div className="calc-section-title" style={{ marginTop: "1.5rem" }}>Sözel Bölüm-2</div>
-            <InputRow label="Tarih-2" maxQ={11} name="tarih2" dict={ayt} setDict={setAyt} />
-            <InputRow label="Felsefe Grubu" maxQ={12} name="felsefe" dict={ayt} setDict={setAyt} />
+          <div className="calc-section">
+            <div className="calc-section-title">Edebiyat & Sosyal Bilimler (EA/SÖZ)</div>
+            <div className="calc-grid-2">
+              <InputRow label="Türk Dili Ed." maxQ={24} name="edebiyat" dict={ayt} setDict={setAyt} />
+              <InputRow label="Tarih - 1" maxQ={10} name="tarih1" dict={ayt} setDict={setAyt} />
+              <InputRow label="Coğrafya - 1" maxQ={6} name="cog1" dict={ayt} setDict={setAyt} />
+              <InputRow label="Tarih - 2" maxQ={11} name="tarih2" dict={ayt} setDict={setAyt} />
+              <InputRow label="Coğrafya - 2" maxQ={11} name="cog2" dict={ayt} setDict={setAyt} />
+              <InputRow label="Felsefe Grubu" maxQ={12} name="felsefe" dict={ayt} setDict={setAyt} />
+              <InputRow label="Din Kültürü" maxQ={6} name="din" dict={ayt} setDict={setAyt} />
+            </div>
           </div>
         </div>
       )}
 
       {activeTab === "YDT" && (
-        <div className="calc-grid-1" style={{ maxWidth: '500px', margin: '0 auto' }}>
-          <InputRow label="Yabancı Dil Sınavı" maxQ={80} name="ydt" dict={{ydt}} setDict={(val: any) => setYdt(val.ydt)} />
+        <div className="calc-section animate-slide-up" style={{ maxWidth: '500px', margin: '0 auto', width: '100%' }}>
+          <div className="calc-section-title">Yabancı Dil Testi</div>
+          <InputRow label="İngilizce/Almanca/Fransızca" maxQ={80} name="ydt" dict={{ydt}} setDict={(val: any) => setYdt(val.ydt)} />
         </div>
       )}
 
       {activeTab === "SONUC" && results && (
-        <div className="result-container-premium">
-          <div className="result-card-premium" style={{ textAlign: 'left', padding: '2.5rem' }}>
-            <div className="result-badge" style={{ marginBottom: '2rem' }}>2026 YKS YERLEŞTİRME PUANLARI (Y-PUAN)</div>
-            
-            <div className="calc-result-cards" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
-              {[
-                { label: "TYT YERLEŞTİRME", score: results.tytPuan + results.obp, color: "#3b82f6" },
-                { label: "SAYISAL (SAY)", score: results.sayPuan + results.obp, color: "#22c55e" },
-                { label: "EŞİT AĞIRLIK (EA)", score: results.eaPuan + results.obp, color: "#8b5cf6" },
-                { label: "SÖZEL (SÖZ)", score: results.sozPuan + results.obp, color: "#ef4444" },
-                { label: "DİL (YDT)", score: results.dilPuan + results.obp, color: "#06b6d4" }
-              ].map(item => (
-                <div key={item.label} style={{ background: 'var(--bg-secondary)', padding: '1.5rem', borderRadius: '24px', borderLeft: `6px solid ${item.color}` }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 900, color: 'var(--text-muted)', marginBottom: '0.5rem' }}>{item.label}</div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 900 }}>{item.score.toFixed(3)} <span style={{fontSize: '0.8rem', opacity: 0.5}}>Puan</span></div>
+        <div className="calc-result-panel animate-result">
+          <div className="calc-result-header flex justify-between items-center">
+            <span>YKS 2026 ÜSTÜN BAŞARI ANALİZİ</span>
+            <div className="flex gap-2">
+              <button className="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded"><Share2 className="w-4 h-4" /></button>
+            </div>
+          </div>
+          
+          <div className="calc-result-body">
+            <div className="calc-result-hero">
+              <div className="calc-result-hero-label">HEDEF ÜNİVERSİTE İÇİN ANALİZ</div>
+              <div className="calc-result-hero-value">{(results.sayPuan + results.obp).toFixed(3)}</div>
+              <div className="calc-result-hero-sub">Sayısal (Y-SAY) Güncel Puanınız</div>
+              
+              <div className="flex justify-center gap-4 mt-6">
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-500 rounded-full text-xs font-bold">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> OBP DAHİL
                 </div>
-              ))}
+                <div className="flex items-center gap-1.5 px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-xs font-bold">
+                  <TrendingUp className="w-3.5 h-3.5" /> 2026 PROJEKSİYONU
+                </div>
+              </div>
             </div>
 
-            <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-               <div style={{ padding: '1rem 1.5rem', background: 'var(--surface-light)', borderRadius: '16px', border: '1px solid var(--border)' }}>
-                  <div style={{ fontSize: '0.65rem', fontWeight: 900, color: 'var(--text-muted)' }}>TYT TOPLAM NET</div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 900 }}>{results.tytNet.toFixed(2)}</div>
-               </div>
-               <div style={{ padding: '1rem 1.5rem', background: 'var(--surface-light)', borderRadius: '16px', border: '1px solid var(--border)' }}>
-                  <div style={{ fontSize: '0.65rem', fontWeight: 900, color: 'var(--text-muted)' }}>OBP KATKISI</div>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 900 }}>+{results.obp.toFixed(1)}</div>
-               </div>
+            <div className="calc-table-wrapper mb-6">
+              <table className="calc-table">
+                <thead>
+                  <tr>
+                    <th>PUAN TÜRÜ</th>
+                    <th>HAM PUAN</th>
+                    <th>YERLEŞTİRME (Y-PUAN)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>TYT</td>
+                    <td>{results.tytPuan.toFixed(3)}</td>
+                    <td className="font-bold text-blue-500">{(results.tytPuan + results.obp).toFixed(3)}</td>
+                  </tr>
+                  <tr>
+                    <td>SAYISAL (SAY)</td>
+                    <td>{results.sayPuan.toFixed(3)}</td>
+                    <td className="font-bold text-green-500">{(results.sayPuan + results.obp).toFixed(3)}</td>
+                  </tr>
+                  <tr>
+                    <td>EŞİT AĞIRLIK (EA)</td>
+                    <td>{results.eaPuan.toFixed(3)}</td>
+                    <td className="font-bold text-purple-500">{(results.eaPuan + results.obp).toFixed(3)}</td>
+                  </tr>
+                  <tr>
+                    <td>SÖZEL (SÖZ)</td>
+                    <td>{results.sozPuan.toFixed(3)}</td>
+                    <td className="font-bold text-red-500">{(results.sozPuan + results.obp).toFixed(3)}</td>
+                  </tr>
+                  <tr>
+                    <td>DİL (YDT)</td>
+                    <td>{results.dilPuan.toFixed(3)}</td>
+                    <td className="font-bold text-cyan-500">{(results.dilPuan + results.obp).toFixed(3)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div className="calc-grid-3">
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">TYT NET</div>
+                <div className="calc-result-card-value text-blue-500">{results.tytNet.toFixed(2)}</div>
+              </div>
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">OBP KATKISI</div>
+                <div className="calc-result-card-value text-green-500">+{results.obp.toFixed(1)}</div>
+              </div>
+              <div className="calc-result-card">
+                <div className="calc-result-card-label">SINAV YILI</div>
+                <div className="calc-result-card-value">2026</div>
+              </div>
+            </div>
+
+            <div className="calc-info-box mt-6">
+              <div className="calc-info-box-icon text-blue-500">💡</div>
+              <p className="calc-info-box-text">
+                Bu hesaplama 2026 ÖSYM verileri ve katsayıları baz alınarak yapılmıştır. Yerleştirme puanınız hesaplanırken diploma notunuz (OBP) 0.6 katsayısı ile çarpılarak eklenmiştir.
+              </p>
             </div>
           </div>
         </div>
       )}
 
-      <div className="calc-action-row" style={{ marginTop: "1.5rem" }}>
-        <button className="calc-btn-reset" onClick={reset} style={{ flex: 0.3 }}>Sıfırla</button>
-        {activeTab !== "SONUC" && <button className="calc-btn-calculate" onClick={() => { calculate(); setActiveTab("SONUC"); }} style={{ flex: 1 }}>Hesapla</button>}
+      <div className="calc-action-row animate-fade-in">
+        <button className="calc-btn-reset" onClick={reset}>
+          <RotateCcw className="w-4 h-4" /> Sıfırla
+        </button>
+        {activeTab !== "SONUC" && (
+          <button className="calc-btn-calculate" onClick={() => { calculate(); setActiveTab("SONUC"); }}>
+            <Calculator className="w-4 h-4" /> Hesapla ve Analiz Et
+          </button>
+        )}
       </div>
     </div>
   );
 }
+
