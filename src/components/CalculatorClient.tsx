@@ -143,6 +143,19 @@ const FluidPressureCalculator = dynamic(() => import("@/components/calculators/F
 const StatisticsCalculator = dynamic(() => import("@/components/calculators/StatisticsCalculator").then(m => m.StatisticsCalculator), { loading: () => <LoadingCalculator /> });
 const PermutationCombinationCalculator = dynamic(() => import("@/components/calculators/PermutationCombinationCalculator").then(m => m.PermutationCombinationCalculator), { loading: () => <LoadingCalculator /> });
 
+// Matematik Araçları (MathTools.tsx)
+const GoldenRatioCalculator = dynamic(() => import("@/components/calculators/MathTools").then(m => m.GoldenRatioCalculator), { loading: () => <LoadingCalculator /> });
+const FactorialCalculator = dynamic(() => import("@/components/calculators/MathTools").then(m => m.FactorialCalculator), { loading: () => <LoadingCalculator /> });
+const SquareMeterCalculator = dynamic(() => import("@/components/calculators/MathTools").then(m => m.SquareMeterCalculator), { loading: () => <LoadingCalculator /> });
+const RatioCalculator = dynamic(() => import("@/components/calculators/MathTools").then(m => m.RatioCalculator), { loading: () => <LoadingCalculator /> });
+const NumberToWordsCalculator = dynamic(() => import("@/components/calculators/MathTools").then(m => m.NumberToWordsCalculator), { loading: () => <LoadingCalculator /> });
+const BaseConverter = dynamic(() => import("@/components/calculators/MathTools").then(m => m.BaseConverter), { loading: () => <LoadingCalculator /> });
+const SimpleInterestMath = dynamic(() => import("@/components/calculators/MathTools").then(m => m.SimpleInterestMath), { loading: () => <LoadingCalculator /> });
+const CompoundInterestMath = dynamic(() => import("@/components/calculators/MathTools").then(m => m.CompoundInterestMath), { loading: () => <LoadingCalculator /> });
+const PerimeterCalculator = dynamic(() => import("@/components/calculators/MathTools").then(m => m.PerimeterCalculator), { loading: () => <LoadingCalculator /> });
+const InchConverter = dynamic(() => import("@/components/calculators/MathTools").then(m => m.InchConverter), { loading: () => <LoadingCalculator /> });
+const MileConverter = dynamic(() => import("@/components/calculators/MathTools").then(m => m.MileConverter), { loading: () => <LoadingCalculator /> });
+
 // Yeni Araçlar ve Oyunlar
 const Game2048 = dynamic(() => import("@/components/games/Game2048").then(m => m.Game2048), { loading: () => <LoadingCalculator /> });
 const Sudoku = dynamic(() => import("@/components/games/Sudoku").then(m => m.Sudoku), { loading: () => <LoadingCalculator /> });
@@ -227,6 +240,17 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "uslu-koklu": return <PowerRootCalculator />;
       case "denklem-eski": return <EquationSolver />;
       case "asal-sayi": return <PrimeNumberCalculator />;
+      case "altin-oran": return <GoldenRatioCalculator />;
+      case "faktoriyel-hesaplama": return <FactorialCalculator />;
+      case "metrekare-hesaplama": return <SquareMeterCalculator />;
+      case "oran-oranti-hesaplama": return <RatioCalculator />;
+      case "sayi-okunusu": return <NumberToWordsCalculator />;
+      case "taban-donusumu": return <BaseConverter />;
+      case "basit-faiz": return <SimpleInterestMath />;
+      case "bilesik-faiz": return <CompoundInterestMath />;
+      case "cevre-hesaplama": return <PerimeterCalculator />;
+      case "inc-hesaplama": return <InchConverter />;
+      case "mil-hesaplama": return <MileConverter />;
       case "netten-brute": return <NetGrossCalculator />;
       case "kidem-tazminati": return <SeveranceCalculator />;
       case "meb-ek-ders-hesaplama": return <MebEkDersCalculator />;

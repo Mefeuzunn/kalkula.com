@@ -92,6 +92,17 @@ export const calculators: CalculatorInfo[] = [
   { id: "uslu-koklu", title: "Üslü ve Köklü Sayı Hesaplama", slug: "uslu-koklu", categoryId: "matematik", description: "Herhangi bir sayının üssünü veya n'inci dereceden kökünü kolayca sistemde çözün." },
   { id: "denklem", title: "Denklem Çözücü", slug: "denklem-cozucu", categoryId: "matematik", description: "Birinci ve ikinci dereceden (ax² + bx + c) denklemlerin köklerini ve deltasını bulun." },
   { id: "asal-sayi", title: "Asal Sayı Bulucu", slug: "asal-sayi", categoryId: "matematik", description: "Bir sayının asal olup olmadığını kontrol edin ve çarpanlarına ayırın." },
+  { id: "altin-oran", title: "Altın Oran Hesaplama", slug: "altin-oran", categoryId: "matematik", description: "Uzun ve kısa kenar arasındaki altın oran (1.618) dengesini hesaplayın." },
+  { id: "faktoriyel", title: "Faktöriyel Hesapla", slug: "faktoriyel-hesaplama", categoryId: "matematik", description: "Bir sayının faktöriyelini (n!) matematiksel olarak hesaplar." },
+  { id: "metrekare", title: "Metrekare Hesaplama", slug: "metrekare-hesaplama", categoryId: "matematik", description: "En ve boy ölçülerine göre alan ve tahmini maliyet hesabı." },
+  { id: "oran-oranti", title: "Oran-Orantı Hesapla", slug: "oran-oranti-hesaplama", categoryId: "matematik", description: "Doğru ve ters orantı problemlerini X değerini bularak çözün." },
+  { id: "sayi-okunusu", title: "Sayı Okunuşu (Yazıyla)", slug: "sayi-okunusu", categoryId: "matematik", description: "Rakamla girilen sayıların Türkçe metin karşılığını (yazılışını) bulun." },
+  { id: "taban-donusumu", title: "Taban Dönüşümü", slug: "taban-donusumu", categoryId: "matematik", description: "Sayıları 2, 8, 10, 16 ve diğer tüm tabanlar arasında dönüştürün." },
+  { id: "basit-faiz-mat", title: "Basit Faiz Hesaplama", slug: "basit-faiz", categoryId: "matematik", description: "Anapara, faiz oranı ve süreye göre matematiksel faiz getirisi." },
+  { id: "bilesik-faiz-mat", title: "Bileşik Faiz Hesaplama", slug: "bilesik-faiz", categoryId: "matematik", description: "Matematiksel bileşik faiz formülü ile gelecek değer hesabı." },
+  { id: "cevre", title: "Çevre Hesaplama", slug: "cevre-hesaplama", categoryId: "matematik", description: "Kare, dikdörtgen, daire ve üçgen gibi şekillerin çevre uzunluklarını hesaplayın." },
+  { id: "inc", title: "İnç Hesaplama", slug: "inc-hesaplama", categoryId: "matematik", description: "İnç ve santimetre (cm) birimleri arasında anlık ve hassas dönüşüm yapın." },
+  { id: "mil", title: "Mil Hesaplama", slug: "mil-hesaplama", categoryId: "matematik", description: "Mil ve kilometre (km) birimleri arasında hızlı mesafe dönüşümü." },
 
   // Muhasebe, Ticari, Gündelik
   { id: "netbrut", title: "Netten Brüte Maaş", slug: "netten-brute", categoryId: "muhasebe", description: "Ele geçen net paradan vergi kesintileri dahil brüt maaş hesaplama." },
