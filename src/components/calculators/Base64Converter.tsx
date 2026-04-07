@@ -34,15 +34,18 @@ export function Base64Converter() {
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-4">
-        <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] italic px-4">Girdi (Metin veya Kod)</label>
-        <div className="relative group">
-           <div className="absolute -inset-1 bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 rounded-3xl blur-lg opacity-10 group-focus-within:opacity-30 transition-all"></div>
+      <div className="flex flex-col gap-4 group">
+        <label className="text-[10px] font-black text-muted uppercase tracking-[0.2em] italic px-6">Girdi (Metin veya Kod)</label>
+        <div className="relative bg-surface border-4 border-border rounded-[2.5rem] transition-all duration-300 
+          shadow-[0_16px_0_rgba(0,0,0,0.08)] dark:shadow-[0_16px_0_rgba(0,0,0,0.4)]
+          group-focus-within:-translate-y-1 group-focus-within:shadow-[0_10px_0_rgba(0,0,0,0.1)]
+          hover:shadow-[0_20px_0_rgba(0,0,0,0.06)]
+          overflow-hidden">
            <textarea 
              placeholder="Encode edilecek metni veya Decode edilecek Base64 kodunu buraya girin..."
              value={text} 
              onChange={e => processBasic(e.target.value)} 
-             className="input-field !text-lg !py-8 !px-8 border-4 border-border rounded-[2rem] min-h-[180px] leading-relaxed shadow-inner placeholder:opacity-20 relative z-10 focus:border-accent-primary transition-all"
+             className="w-full bg-transparent border-none outline-none text-xl p-10 font-black italic tracking-tight min-h-[220px] leading-relaxed relative z-10"
            />
         </div>
       </div>

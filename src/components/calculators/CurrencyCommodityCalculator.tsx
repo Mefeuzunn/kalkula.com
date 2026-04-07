@@ -106,27 +106,51 @@ export function CurrencyCommodityCalculator() {
 
   return (
     <div className="calc-wrapper">
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Varlık Türü</label>
-          <select value={selectedUnit} onChange={e => setSelectedUnit(e.target.value)} className="calc-select">
-            <optgroup label="Döviz">
-              {Object.entries(CURRENCY_LABELS).map(([code, info]) => (
-                <option key={code} value={code}>{info.name} ({info.label})</option>
-              ))}
-            </optgroup>
-            <optgroup label="Altın Birimleri">
-              <option value="XAU_GRAM">Gram Altın (24 Ayar)</option>
-              <option value="XAU_CEYREK">Çeyrek Altın</option>
-              <option value="XAU_YARIM">Yarım Altın</option>
-              <option value="XAU_TAM">Tam / Cumhuriyet</option>
-              <option value="XAU_ATA">Ata Altın / Reşat</option>
-            </optgroup>
-          </select>
+    <div className="flex flex-col gap-10 py-4">
+      <div className="grid grid-cols-1 lg:grid-cols-[1.5fr_1fr] gap-8 items-end">
+        <div className="group relative">
+           <div className={`relative bg-surface border-2 border-border rounded-3xl transition-all duration-200 
+             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
+             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(0,0,0,0.1)]
+             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)]
+             overflow-hidden`}>
+              <div className="bg-secondary/20 p-3 border-b-2 border-border text-amber-500 flex items-center justify-between px-6">
+                 <label className="text-[10px] font-black uppercase tracking-widest italic opacity-60">Varlık Türü</label>
+              </div>
+              <select value={selectedUnit} onChange={e => setSelectedUnit(e.target.value)} className="w-full bg-transparent border-none outline-none font-black text-lg py-5 px-6 appearance-none cursor-pointer">
+                <optgroup label="Döviz">
+                  {Object.entries(CURRENCY_LABELS).map(([code, info]) => (
+                    <option key={code} value={code}>{info.name} ({info.label})</option>
+                  ))}
+                </optgroup>
+                <optgroup label="Altın Birimleri">
+                  <option value="XAU_GRAM">Gram Altın (24 Ayar)</option>
+                  <option value="XAU_CEYREK">Çeyrek Altın</option>
+                  <option value="XAU_YARIM">Yarım Altın</option>
+                  <option value="XAU_TAM">Tam / Cumhuriyet</option>
+                  <option value="XAU_ATA">Ata Altın / Reşat</option>
+                </optgroup>
+              </select>
+           </div>
         </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Miktar / Adet</label>
-          <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="calc-input" placeholder="1" />
+
+        <div className="group relative">
+           <div className={`relative bg-surface border-2 border-border rounded-3xl transition-all duration-200 
+             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
+             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(0,0,0,0.1)]
+             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)] 
+             overflow-hidden`}>
+              <div className="bg-secondary/20 p-3 border-b-2 border-border text-amber-500 flex items-center justify-between px-6">
+                 <label className="text-[10px] font-black uppercase tracking-widest italic opacity-60">Miktar / Adet</label>
+              </div>
+              <input 
+                type="number" 
+                value={amount} 
+                onChange={e => setAmount(e.target.value)} 
+                className="w-full bg-transparent border-none outline-none text-4xl font-black p-5 text-center italic tracking-tighter" 
+                placeholder="1" 
+              />
+           </div>
         </div>
       </div>
 
@@ -178,6 +202,7 @@ export function CurrencyCommodityCalculator() {
             <p className="font-bold mb-1">Kur Bildirimi:</p>
             <p className="opacity-80 text-sm">Veriler Frankfurter ve Global Spot piyasalardan 2026 1. Çeyrek verileriyle senkronize edilerek sunulmaktadır. Çeyrek, Yarım ve Tam altın hesaplamaları standart 22 ayar ağırlıkları ve darphane baskı farkları (yaklaşık) gözetilerek has altın karşılığı üzerinden yapılmaktadır.</p>
          </div>
+      </div>
       </div>
     </div>
   );

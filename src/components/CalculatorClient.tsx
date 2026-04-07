@@ -390,7 +390,6 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "sicaklik-cevirici": return <TempConverter />;
       case "alan-cevirici": return <AreaConverter />;
       case "hacim-cevirici": return <VolumeConverter />;
-      case "mutfak-donusturucu": return <KitchenConverter />;
       case "hiz-cevirici": return <SpeedConverter />;
       case "veri-cevirici": return <DataConverter />;
       case "zaman-cevirici": return <TimeConverter />;

@@ -60,10 +60,15 @@ export function ColorConverter() {
          </div>
       </div>
 
-      <div className="panel p-8 bg-secondary/5 border-border rounded-[2.5rem] flex flex-col gap-6 border-b-4 border-accent-primary/20">
-        <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] italic px-2">Renk Seçici ve HEX Kod Girişi</label>
-        <div className="flex flex-col md:flex-row gap-4">
-           <div className="relative group/picker cursor-pointer w-full md:w-32 h-20">
+      <div className="group relative">
+        <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] italic px-6 mb-4 block">Renk Seçici ve HEX Kod Girişi</label>
+        <div className="relative bg-surface border-4 border-border rounded-[2.5rem] transition-all duration-300 
+          shadow-[0_16px_0_rgba(0,0,0,0.08)] dark:shadow-[0_16px_0_rgba(0,0,0,0.4)]
+          group-focus-within:-translate-y-1 group-focus-within:shadow-[0_10px_0_rgba(0,0,0,0.1)]
+          hover:shadow-[0_20px_0_rgba(0,0,0,0.06)]
+          p-6 flex flex-col md:flex-row gap-6 items-center">
+           
+           <div className="relative group/picker cursor-pointer w-full md:w-40 h-24">
               <input 
                 type="color" 
                 value={hex} 
@@ -71,14 +76,17 @@ export function ColorConverter() {
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
               />
               <div className="absolute inset-0 rounded-2xl border-4 border-white shadow-xl flex items-center justify-center z-10 transition-transform group-hover/picker:scale-95" style={{ backgroundColor: hex }}>
-                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" className="drop-shadow-lg"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.17 7.17"/><path d="M11 11l.5.5"/></svg>
+                 <div className="bg-black/20 backdrop-blur-sm p-3 rounded-full border border-white/30 text-white">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.17 7.17"/><path d="M11 11l.5.5"/></svg>
+                 </div>
               </div>
            </div>
+
            <input 
             type="text" 
             value={hex.toUpperCase()} 
             onChange={e => updateAll(e.target.value)} 
-            className="input-field text-4xl font-black text-center tracking-tighter flex-1 border-4 focus:border-accent-primary transition-all rounded-2xl"
+            className="bg-transparent border-none outline-none text-6xl font-black text-center tracking-tighter flex-1 italic"
             placeholder="#000000"
            />
         </div>

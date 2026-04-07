@@ -24,14 +24,43 @@ export function EbobEkokCalculator() {
 
   return (
     <div className="calc-wrapper">
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">1. Sayı</label>
-          <input type="number" value={num1} onChange={e => setNum1(e.target.value)} className="calc-input" placeholder="24" min="1" step="1" />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+        <div className="group relative">
+           <div className="relative bg-surface border-2 border-border rounded-3xl transition-all duration-200 
+             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
+             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(0,0,0,0.1)]
+             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)]
+             overflow-hidden">
+              <div className="bg-secondary/20 p-3 border-b-2 border-border text-center">
+                 <label className="text-[10px] font-black uppercase tracking-widest italic opacity-60">1. Sayı</label>
+              </div>
+              <input 
+                type="number" 
+                value={num1} 
+                onChange={e => setNum1(e.target.value)} 
+                className="w-full bg-transparent border-none outline-none text-5xl font-black p-6 text-center italic tracking-tighter" 
+                placeholder="24" 
+              />
+           </div>
         </div>
-        <div className="calc-input-group">
-          <label className="calc-label">2. Sayı</label>
-          <input type="number" value={num2} onChange={e => setNum2(e.target.value)} className="calc-input" placeholder="36" min="1" step="1" />
+
+        <div className="group relative">
+           <div className="relative bg-surface border-2 border-border rounded-3xl transition-all duration-200 
+             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
+             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(0,0,0,0.1)]
+             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)]
+             overflow-hidden">
+              <div className="bg-secondary/20 p-3 border-b-2 border-border text-center">
+                 <label className="text-[10px] font-black uppercase tracking-widest italic opacity-60">2. Sayı</label>
+              </div>
+              <input 
+                type="number" 
+                value={num2} 
+                onChange={e => setNum2(e.target.value)} 
+                className="w-full bg-transparent border-none outline-none text-5xl font-black p-6 text-center italic tracking-tighter" 
+                placeholder="36" 
+              />
+           </div>
         </div>
       </div>
 
