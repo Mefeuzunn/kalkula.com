@@ -2,61 +2,6 @@
 
 import { useState } from "react";
 
-/* ─── Kar Marjı Hesaplama ─── */
-export function KarMarjiCalculator() {
-  const [maliyet, setMaliyet] = useState("");
-  const [satisFiyati, setSatisFiyati] = useState("");
-  const [result, setResult] = useState<null | {
-    karTutari: number; karMarji: number; markup: number; brut: number;
-  }>(null);
-
-  const hesapla = () => {
-    const m = parseFloat(maliyet);
-    const s = parseFloat(satisFiyati);
-    if (!m || !s || m <= 0 || s <= 0) return;
-    const karTutari = s - m;
-    const karMarji = (karTutari / s) * 100;
-    const markup = (karTutari / m) * 100;
-    const brut = karTutari;
-    setResult({ karTutari, karMarji, markup, brut });
-  };
-
-  const fmt = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Maliyet Fiyatı (₺)</label>
-          <input type="number" placeholder="Örn: 100" value={maliyet} onChange={e => setMaliyet(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Satış Fiyatı (₺)</label>
-          <input type="number" placeholder="Örn: 150" value={satisFiyati} onChange={e => setSatisFiyati(e.target.value)} className="input-field" />
-        </div>
-      </div>
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Hesapla</button>
-
-      {result && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-          {[
-            { label: "Kar Tutarı", value: `₺${fmt(result.karTutari)}`, color: result.karTutari >= 0 ? "#22c55e" : "#ef4444", icon: "💰" },
-            { label: "Kar Marjı", value: `%${fmt(result.karMarji)}`, color: "#3b82f6", icon: "📊" },
-            { label: "Markup (Zam Oranı)", value: `%${fmt(result.markup)}`, color: "#f59e0b", icon: "📈" },
-            { label: "Brüt Kar", value: `₺${fmt(result.brut)}`, color: "#8b5cf6", icon: "✅" },
-          ].map(r => (
-            <div key={r.label} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem", textAlign: "center" }}>
-              <div style={{ fontSize: "1.5rem", marginBottom: "0.35rem" }}>{r.icon}</div>
-              <div style={{ fontSize: "1.4rem", fontWeight: 800, color: r.color }}>{r.value}</div>
-              <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>{r.label}</div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 /* ─── Kar/Zarar Hesaplama ─── */
 export function KarZararCalculator() {
   const [gelir, setGelir] = useState("");
@@ -219,62 +164,6 @@ export function TopPriceCalculator() {
                   <span style={{ fontWeight: 600 }}>₺{fmt(c.kdv)}</span>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
-/* ─── Başabaş Noktası Hesaplama ─── */
-export function BreakEvenCalculator() {
-  const [sabitGider, setSabitGider] = useState("");
-  const [birimMaliyet, setBirimMaliyet] = useState("");
-  const [birimFiyat, setBirimFiyat] = useState("");
-  const [result, setResult] = useState<null | { adet: number; ciro: number; katKat: number }>(null);
-
-  const fmt = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-  const hesapla = () => {
-    const sg = parseFloat(sabitGider);
-    const bm = parseFloat(birimMaliyet);
-    const bf = parseFloat(birimFiyat);
-    if (!sg || !bm || !bf || bf <= bm) return;
-    const katKar = bf - bm;
-    const adet = sg / katKar;
-    const ciro = adet * bf;
-    setResult({ adet, ciro, katKat: bf / bm });
-  };
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: "8px", padding: "0.75rem 1rem", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
-        💡 Başabaş noktası; sabit giderleri karşılamak için kaç adet satmanız gerektiğini gösterir.
-      </div>
-      {[
-        { label: "Aylık Sabit Gider (₺)", value: sabitGider, set: setSabitGider, placeholder: "Örn: 10000 (kira, maaş...)" },
-        { label: "Birim Değişken Maliyet (₺)", value: birimMaliyet, set: setBirimMaliyet, placeholder: "Örn: 50" },
-        { label: "Birim Satış Fiyatı (₺)", value: birimFiyat, set: setBirimFiyat, placeholder: "Örn: 80" },
-      ].map(f => (
-        <div key={f.label}>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>{f.label}</label>
-          <input type="number" placeholder={f.placeholder} value={f.value} onChange={e => f.set(e.target.value)} className="input-field" />
-        </div>
-      ))}
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Hesapla</button>
-
-      {result && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
-          {[
-            { label: "Başabaş Adet", value: Math.ceil(result.adet).toLocaleString("tr-TR"), icon: "📦", color: "#f59e0b" },
-            { label: "Başabaş Ciro", value: `₺${fmt(result.ciro)}`, icon: "💰", color: "#22c55e" },
-            { label: "Kat Katsayısı", value: `${result.katKat.toFixed(2)}x`, icon: "📊", color: "#8b5cf6" },
-          ].map(r => (
-            <div key={r.label} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1rem", textAlign: "center" }}>
-              <div style={{ fontSize: "1.5rem" }}>{r.icon}</div>
-              <div style={{ fontSize: "1.3rem", fontWeight: 800, color: r.color, margin: "0.25rem 0" }}>{r.value}</div>
-              <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>{r.label}</div>
             </div>
           ))}
         </div>

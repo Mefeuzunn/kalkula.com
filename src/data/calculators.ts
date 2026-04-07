@@ -184,6 +184,9 @@ export const calculators: CalculatorInfo[] = [
   { id: "hash-gen", title: "Base64 & Hash İşleyici", slug: "hash-generator", categoryId: "gelistirici", description: "Metinlerinizi Base64 formatına çevirin veya şifrelenmiş verileri geri çözün." },
   { id: "color-conv", title: "Renk Dönüştürücü (HEX/RGB)", slug: "renk-donusturucu", categoryId: "gelistirici", description: "Tasarımcılar için HEX, RGB ve CMYK renk kodlarını anlık dönüştürün." },
   { id: "glass-gen", title: "Glassmorphism Generator", slug: "glassmorphism-generator", categoryId: "gelistirici", description: "Modern UI tasarımları için cam efekti (backdrop-filter) kodları üretin." },
+  { id: "ai-prompt", title: "AI Prompt Optimizer", slug: "ai-prompt-optimizer", categoryId: "gelistirici", description: "Yapay zeka için ham komutları profesyonel prompt'lara dönüştürün." },
+  { id: "jwt-debug", title: "JWT Debugger & Visualizer", slug: "jwt-debugger", categoryId: "gelistirici", description: "JSON Web Token (JWT) dökümlerini anlık olarak çözün ve analiz edin." },
+  { id: "cron-visualizer", title: "Cron Expression Visualizer", slug: "cron-visualizer", categoryId: "gelistirici", description: "Karmaşık cron zamanlamalarını insan diline çevirin ve test edin." },
 
   
   { id: "mod", title: "Mod Alma", slug: "mod-alma", categoryId: "matematik", description: "Bir sayının diğerine bölümünden kalanını bulun." },
@@ -208,6 +211,9 @@ export const calculators: CalculatorInfo[] = [
   { id: "pdf-to-img", title: "PDF'den Görsele", slug: "pdf-to-image", categoryId: "pdf", description: "PDF sayfalarını yüksek çözünürlüklü JPEG veya PNG görsellerine dönüştürün." },
   { id: "img-to-pdf", title: "Görselden PDF'e", slug: "image-to-pdf", categoryId: "pdf", description: "Fotoğraflarınızı ve görsellerinizi tek bir PDF dökümanı haline getirin." },
   { id: "pdf-compress", title: "PDF Sıkıştır", slug: "pdf-sikistir", categoryId: "pdf", description: "PDF dökümanlarınızın dosya boyutunu kaliteden aşırı ödün vermeden optimize edin." },
+  { id: "retirement-age", title: "Ne Zaman Emekli Olurum?", slug: "ne-zaman-emekli-olurum", categoryId: "muhasebe", description: "SGK ve EYT uyumlu emeklilik robotu ile emeklilik tarihinizi hemen hesaplayın." },
+  { id: "investment-simulator", title: "Yatırım Simülatörü", slug: "yatirim-simulatoru", categoryId: "finans", description: "Bileşik faiz ve aylık tasarruflarınızın uzun vadedeki büyümesini görselleştirin." },
+  { id: "carbon-footprint", title: "Karbon Ayak İzi", slug: "karbon-ayak-izi", categoryId: "pratik-araclar", description: "Ekolojik etki analizi ile yıllık karbon salınımınızı ve dikmeniz gereken ağaç sayısını öğrenin." },
 
   // Oyunlar
   { id: "game-2048", title: "2048 Oyunu", slug: "2048", categoryId: "oyun", description: "Klasik 2048 zeka oyunu. Sayıları birleştirin, 2048'e ulaşın!" },
