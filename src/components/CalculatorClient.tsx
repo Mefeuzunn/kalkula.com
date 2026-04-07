@@ -21,10 +21,12 @@ const LoadingCalculator = () => (
 const BmiCalculator = dynamic(() => import("@/components/calculators/BmiCalculator").then(m => m.BmiCalculator), { loading: () => <LoadingCalculator /> });
 const PregnancyCalculator = dynamic(() => import("@/components/calculators/PregnancyCalculator").then(m => m.PregnancyCalculator), { loading: () => <LoadingCalculator /> });
 const CalorieCalculator = dynamic(() => import("@/components/calculators/CalorieCalculator").then(m => m.CalorieCalculator), { loading: () => <LoadingCalculator /> });
-const LoanCalculator = dynamic(() => import("@/components/calculators/LoanCalculator").then(m => m.LoanCalculator), { loading: () => <LoadingCalculator /> });
 const LoanAmortization = dynamic(() => import("@/components/calculators/LoanAmortization").then(m => m.LoanAmortization), { loading: () => <LoadingCalculator /> });
 const PercentageCalculator = dynamic(() => import("@/components/calculators/PercentageCalculator").then(m => m.PercentageCalculator), { loading: () => <LoadingCalculator /> });
 const CreditCardCalculator = dynamic(() => import("@/components/calculators/CreditCardCalculator").then(m => m.CreditCardCalculator), { loading: () => <LoadingCalculator /> });
+const LoanSuite = dynamic(() => import("@/components/calculators/LoanSuite").then(m => m.LoanSuite), { loading: () => <LoadingCalculator /> });
+const CreditCardSuite = dynamic(() => import("@/components/calculators/CreditCardSuite").then(m => m.CreditCardSuite), { loading: () => <LoadingCalculator /> });
+const BankingAdvanced = dynamic(() => import("@/components/calculators/BankingAdvanced").then(m => m.BankingAdvanced), { loading: () => <LoadingCalculator /> });
 const EbobEkokCalculator = dynamic(() => import("@/components/calculators/EbobEkokCalculator").then(m => m.EbobEkokCalculator), { loading: () => <LoadingCalculator /> });
 const NetGrossCalculator = dynamic(() => import("@/components/calculators/NetGrossCalculator").then(m => m.NetGrossCalculator), { loading: () => <LoadingCalculator /> });
 const InflationCalculator = dynamic(() => import("@/components/calculators/InflationCalculator").then(m => m.InflationCalculator), { loading: () => <LoadingCalculator /> });
@@ -267,9 +269,30 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "sutyen-bedeni": return <BraSizeCalculator />;
       case "yasam-suresi": return <LifeExpectancyCalculator />;
       case "yumurtlama-donemi": return <OvulationCalculator />;
-      case "kredi-hesaplama": return <LoanCalculator />;
+      case "kredi-hesaplama":
+      case "ihtiyac-kredisi":
+      case "konut-kredisi":
+      case "tasit-kredisi":
+      case "ticari-kredi":
+      case "is-yeri-kredisi":
+      case "ticari-arac-kredisi":
+      case "ticari-ihtiyac-kredisi": return <LoanSuite />;
+      
       case "kredi-odeme-plani": return <LoanAmortization />;
-      case "kredi-karti-asgari": return <CreditCardCalculator />;
+      
+      case "kredi-karti-asgari":
+      case "kredi-karti-ek-taksit":
+      case "kredi-karti-taksitli-nakit-avans":
+      case "kredi-karti-gecikme-faizi":
+      case "kredi-karti-islem-taksitlendirme": return <CreditCardSuite />;
+
+      case "ne-kadar-kredi-alabilirim":
+      case "kredi-erken-kapatma":
+      case "kredi-dosya-masrafi":
+      case "kredi-gecikme-faizi":
+      case "kredi-yillik-maliyet-orani":
+      case "kredi-yapilandirma": return <BankingAdvanced />;
+      
       case "faiz": return <InterestCalculator />;
       case "enflasyon": return <InflationCalculator />;
       case "yuzde": return <PercentageCalculator />;
