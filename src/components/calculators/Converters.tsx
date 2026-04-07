@@ -67,17 +67,19 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-2">
-        <div className="hidden lg:flex justify-between px-4">
-          <label className="calc-input-label !mb-0">{units[leftUnit].name.toUpperCase()}</label>
-          <label className="calc-input-label !mb-0">{units[rightUnit].name.toUpperCase()}</label>
+      <div className="flex flex-col gap-4">
+        {/* Desktop Labels Row */}
+        <div className="hidden lg:flex justify-between px-6">
+          <label className="calc-input-label !mb-0 text-xs">{units[leftUnit].name.toUpperCase()}</label>
+          <label className="calc-input-label !mb-0 text-xs text-right">{units[rightUnit].name.toUpperCase()}</label>
         </div>
 
         <div className="relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20">
-            {/* Left Input Box */}
-            <div className="flex flex-col lg:gap-0 gap-2">
-              <label className="calc-input-label lg:hidden">{units[leftUnit].name.toUpperCase()}</label>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 items-stretch">
+            
+            {/* Left Input Block */}
+            <div className="flex flex-col gap-2">
+              <label className="calc-input-label lg:hidden px-2">{units[leftUnit].name.toUpperCase()}</label>
               <div className="calc-input-key">
                   <div className="bg-secondary/10 p-3 border-b border-border">
                     <select 
@@ -92,15 +94,15 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
                     type="number" 
                     value={leftValue} 
                     onChange={e => handleLeftChange(e.target.value)} 
-                    className="calc-input-field !text-5xl py-8"
+                    className="calc-input-field !text-5xl py-10"
                     placeholder="0"
                   />
               </div>
             </div>
 
-            {/* Right Input Box */}
-            <div className="flex flex-col lg:gap-0 gap-2">
-              <label className="calc-input-label lg:hidden text-right">{units[rightUnit].name.toUpperCase()}</label>
+            {/* Right Input Block */}
+            <div className="flex flex-col gap-2">
+              <label className="calc-input-label lg:hidden px-2 text-right">{units[rightUnit].name.toUpperCase()}</label>
               <div className="calc-input-key">
                   <div className="bg-secondary/10 p-3 border-b border-border">
                     <select 
@@ -115,22 +117,24 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
                     type="number" 
                     value={rightValue} 
                     onChange={e => handleRightChange(e.target.value)} 
-                    className="calc-input-field !text-5xl py-8 text-accent-primary"
+                    className="calc-input-field !text-5xl py-10 text-accent-primary"
                     placeholder="0"
                   />
               </div>
             </div>
           </div>
 
-          {/* Swap Button - Center Floating */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none">
-            <button 
-              onClick={swapUnits}
-              className="calc-swap-glass group/swapbtn pointer-events-auto"
-              title="Birimleri Değiştir"
-            >
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0 transition-transform group-hover/swapbtn:rotate-180"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
-            </button>
+          {/* Central 3D Swap Button - Guaranteed Center */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] pointer-events-none">
+             <button 
+                onClick={swapUnits}
+                className="calc-swap-glass group/swapbtn pointer-events-auto shadow-2xl"
+                title="Birimleri Değiştir"
+             >
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0 transition-all duration-500 group-hover/swapbtn:rotate-180 group-hover/swapbtn:scale-110"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
+                </div>
+             </button>
           </div>
         </div>
       </div>

@@ -1379,28 +1379,29 @@ input, textarea, select {
 .calc-input-key {
   background: var(--bg-primary);
   border: 2px solid var(--border);
-  border-radius: 20px;
+  border-radius: 24px;
   position: relative;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 8px 0 var(--border), 0 15px 30px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 0 var(--border), 0 20px 40px rgba(0,0,0,0.05);
   overflow: hidden;
 }
 
 .calc-input-key:focus-within {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   border-color: var(--accent-primary);
-  box-shadow: 0 10px 0 var(--border), 0 20px 40px var(--accent-glow);
+  box-shadow: 0 14px 0 var(--border), 0 25px 50px var(--accent-glow);
 }
 
 .dark .calc-input-key {
-  background: #1e293b; /* Slate 800 */
-  border-color: #334155;
-  box-shadow: 0 8px 0 #0f172a, 0 15px 30px rgba(0,0,0,0.3);
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 0 #0f172a, 0 20px 40px rgba(0,0,0,0.4);
 }
 
 .dark .calc-input-key:focus-within {
   border-color: var(--accent-primary);
-  box-shadow: 0 10px 0 #0f172a, 0 20px 40px rgba(0,0,0,0.5);
+  box-shadow: 0 14px 0 #0f172a, 0 30px 60px rgba(0,0,0,0.6);
 }
 
 .calc-input-field {
@@ -1541,21 +1542,24 @@ input, textarea, select {
 
 /* --- PREMIUM 3D GLASS SWAP BUTTON --- */
 .calc-swap-glass {
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 72px;
+  height: 72px;
+  border-radius: 24px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   position: relative;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-  z-index: 20;
+  box-shadow: 
+    0 12px 24px rgba(0, 0, 0, 0.15), 
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset,
+    0 0 20px rgba(255, 255, 255, 0.1);
+  z-index: 50;
 }
 
 .calc-swap-glass::after {
@@ -1563,29 +1567,33 @@ input, textarea, select {
   position: absolute;
   inset: 0;
   border-radius: inherit;
-  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent);
   pointer-events: none;
 }
 
 .calc-swap-glass:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-4px) scale(1.08) rotate(5deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
 }
 
 .calc-swap-glass:active {
-  transform: translateY(6px) scale(0.92);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(8px) scale(0.9);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   background: rgba(255, 255, 255, 0.05);
 }
 
 .dark .calc-swap-glass {
-  background: rgba(15, 23, 42, 0.4);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+  background: rgba(15, 23, 42, 0.6);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 
+    0 15px 30px rgba(0, 0, 0, 0.5), 
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 0 30px rgba(59, 130, 246, 0.1);
 }
 
 .dark .calc-swap-glass:hover {
-  background: rgba(15, 23, 42, 0.6);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(15, 23, 42, 0.8);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
 }
