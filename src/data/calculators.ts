@@ -51,7 +51,7 @@ export const calculators: CalculatorInfo[] = [
   // Finans ve Kredi
   { id: "kredi", title: "Kredi Hesaplama", slug: "kredi-hesaplama", categoryId: "kredi", description: "Aylık taksit tutarlarınızı, anapara ve faiz oranınıza göre detaylı hesaplayın." },
   { id: "kredikarti", title: "Kredi Kartı Asgari Ödeme", slug: "kredi-karti-asgari", categoryId: "kredi", description: "Mevcut borcunuza göre ödemeniz gereken minimum asgari tutar." },
-  { id: "amortizasyon", title: "Kredi Ödeme Planı (Amortizasyon)", slug: "kredi-ödeme-plani", categoryId: "kredi", description: "Ay bazlı anapara ve faiz dökümünü içeren detaylı kredi taksit tablosu." },
+  { id: "amortizasyon", title: "Kredi Ödeme Planı (Amortizasyon)", slug: "kredi-odeme-plani", categoryId: "kredi", description: "Ay bazlı anapara ve faiz dökümünü içeren detaylı kredi taksit tablosu." },
   { id: "faiz", title: "Faiz Getirisi", slug: "faiz", categoryId: "finans", description: "Vadeli mevduat hesaplamaları ve net/brüt getiri hesabı." },
   { id: "vucut-yag", title: "Vücut Yağ Oranı (US Navy)", slug: "vucut-yag-orani", categoryId: "saglik", description: "Bel, boyun ve boy ölçülerinize göre vücut yağ yüzdenizi profesyonelce hesaplayın." },
   { id: "su-takibi", title: "İnteraktif Su Takipçisi", slug: "su-takibi", categoryId: "saglik", description: "Günlük su ihtiyacınızı hesaplayın ve içtiğiniz suyu bardak bazlı görsel takip edin." },

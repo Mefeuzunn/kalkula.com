@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
+import { Landmark, Download, RefreshCw, Share2 } from "lucide-react";
 
 type VatMode = "hariç" | "dahil";
 
@@ -67,7 +68,6 @@ export function VatCalculator() {
     }
   };
 
-  // Auto-calculate on change for better UX
   useEffect(() => {
     calculate();
   }, [amount, vatRate, mode, hasWithholding, withholdingRate]);
@@ -76,11 +76,11 @@ export function VatCalculator() {
     <div className="flex flex-col gap-6 max-w-4xl mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Input Section */}
-        <div className="lg:col-span-7 flex flex-col gap-5">
+        <div className="lg:col-span-12 flex flex-col gap-5">
            <div className="panel p-6 bg-secondary/5 border-border rounded-[2rem] border-b-4 border-accent-primary/20">
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col lg:flex-row gap-6">
                  {/* Mode Toggle */}
-                 <div className="flex bg-secondary/10 p-1.5 rounded-2xl gap-1">
+                 <div className="flex bg-secondary/10 p-1.5 rounded-2xl gap-1 lg:w-1/3">
                     <button 
                        onClick={() => setMode("hariç")}
                        className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${mode === "hariç" ? 'bg-surface text-accent-primary shadow-sm' : 'text-muted hover:text-primary'}`}
@@ -96,18 +96,20 @@ export function VatCalculator() {
                  </div>
 
                  {/* Amount Input */}
-                 <div className="relative group">
+                 <div className="relative group flex-1">
                     <label className="text-[10px] font-black text-muted uppercase tracking-widest mb-2 px-2 block italic">Tutar (TL)</label>
                     <input 
                        type="number" 
                        value={amount} 
                        onChange={(e) => setAmount(e.target.value)}
                        placeholder="0,00"
-                       className="input-field !py-5 !text-4xl font-black border-4 border-border focus:border-accent-primary transition-all pr-12"
+                       className="input-field !py-4 !text-3xl font-black border-4 border-border focus:border-accent-primary transition-all pr-12"
                     />
                     <span className="absolute right-6 top-[55%] font-black text-muted text-xl opacity-30 italic">₺</span>
                  </div>
+              </div>
 
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
                  {/* VAT Rates */}
                  <div className="flex flex-col gap-2">
                     <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 block italic">KDV Oranı (%)</label>
@@ -138,7 +140,7 @@ export function VatCalculator() {
                     <div className="flex items-center justify-between mb-4">
                        <div className="flex flex-col">
                           <span className="text-[10px] font-black text-primary uppercase tracking-widest italic">KDV Tevkifatı</span>
-                          <span className="text-[9px] text-muted font-bold">5/10, 9/10 vb. kesinti uygula</span>
+                          <span className="text-[9px] text-muted font-bold">Kesinti Uygulayılsın Mı?</span>
                        </div>
                        <label className="relative inline-flex items-center cursor-pointer">
                           <input type="checkbox" checked={hasWithholding} onChange={(e) => setHasWithholding(e.target.checked)} className="sr-only peer" />
@@ -149,7 +151,7 @@ export function VatCalculator() {
                        <select 
                           value={withholdingRate} 
                           onChange={(e) => setWithholdingRate(e.target.value)}
-                          className="input-field !py-3 !text-sm font-bold bg-white dark:bg-zinc-800"
+                          className="input-field !py-2 !text-sm font-bold bg-white dark:bg-zinc-800"
                        >
                           {["1/10", "2/10", "3/10", "4/10", "5/10", "7/10", "9/10", "10/10"].map(r => (
                              <option key={r} value={r}>{r} Tevkifat Oranı</option>
@@ -162,60 +164,64 @@ export function VatCalculator() {
         </div>
 
         {/* Results Section */}
-        <div className="lg:col-span-5 flex flex-col gap-4">
+        <div className="lg:col-span-12 flex flex-col gap-4">
            {results ? (
-              <div className="result-container-premium !animate-none">
-                 <div className="result-card-premium !p-8 bg-surface border-4 border-border shadow-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 p-4 font-black italic text-xs text-muted opacity-10 tracking-widest rotate-12">Tax Engine v2.0</div>
+              <div className="result-container-premium animate-result">
+                 <div className="result-card-premium">
+                    <div className="result-badge">
+                       <Landmark size={14} className="mr-2" /> VERGİ ANALİZİ TAMAMLANDI
+                    </div>
                     
-                    <div className="flex flex-col items-center text-center mb-8">
-                       <span className="text-[10px] font-black text-accent-primary uppercase tracking-[0.3em] mb-4 bg-accent-primary/10 px-4 py-1 rounded-full border border-accent-primary/20 italic">Genel Toplam</span>
-                       <div className="text-5xl font-black italic tracking-tighter text-primary">
-                          {results.grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺
-                       </div>
+                    <div className="result-label-premium text-center">Genel Toplam (Tahsilat Tutarınız)</div>
+                    <div className="result-value-premium tracking-tighter">
+                       {results.grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺
                     </div>
 
-                    <div className="flex flex-col gap-3">
-                       <div className="flex justify-between items-center p-3 rounded-2xl bg-secondary/5 border border-border/50 group-hover:bg-accent-primary/5 transition-all">
-                          <span className="text-[10px] font-black text-muted uppercase tracking-widest italic">KDV Matrahı (Net)</span>
-                          <span className="text-sm font-bold text-primary">{results.base.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
-                       </div>
-                       
-                       <div className="flex justify-between items-center p-3 rounded-2xl bg-secondary/5 border border-border/50 group-hover:bg-accent-primary/5 transition-all">
-                          <span className="text-[10px] font-black text-muted uppercase tracking-widest italic">Hesaplanan KDV (%{vatRate})</span>
-                          <span className="text-sm font-bold text-primary">{results.vat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
-                       </div>
-
-                       {hasWithholding && (
-                          <>
-                             <div className="flex justify-between items-center p-3 rounded-2xl bg-orange-500/5 border border-orange-500/20 group-hover:bg-orange-500/10 transition-all">
-                                <div className="flex flex-col">
-                                   <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest italic">Tevkif Edilen KDV</span>
-                                   <span className="text-[8px] text-orange-500 font-bold uppercase">({withholdingRate})</span>
-                                </div>
-                                <span className="text-sm font-bold text-orange-600">-{results.withheldVat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
-                             </div>
-                             <div className="flex justify-between items-center p-3 rounded-2xl bg-green-500/5 border border-green-500/20 group-hover:bg-green-500/10 transition-all">
-                                <span className="text-[10px] font-black text-green-600 uppercase tracking-widest italic">Ödenecek KDV</span>
-                                <span className="text-sm font-bold text-green-600">{results.finalVat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
-                             </div>
-                          </>
-                       )}
-
-                       <div className="mt-4 pt-4 border-t-4 border-double border-border flex justify-between items-center px-2">
-                          <span className="text-xs font-black text-primary uppercase tracking-widest italic">Toplam Tahsilat</span>
-                          <span className="text-xl font-black text-primary">{results.grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
-                       </div>
+                    <div className="max-w-2xl mx-auto">
+                       <table className="result-table-premium">
+                          <tbody>
+                             <tr>
+                                <td>MATRAH (KDV HARİÇ TUTAR)</td>
+                                <td>{results.base.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+                             </tr>
+                             <tr className="row-accent">
+                                <td>KDV TUTARI (%{vatRate})</td>
+                                <td>{results.vat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+                             </tr>
+                             {hasWithholding && (
+                                <>
+                                   <tr className="row-danger">
+                                      <td>TEVKİF EDİLEN KDV ({withholdingRate})</td>
+                                      <td>-{results.withheldVat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+                                   </tr>
+                                   <tr className="row-success">
+                                      <td>BEYAN EDİLECEK (ÖDENECEK) KDV</td>
+                                      <td>{results.finalVat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+                                   </tr>
+                                </>
+                             )}
+                             <tr className="row-total">
+                                <td>ÖDENECEK TOPLAM TUTAR</td>
+                                <td>{results.grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
+                             </tr>
+                          </tbody>
+                       </table>
                     </div>
 
-                    <div className="mt-8 p-4 bg-blue-500/5 rounded-2xl border border-blue-500/10 text-[9px] text-blue-600 dark:text-blue-300 italic text-center leading-relaxed">
+                    <div className="result-footer-premium">
+                       <button className="btn-secondary !py-2 !px-4 text-[10px]"><Download size={14} /> PDF</button>
+                       <button className="btn-secondary !py-2 !px-4 text-[10px]" onClick={() => setAmount("")}><RefreshCw size={14} /> SIFIRLA</button>
+                       <button className="btn-primary !py-2 !px-4 text-[10px]"><Share2 size={14} /> PAYLAŞ</button>
+                    </div>
+
+                    <div className="mt-8 p-6 bg-blue-500/5 rounded-2xl border border-blue-500/10 text-[10px] text-blue-600 dark:text-blue-300 italic text-center leading-relaxed">
                        💡 Bu hesaplama güncel vergi mevzuatına uygundur. Tevkifatlı işlemlerde satıcının beyan edeceği KDV tutarı "Ödenecek KDV" kısmıdır.
                     </div>
                  </div>
               </div>
            ) : (
-              <div className="panel flex flex-col items-center justify-center h-full p-12 bg-secondary/5 rounded-[2.5rem] border-dashed border-4 border-border/40 text-center">
-                 <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center text-4xl mb-6 grayscale opacity-20 transform -rotate-12">🧾</div>
+              <div className="panel flex flex-col items-center justify-center p-20 bg-secondary/5 rounded-[3rem] border-dashed border-4 border-border/40 text-center grayscale opacity-40">
+                 <div className="text-6xl mb-6">🧾</div>
                  <h4 className="text-xs font-black text-muted uppercase tracking-[0.2em] italic">FATURA ANALİZİ İÇİN<br/> TUTAR GİRİNİZ</h4>
               </div>
            )}

@@ -625,10 +625,10 @@ input, textarea, select {
   position: relative;
   margin-top: 2rem;
   padding: 2px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), #ec4899);
+  border-radius: 24px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary), #8b5cf6);
   background-size: 200% 200%;
-  animation: gradientMove 4s ease infinite;
+  animation: gradientMove 6s ease infinite;
   box-shadow: 0 20px 50px -12px var(--accent-glow);
 }
 
@@ -641,60 +641,144 @@ input, textarea, select {
 .result-card-premium {
   background: var(--surface);
   backdrop-filter: blur(10px);
-  border-radius: 18px;
+  border-radius: 22px;
   padding: 2.5rem;
   text-align: center;
   position: relative;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .dark .result-card-premium {
-  background: rgba(30, 41, 59, 0.85); /* Semitransparent for glass effect */
+  background: rgba(15, 23, 42, 0.9);
 }
 
 .result-badge {
-  display: inline-block;
-  padding: 0.4rem 1.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
   border-radius: 9999px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-bottom: 1.5rem;
   background: var(--accent-glow);
   color: var(--accent-primary);
-  border: 1px solid var(--accent-primary);
+  border: 1.5px solid var(--accent-primary);
+  box-shadow: 0 4px 12px var(--accent-glow);
 }
 
 .result-value-premium {
-  font-size: 3.5rem;
+  font-size: 4rem;
   font-weight: 900;
   line-height: 1;
-  letter-spacing: -0.04em;
-  margin-bottom: 1rem;
-  background: linear-gradient(to bottom, var(--text-primary), var(--text-secondary));
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.05em;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.result-label-premium {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 2rem;
+}
+
+/* Premium Result Table */
+.result-table-premium {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+  margin-top: 1.5rem;
+}
+
+.result-table-premium tr {
+  background: var(--bg-secondary);
+  transition: transform 0.2s, background 0.2s;
+}
+
+.result-table-premium tr:hover {
+  transform: scale(1.01);
+  background: var(--surface-hover);
+}
+
+.result-table-premium td {
+  padding: 1.25rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.result-table-premium td:first-child {
+  border-left: 1px solid var(--border);
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.result-table-premium td:last-child {
+  border-right: 1px solid var(--border);
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  text-align: right;
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+}
+
+.result-table-premium .row-accent td:last-child {
+  color: var(--accent-primary);
+}
+
+.result-table-premium .row-success td:last-child {
+  color: #22c55e;
+}
+
+.result-table-premium .row-danger td:last-child {
+  color: #ef4444;
+}
+
+.result-table-premium .row-total {
+  background: var(--text-primary) !important;
+  color: var(--surface) !important;
+}
+
+.result-table-premium .row-total td {
+  border: none;
+  font-size: 1rem;
+}
+
+.result-table-premium .row-total td:last-child {
+  color: var(--surface) !important;
+  font-size: 1.5rem;
 }
 
 .result-footer-premium {
-  margin-top: 2rem;
+  margin-top: 2.5rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--border);
   display: flex;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.5rem;
 }
 
 /* Animations for Results */
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  from { opacity: 0; transform: translateY(30px) scale(0.98); }
   to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .animate-result {
-  animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* ============================================================

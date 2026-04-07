@@ -213,7 +213,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "bmr": return <BmrCalculator />;
       case "gunluk-kalori-ihtiyaci": return <CalorieCalculator />;
       case "kredi-hesaplama": return <LoanCalculator />;
-      case "kredi-ödeme-plani": return <LoanAmortization />;
+      case "kredi-odeme-plani": return <LoanAmortization />;
       case "kredi-karti-asgari": return <CreditCardCalculator />;
       case "faiz": return <InterestCalculator />;
       case "enflasyon": return <InflationCalculator />;

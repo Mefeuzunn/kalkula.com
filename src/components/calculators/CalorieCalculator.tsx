@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Flame, Calculator, RefreshCw, Zap, TrendingUp, TrendingDown, Target } from "lucide-react";
 
 export function CalorieCalculator() {
   const [gender, setGender] = useState<"male" | "female">("male");
@@ -35,84 +36,135 @@ export function CalorieCalculator() {
   useEffect(() => { calculate(); }, [gender, weight, height, age, activity]);
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-input-group">
-        <label className="calc-label">Cinsiyet</label>
-        <div className="calc-toggle-group">
-          <button className={`calc-toggle-btn ${gender === "male" ? "active" : ""}`} onClick={() => setGender("male")}>♂ Erkek</button>
-          <button className={`calc-toggle-btn ${gender === "female" ? "active" : ""}`} onClick={() => setGender("female")}>♀ Kadın</button>
+    <div className="flex flex-col gap-10 max-w-5xl mx-auto pb-20">
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center text-orange-600">
+           <Flame size={24} />
+        </div>
+        <div>
+           <h1 className="text-2xl font-black italic">Günlük Kalori İhtiyacı</h1>
+           <p className="text-muted text-[10px] font-black uppercase tracking-widest italic opacity-60">Harris-Benedict Enerji Analizi</p>
         </div>
       </div>
 
-      <div className="calc-grid-3">
-        <div className="calc-input-group">
-          <label className="calc-label">Kilo</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="calc-input has-unit" placeholder="70" min="1" />
-            <span className="calc-unit">KG</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Boy</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="calc-input has-unit" placeholder="175" min="1" />
-            <span className="calc-unit">CM</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Yaş</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={age} onChange={e => setAge(e.target.value)} className="calc-input has-unit" placeholder="30" min="1" />
-            <span className="calc-unit">YAŞ</span>
-          </div>
-        </div>
-      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        {/* Inputs Column */}
+        <div className="lg:col-span-5 flex flex-col gap-6">
+           <div className="panel p-10 bg-secondary/5 border-border rounded-[3.5rem] border-b-8 border-orange-500/20">
+              <div className="space-y-8">
+                 <div className="space-y-3">
+                    <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2">Biyo-Cinsiyet</label>
+                    <div className="flex bg-secondary/10 p-2 rounded-2xl gap-2">
+                       <button 
+                          className={`flex-1 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${gender === "male" ? 'bg-surface text-accent-primary shadow-sm' : 'text-muted hover:text-primary'}`}
+                          onClick={() => setGender("male")}
+                       >
+                          ♂ ERKEK
+                       </button>
+                       <button 
+                          className={`flex-1 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${gender === "female" ? 'bg-surface text-accent-primary shadow-sm' : 'text-muted hover:text-primary'}`}
+                          onClick={() => setGender("female")}
+                       >
+                          ♀ KADIN
+                       </button>
+                    </div>
+                 </div>
 
-      <div className="calc-input-group">
-        <label className="calc-label">Hareket Seviyesi</label>
-        <select value={activity} onChange={e => setActivity(e.target.value)} className="calc-select">
-          {ACTIVITIES.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
-        </select>
-      </div>
+                 <div className="grid grid-cols-2 gap-6">
+                    <div className="space-y-3">
+                       <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2">KİLO (KG)</label>
+                       <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="input-field !text-2xl font-black py-4 border-4 border-border" />
+                    </div>
+                    <div className="space-y-3">
+                       <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2">BOY (CM)</label>
+                       <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="input-field !text-2xl font-black py-4 border-4 border-border" />
+                    </div>
+                 </div>
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>⚡ Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
+                 <div className="space-y-3">
+                    <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2">YAŞ</label>
+                    <input type="number" value={age} onChange={e => setAge(e.target.value)} className="input-field !text-2xl font-black py-4 border-4 border-border" />
+                 </div>
 
-      {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">🔥 Günlük Kalori İhtiyacı</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Günlük Toplam Enerji (TDEE)</div>
-              <div className="calc-result-hero-value" style={{ color: "#22c55e" }}>{result.tdee} <span style={{ fontSize: "1.5rem" }}>kcal</span></div>
-              <div className="calc-result-hero-sub">Bazal Metabolizma (BMR): {result.bmr} kcal</div>
-            </div>
-            <div className="calc-result-cards">
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">⬇️ Kilo Vermek</div>
-                <div className="calc-result-card-value" style={{ color: "#3b82f6" }}>{result.lose}</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>kcal/gün</div>
+                 <div className="space-y-3">
+                    <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 text-orange-600 italic">HAREKET SEVİYESİ</label>
+                    <select value={activity} onChange={e => setActivity(e.target.value)} className="input-field !py-4 font-black !text-sm italic appearance-none bg-white dark:bg-zinc-800">
+                       {ACTIVITIES.map(a => <option key={a.value} value={a.value}>{a.label}</option>)}
+                    </select>
+                 </div>
               </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">✅ Kilo Korumak</div>
-                <div className="calc-result-card-value" style={{ color: "#22c55e" }}>{result.tdee}</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>kcal/gün</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">⬆️ Kilo Almak</div>
-                <div className="calc-result-card-value" style={{ color: "#f59e0b" }}>{result.gain}</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>kcal/gün</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+           </div>
 
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">🏃</span>
-        <span className="calc-info-box-text">Harris-Benedict denklemi kullanılmaktadır. Kilo vermek için günlük 500 kcal açık, kilo almak için 500 kcal fazla almanız önerilir.</span>
+           <button 
+              className="btn-secondary w-full !py-5 !rounded-3xl !text-xs font-black tracking-widest uppercase flex items-center justify-center gap-3 active:translate-y-1"
+              onClick={reset}
+           >
+              <RefreshCw size={14} /> Temizle ve Sıfırla
+           </button>
+        </div>
+
+        {/* Results Column */}
+        <div className="lg:col-span-7 flex flex-col gap-6">
+           {result ? (
+              <div className="result-container-premium !mt-0 animate-result">
+                 <div className="result-card-premium !p-10">
+                    <div className="result-badge">
+                       <Zap size={14} className="mr-2" /> ENERJİ ANALİZİ TAMAMLANDI
+                    </div>
+                    
+                    <div className="result-label-premium">Günlük Enerji İhtiyacınız (TDEE)</div>
+                    <div className="result-value-premium tracking-tighter text-orange-600">
+                       {result.tdee} <span className="text-xl font-black opacity-40">kcal</span>
+                    </div>
+
+                    <div className="mt-10 max-w-md mx-auto">
+                       <table className="result-table-premium">
+                          <tbody>
+                             <tr>
+                                <td className="flex items-center gap-2">
+                                   <div className="w-2 h-2 rounded-full bg-blue-500" /> BAZAL METABOLİZMA (BMR)
+                                </td>
+                                <td>{result.bmr} kcal</td>
+                             </tr>
+                             <tr className="row-success">
+                                <td className="flex items-center gap-2">
+                                   <Target size={14} /> KİLO KORUMAK İÇİN
+                                </td>
+                                <td>{result.tdee} kcal</td>
+                             </tr>
+                             <tr className="row-accent">
+                                <td className="flex items-center gap-2">
+                                   <TrendingDown size={14} /> KİLO VERMEK İÇİN
+                                </td>
+                                <td>{result.lose} kcal</td>
+                             </tr>
+                             <tr className="row-danger">
+                                <td className="flex items-center gap-2">
+                                   <TrendingUp size={14} /> KİLO ALMAK İÇİN
+                                </td>
+                                <td>{result.gain} kcal</td>
+                             </tr>
+                          </tbody>
+                       </table>
+                    </div>
+
+                    <div className="result-footer-premium">
+                       <button className="btn-secondary !py-2.5 !px-6 text-[10px] font-black group"><RefreshCw size={14} className="group-hover:rotate-180 transition-transform duration-500" /> YENİ ANALİZ</button>
+                       <button className="btn-primary !py-2.5 !px-6 text-[10px] font-black"><Calculator size={14} /> BESLENME PLANI</button>
+                    </div>
+
+                    <div className="mt-8 p-6 bg-orange-500/5 rounded-2xl border border-orange-500/10 text-[10px] text-orange-600/60 leading-relaxed italic text-center">
+                       ℹ️ <b>Uzman Tavsiyesi:</b> Sağlıklı kilo kaybı için günlük kalori miktarınızı TDEE değerinizden 300-500 kcal daha az, kilo almak için ise 300-500 kcal daha fazla olarak belirlemeniz önerilir.
+                    </div>
+                 </div>
+              </div>
+           ) : (
+              <div className="panel flex flex-col items-center justify-center p-20 bg-secondary/5 rounded-[4rem] border-dashed border-4 border-border/40 text-center grayscale opacity-40 h-full">
+                 <div className="text-7xl mb-8">🔥</div>
+                 <h4 className="text-[10px] font-black text-muted uppercase tracking-[0.2em] italic">ENERJİ PROFİLİ İÇİN<br/> VERİLERİ DOLDURUN</h4>
+              </div>
+           )}
+        </div>
       </div>
     </div>
   );
