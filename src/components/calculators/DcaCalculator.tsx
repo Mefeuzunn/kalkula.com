@@ -153,17 +153,25 @@ export function DcaCalculator() {
   return (
     <div className="calc-wrapper animate-fade-in max-w-6xl mx-auto">
       {/* Tab Switcher */}
-      <div className="flex bg-surface-variant p-1.5 rounded-2xl mb-10 w-full max-w-md mx-auto border border-border shadow-inner">
+      <div className="flex bg-surface-variant p-2 rounded-[22px] mb-12 w-full max-w-md mx-auto border border-border shadow-inner relative">
         <button 
           onClick={() => setActiveTab("simulator")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-black transition-all ${activeTab === "simulator" ? "bg-white dark:bg-slate-800 text-accent-primary shadow-lg" : "text-muted hover:text-primary"}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-sm font-black transition-all duration-200 ${
+            activeTab === "simulator" 
+              ? "bg-white dark:bg-slate-700 text-accent-primary shadow-[0_6px_0_rgba(37,99,235,0.2)] dark:shadow-[0_6px_0_rgba(0,0,0,0.4)] -translate-y-1 border border-accent-primary/10" 
+              : "text-muted hover:text-primary"
+          }`}
         >
           <Repeat size={16} />
           <span>DCA Simülatörü</span>
         </button>
         <button 
           onClick={() => setActiveTab("average")}
-          className={`flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-black transition-all ${activeTab === "average" ? "bg-white dark:bg-slate-800 text-accent-primary shadow-lg" : "text-muted hover:text-primary"}`}
+          className={`flex-1 flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl text-sm font-black transition-all duration-200 ${
+            activeTab === "average" 
+              ? "bg-white dark:bg-slate-700 text-accent-primary shadow-[0_6px_0_rgba(37,99,235,0.2)] dark:shadow-[0_6px_0_rgba(0,0,0,0.4)] -translate-y-1 border border-accent-primary/10" 
+              : "text-muted hover:text-primary"
+          }`}
         >
           <Calculator size={16} />
           <span>Maliyet Düşürme</span>
@@ -204,14 +212,22 @@ export function DcaCalculator() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <button 
                     onClick={() => setFrequency("weekly")}
-                    className={`py-2 px-3 rounded-xl border text-[10px] font-black transition-all ${frequency === "weekly" ? "bg-accent-primary border-accent-primary text-white" : "border-border text-muted hover:border-accent-primary/50"}`}
+                    className={`py-3 px-4 rounded-2xl border text-[10px] font-black tracking-widest transition-all ${
+                        frequency === "weekly" 
+                        ? "bg-accent-primary border-accent-primary text-white shadow-[0_4px_0_rgb(30_64_175)] -translate-y-1" 
+                        : "border-border text-muted hover:border-accent-primary/50 bg-secondary/20 shadow-[0_4px_0_var(--border)] active:translate-y-0 active:shadow-none"
+                    }`}
                 >HAFTALIK</button>
                 <button 
                     onClick={() => setFrequency("monthly")}
-                    className={`py-2 px-3 rounded-xl border text-[10px] font-black transition-all ${frequency === "monthly" ? "bg-accent-primary border-accent-primary text-white" : "border-border text-muted hover:border-accent-primary/50"}`}
+                    className={`py-3 px-4 rounded-2xl border text-[10px] font-black tracking-widest transition-all ${
+                        frequency === "monthly" 
+                        ? "bg-accent-primary border-accent-primary text-white shadow-[0_4px_0_rgb(30_64_175)] -translate-y-1" 
+                        : "border-border text-muted hover:border-accent-primary/50 bg-secondary/20 shadow-[0_4px_0_var(--border)] active:translate-y-0 active:shadow-none"
+                    }`}
                 >AYLIK</button>
               </div>
 
@@ -349,9 +365,10 @@ export function DcaCalculator() {
                 </div>
                 <button 
                   onClick={addRow}
-                  className="bg-accent-primary text-white p-3 rounded-2xl hover:scale-110 transition-transform shadow-lg shadow-accent-primary/30"
+                  className="btn-primary"
+                  style={{ borderRadius: '20px', padding: '1rem' }}
                 >
-                  <Plus size={20} />
+                  <Plus size={24} />
                 </button>
               </div>
 
@@ -382,7 +399,8 @@ export function DcaCalculator() {
                         <button 
                           onClick={() => removeRow(row.id)}
                           disabled={rows.length <= 1}
-                          className="w-full h-14 flex items-center justify-center text-red-500 hover:bg-red-500/10 rounded-2xl transition-colors disabled:opacity-30"
+                          className="btn-secondary w-full h-14 !bg-red-500/5 !border-red-500/20 !text-red-500 hover:!bg-red-500/10"
+                          style={{ borderRadius: '18px' }}
                         >
                           <Trash2 size={20} />
                         </button>
