@@ -66,66 +66,74 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
   };
 
   return (
-    <div className="flex flex-col gap-10 py-4">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-center">
+    <div className="flex flex-col gap-12 py-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-10 items-center">
         
-        {/* SOL ÜNİTE */}
+        {/* SOL ÜNİTE - 3D KEY */}
         <div className="group relative">
-           <div className="absolute -inset-1 bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 rounded-[2.5rem] blur-xl opacity-10 group-focus-within:opacity-30 transition-all duration-700"></div>
-           <div className="relative bg-secondary/5 border-2 border-border rounded-[2.5rem] overflow-hidden transition-all duration-500 group-focus-within:border-accent-primary">
-              <div className="bg-secondary/10 p-4 border-b border-border flex items-center justify-between px-8 text-accent-primary">
+           <div className={`relative bg-surface border-2 border-border rounded-[3rem] transition-all duration-200 
+             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
+             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(0,0,0,0.1)]
+             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)] dark:hover:shadow-[0_16px_0_rgba(0,0,0,0.5)]
+             overflow-hidden`}>
+              <div className="bg-secondary/20 p-4 border-b-2 border-border flex items-center justify-between px-8 text-accent-primary">
                  <select 
                     value={leftUnit} 
                     onChange={e => { setLeftUnit(e.target.value); handleLeftChange(leftValue, e.target.value, rightUnit); }} 
-                    className="w-full bg-transparent border-none outline-none font-black text-xs uppercase tracking-widest cursor-pointer appearance-none"
+                    className="w-full bg-transparent border-none outline-none font-black text-[11px] uppercase tracking-widest cursor-pointer appearance-none"
                  >
                     {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
                  </select>
                  <span className="text-[10px] opacity-40">▼</span>
               </div>
-              <div className="p-10">
+              <div className="p-12">
                  <input 
                     type="number" 
                     value={leftValue} 
                     onChange={e => handleLeftChange(e.target.value)} 
-                    className="w-full bg-transparent border-none outline-none text-5xl font-black text-center text-primary italic tracking-tighter"
+                    className="w-full bg-transparent border-none outline-none text-6xl font-black text-center text-primary italic tracking-tighter"
                     placeholder="0"
                  />
               </div>
            </div>
         </div>
 
-        {/* SWAP / TAKAS */}
+        {/* SWAP / TAKAS - 3D KEY */}
         <div className="flex justify-center z-20">
            <button 
               onClick={swapUnits}
-              className="w-16 h-16 rounded-full bg-surface border-4 border-border flex items-center justify-center cursor-pointer text-muted hover:text-accent-primary hover:border-accent-primary/40 hover:scale-110 active:scale-95 transition-all shadow-2xl relative group/btn"
+              className="w-20 h-20 rounded-3xl bg-surface border-2 border-border flex items-center justify-center cursor-pointer text-muted hover:text-accent-primary hover:border-accent-primary/40 transition-all 
+              shadow-[0_8px_0_rgba(0,0,0,0.05)] dark:shadow-[0_8px_0_rgba(0,0,0,0.3)]
+              hover:-translate-y-1 hover:shadow-[0_12px_0_rgba(0,0,0,0.08)]
+              active:translate-y-1 active:shadow-none group/btn"
            >
-             <div className="absolute inset-0 bg-accent-primary/10 rounded-full blur-xl opacity-0 group-hover/btn:opacity-100 transition-opacity"></div>
-             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 rotate-90 lg:rotate-0"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
+             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 rotate-90 lg:rotate-0 transition-transform group-active/btn:scale-90"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
            </button>
         </div>
 
-        {/* SAĞ ÜNİTE */}
+        {/* SAĞ ÜNİTE - 3D KEY */}
         <div className="group relative">
-           <div className="absolute -inset-1 bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 rounded-[2.5rem] blur-xl opacity-10 group-focus-within:opacity-30 transition-all duration-700"></div>
-           <div className="relative bg-secondary/5 border-2 border-border rounded-[2.5rem] overflow-hidden transition-all duration-500 group-focus-within:border-accent-primary shadow-[0_0_40px_rgba(59,130,246,0.05)]">
-              <div className="bg-secondary/10 p-4 border-b border-border flex items-center justify-between px-8 text-accent-primary">
+           <div className={`relative bg-surface border-2 border-border rounded-[3rem] transition-all duration-200 
+             shadow-[0_12px_0_rgba(0,0,0,0.08)] dark:shadow-[0_12px_0_rgba(0,0,0,0.4)]
+             group-focus-within:-translate-y-1 group-focus-within:shadow-[0_8px_0_rgba(37,99,235,0.15)]
+             hover:-translate-y-1 hover:shadow-[0_16px_0_rgba(0,0,0,0.06)] dark:hover:shadow-[0_16px_0_rgba(0,0,0,0.5)]
+             overflow-hidden`}>
+              <div className="bg-secondary/20 p-4 border-b-2 border-border flex items-center justify-between px-8 text-accent-primary">
                  <select 
                     value={rightUnit} 
                     onChange={e => { setRightUnit(e.target.value); handleLeftChange(leftValue, leftUnit, e.target.value); }} 
-                    className="w-full bg-transparent border-none outline-none font-black text-xs uppercase tracking-widest cursor-pointer appearance-none"
+                    className="w-full bg-transparent border-none outline-none font-black text-[11px] uppercase tracking-widest cursor-pointer appearance-none"
                  >
                     {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
                  </select>
                  <span className="text-[10px] opacity-40">▼</span>
               </div>
-              <div className="p-10">
+              <div className="p-12">
                  <input 
                     type="number" 
                     value={rightValue} 
                     onChange={e => handleRightChange(e.target.value)} 
-                    className="w-full bg-transparent border-none outline-none text-5xl font-black text-center text-accent-primary italic tracking-tighter"
+                    className="w-full bg-transparent border-none outline-none text-6xl font-black text-center text-accent-primary italic tracking-tighter"
                     placeholder="0"
                  />
               </div>
@@ -134,14 +142,13 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
 
       </div>
 
-      <div className="p-8 bg-secondary/5 border-2 border-dashed border-border rounded-[2rem] text-center relative group">
-        <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] mb-3 block italic opacity-60">Dönüşüm Katsayısı ve Formülü</label>
-        <div className="font-mono text-lg font-black text-primary tracking-tighter flex items-center justify-center gap-3">
-          <span className="opacity-40">1 {units[leftUnit].id.toUpperCase()} =</span>
-          <span className="text-2xl text-accent-primary italic">{convert("1", leftUnit, rightUnit)}</span>
-          <span className="opacity-40">{units[rightUnit].id.toUpperCase()}</span>
+      <div className="p-10 bg-secondary/10 border-2 border-dashed border-border rounded-[2.5rem] text-center relative group shadow-inner">
+        <label className="text-[10px] font-black text-muted uppercase tracking-[0.4em] mb-4 block italic opacity-60">Dönüşüm Katsayısı ve Formülü</label>
+        <div className="font-mono text-xl font-black text-primary tracking-tighter flex items-center justify-center gap-4">
+          <span className="opacity-40 whitespace-nowrap">1 {units[leftUnit].id.toUpperCase()} =</span>
+          <span className="text-3xl text-accent-primary italic drop-shadow-sm">{convert("1", leftUnit, rightUnit)}</span>
+          <span className="opacity-40 whitespace-nowrap">{units[rightUnit].id.toUpperCase()}</span>
         </div>
-        <div className="absolute bottom-2 right-4 text-[8px] font-black text-muted uppercase tracking-widest italic opacity-20">KALKÜLA PRECISION ENGINE</div>
       </div>
     </div>
   );
