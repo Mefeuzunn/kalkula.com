@@ -57,27 +57,29 @@ export function BankingAdvanced() {
 
   return (
     <div className="calc-wrapper max-w-5xl mx-auto pb-20">
-      {/* TOOL SWITCHER */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mb-12">
+      {/* PROFESSIONAL 3D TILE SWITCHER */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 max-w-5xl mx-auto">
         {(["eligibility", "early-repayment", "dosya-masrafi"] as Tool[]).map((t) => (
           <button 
             key={t}
-            onClick={() => { setTool(t); confetti({ particleCount: 15, spread: 20 }); }}
-            className={`p-6 rounded-[2rem] border-2 transition-all duration-300 text-left relative overflow-hidden group ${
+            onClick={() => { setTool(t); confetti({ particleCount: 25, spread: 30, origin: { y: 0.8 } }); }}
+            className={`flex flex-col items-start p-8 rounded-[2.5rem] transition-all duration-300 relative group border-2 ${
               tool === t 
-                ? "bg-emerald-600 border-emerald-500 text-white shadow-[0_15px_30px_rgba(16,185,129,0.3)] -translate-y-2" 
-                : "bg-surface border-border text-muted hover:border-emerald-500/30"
+                ? "bg-emerald-600 border-emerald-500 text-white shadow-[0_20px_50px_rgba(16,185,129,0.4)] -translate-y-3 border-b-[10px] border-emerald-800" 
+                : "bg-surface border-border text-muted hover:border-emerald-500/30 hover:-translate-y-1 border-b-[4px]"
             }`}
           >
-            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-4 transition-transform group-hover:scale-110 ${tool === t ? "bg-white/20" : "bg-emerald-500/10 text-emerald-500"}`}>
-               {t === "eligibility" ? <Target size={24} /> : t === "early-repayment" ? <RefreshCw size={24} /> : <ShieldCheck size={24} />}
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform duration-500 group-hover:rotate-12 ${tool === t ? "bg-white/20" : "bg-emerald-500/5 text-emerald-500"}`}>
+               {t === "eligibility" ? "🎯" : t === "early-repayment" ? "🔄" : "🛡️"}
             </div>
-            <p className="text-[10px] font-black uppercase tracking-widest opacity-60 mb-1">
-               {t === "eligibility" ? "Kapasite" : t === "early-repayment" ? "Kapatma" : "Masraf"}
-            </p>
-            <h4 className="text-sm font-black font-mono tracking-tight">
-               {t === "eligibility" ? "Ne Kadar Kredi Alabilirim?" : t === "early-repayment" ? "Erken Ödeme Hesabı" : "Dosya Masrafı"}
-            </h4>
+            <div className="mt-6">
+                <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${tool === t ? "opacity-60" : "text-emerald-500"}`}>
+                   {t === "eligibility" ? "Kapasite" : t === "early-repayment" ? "Kapatma" : "Masraf"}
+                </p>
+                <h4 className="text-lg font-black tracking-tight leading-tight">
+                   {t === "eligibility" ? "Ne Kadar Kredi Alabilirim?" : t === "early-repayment" ? "Erken Ödeme Hesabı" : "Dosya Masrafı"}
+                </h4>
+            </div>
           </button>
         ))}
       </div>

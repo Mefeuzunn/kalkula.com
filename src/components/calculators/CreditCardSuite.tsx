@@ -61,24 +61,29 @@ export function CreditCardSuite() {
 
   return (
     <div className="calc-wrapper max-w-5xl mx-auto">
-      {/* PROFESSIONAL TAB SWITCHER */}
-      <div className="flex bg-surface-variant p-2 rounded-[28px] mb-12 w-full max-w-xl mx-auto border border-border shadow-inner relative overflow-hidden">
+      {/* PROFESSIONAL 3D TILE SWITCHER */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 max-w-4xl mx-auto">
         {(["minimum", "installment", "cash-advance", "late-interest"] as CardTask[]).map((t) => (
           <button 
             key={t}
-            onClick={() => { setTask(t); confetti({ particleCount: 15, spread: 20 }); }}
-            className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-2xl text-[9px] font-black transition-all duration-300 relative z-10 ${
+            onClick={() => { setTask(t); confetti({ particleCount: 25, spread: 30, origin: { y: 0.8 } }); }}
+            className={`flex flex-col items-center justify-center gap-3 p-6 rounded-[2.5rem] transition-all duration-300 relative group border-2 ${
               task === t 
-                ? "bg-white dark:bg-slate-700 text-blue-600 shadow-lg -translate-y-1" 
-                : "text-muted hover:text-primary opacity-60"
+                ? "bg-blue-600 border-blue-500 text-white shadow-[0_20px_50px_rgba(37,99,235,0.4)] -translate-y-3 border-b-[10px] border-blue-800" 
+                : "bg-surface border-border text-muted hover:border-blue-500/30 hover:-translate-y-1 border-b-[4px]"
             }`}
           >
-            <span className="text-lg">
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform duration-500 group-hover:scale-110 ${task === t ? "bg-white/20 rotate-12" : "bg-blue-500/5"}`}>
                 {t === "minimum" ? "💳" : t === "installment" ? "🔢" : t === "cash-advance" ? "💵" : "⏰"}
-            </span>
-            <span className="whitespace-nowrap uppercase tracking-tighter">
-                {t === "minimum" ? "Asgari" : t === "installment" ? "Taksit" : t === "cash-advance" ? "Nakit" : "Gecikme"}
-            </span>
+            </div>
+            <div className="flex flex-col items-center">
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] mb-1">
+                    {t === "minimum" ? "Asgari" : t === "installment" ? "Taksit" : t === "cash-advance" ? "Nakit" : "Gecikme"}
+                </span>
+                <span className="text-[9px] font-bold opacity-40 italic">
+                    {t === "minimum" ? "Hesapla" : t === "installment" ? "Maliyeti" : t === "cash-advance" ? "Avans" : "Faizi"}
+                </span>
+            </div>
           </button>
         ))}
       </div>

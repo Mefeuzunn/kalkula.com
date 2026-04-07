@@ -84,25 +84,29 @@ export function LoanSuite() {
 
   return (
     <div className="calc-wrapper max-w-6xl mx-auto">
-      {/* PROFESSIONAL TAB SWITCHER */}
-      <div className="flex bg-surface-variant p-2 rounded-[28px] mb-12 w-full max-w-2xl mx-auto border border-border shadow-inner relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 to-blue-500/5 opacity-50" />
+      {/* PROFESSIONAL 3D TILE SWITCHER */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 max-w-4xl mx-auto">
         {(["personal", "housing", "vehicle", "commercial"] as LoanType[]).map((type) => (
           <button 
             key={type}
-            onClick={() => { setLoanType(type); confetti({ particleCount: 15, spread: 20, origin: { y: 0.8 } }); }}
-            className={`flex-1 flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-2xl text-[10px] font-black transition-all duration-300 relative z-10 ${
+            onClick={() => { setLoanType(type); confetti({ particleCount: 25, spread: 30, origin: { y: 0.8 } }); }}
+            className={`flex flex-col items-center justify-center gap-3 p-6 rounded-[2.5rem] transition-all duration-300 relative group border-2 ${
               loanType === type 
-                ? "bg-white dark:bg-slate-700 text-emerald-600 shadow-lg -translate-y-1 scale-105 border border-emerald-500/10" 
-                : "text-muted hover:text-primary opacity-60 hover:opacity-100"
+                ? "bg-emerald-600 border-emerald-500 text-white shadow-[0_20px_50px_rgba(16,185,129,0.4)] -translate-y-3 border-b-[10px] border-emerald-800" 
+                : "bg-surface border-border text-muted hover:border-emerald-500/30 hover:-translate-y-1 border-b-[4px]"
             }`}
           >
-            <span className="text-xl">
-               {type === "housing" ? "🏠" : type === "vehicle" ? "🚗" : type === "commercial" ? "🏢" : "🛍️"}
-            </span>
-            <span className="whitespace-nowrap uppercase tracking-tighter">
-                {type === "housing" ? "KONUT" : type === "vehicle" ? "TAŞIT" : type === "commercial" ? "TİCARİ" : "İHTİYAÇ"}
-            </span>
+            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform duration-500 group-hover:scale-110 ${loanType === type ? "bg-white/20 -rotate-12" : "bg-emerald-500/5"}`}>
+                {type === "housing" ? "🏠" : type === "vehicle" ? "🚗" : type === "commercial" ? "🏢" : "🛍️"}
+            </div>
+            <div className="flex flex-col items-center">
+                <span className="text-[11px] font-black uppercase tracking-[0.2em] mb-1">
+                    {type === "housing" ? "KONUT" : type === "vehicle" ? "TAŞIT" : type === "commercial" ? "TİCARİ" : "İHTİYAÇ"}
+                </span>
+                <span className="text-[9px] font-bold opacity-40 italic">
+                    {type === "housing" ? "Kredisi" : type === "vehicle" ? "Kredisi" : type === "commercial" ? "Ticari" : "Bireysel"}
+                </span>
+            </div>
           </button>
         ))}
       </div>
