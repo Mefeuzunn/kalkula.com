@@ -92,68 +92,78 @@ export function GastroConverter() {
         </div>
       </div>
 
-      <div className="relative">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
-          <div className="flex flex-col">
-            <label className="calc-input-label">MİKTAR VE BİRİM</label>
-            <div className="calc-input-key">
-                <div className="absolute top-4 right-6">
-                   <select 
-                      value={fromUnit} 
-                      onChange={e => setFromUnit(e.target.value)}
-                      className="bg-accent-glow border border-accent-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest px-3 py-1 cursor-pointer outline-none"
-                   >
-                      <option value="cup">Su Bardağı</option>
-                      <option value="tbsp">Yemek Kaşığı</option>
-                      <option value="tsp">Tatlı Kaşığı</option>
-                      <option value="gram">Gram</option>
-                      <option value="ml">Mililitre</option>
-                   </select>
-                </div>
-                <input 
-                  type="number" 
-                  value={amount} 
-                  onChange={e => setAmount(e.target.value)} 
-                  className="calc-input-field" 
-                  placeholder="1" 
-                />
-            </div>
-          </div>
-
-          <div className="flex flex-col">
-            <label className="calc-input-label">HEDEF BİRİM</label>
-            <div className="calc-input-key">
-                <div className="bg-secondary/10 p-3 border-b border-border text-center">
-                   <span className="text-[10px] font-bold text-muted uppercase tracking-widest italic opacity-40">Sonuç Birimi</span>
-                </div>
-                <select 
-                  value={toUnit} 
-                  onChange={e => setToUnit(e.target.value)}
-                  className="calc-input-field !text-xl py-6 appearance-none cursor-pointer"
-                >
-                  <option value="gram" className="bg-surface text-primary">Gram</option>
-                  <option value="ml" className="bg-surface text-primary">Mililitre</option>
-                  <option value="cup" className="bg-surface text-primary">Su Bardağı</option>
-                  <option value="tbsp" className="bg-surface text-primary">Yemek Kaşığı</option>
-                  <option value="tsp" className="bg-surface text-primary">Tatlı Kaşığı</option>
-                </select>
-            </div>
-          </div>
+      <div className="flex flex-col gap-2">
+        <div className="hidden lg:flex justify-between px-4">
+          <label className="calc-input-label !mb-0">MİKTAR VE BİRİM</label>
+          <label className="calc-input-label !mb-0">HEDEF BİRİM</label>
         </div>
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 lg:mt-6">
-           <button 
+        <div className="relative">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20">
+            {/* Left Input Box */}
+            <div className="flex flex-col lg:gap-0 gap-2">
+              <label className="calc-input-label lg:hidden">MİKTAR VE BİRİM</label>
+              <div className="calc-input-key">
+                  <div className="absolute top-4 right-6">
+                    <select 
+                        value={fromUnit} 
+                        onChange={e => setFromUnit(e.target.value)}
+                        className="bg-accent-glow border border-accent-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest px-3 py-1 cursor-pointer outline-none"
+                    >
+                        <option value="cup">Su Bardağı</option>
+                        <option value="tbsp">Yemek Kaşığı</option>
+                        <option value="tsp">Tatlı Kaşığı</option>
+                        <option value="gram">Gram</option>
+                        <option value="ml">Mililitre</option>
+                    </select>
+                  </div>
+                  <input 
+                    type="number" 
+                    value={amount} 
+                    onChange={e => setAmount(e.target.value)} 
+                    className="calc-input-field" 
+                    placeholder="1" 
+                  />
+              </div>
+            </div>
+
+            {/* Right Input Box */}
+            <div className="flex flex-col lg:gap-0 gap-2">
+              <label className="calc-input-label lg:hidden text-right">HEDEF BİRİM</label>
+              <div className="calc-input-key">
+                  <div className="bg-secondary/10 p-3 border-b border-border text-center">
+                    <span className="text-[10px] font-bold text-muted uppercase tracking-widest italic opacity-40">Sonuç Birimi</span>
+                  </div>
+                  <select 
+                    value={toUnit} 
+                    onChange={e => setToUnit(e.target.value)}
+                    className="calc-input-field !text-xl py-6 appearance-none cursor-pointer"
+                  >
+                    <option value="gram" className="bg-surface text-primary">Gram</option>
+                    <option value="ml" className="bg-surface text-primary">Mililitre</option>
+                    <option value="cup" className="bg-surface text-primary">Su Bardağı</option>
+                    <option value="tbsp" className="bg-surface text-primary">Yemek Kaşığı</option>
+                    <option value="tsp" className="bg-surface text-primary">Tatlı Kaşığı</option>
+                  </select>
+              </div>
+            </div>
+          </div>
+
+          {/* Swap Button - Center Floating */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 pointer-events-none">
+            <button 
               onClick={() => {
                 const temp = fromUnit;
                 setFromUnit(toUnit);
                 setToUnit(temp);
                 confetti({ particleCount: 20, spread: 40, origin: { y: 0.8 } });
               }}
-              className="calc-swap-glass group/swapbtn"
+              className="calc-swap-glass group/swapbtn pointer-events-auto"
               title="Birimleri Değiştir"
-           >
+            >
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0 transition-transform group-hover/swapbtn:rotate-180"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
-           </button>
+            </button>
+          </div>
         </div>
       </div>
 
