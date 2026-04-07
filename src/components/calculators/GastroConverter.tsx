@@ -92,34 +92,56 @@ export function GastroConverter() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 lg:gap-8 items-center">
-        <div className="flex flex-col">
-          <label className="calc-input-label">MİKTAR VE BİRİM</label>
-          <div className="calc-input-key">
-              <div className="absolute top-4 right-6">
-                 <select 
-                    value={fromUnit} 
-                    onChange={e => setFromUnit(e.target.value)}
-                    className="bg-accent-glow border border-accent-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest px-3 py-1 cursor-pointer outline-none"
-                 >
-                    <option value="cup">Su Bardağı</option>
-                    <option value="tbsp">Yemek Kaşığı</option>
-                    <option value="tsp">Tatlı Kaşığı</option>
-                    <option value="gram">Gram</option>
-                    <option value="ml">Mililitre</option>
-                 </select>
-              </div>
-              <input 
-                type="number" 
-                value={amount} 
-                onChange={e => setAmount(e.target.value)} 
-                className="calc-input-field" 
-                placeholder="1" 
-              />
+      <div className="relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          <div className="flex flex-col">
+            <label className="calc-input-label">MİKTAR VE BİRİM</label>
+            <div className="calc-input-key">
+                <div className="absolute top-4 right-6">
+                   <select 
+                      value={fromUnit} 
+                      onChange={e => setFromUnit(e.target.value)}
+                      className="bg-accent-glow border border-accent-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest px-3 py-1 cursor-pointer outline-none"
+                   >
+                      <option value="cup">Su Bardağı</option>
+                      <option value="tbsp">Yemek Kaşığı</option>
+                      <option value="tsp">Tatlı Kaşığı</option>
+                      <option value="gram">Gram</option>
+                      <option value="ml">Mililitre</option>
+                   </select>
+                </div>
+                <input 
+                  type="number" 
+                  value={amount} 
+                  onChange={e => setAmount(e.target.value)} 
+                  className="calc-input-field" 
+                  placeholder="1" 
+                />
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="calc-input-label">HEDEF BİRİM</label>
+            <div className="calc-input-key">
+                <div className="bg-secondary/10 p-3 border-b border-border text-center">
+                   <span className="text-[10px] font-bold text-muted uppercase tracking-widest italic opacity-40">Sonuç Birimi</span>
+                </div>
+                <select 
+                  value={toUnit} 
+                  onChange={e => setToUnit(e.target.value)}
+                  className="calc-input-field !text-xl py-6 appearance-none cursor-pointer"
+                >
+                  <option value="gram" className="bg-surface text-primary">Gram</option>
+                  <option value="ml" className="bg-surface text-primary">Mililitre</option>
+                  <option value="cup" className="bg-surface text-primary">Su Bardağı</option>
+                  <option value="tbsp" className="bg-surface text-primary">Yemek Kaşığı</option>
+                  <option value="tsp" className="bg-surface text-primary">Tatlı Kaşığı</option>
+                </select>
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-center lg:mt-6">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 lg:mt-6">
            <button 
               onClick={() => {
                 const temp = fromUnit;
@@ -132,26 +154,6 @@ export function GastroConverter() {
            >
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0 transition-transform group-hover/swapbtn:rotate-180"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
            </button>
-        </div>
-
-        <div className="flex flex-col">
-          <label className="calc-input-label">HEDEF BİRİM</label>
-          <div className="calc-input-key">
-              <div className="bg-secondary/10 p-3 border-b border-border text-center">
-                 <span className="text-[10px] font-bold text-muted uppercase tracking-widest italic opacity-40">Sonuç Birimi</span>
-              </div>
-              <select 
-                value={toUnit} 
-                onChange={e => setToUnit(e.target.value)}
-                className="calc-input-field !text-xl py-6 appearance-none cursor-pointer"
-              >
-                <option value="gram" className="bg-surface text-primary">Gram</option>
-                <option value="ml" className="bg-surface text-primary">Mililitre</option>
-                <option value="cup" className="bg-surface text-primary">Su Bardağı</option>
-                <option value="tbsp" className="bg-surface text-primary">Yemek Kaşığı</option>
-                <option value="tsp" className="bg-surface text-primary">Tatlı Kaşığı</option>
-              </select>
-          </div>
         </div>
       </div>
 

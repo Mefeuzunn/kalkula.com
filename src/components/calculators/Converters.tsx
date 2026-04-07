@@ -67,31 +67,55 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 lg:gap-8 items-center">
-        
-        <div className="flex flex-col">
-          <label className="calc-input-label">{units[leftUnit].name.toUpperCase()}</label>
-          <div className="calc-input-key">
-              <div className="bg-secondary/10 p-3 border-b border-border">
-                 <select 
-                    value={leftUnit} 
-                    onChange={e => { setLeftUnit(e.target.value); handleLeftChange(leftValue, e.target.value, rightUnit); }} 
-                    className="w-full bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer appearance-none text-center"
-                 >
-                    {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
-                 </select>
-              </div>
-              <input 
-                type="number" 
-                value={leftValue} 
-                onChange={e => handleLeftChange(e.target.value)} 
-                className="calc-input-field !text-5xl py-8"
-                placeholder="0"
-              />
+      <div className="relative">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
+          
+          <div className="flex flex-col">
+            <label className="calc-input-label">{units[leftUnit].name.toUpperCase()}</label>
+            <div className="calc-input-key">
+                <div className="bg-secondary/10 p-3 border-b border-border">
+                   <select 
+                      value={leftUnit} 
+                      onChange={e => { setLeftUnit(e.target.value); handleLeftChange(leftValue, e.target.value, rightUnit); }} 
+                      className="w-full bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer appearance-none text-center"
+                   >
+                      {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
+                   </select>
+                </div>
+                <input 
+                  type="number" 
+                  value={leftValue} 
+                  onChange={e => handleLeftChange(e.target.value)} 
+                  className="calc-input-field !text-5xl py-8"
+                  placeholder="0"
+                />
+            </div>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="calc-input-label">{units[rightUnit].name.toUpperCase()}</label>
+            <div className="calc-input-key">
+                <div className="bg-secondary/10 p-3 border-b border-border">
+                   <select 
+                      value={rightUnit} 
+                      onChange={e => { setRightUnit(e.target.value); handleLeftChange(leftValue, leftUnit, e.target.value); }} 
+                      className="w-full bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer appearance-none text-center"
+                   >
+                      {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
+                   </select>
+                </div>
+                <input 
+                  type="number" 
+                  value={rightValue} 
+                  onChange={e => handleRightChange(e.target.value)} 
+                  className="calc-input-field !text-5xl py-8 text-accent-primary"
+                  placeholder="0"
+                />
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-center lg:mt-6">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 lg:mt-6">
            <button 
               onClick={swapUnits}
               className="calc-swap-glass group/swapbtn"
@@ -99,28 +123,6 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
            >
               <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0 transition-transform group-hover/swapbtn:rotate-180"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
            </button>
-        </div>
-
-        <div className="flex flex-col">
-          <label className="calc-input-label">{units[rightUnit].name.toUpperCase()}</label>
-          <div className="calc-input-key">
-              <div className="bg-secondary/10 p-3 border-b border-border">
-                 <select 
-                    value={rightUnit} 
-                    onChange={e => { setRightUnit(e.target.value); handleLeftChange(leftValue, leftUnit, e.target.value); }} 
-                    className="w-full bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer appearance-none text-center"
-                 >
-                    {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
-                 </select>
-              </div>
-              <input 
-                type="number" 
-                value={rightValue} 
-                onChange={e => handleRightChange(e.target.value)} 
-                className="calc-input-field !text-5xl py-8 text-accent-primary"
-                placeholder="0"
-              />
-          </div>
         </div>
       </div>
 
