@@ -180,11 +180,42 @@ export function Sudoku() {
     note: { fontSize: "9px", color: "#64748b", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" },
     
     controls: { marginTop: "24px", display: "flex", flexDirection: "column" as const, gap: "16px" },
-    numPad: { display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "8px" },
-    numBtn: { background: "#1e293b", border: "1px solid rgba(255,255,255,0.05)", color: "#fff", height: "50px", borderRadius: "12px", fontSize: "20px", fontWeight: 900, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" },
-    clearBtn: { gridColumn: "span 1", background: "rgba(239, 68, 68, 0.1)", border: "1px solid rgba(239, 68, 68, 0.2)", color: "#ef4444", fontSize: "10px", fontWeight: 900 },
+    numPad: { display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: "10px" },
+    numBtn: { 
+      background: "#1e293b", 
+      border: "none", 
+      color: "#fff", 
+      height: "50px", 
+      borderRadius: "12px", 
+      fontSize: "20px", 
+      fontWeight: 900, 
+      cursor: "pointer", 
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "center",
+      boxShadow: "0 4px 0 #0f172a",
+      transform: "translateY(-4px)",
+      transition: "all 0.1s"
+    },
+    clearBtn: { gridColumn: "span 1", background: "rgba(239, 68, 68, 0.1)", color: "#ef4444", fontSize: "10px", fontWeight: 900, boxShadow: "0 4px 0 rgba(239, 68, 68, 0.3)" },
     
-    pencilBtn: { width: "100%", background: isPencilMode ? "#3b82f6" : "#1e293b", border: "1px solid rgba(255,255,255,0.1)", color: "#fff", padding: "12px", borderRadius: "12px", fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center", gap: "10px", cursor: "pointer", transition: "all 0.2s" },
+    pencilBtn: { 
+      width: "100%", 
+      background: isPencilMode ? "#3b82f6" : "#1e293b", 
+      border: "none", 
+      color: "#fff", 
+      padding: "12px", 
+      borderRadius: "12px", 
+      fontWeight: 900, 
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "center", 
+      gap: "10px", 
+      cursor: "pointer", 
+      transition: "all 0.2s",
+      boxShadow: isPencilMode ? "0 4px 0 #1d4ed8" : "0 4px 0 #0f172a",
+      transform: "translateY(-4px)"
+    },
     
     overlay: { position: "absolute" as const, inset: 0, background: "rgba(15, 23, 42, 0.95)", display: "flex", flexDirection: "column" as const, alignItems: "center", justifyContent: "center", zIndex: 100, borderRadius: "8px" },
     victoryTitle: { fontSize: "32px", fontWeight: 900, color: "#60a5fa", marginBottom: "8px" },
@@ -200,16 +231,16 @@ export function Sudoku() {
         <h2 className="text-2xl font-black mb-2">Sudoku Premium</h2>
         <p className="text-muted text-sm mb-12 text-center max-w-[300px]">Zekanızı test edin. Tamamen tarayıcı üzerinde üretilen benzersiz bulmacalar.</p>
         
-        <div className="grid grid-cols-1 gap-4 w-full max-w-sm">
+        <div className="grid grid-cols-1 gap-6 w-full max-w-sm">
           {[
-            { id: "easy", label: "KOLAY", color: "bg-green-500/10 text-green-500 border-green-500/20" },
-            { id: "medium", label: "ORTA", color: "bg-orange-500/10 text-orange-500 border-orange-500/20" },
-            { id: "hard", label: "ZOR", color: "bg-red-500/10 text-red-500 border-red-500/20" }
+            { id: "easy", label: "KOLAY", color: "text-green-500", shadow: "shadow-[0_6px_0_rgb(22,163,74)]", bg: "bg-green-500/10" },
+            { id: "medium", label: "ORTA", color: "text-orange-500", shadow: "shadow-[0_6px_0_rgb(234,88,12)]", bg: "bg-orange-500/10" },
+            { id: "hard", label: "ZOR", color: "text-red-500", shadow: "shadow-[0_6px_0_rgb(220,38,38)]", bg: "bg-red-500/10" }
           ].map((d) => (
             <button 
               key={d.id}
               onClick={() => startNewGame(d.id as Difficulty)}
-              className={`p-6 rounded-3xl border-2 flex items-center justify-between group hover:scale-[1.02] transition-all hover:shadow-xl ${d.color}`}
+              className={`p-6 rounded-3xl border-2 border-transparent flex items-center justify-between group active:translate-y-1 active:shadow-none transition-all ${d.bg} ${d.color} ${d.shadow} -translate-y-1.5`}
             >
               <span className="font-black tracking-widest">{d.label}</span>
               <ChevronRight className="group-hover:translate-x-1 transition-transform" />
@@ -270,7 +301,8 @@ export function Sudoku() {
               <p style={styles.victoryDesc}>Bulmacayı {formatTime(seconds)} sürede çözdünüz.</p>
               <button 
                 onClick={() => setGameState("selecting")} 
-                style={{ background: "#3b82f6", color: "#fff", border: "none", padding: "14px 32px", borderRadius: "12px", fontWeight: 900, cursor: "pointer" }}
+                className="btn-primary"
+                style={{ padding: "14px 32px" }}
               >
                 YENİ OYUN
               </button>
@@ -290,12 +322,18 @@ export function Sudoku() {
 
          <div style={styles.numPad}>
            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(num => (
-             <button key={num} style={styles.numBtn} onClick={() => handleCellInput(num)}>
+             <button 
+               key={num} 
+               className="btn-3d-key"
+               style={{ ...styles.numBtn, transform: undefined, boxShadow: undefined, border: undefined }} 
+               onClick={() => handleCellInput(num)}
+             >
                {num}
              </button>
            ))}
            <button 
-             style={{ ...styles.numBtn, ...styles.clearBtn }}
+             className="btn-3d-key"
+             style={{ ...styles.numBtn, ...styles.clearBtn, transform: undefined, boxShadow: undefined, border: undefined }}
              onClick={() => {
                if (!selectedCell) return;
                const { r, c } = selectedCell;

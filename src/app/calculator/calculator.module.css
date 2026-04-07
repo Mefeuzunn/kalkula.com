@@ -55,54 +55,63 @@
 
 .btnNum, .btnOp, .btnAction {
   padding: 1.25rem 0;
-  border-radius: var(--radius-sm);
+  border-radius: 12px;
   font-size: 1.5rem;
-  font-weight: 500;
-  transition: all var(--transition-fast);
+  font-weight: 800;
+  transition: all 0.1s;
+  position: relative;
+  transform: translateY(-4px);
+  border: none;
+  cursor: pointer;
 }
 
 .btnNum {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface);
   color: var(--text-primary);
+  box-shadow: 0 4px 0 var(--border);
 }
 
 .btnNum:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--surface-hover);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 0 var(--border);
 }
 
 .btnNum:active {
-  background: rgba(255, 255, 255, 0.15);
-  transform: scale(0.95);
-}
-
-.zero {
-  grid-column: span 2;
-  text-align: left;
-  padding-left: 2rem;
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 var(--border);
 }
 
 .btnOp {
-  background: var(--accent-secondary);
-  color: white;
+  background: var(--accent-glow);
+  color: var(--accent-primary);
+  box-shadow: 0 4px 0 var(--accent-primary);
 }
 
 .btnOp:hover {
-  background: var(--accent-primary);
+  filter: brightness(1.1);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 0 var(--accent-primary);
 }
 
 .btnOp:active {
-  transform: scale(0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 var(--accent-primary);
 }
 
 .btnAction {
-  background: rgba(148, 163, 184, 0.2);
-  color: var(--text-primary);
+  background: var(--bg-tertiary);
+  color: var(--text-secondary);
+  box-shadow: 0 4px 0 var(--border);
 }
 
 .btnAction:hover {
-  background: rgba(148, 163, 184, 0.3);
+  background: var(--bg-secondary);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 0 var(--border);
 }
 
 .btnAction:active {
-  transform: scale(0.95);
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 var(--border);
 }

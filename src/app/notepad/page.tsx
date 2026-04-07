@@ -144,10 +144,13 @@ export default function Notepad() {
               { label: "—", action: () => insertFormat("\n- "), title: "Madde" },
               { label: "[ ]", action: () => insertFormat("\n- [ ] "), title: "Görev" },
             ].map(b => (
-              <button key={b.label} onClick={b.action} title={b.title}
-                style={{ width: "32px", height: "32px", background: "none", border: "1px solid var(--border)", borderRadius: "4px", cursor: "pointer", fontSize: "0.75rem", fontWeight: 700, color: "var(--text-secondary)", transition: "all 0.15s" }}
-                onMouseEnter={e => { e.currentTarget.style.background = "var(--accent-glow)"; e.currentTarget.style.color = "var(--accent-primary)"; }}
-                onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "var(--text-secondary)"; }}>
+              <button 
+                key={b.label} 
+                className="btn-3d-key"
+                onClick={b.action} 
+                title={b.title}
+                style={{ width: "32px", height: "32px", background: "none", fontSize: "0.75rem", color: "var(--text-secondary)", transition: "all 0.1s", transform: "translateY(-2px)", borderRadius: "6px" }}
+              >
                 {b.label}
               </button>
             ))}
@@ -183,9 +186,9 @@ export default function Notepad() {
               <input type="text" placeholder="Not ara..." value={searchQ} onChange={e => setSearchQ(e.target.value)}
                 style={{ width: "100%", padding: "0.5rem 0.75rem", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "6px", color: "var(--text-primary)", fontSize: "0.85rem", fontFamily: "inherit" }} />
             </div>
-            <div style={{ padding: "0.5rem", borderBottom: "1px solid var(--border)" }}>
-              <button onClick={createNote} className="btn-primary" style={{ width: "100%", fontSize: "0.85rem", padding: "0.5rem" }}>
-                + Yeni Not
+            <div style={{ padding: "0.75rem", borderBottom: "1px solid var(--border)" }}>
+              <button onClick={createNote} className="btn-primary" style={{ width: "100%", fontSize: "0.85rem", padding: "0.6rem" }}>
+                + Yeni Not Oluştur
               </button>
             </div>
             {/* Note list */}

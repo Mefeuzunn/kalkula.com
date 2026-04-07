@@ -94,6 +94,7 @@ export const calculators: CalculatorInfo[] = [
   { id: "temettu", title: "Sermaye ve Temettü Hesaplama", slug: "temettu", categoryId: "finans", description: "Hisse senedi yatırımlarınızın temettü verimliliğini hisse başı maliyetle analiz edin." },
   { id: "vadeli_islem", title: "Vadeli İşlem Fiyatı Hesaplama", slug: "vadeli-islem", categoryId: "finans", description: "Dayanak varlığın spot fiyattan vadeli (Futures) teorik fiyatına ulaşım formülü." },
   { id: "vadeli_mevduat", title: "Vadeli Mevduat Faizi Hesaplama", slug: "vadeli-mevduat", categoryId: "finans", description: "Brüt ve net mevduat getirilerini ayrı ayrı görebileceğiniz faiz aracı." },
+  { id: "dca-hesaplama", title: "Dolar Maliyet Ortalaması (DCA)", slug: "dolar-maliyet-ortalamasi", categoryId: "finans", description: "Düzenli yatırım simülasyonu ve ortalama maliyet düşürme hesaplayıcısı." },
 
   // Matematik
   { id: "yuzde", title: "Yüzde Hesaplama", slug: "yuzde", categoryId: "matematik", description: "Bir sayının %x'i, yüzde farkları ve oran orantı problemleri." },

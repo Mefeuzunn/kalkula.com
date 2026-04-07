@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import styles from "./calculator.module.css";
 import Link from "next/link";
 
 type HistoryEntry = { expression: string; result: string };
@@ -209,32 +210,32 @@ export default function Calculator() {
           </div>
 
           {/* Main Keypad */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1px", background: "var(--border)", padding: "1px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "10px", background: "none", padding: "12px" }}>
             {/* Row 1 */}
-            <button onClick={clear} style={btnStyle("action")}>AC</button>
-            <button onClick={() => setDisplay(p => String(parseFloat(p) * -1))} style={btnStyle("action")}>+/-</button>
-            <button onClick={() => setDisplay(p => String(parseFloat(p) / 100))} style={btnStyle("action")}>%</button>
-            <button onClick={() => handleOperator("/")} style={btnStyle("op")}>÷</button>
+            <button onClick={clear} className={styles.btnAction}>AC</button>
+            <button onClick={() => setDisplay(p => String(parseFloat(p) * -1))} className={styles.btnAction}>+/-</button>
+            <button onClick={() => setDisplay(p => String(parseFloat(p) / 100))} className={styles.btnAction}>%</button>
+            <button onClick={() => handleOperator("/")} className={styles.btnOp}>÷</button>
             {/* Row 2 */}
-            <button onClick={() => appendToDisplay("7")} style={btnStyle("num")}>7</button>
-            <button onClick={() => appendToDisplay("8")} style={btnStyle("num")}>8</button>
-            <button onClick={() => appendToDisplay("9")} style={btnStyle("num")}>9</button>
-            <button onClick={() => handleOperator("*")} style={btnStyle("op")}>×</button>
+            <button onClick={() => appendToDisplay("7")} className={styles.btnNum}>7</button>
+            <button onClick={() => appendToDisplay("8")} className={styles.btnNum}>8</button>
+            <button onClick={() => appendToDisplay("9")} className={styles.btnNum}>9</button>
+            <button onClick={() => handleOperator("*")} className={styles.btnOp}>×</button>
             {/* Row 3 */}
-            <button onClick={() => appendToDisplay("4")} style={btnStyle("num")}>4</button>
-            <button onClick={() => appendToDisplay("5")} style={btnStyle("num")}>5</button>
-            <button onClick={() => appendToDisplay("6")} style={btnStyle("num")}>6</button>
-            <button onClick={() => handleOperator("-")} style={btnStyle("op")}>−</button>
+            <button onClick={() => appendToDisplay("4")} className={styles.btnNum}>4</button>
+            <button onClick={() => appendToDisplay("5")} className={styles.btnNum}>5</button>
+            <button onClick={() => appendToDisplay("6")} className={styles.btnNum}>6</button>
+            <button onClick={() => handleOperator("-")} className={styles.btnOp}>−</button>
             {/* Row 4 */}
-            <button onClick={() => appendToDisplay("1")} style={btnStyle("num")}>1</button>
-            <button onClick={() => appendToDisplay("2")} style={btnStyle("num")}>2</button>
-            <button onClick={() => appendToDisplay("3")} style={btnStyle("num")}>3</button>
-            <button onClick={() => handleOperator("+")} style={btnStyle("op")}>+</button>
+            <button onClick={() => appendToDisplay("1")} className={styles.btnNum}>1</button>
+            <button onClick={() => appendToDisplay("2")} className={styles.btnNum}>2</button>
+            <button onClick={() => appendToDisplay("3")} className={styles.btnNum}>3</button>
+            <button onClick={() => handleOperator("+")} className={styles.btnOp}>+</button>
             {/* Row 5 */}
-            <button onClick={backspace} style={btnStyle("action")}>⌫</button>
-            <button onClick={() => appendToDisplay("0")} style={btnStyle("num")}>0</button>
-            <button onClick={() => appendToDisplay(".")} style={btnStyle("num")}>,</button>
-            <button onClick={calculate} style={{ ...btnStyle("op"), background: "var(--accent-primary)", color: "white" }}>=</button>
+            <button onClick={backspace} className={styles.btnAction}>⌫</button>
+            <button onClick={() => appendToDisplay("0")} className={styles.btnNum}>0</button>
+            <button onClick={() => appendToDisplay(".")} className={styles.btnNum}>,</button>
+            <button onClick={calculate} className={styles.btnOp} style={{ background: "var(--accent-primary)", color: "white", boxShadow: "0 4px 0pt rgb(30 64 175 / 0.8)" }}>=</button>
           </div>
         </div>
 
@@ -246,17 +247,3 @@ export default function Calculator() {
   );
 }
 
-function btnStyle(type: "num" | "op" | "action"): React.CSSProperties {
-  const base: React.CSSProperties = {
-    padding: "1.1rem 0.5rem",
-    border: "none",
-    cursor: "pointer",
-    fontSize: "1.15rem",
-    fontWeight: 600,
-    transition: "background 0.1s",
-    fontFamily: "inherit",
-  };
-  if (type === "num") return { ...base, background: "var(--surface)", color: "var(--text-primary)" };
-  if (type === "op") return { ...base, background: "var(--bg-secondary)", color: "var(--accent-primary)" };
-  return { ...base, background: "var(--bg-tertiary)", color: "var(--text-secondary)" };
-}

@@ -113,7 +113,7 @@ input, textarea, select {
 }
 
 
-/* 3D Premium Buttons */
+/* 3D Premium Buttons - Standardizing for the entire site */
 .btn-primary {
   position: relative;
   background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
@@ -124,7 +124,7 @@ input, textarea, select {
   font-size: 0.95rem;
   letter-spacing: 0.5px;
   border: none;
-  box-shadow: 0 4px 0pt rgb(30 64 175 / 0.8), 0 8px 15px rgb(0 0 0 / 0.1);
+  box-shadow: 0 4px 0pt rgb(30 64 175 / 0.8), 0 8px 15px rgb(37 99 235 / 0.1);
   transition: all 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: inline-flex;
   align-items: center;
@@ -132,27 +132,28 @@ input, textarea, select {
   gap: 0.6rem;
   cursor: pointer;
   text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  transform: translateY(-2px);
   text-transform: uppercase;
 }
 
 @media (hover: hover) {
   .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 0pt rgb(30 64 175 / 0.9), 0 12px 20px rgb(0 0 0 / 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 0pt rgb(30 64 175 / 0.9), 0 12px 20px rgb(37 99 235 / 0.15);
     filter: brightness(1.05);
   }
 }
 
 .btn-primary:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0pt rgb(30 64 175 / 1.0), 0 2px 5px rgb(0 0 0 / 0.2);
+  transform: translateY(2px);
+  box-shadow: 0 1px 0pt rgb(30 64 175 / 1.0), 0 2px 4px rgb(0 0 0 / 0.2);
 }
 
 .btn-secondary {
   position: relative;
   background: var(--surface-light);
   color: var(--text-primary);
-  padding: 0.7rem 1.5rem;
+  padding: 0.7rem 1.75rem;
   border-radius: var(--radius-md);
   font-weight: 700;
   font-size: 0.95rem;
@@ -164,20 +165,45 @@ input, textarea, select {
   justify-content: center;
   gap: 0.5rem;
   cursor: pointer;
+  transform: translateY(-1px);
 }
 
 @media (hover: hover) {
   .btn-secondary:hover {
     background: var(--surface-hover);
     border-color: var(--border-focus);
-    transform: translateY(-1px);
+    transform: translateY(-2px);
     box-shadow: 0 4px 0pt var(--border), 0 8px 15px rgb(0 0 0 / 0.08);
   }
 }
 
 .btn-secondary:active {
-  transform: translateY(2px);
+  transform: translateY(1px);
   box-shadow: 0 1px 0pt var(--border), 0 2px 4px rgb(0 0 0 / 0.1);
+}
+
+/* 3D Key Utility (For Calculators and Games) */
+.btn-3d-key {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-weight: 800;
+  transition: all 0.1s;
+  transform: translateY(-4px);
+  box-shadow: 0 4px 0 var(--border-dark, rgba(0,0,0,0.1));
+  border-radius: 12px;
+}
+
+.btn-3d-key:active {
+  transform: translateY(-1px);
+  box-shadow: 0 1px 0 var(--border-dark, rgba(0,0,0,0.1));
+}
+
+.dark .btn-3d-key {
+  --border-dark: rgba(0,0,0,0.4);
 }
 
 /* Utilities */

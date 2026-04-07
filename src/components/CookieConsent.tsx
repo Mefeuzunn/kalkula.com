@@ -69,17 +69,15 @@ export function CookieConsent() {
         <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
            <button 
               onClick={decline}
-              className="calc-label"
-              style={{ padding: "0.5rem 1rem", opacity: 0.6, cursor: "pointer", transition: "opacity 0.2s" }}
-              onMouseEnter={e => e.currentTarget.style.opacity = "1"}
-              onMouseLeave={e => e.currentTarget.style.opacity = "0.6"}
+              className="btn-secondary"
+              style={{ padding: "0.5rem 1.25rem", fontSize: "0.75rem", borderRadius: "100px" }}
            >
               Reddet
            </button>
            <button 
               onClick={accept}
               className="btn-primary"
-              style={{ borderRadius: "100px", padding: "0.75rem 2rem", fontSize: "0.85rem", boxShadow: "0 10px 30px var(--accent-glow)" }}
+              style={{ borderRadius: "100px", padding: "0.6rem 2rem", fontSize: "0.8rem" }}
            >
               Kabul Et
            </button>

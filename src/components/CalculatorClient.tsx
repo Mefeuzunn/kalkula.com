@@ -57,6 +57,7 @@ const DepositInterestCalculator = dynamic(() => import("@/components/calculators
 const LgsCalculator = dynamic(() => import("@/components/calculators/LgsCalculator").then(m => m.LgsCalculator), { loading: () => <LoadingCalculator /> });
 const YksCalculator = dynamic(() => import("@/components/calculators/YksCalculator").then(m => m.YksCalculator), { loading: () => <LoadingCalculator /> });
 const GradeCalculator = dynamic(() => import("@/components/calculators/GradeCalculator").then(m => m.GradeCalculator), { loading: () => <LoadingCalculator /> });
+const DcaCalculator = dynamic(() => import("@/components/calculators/DcaCalculator").then(m => m.DcaCalculator), { loading: () => <LoadingCalculator /> });
 const UniversityExamCalculator = dynamic(() => import("@/components/calculators/UniversityExamCalculator").then(m => m.UniversityExamCalculator), { loading: () => <LoadingCalculator /> });
 const EOkulCalculator = dynamic(() => import("@/components/calculators/EOkulCalculator").then(m => m.EOkulCalculator), { loading: () => <LoadingCalculator /> });
 const LessonGradeCalculator = dynamic(() => import("@/components/calculators/LessonGradeCalculator").then(m => m.LessonGradeCalculator), { loading: () => <LoadingCalculator /> });
@@ -344,6 +345,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "temettu": return <DividendCalculator />;
       case "vadeli-islem": return <FuturesCalculator />;
       case "vadeli-mevduat": return <DepositInterestCalculator />;
+      case "dolar-maliyet-ortalamasi": return <DcaCalculator />;
       case "kpss-puan": return <KpssCalculator />;
       case "ales-puan": return <AlesCalculator />;
       case "dgs-puan": return <DgsCalculator />;
