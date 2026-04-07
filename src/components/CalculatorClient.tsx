@@ -188,6 +188,18 @@ const AiPromptOptimizer = dynamic(() => import("@/components/calculators/AiPromp
 const JwtDebugger = dynamic(() => import("@/components/calculators/JwtDebugger").then(m => m.JwtDebugger), { loading: () => <LoadingCalculator /> });
 const CronVisualizer = dynamic(() => import("@/components/calculators/CronVisualizer").then(m => m.CronVisualizer), { loading: () => <LoadingCalculator /> });
 
+// Sağlık Araçları (HealthCalculators.tsx)
+const VaccinationCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.VaccinationCalculator), { loading: () => <LoadingCalculator /> });
+const BabyGrowthCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.BabyGrowthCalculator), { loading: () => <LoadingCalculator /> });
+const WaistHipCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.WaistHipCalculator), { loading: () => <LoadingCalculator /> });
+const DueDateCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.DueDateCalculator), { loading: () => <LoadingCalculator /> });
+const NutrientCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.NutrientCalculator), { loading: () => <LoadingCalculator /> });
+const SmokingCostCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.SmokingCostCalculator), { loading: () => <LoadingCalculator /> });
+const BraSizeCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.BraSizeCalculator), { loading: () => <LoadingCalculator /> });
+const LifeExpectancyCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.LifeExpectancyCalculator), { loading: () => <LoadingCalculator /> });
+const OvulationCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.OvulationCalculator), { loading: () => <LoadingCalculator /> });
+const StandbyClock = dynamic(() => import("@/components/calculators/StandbyClock").then(m => m.StandbyClock), { loading: () => <LoadingCalculator /> });
+
 function GenericCalculator() {
   return (
     <div className="animate-fade-in" style={{ textAlign: "center", padding: "4rem 2rem", background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px dashed var(--border)' }}>
@@ -241,6 +253,21 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "makro-hesaplama": return <MacroCalculator />;
       case "bmr": return <BmrCalculator />;
       case "gunluk-kalori-ihtiyaci": return <CalorieCalculator />;
+      
+      // Yeni Sağlık Araçları
+      case "asi-takvimi": return <VaccinationCalculator />;
+      case "bebek-gelisimi": return <BabyGrowthCalculator />;
+      case "bel-kalca-orani": return <WaistHipCalculator />;
+      case "dogum-tarihi": return <DueDateCalculator />;
+      case "protein-ihtiyaci": return <NutrientCalculator type="protein" />;
+      case "karbonhidrat-ihtiyaci": return <NutrientCalculator type="carb" />;
+      case "yag-ihtiyaci": return <NutrientCalculator type="fat" />;
+      case "kreatin-dozu": return <NutrientCalculator type="creatine" />;
+      case "sigara-maliyeti": return <SmokingCostCalculator />;
+      case "sutyen-bedeni": return <BraSizeCalculator />;
+      case "yasam-suresi": return <LifeExpectancyCalculator />;
+      case "yumurtlama-donemi": return <OvulationCalculator />;
+      case "bekleme-ekrani": return <StandbyClock />;
       case "kredi-hesaplama": return <LoanCalculator />;
       case "kredi-odeme-plani": return <LoanAmortization />;
       case "kredi-karti-asgari": return <CreditCardCalculator />;
