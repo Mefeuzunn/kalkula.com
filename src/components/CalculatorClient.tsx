@@ -156,6 +156,22 @@ const PerimeterCalculator = dynamic(() => import("@/components/calculators/MathT
 const InchConverter = dynamic(() => import("@/components/calculators/MathTools").then(m => m.InchConverter), { loading: () => <LoadingCalculator /> });
 const MileConverter = dynamic(() => import("@/components/calculators/MathTools").then(m => m.MileConverter), { loading: () => <LoadingCalculator /> });
 
+// Sınav Hesaplama Araçları (Birleştirilmiş)
+const AksCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.AksCalculator), { loading: () => <LoadingCalculator /> });
+const EhliyetCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.EhliyetCalculator), { loading: () => <LoadingCalculator /> });
+const IsgCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.IsgCalculator), { loading: () => <LoadingCalculator /> });
+const OzelGuvenlikCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.OzelGuvenlikCalculator), { loading: () => <LoadingCalculator /> });
+const MsuCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.MsuCalculator), { loading: () => <LoadingCalculator /> });
+const PoliceCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.PoliceCalculator), { loading: () => <LoadingCalculator /> });
+const EkpssCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.EkpssCalculator), { loading: () => <LoadingCalculator /> });
+const HmgsCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.HmgsCalculator), { loading: () => <LoadingCalculator /> });
+const ObpCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.ObpCalculator), { loading: () => <LoadingCalculator /> });
+const DibMbstsCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.DibMbstsCalculator), { loading: () => <LoadingCalculator /> });
+const EusCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.EusCalculator), { loading: () => <LoadingCalculator /> });
+const IyosCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.IyosCalculator), { loading: () => <LoadingCalculator /> });
+const OypCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.OypCalculator), { loading: () => <LoadingCalculator /> });
+const HsyCalculatorInternal = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.HsyCalculator), { loading: () => <LoadingCalculator /> });
+
 // Yeni Araçlar ve Oyunlar
 const Game2048 = dynamic(() => import("@/components/games/Game2048").then(m => m.Game2048), { loading: () => <LoadingCalculator /> });
 const Sudoku = dynamic(() => import("@/components/games/Sudoku").then(m => m.Sudoku), { loading: () => <LoadingCalculator /> });
@@ -251,6 +267,23 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "cevre-hesaplama": return <PerimeterCalculator />;
       case "inc-hesaplama": return <InchConverter />;
       case "mil-hesaplama": return <MileConverter />;
+      
+      // Sınavlar
+      case "aks-puan-hesaplama": return <AksCalculator />;
+      case "ehliyet-sinavi-puan": return <EhliyetCalculator />;
+      case "isg-puan-hesaplama": return <IsgCalculator />;
+      case "ozel-guvenlik-sinavi-puan": return <OzelGuvenlikCalculator />;
+      case "msu-puan-hesaplama": return <MsuCalculator />;
+      case "polislik-puan-hesaplama": return <PoliceCalculator />;
+      case "ekpss-puan-hesaplama": return <EkpssCalculator />;
+      case "hmgs-puan-hesaplama": return <HmgsCalculator />;
+      case "obp-hesaplama": return <ObpCalculator />;
+      case "dib-mbsts-puan": return <DibMbstsCalculator />;
+      case "eus-puan": return <EusCalculator />;
+      case "iyos-puan": return <IyosCalculator />;
+      case "oyp-puan": return <OypCalculator />;
+      case "hakim-savci-puan": return <HsyCalculatorInternal />;
+      
       case "netten-brute": return <NetGrossCalculator />;
       case "kidem-tazminati": return <SeveranceCalculator />;
       case "meb-ek-ders-hesaplama": return <MebEkDersCalculator />;
