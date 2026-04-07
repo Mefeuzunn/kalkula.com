@@ -67,7 +67,7 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
 
   return (
     <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-6 items-end">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 lg:gap-8 items-center">
         
         <div className="flex flex-col">
           <label className="calc-input-label">{units[leftUnit].name.toUpperCase()}</label>
@@ -91,13 +91,13 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
           </div>
         </div>
 
-        <div className="pb-4 flex justify-center">
+        <div className="flex justify-center lg:mt-6">
            <button 
               onClick={swapUnits}
-              className="w-16 h-16 rounded-2xl bg-surface border-2 border-border flex items-center justify-center cursor-pointer text-muted hover:text-accent-primary hover:border-accent-primary transition-all 
-              shadow-[0_6px_0_var(--border)] active:translate-y-1 active:shadow-none group/btn"
+              className="calc-swap-glass group/swapbtn"
+              title="Birimleri Değiştir"
            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0 transition-transform group-hover/swapbtn:rotate-180"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
            </button>
         </div>
 

@@ -92,7 +92,7 @@ export function GastroConverter() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] gap-4 lg:gap-8 items-center">
         <div className="flex flex-col">
           <label className="calc-input-label">MİKTAR VE BİRİM</label>
           <div className="calc-input-key">
@@ -117,6 +117,21 @@ export function GastroConverter() {
                 placeholder="1" 
               />
           </div>
+        </div>
+
+        <div className="flex justify-center lg:mt-6">
+           <button 
+              onClick={() => {
+                const temp = fromUnit;
+                setFromUnit(toUnit);
+                setToUnit(temp);
+                confetti({ particleCount: 20, spread: 40, origin: { y: 0.8 } });
+              }}
+              className="calc-swap-glass group/swapbtn"
+              title="Birimleri Değiştir"
+           >
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0 transition-transform group-hover/swapbtn:rotate-180"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
+           </button>
         </div>
 
         <div className="flex flex-col">
