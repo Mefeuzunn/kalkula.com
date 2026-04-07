@@ -29,12 +29,14 @@ const CreditCardSuite = dynamic(() => import("@/components/calculators/CreditCar
 const BankingAdvanced = dynamic(() => import("@/components/calculators/BankingAdvanced").then(m => m.BankingAdvanced), { loading: () => <LoadingCalculator /> });
 const EbobEkokCalculator = dynamic(() => import("@/components/calculators/EbobEkokCalculator").then(m => m.EbobEkokCalculator), { loading: () => <LoadingCalculator /> });
 const NetGrossCalculator = dynamic(() => import("@/components/calculators/NetGrossCalculator").then(m => m.NetGrossCalculator), { loading: () => <LoadingCalculator /> });
-const InflationCalculator = dynamic(() => import("@/components/calculators/InflationCalculator").then(m => m.InflationCalculator), { loading: () => <LoadingCalculator /> });
-const InterestCalculator = dynamic(() => import("@/components/calculators/InterestCalculator").then(m => m.InterestCalculator), { loading: () => <LoadingCalculator /> });
+const InvestmentSuite = dynamic(() => import("@/components/calculators/InvestmentSuite").then(m => m.InvestmentSuite), { loading: () => <LoadingCalculator /> });
+const BondSuite = dynamic(() => import("@/components/calculators/BondSuite").then(m => m.BondSuite), { loading: () => <LoadingCalculator /> });
+const ValuationSuite = dynamic(() => import("@/components/calculators/ValuationSuite").then(m => m.ValuationSuite), { loading: () => <LoadingCalculator /> });
+const MarketSuite = dynamic(() => import("@/components/calculators/MarketSuite").then(m => m.MarketSuite), { loading: () => <LoadingCalculator /> });
+
 const SeveranceCalculator = dynamic(() => import("@/components/calculators/SeveranceCalculator").then(m => m.SeveranceCalculator), { loading: () => <LoadingCalculator /> });
 const BodyFatCalculator = dynamic(() => import("@/components/calculators/BodyFatCalculator").then(m => m.BodyFatCalculator), { loading: () => <LoadingCalculator /> });
 const AgssCalculator = dynamic(() => import("@/components/calculators/AgssCalculator").then(m => m.AgssCalculator), { loading: () => <LoadingCalculator /> });
-const EurobondCalculator = dynamic(() => import("@/components/calculators/EurobondCalculator").then(m => m.EurobondCalculator), { loading: () => <LoadingCalculator /> });
 const GenerationCalculator = dynamic(() => import("@/components/calculators/GenerationCalculator").then(m => m.GenerationCalculator), { loading: () => <LoadingCalculator /> });
 const HsyCalculator = dynamic(() => import("@/components/calculators/HsyCalculator").then(m => m.HsyCalculator), { loading: () => <LoadingCalculator /> });
 const VehicleExpenseCalculator = dynamic(() => import("@/components/calculators/VehicleExpenseCalculator").then(m => m.VehicleExpenseCalculator), { loading: () => <LoadingCalculator /> });
@@ -42,20 +44,7 @@ const PriceCalculator = dynamic(() => import("@/components/calculators/PriceCalc
 const DayOfYearCalculator = dynamic(() => import("@/components/calculators/DayOfYearCalculator").then(m => m.DayOfYearCalculator), { loading: () => <LoadingCalculator /> });
 const BmrCalculator = dynamic(() => import("./calculators/BmrCalculator").then(m => m.BmrCalculator), { loading: () => <LoadingCalculator /> });
 const MacroCalculator = dynamic(() => import("./calculators/MacroCalculator").then(m => m.MacroCalculator), { loading: () => <LoadingCalculator /> });
-const CagrCalculator = dynamic(() => import("@/components/calculators/CagrCalculator").then(m => m.CagrCalculator), { loading: () => <LoadingCalculator /> });
-const SavingsCalculator = dynamic(() => import("@/components/calculators/SavingsCalculator").then(m => m.SavingsCalculator), { loading: () => <LoadingCalculator /> });
-const BillCalculator = dynamic(() => import("@/components/calculators/BillCalculator").then(m => m.BillCalculator), { loading: () => <LoadingCalculator /> });
-const HistoricalGoldCalculator = dynamic(() => import("@/components/calculators/HistoricalGoldCalculator").then(m => m.HistoricalGoldCalculator), { loading: () => <LoadingCalculator /> });
-const HistoricalCurrencyCalculator = dynamic(() => import("@/components/calculators/HistoricalCurrencyCalculator").then(m => m.HistoricalCurrencyCalculator), { loading: () => <LoadingCalculator /> });
-const DiscountCalculator = dynamic(() => import("@/components/calculators/DiscountCalculator").then(m => m.DiscountCalculator), { loading: () => <LoadingCalculator /> });
-const RentIncreaseCalculator = dynamic(() => import("@/components/calculators/RentIncreaseCalculator").then(m => m.RentIncreaseCalculator), { loading: () => <LoadingCalculator /> });
-const AverageMaturityCalculator = dynamic(() => import("@/components/calculators/AverageMaturityCalculator").then(m => m.AverageMaturityCalculator), { loading: () => <LoadingCalculator /> });
-const TimeValueCalculator = dynamic(() => import("@/components/calculators/TimeValueCalculator").then(m => m.TimeValueCalculator), { loading: () => <LoadingCalculator /> });
-const RealReturnCalculator = dynamic(() => import("@/components/calculators/RealReturnCalculator").then(m => m.RealReturnCalculator), { loading: () => <LoadingCalculator /> });
-const RepoCalculator = dynamic(() => import("@/components/calculators/RepoCalculator").then(m => m.RepoCalculator), { loading: () => <LoadingCalculator /> });
-const DividendCalculator = dynamic(() => import("@/components/calculators/DividendCalculator").then(m => m.DividendCalculator), { loading: () => <LoadingCalculator /> });
-const FuturesCalculator = dynamic(() => import("@/components/calculators/FuturesCalculator").then(m => m.FuturesCalculator), { loading: () => <LoadingCalculator /> });
-const DepositInterestCalculator = dynamic(() => import("@/components/calculators/DepositInterestCalculator").then(m => m.DepositInterestCalculator), { loading: () => <LoadingCalculator /> });
+
 const LgsCalculator = dynamic(() => import("@/components/calculators/LgsCalculator").then(m => m.LgsCalculator), { loading: () => <LoadingCalculator /> });
 const YksCalculator = dynamic(() => import("@/components/calculators/YksCalculator").then(m => m.YksCalculator), { loading: () => <LoadingCalculator /> });
 const GradeCalculator = dynamic(() => import("@/components/calculators/GradeCalculator").then(m => m.GradeCalculator), { loading: () => <LoadingCalculator /> });
@@ -293,8 +282,6 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "kredi-yillik-maliyet-orani":
       case "kredi-yapilandirma": return <BankingAdvanced />;
       
-      case "faiz": return <InterestCalculator />;
-      case "enflasyon": return <InflationCalculator />;
       case "yuzde": return <PercentageCalculator />;
       case "ebob-ekok": return <EbobEkokCalculator />;
       case "kesir-hesaplama": return <FractionsCalculator />;
@@ -340,34 +327,42 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "yakit-maliyeti": return <FuelCostCalculator />;
       case "mtv-hesaplama": return <MtvCalculator />;
       case "tax-free-hesaplama": return <TaxFreeCalculator />;
-      case "doviz-altin-hesaplama": return <CurrencyCommodityCalculator />;
+      case "doviz-altin-hesaplama": return <MarketSuite />;
       case "kargo-desi-hesaplama": return <DesiCalculator />;
       case "litre-cl-ml-hesaplama": return <VolumeCalculator />;
       case "ags-puan": return <AgssCalculator />;
-      case "eurobond": return <EurobondCalculator />;
       case "kusak": return <GenerationCalculator />;
       case "hakim-savci-puan": return <HsyCalculator />;
       case "binek-arac-gider": return <VehicleExpenseCalculator />;
       case "fiyat": return <PriceCalculator />;
       case "yilin-kacinci-gunu": return <DayOfYearCalculator />;
-      case "net-bugunku-deger": return <IrrNpvCalculator />;
-      case "bilesik-buyume": return <CagrCalculator />;
-      case "birikim": return <SavingsCalculator />;
-      case "bono": return <BillCalculator />;
-      case "tahvil": return <BondCalculator />;
-      case "gecmis-altin": return <HistoricalGoldCalculator />;
-      case "gecmis-doviz": return <HistoricalCurrencyCalculator />;
-      case "iban": return <IbanValidator />;
-      case "iskonto": return <DiscountCalculator />;
-      case "ic-verim-orani": return <IrrNpvCalculator />;
-      case "kira-artisi": return <RentIncreaseCalculator />;
-      case "ortalama-vade": return <AverageMaturityCalculator />;
-      case "parasal-deger": return <TimeValueCalculator />;
-      case "reel-getiri": return <RealReturnCalculator />;
-      case "repo": return <RepoCalculator />;
-      case "temettu": return <DividendCalculator />;
-      case "vadeli-islem": return <FuturesCalculator />;
-      case "vadeli-mevduat": return <DepositInterestCalculator />;
+      // Finansal Paketler (23 ARAÇ)
+      case "bilesik-buyume":
+      case "birikim-hesaplama":
+      case "faiz-hesaplama":
+      case "repo-hesaplama":
+      case "temettu-hesaplama": 
+      case "mevduat-faizi-hesaplama": return <InvestmentSuite />;
+
+      case "eurobond-hesaplama":
+      case "bono-hesaplama":
+      case "tahvil-hesaplama":
+      case "iskonto-hesaplama":
+      case "iban-dogrulama": return <BondSuite />;
+
+      case "irr-hesaplama":
+      case "npv-hesaplama":
+      case "ortalama-vade-hesaplama":
+      case "reel-getiri-hesaplama":
+      case "vadeli-islem-fiyat-hesaplama": return <ValuationSuite />;
+
+      case "altin-hesaplama":
+      case "doviz-hesaplama":
+      case "enflasyon-hesaplama":
+      case "gecmis-altin-fiyatlari":
+      case "gecmis-doviz-kurlari":
+      case "kira-artis-orani":
+      case "parasal-deger-hesaplama": return <MarketSuite />;
       case "dolar-maliyet-ortalamasi": return <DcaCalculator />;
       case "kpss-puan": return <KpssCalculator />;
       case "ales-puan": return <AlesCalculator />;
