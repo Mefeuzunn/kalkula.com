@@ -1,6 +1,8 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function DiscountCalculator() {
   const [faceValue, setFaceValue] = useState("50000");
@@ -31,60 +33,70 @@ export function DiscountCalculator() {
   const fmt = (val: number) => val.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-input-group">
-        <label className="calc-label">Senetin Nominal Değeri (Vadedeki Tutar)</label>
-        <div className="calc-input-wrapper">
-          <input type="number" value={faceValue} onChange={e => setFaceValue(e.target.value)} className="calc-input has-unit" placeholder="50000" min="0" />
-          <span className="calc-unit">₺</span>
-        </div>
-      </div>
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Yıllık İskonto Oranı</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={rate} onChange={e => setRate(e.target.value)} className="calc-input has-unit" placeholder="36" step="0.1" min="0" />
-            <span className="calc-unit">%</span>
+    <V2CalculatorWrapper
+      title="İSKONTO (KIRDIRMA) ANALİZİ"
+      icon="📉"
+      infoText="İç İskonto matematiksel olarak en adil yöntemdir, peşin değeri baz alır. Dış İskonto ise bankaların kullandığı ticari yöntemdir ve nominal değer üzerinden hesaplandığı için banka lehine kesinti daha yüksektir."
+      results={result && (
+        <div className="space-y-8">
+          <div className="grid grid-cols-2 gap-6">
+            <V2ResultCard
+              color="blue"
+              label="İç İskonto (Net Kazanılan)"
+              value={fmt(result.isNet)}
+              subLabel={`Kesinti: ${fmt(result.isDiscount)}`}
+              icon="🏦"
+            />
+            <V2ResultCard
+              color="red"
+              label="Dış İskonto (Net Kazanılan)"
+              value={fmt(result.dsNet)}
+              subLabel={`Kesinti: ${fmt(result.dsDiscount)}`}
+              icon="📉"
+            />
           </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Vadeye Kalan Gün</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={days} onChange={e => setDays(e.target.value)} className="calc-input has-unit" placeholder="90" min="1" />
-            <span className="calc-unit">GÜN</span>
-          </div>
-        </div>
-      </div>
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>📉 Kesintileri Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
-
-      {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">📉 İskonto (Kırdırma) Analizi</div>
-          <div className="calc-result-body">
-            <div className="calc-result-cards" style={{ gridTemplateColumns: "1fr 1fr" }}>
-              <div className="calc-result-card" style={{ borderTop: "4px solid var(--accent-primary)" }}>
-                <div className="calc-result-card-label" style={{ color: "var(--accent-primary)" }}>İç İskonto (Net Kazanılan)</div>
-                <div className="calc-result-card-value font-bold">{fmt(result.isNet)}</div>
-                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Kesinti: {fmt(result.isDiscount)}</div>
-              </div>
-              <div className="calc-result-card" style={{ borderTop: "4px solid #ef4444" }}>
-                <div className="calc-result-card-label" style={{ color: "#ef4444" }}>Dış İskonto (Net Kazanılan)</div>
-                <div className="calc-result-card-value font-bold">{fmt(result.dsNet)}</div>
-                <div style={{ fontSize: "0.72rem", color: "var(--text-muted)", marginTop: "0.5rem" }}>Kesinti: {fmt(result.dsDiscount)}</div>
-              </div>
-            </div>
-            
-            <div style={{ marginTop: "1rem", fontSize: "0.8rem", color: "var(--text-muted)", background: "var(--surface)", padding: "1rem", borderRadius: "8px", border: "1px solid var(--border)" }}>
-              <p style={{ marginBottom: "0.5rem" }}><span style={{ color: "var(--accent-primary)", fontWeight: "bold" }}>İç İskonto: </span>Matematiksel olarak en adil yöntemdir. Senetin peşin değeri üzerinden ayrılan faizi baz alır.</p>
-              <p><span style={{ color: "#ef4444", fontWeight: "bold" }}>Dış İskonto: </span>Bankaların genellikle kullandığı (ticari) yöntemdir. Nominal değer üzerinden hesaplandığı için banka lehine kesinti daha yüksektir.</p>
-            </div>
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+             <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#3b82f6]">
+                <span>İç İskonto Verimliliği</span>
+                <span>Daha Adil</span>
+             </div>
+             <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-[#ef4444]">
+                <span>Dış İskonto Kesintisi</span>
+                <span>Daha Yüksek</span>
+             </div>
           </div>
         </div>
       )}
-    </div>
+    >
+      <V2Input
+        label="SENETİN NOMİNAL DEĞERİ"
+        value={faceValue}
+        onChange={setFaceValue}
+        unit="₺"
+      />
+
+      <div className="grid grid-cols-2 gap-4">
+        <V2Input
+          label="İSKONTO ORANI (%)"
+          value={rate}
+          onChange={setRate}
+          unit="%"
+          step="0.1"
+        />
+        <V2Input
+          label="VADEYE KALAN GÜN"
+          value={days}
+          onChange={setDays}
+          unit="GÜN"
+        />
+      </div>
+
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="📉 Kesintileri Analiz Et"
+      />
+    </V2CalculatorWrapper>
   );
 }

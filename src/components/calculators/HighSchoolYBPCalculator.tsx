@@ -1,6 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Info, Calculator, GraduationCap, Award, BookOpen, Star } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function HighSchoolYBPCalculator() {
   const [grade9, setGrade9] = useState("");
@@ -15,51 +21,73 @@ export function HighSchoolYBPCalculator() {
       .filter(x => !isNaN(x) && x > 0);
     
     if (arr.length > 0) {
-      // YBP (Yil Sonu Basari Puanlarinin Aritmetik Ortalamasi mezuniyet puaanini olusturur)
       const sum = arr.reduce((a, b) => a + b, 0);
-      setResult({ ybp: sum / arr.length });
+      const ybp = sum / arr.length;
+      setResult({ ybp });
+      if (ybp >= 70) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    } else {
+      setResult(null);
     }
   };
 
+  const reset = () => {
+    setGrade9("");
+    setGrade10("");
+    setGrade11("");
+    setGrade12("");
+    setResult(null);
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Lise öğreniminiz boyunca aldığınız yıl sonu başarı puanlarının (YBP) genel lise diploma notunuzu nasıl şekillendirdiğini bulun.</p>
-      
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>9. Sınıf Yıl Sonu Puanı</label>
-          <input type="number" value={grade9} onChange={e => setGrade9(e.target.value)} className="input-field" placeholder="Örn: 82.5" />
-        </div>
-        <div>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>10. Sınıf Yıl Sonu Puanı</label>
-          <input type="number" value={grade10} onChange={e => setGrade10(e.target.value)} className="input-field" placeholder="Örn: 80.2" />
-        </div>
-      </div>
-      
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>11. Sınıf Yıl Sonu Puanı</label>
-          <input type="number" value={grade11} onChange={e => setGrade11(e.target.value)} className="input-field" placeholder="Örn: 88.0" />
-        </div>
-        <div>
-          <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>12. Sınıf Yıl Sonu Puanı</label>
-          <input type="number" value={grade12} onChange={e => setGrade12(e.target.value)} className="input-field" placeholder="Örn: 90.0" />
-        </div>
-      </div>
+    <V2CalculatorWrapper
+      title="DİPLOMA NOTU (YBP) HESAPLA"
+      icon="📜"
+      infoText="Lise öğreniminiz boyunca aldığınız yıl sonu başarı puanlarının (YBP) genel lise diploma notunuzu nasıl şekillendirdiğini net olarak hesaplayın."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color={result.ybp >= 85 ? "emerald" : result.ybp >= 70 ? "blue" : "amber"}
+            label="DİPLOMA NOTU"
+            value={result.ybp.toFixed(2)}
+            subLabel="Genel Mezuniyet Puanı"
+            icon="🎓"
+          />
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>Puanları Ortalama Getir</button>
+          <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex gap-4 items-center">
+             <div className="p-3 rounded-2xl bg-primary/10 text-primary">
+                <Star className="w-5 h-5" />
+             </div>
+             <div>
+                <div className="text-[10px] font-black text-muted uppercase tracking-widest italic mb-1">OBP ANALİZİ</div>
+                <p className="text-[11px] text-muted italic leading-tight">
+                  Tahmini OBP Değeriniz: <span className="text-white font-black">{(result.ybp * 5).toFixed(1)}</span>
+                </p>
+             </div>
+          </div>
 
-      {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", textAlign: "center", borderTop: "4px solid var(--accent-primary)" }}>
-           <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Lise Genel YBP (Diploma Notu)</h3>
-           <div style={{ fontSize: "3rem", fontWeight: "bold", color: "var(--text-primary)" }}>
-              {result.ybp.toFixed(2)}
-           </div>
-           <p style={{ marginTop: "1rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>
-              Bu puan üniversite sınavında (YKS), yerleştirme puanınıza eklenecek olan Ortaöğretim Başarı Puanının (OBP) temelini oluşturur.
-           </p>
+          <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex gap-3 items-center">
+             <Info className="w-4 h-4 text-blue-500 shrink-0" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               Bu puan üniversite sınavında (YKS), yerleştirme puanınıza eklenecek olan Ortaöğretim Başarı Puanının (OBP) temelini oluşturur.
+             </p>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <V2Input label="9. SINIF PUANI" value={grade9} onChange={setGrade9} unit="P" placeholder="Örn: 82.5" max="100" />
+           <V2Input label="10. SINIF PUANI" value={grade10} onChange={setGrade10} unit="P" placeholder="Örn: 80.2" max="100" />
+           <V2Input label="11. SINIF PUANI" value={grade11} onChange={setGrade11} unit="P" placeholder="Örn: 88.0" max="100" />
+           <V2Input label="12. SINIF PUANI" value={grade12} onChange={setGrade12} unit="P" placeholder="Örn: 90.0" max="100" />
+        </div>
+
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="📊 Ortalama Getir"
+        />
+      </div>
+    </V2CalculatorWrapper>
   );
 }

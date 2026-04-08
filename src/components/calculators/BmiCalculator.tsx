@@ -1,7 +1,9 @@
-"use client";
-
 import React, { useState } from "react";
 import confetti from "canvas-confetti";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function BmiCalculator() {
   const [weight, setWeight] = useState("");
@@ -15,7 +17,6 @@ export function BmiCalculator() {
       const vke = w / (h * h);
       setResult(vke);
       
-      // WOW Effect
       confetti({
         particleCount: 100,
         spread: 70,
@@ -34,111 +35,100 @@ export function BmiCalculator() {
   let status = "";
   let color = "";
   let description = "";
+  let themeColor: "blue" | "emerald" | "amber" | "red" = "emerald";
 
   if (result !== null) {
     if (result < 18.5) { 
         status = "Zayıf"; 
         color = "#3b82f6"; 
+        themeColor = "blue";
         description = "Kilonuz boyunuza göre az. Dengeli beslenmeye odaklanmalısınız.";
     }
     else if (result < 24.9) { 
         status = "Normal"; 
         color = "#22c55e"; 
+        themeColor = "emerald";
         description = "Tebrikler! İdeal kilo aralığındasınız. Formunuzu koruyun.";
     }
     else if (result < 29.9) { 
         status = "Fazla Kilolu"; 
         color = "#eab308"; 
+        themeColor = "amber";
         description = "İdeal kilonun biraz üzerindesiniz. Hareket miktarını artırın.";
     }
     else { 
         status = "Obez"; 
         color = "#ef4444"; 
+        themeColor = "red";
         description = "Kilonuz sağlığınızı tehdit edebilir. Bir uzmana danışmanızı öneririz.";
     }
   }
 
   return (
-    <div className="calc-wrapper animate-fade-in">
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Boy (cm)</label>
-          <div className="calc-input-wrapper">
-            <input 
-              type="number" 
-              placeholder="175" 
-              value={height}
-              onChange={(e) => setHeight(e.target.value)}
-              className="calc-input has-unit" 
-              min="50" max="250"
-            />
-            <span className="calc-unit">CM</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Kilo (kg)</label>
-          <div className="calc-input-wrapper">
-            <input 
-              type="number" 
-              placeholder="70" 
-              value={weight}
-              onChange={(e) => setWeight(e.target.value)}
-              className="calc-input has-unit" 
-              min="20" max="300"
-            />
-            <span className="calc-unit">KG</span>
-          </div>
-        </div>
-      </div>
+    <V2CalculatorWrapper
+      title="VÜCUT KİTLE ENDEKSİ (VKE)"
+      icon="⚖️"
+      infoText="Vücut kitle endeksi (VKE), vücut ağırlığının boy uzunluğunun karesine bölünmesiyle hesaplanır. Sağlıklı bir yaşam için ideal aralık 18.5 ile 24.9 arasıdır."
+      results={result !== null && (
+        <div className="space-y-8">
+          <V2ResultCard
+            color={themeColor}
+            icon="📊"
+            label={status.toUpperCase()}
+            value={result.toFixed(1)}
+            subLabel="Vücut Kitle Endeksiniz"
+          />
 
-      <div className="calc-action-row" style={{ marginTop: '1.5rem' }}>
-        <button className="calc-btn-reset" onClick={reset} style={{ flex: 0.3 }}>Temizle</button>
-        <button className="calc-btn-calculate" onClick={calculate} style={{ flex: 1 }}>Hesapla</button>
-      </div>
+          <div className="p-8 rounded-[2rem] bg-white/5 border border-white/5 space-y-6">
+             <p className="text-center text-sm font-medium italic text-muted leading-relaxed">
+                {description}
+             </p>
 
-      {result !== null && (
-        <div className="result-container-premium animate-result shadow-2xl" style={{ marginTop: '2.5rem' }}>
-          <div className="result-card-premium">
-            <div className="result-badge" style={{ backgroundColor: `${color}11`, color, borderColor: `${color}33`, marginBottom: '1.5rem' }}>
-               {status.toUpperCase()}
-            </div>
-            <div className="result-value-premium" style={{ color, fontSize: '4.5rem', lineHeight: 1 }}>
-              {result.toFixed(1)}
-            </div>
-            <div style={{ fontSize: '0.75rem', fontWeight: 900, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginTop: '1rem' }}>Vücut Kitle Endeksiniz</div>
-            
-            <p style={{ marginTop: '1.5rem', fontSize: '1rem', color: 'var(--text-secondary)', fontWeight: 500, maxWidth: '400px', margin: '1.5rem auto 0' }}>
-               {description}
-            </p>
-
-            <div style={{ marginTop: '2.5rem', position: 'relative', height: '12px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden', display: 'flex' }}>
-                <div style={{ flex: 18.5, background: '#3b82f6', opacity: result < 18.5 ? 1 : 0.4 }}></div>
-                <div style={{ flex: 6.4, background: '#22c55e', opacity: (result >= 18.5 && result < 24.9) ? 1 : 0.4 }}></div>
-                <div style={{ flex: 5, background: '#eab308', opacity: (result >= 24.9 && result < 29.9) ? 1 : 0.4 }}></div>
-                <div style={{ flex: 10.1, background: '#ef4444', opacity: result >= 29.9 ? 1 : 0.4 }}></div>
-                
-                {/* Pointer */}
-                <div style={{ 
-                    position: 'absolute', 
-                    left: `${Math.min(95, Math.max(5, (result / 40) * 100))}%`, 
-                    top: 0, 
-                    bottom: 0, 
-                    width: '4px', 
-                    background: '#fff', 
-                    boxShadow: '0 0 10px rgba(0,0,0,0.5)', 
-                    zIndex: 2,
-                    transition: 'left 1s cubic-bezier(0.34, 1.56, 0.64, 1)'
-                }}></div>
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)', marginTop: '0.5rem' }}>
-                <span>18.5</span>
-                <span>25</span>
-                <span>30</span>
-                <span>40+</span>
-            </div>
+             <div className="space-y-2">
+                <div className="relative h-4 bg-white/5 rounded-full overflow-hidden flex">
+                    <div style={{ flex: 18.5, background: '#3b82f6', opacity: result < 18.5 ? 1 : 0.3 }}></div>
+                    <div style={{ flex: 6.4, background: '#22c55e', opacity: (result >= 18.5 && result < 24.9) ? 1 : 0.3 }}></div>
+                    <div style={{ flex: 5, background: '#eab308', opacity: (result >= 24.9 && result < 29.9) ? 1 : 0.3 }}></div>
+                    <div style={{ flex: 10.1, background: '#ef4444', opacity: result >= 29.9 ? 1 : 0.3 }}></div>
+                    
+                    <div 
+                        className="absolute top-0 bottom-0 w-1.5 bg-white shadow-[0_0_15px_rgba(255,255,255,0.8)] z-10 transition-all duration-1000 ease-out"
+                        style={{ left: `${Math.min(98, Math.max(2, (result / 40) * 100))}%` }}
+                    />
+                </div>
+                <div className="flex justify-between text-[10px] font-black text-muted uppercase tracking-widest px-1">
+                    <span>18.5</span>
+                    <span>25</span>
+                    <span>30</span>
+                    <span>40+</span>
+                </div>
+             </div>
           </div>
         </div>
       )}
-    </div>
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <V2Input
+          label="BOY (CM)"
+          value={height}
+          onChange={setHeight}
+          unit="CM"
+          placeholder="175"
+        />
+        <V2Input
+          label="KİLO (KG)"
+          value={weight}
+          onChange={setWeight}
+          unit="KG"
+          placeholder="70"
+        />
+      </div>
+
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="⚖️ Endeks Hesapla"
+      />
+    </V2CalculatorWrapper>
   );
 }

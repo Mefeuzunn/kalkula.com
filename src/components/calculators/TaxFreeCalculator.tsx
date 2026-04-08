@@ -2,6 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
+import { Info, Globe, Plane, Receipt, Banknote, Star, ArrowRight, CheckCircle, AlertTriangle, ShieldCheck, CreditCard, Landmark } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 interface CountryInfo {
   name: string;
@@ -36,7 +41,6 @@ export function TaxFreeCalculator() {
   const [selectedCountry, setSelectedCountry] = useState("france");
   const [amount, setAmount] = useState("1000");
   const [rates, setRates] = useState<Record<string, number>>({});
-  const [loading, setLoading] = useState(true);
   const [results, setResults] = useState<{
     vatAmount: number;
     estimatedRefund: number;
@@ -47,7 +51,6 @@ export function TaxFreeCalculator() {
 
   const fetchRates = async () => {
     try {
-      setLoading(true);
       const res = await fetch("/api/rates");
       const data = await res.json();
       if (data.rates) {
@@ -59,8 +62,6 @@ export function TaxFreeCalculator() {
       }
     } catch (e) {
       console.error("Rates fetch failed", e);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -95,118 +96,132 @@ export function TaxFreeCalculator() {
     });
 
     if (isEligible && total > 2000) {
-      confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 }, colors: ["#10b981", "#3b82f6"] });
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
   };
 
-  useEffect(() => { calculate(); }, [selectedCountry, amount, rates]);
-
-  if (loading) return <div className="p-20 text-center font-black animate-pulse text-muted">GÜNCEL KURLAR ALINIYOR...</div>;
+  const reset = () => {
+    setAmount("1000");
+    setSelectedCountry("france");
+    setResults(null);
+  };
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-input-group">
-        <label className="calc-label">Ülke Seçimi</label>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2">
-          {Object.entries(COUNTRY_DATA).map(([key, data]) => (
-            <button
-              key={key}
-              onClick={() => setSelectedCountry(key)}
-              className={`flex items-center gap-2 p-3 rounded-2xl border-2 transition-all text-sm font-bold ${
-                selectedCountry === key 
-                ? "border-accent-primary bg-accent-primary/10 text-accent-primary" 
-                : "border-border hover:border-accent-primary/30"
-              }`}
-            >
-              <span>{data.flag}</span>
-              <span className="truncate">{data.name}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+    <V2CalculatorWrapper
+      title="TAX FREE HESAPLA"
+      icon="✈️"
+      infoText="Yurt dışı alışverişlerinizde ülkelerin KDV oranlarına göre alabileceğiniz vergi iadesini (Tax Free) ve tahmini hizmet bedelini anında hesaplayın."
+      results={results && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color={results.isEligible ? "emerald" : "amber"}
+            label={results.isEligible ? "TAHMİNİ İADE TUTARI" : "LİMİT ALTI HARCAMA"}
+            value={results.isEligible ? `${results.estimatedRefund.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ${country.symbol}` : "0.00"}
+            subLabel={results.isEligible ? `≈ ${results.refundTRY.toLocaleString('tr-TR', { style: "currency", currency: "TRY" })}` : `Min: ${country.minSpend} ${country.symbol}`}
+            icon={results.isEligible ? "💰" : "⚠️"}
+          />
 
-      <div className="calc-grid-2 mt-6">
-        <div className="calc-input-group">
-          <label className="calc-label">Alışveriş Tutarı ({country.currency})</label>
-          <div className="calc-input-wrapper">
-            <input 
-              type="number" 
-              value={amount} 
-              onChange={e => setAmount(e.target.value)} 
-              className="calc-input has-unit" 
-            />
-            <span className="calc-unit">{country.symbol}</span>
+          <div className="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+             <div className="text-[10px] font-black text-muted uppercase tracking-widest italic mb-2">İade Analizi</div>
+             <div className="space-y-3">
+                <div className="flex justify-between items-center text-xs italic">
+                   <span className="text-muted">Ödenen Toplam KDV:</span>
+                   <span className="text-primary font-bold">{results.vatAmount.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} {country.symbol}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs italic border-t border-white/5 pt-3">
+                   <span className="text-muted text-red-500/70">Operatör Komisyonu (Tahmini):</span>
+                   <span className="text-red-500 font-bold">-{results.feeAmount.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} {country.symbol}</span>
+                </div>
+             </div>
           </div>
-          <div className="text-[10px] mt-1 text-muted">Minimum Harcama: <b>{country.minSpend} {country.symbol}</b></div>
-        </div>
-        
-        <div className="p-6 bg-accent-primary/5 rounded-[2rem] border border-accent-primary/10 flex flex-col justify-center">
-            <div className="text-[10px] uppercase font-black text-accent-primary/60 tracking-widest mb-1">Ülke Özeti</div>
-            <div className="font-bold text-sm leading-tight text-primary">{country.description}</div>
-            <div className="mt-2 text-xs font-bold text-accent-primary italic">KDV Oranı: %{country.vat}</div>
-        </div>
-      </div>
 
-      {results && (
-        <div className="calc-result-panel mt-8">
-          <div className={`calc-result-header border-b px-8 py-4 flex justify-between items-center ${results.isEligible ? "text-emerald-500" : "text-amber-500"}`}>
-            <span className="font-black italic uppercase tracking-tighter">
-              {results.isEligible ? "✅ İade Alınabilir" : "⚠️ Limit Altı"}
-            </span>
-            <span className="text-[10px] opacity-60">2026 Güncel Verileri</span>
-          </div>
-          
-          <div className="calc-result-body p-8 flex flex-col gap-8">
-            <div className="calc-result-hero text-center p-10 bg-secondary/5 rounded-[3rem] border border-border relative overflow-hidden">
-               {/* Background Glow */}
-               <div className="absolute inset-0 bg-accent-primary/5 blur-3xl rounded-full scale-50"></div>
-               
-               <div className="relative z-10">
-                 <div className="text-[10px] font-black text-muted uppercase tracking-[0.4em] mb-4">Tahmini Alınacak İade</div>
-                 <div className="text-6xl font-black italic tracking-tighter text-primary mb-2">
-                   {results.estimatedRefund.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} {results.isEligible ? country.symbol : ""}
-                 </div>
-                 <div className="text-xl font-bold text-accent-primary flex items-center justify-center gap-2">
-                    <span className="opacity-50">≈</span> 
-                    {results.refundTRY.toLocaleString('tr-TR', { style: "currency", currency: "TRY" })}
-                 </div>
-               </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-6 rounded-[2rem] border border-border flex flex-col gap-1 items-center md:items-start">
-                 <div className="text-[10px] font-black text-muted uppercase tracking-widest">Net KDV</div>
-                 <div className="text-xl font-bold">{results.vatAmount.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} {country.symbol}</div>
-                 <div className="text-[10px] text-muted italic">Ödenen Toplam Vergi</div>
-              </div>
-              <div className="p-6 rounded-[2rem] border border-border flex flex-col gap-1 items-center md:items-start text-red-500">
-                 <div className="text-[10px] font-black uppercase tracking-widest opacity-60">Operatör Komisyonu</div>
-                 <div className="text-xl font-bold">-{results.feeAmount.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} {country.symbol}</div>
-                 <div className="text-[10px] italic opacity-60">Tahmini Hizmet Bedeli</div>
-              </div>
-            </div>
-
-            {!results.isEligible && (
-              <div className="bg-amber-500/10 border-2 border-amber-500/20 p-6 rounded-3xl text-center">
-                 <p className="text-sm font-bold text-amber-700">Minimum harcama tutarı olan <b>{country.minSpend} {country.symbol}</b> limitinin altındasınız. Bu faturadan Tax Free iadesi alamazsınız.</p>
-              </div>
-            )}
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+             <div className="flex gap-3 items-center text-[10px] font-black text-blue-500 uppercase italic">
+                <Info className="w-4 h-4" /> Profesyonel İade Rehberi
+             </div>
+             <ul className="grid grid-cols-1 gap-2">
+                {[
+                  "Alışverişte mutlaka Tax Free Form talep edin.",
+                  "İşlem için pasaportunuzun yanında olması gerekir.",
+                  "Ülkeden ayrılırken formu gümrükte mühürletin.",
+                  "Havalimanı iade ofislerinden nakit/kart iadesi alın."
+                ].map((item, i) => (
+                  <li key={i} className="flex gap-3 items-center text-[10px] text-muted italic">
+                    <CheckCircle className="w-3 h-3 text-emerald-500 shrink-0" /> {item}
+                  </li>
+                ))}
+             </ul>
           </div>
         </div>
       )}
-
-      <div className="calc-info-box mt-8">
-        <span className="calc-info-box-icon">💡</span>
-        <div className="calc-info-box-text">
-            <p className="font-bold mb-1">Profesyonel İade Rehberi:</p>
-            <ul className="list-disc ml-5 text-sm opacity-80 flex flex-col gap-1">
-                <li><b>Form Talep Edin:</b> Alışveriş sırasında mutlaka "Tax Free Form" istediğinizi belirtin.</li>
-                <li><b>Pasaport Gerekli:</b> İşlem için pasaportunuzun yanınızda veya dijital kopyasının hazır olması gerekir.</li>
-                <li><b>Gümrük Onayı:</b> Ülkeden ayrılırken formu gümrük noktasında (Customs) mühürletmeniz profesyonel süreç için şarttır.</li>
-                <li><b>İade Noktaları:</b> Global Blue, Planet veya Tax Free Point gibi operatörlerin havalimanı ofislerinden nakit veya karta iade alabilirsiniz.</li>
-            </ul>
+    >
+      <div className="space-y-8">
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-4">
+           <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] flex items-center gap-2">
+              <Globe className="w-4 h-4" /> ÜLKE SEÇİMİ
+           </div>
+           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+              {Object.entries(COUNTRY_DATA).map(([key, data]) => (
+                <button
+                  key={key}
+                  onClick={() => setSelectedCountry(key)}
+                  className={`flex items-center justify-center gap-2 p-4 rounded-2xl border-2 transition-all group ${
+                    selectedCountry === key 
+                    ? "border-blue-600 bg-blue-600/10 text-blue-500 shadow-lg shadow-blue-500/10" 
+                    : "border-white/5 bg-white/5 text-muted hover:border-white/10 hover:text-primary"
+                  }`}
+                >
+                  <span className="text-xl group-hover:scale-110 transition-transform">{data.flag}</span>
+                  <span className="text-[10px] font-black italic uppercase truncate">{data.name}</span>
+                </button>
+              ))}
+           </div>
         </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+           <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+              <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] flex items-center gap-2">
+                 <Receipt className="w-4 h-4" /> HARCAMA BİLGİSİ
+              </div>
+              <V2Input 
+                label={`TOPLAM TUTAR (${country.currency})`} 
+                value={amount} 
+                onChange={setAmount} 
+                unit={country.symbol} 
+                placeholder="1000" 
+                fieldClassName="!py-6 font-black text-3xl italic"
+              />
+              <div className="flex items-center justify-between text-[10px] font-bold text-muted px-2 uppercase tracking-widest italic">
+                 <span>Minimum Harcama:</span>
+                 <span className="text-primary">{country.minSpend} {country.symbol}</span>
+              </div>
+           </div>
+
+           <div className="p-6 rounded-3xl bg-blue-600/5 border border-blue-600/10 flex flex-col justify-center gap-4 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-5">
+                 <Plane className="w-20 h-20 -rotate-12" />
+              </div>
+              <div className="text-[10px] font-black text-blue-500 uppercase tracking-widest italic">ÜLKE ANALİZİ</div>
+              <p className="text-xs font-medium italic text-primary leading-relaxed relative z-10">
+                 {country.description}
+              </p>
+              <div className="flex gap-4 items-center">
+                 <div className="px-3 py-1 bg-blue-600/10 rounded-full border border-blue-600/20 text-[10px] font-black text-blue-500 italic">
+                    KDV: %{country.vat}
+                 </div>
+                 <div className="px-3 py-1 bg-blue-600/10 rounded-full border border-blue-600/20 text-[10px] font-black text-blue-500 italic">
+                    PARA BİRİMİ: {country.currency}
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="✈️ İademi Hesapla"
+        />
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

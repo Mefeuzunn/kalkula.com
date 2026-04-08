@@ -1,6 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Info, Award, BookMarked, Calculator, Star, Trash2, Plus, AlertCircle, CheckCircle } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 type CourseRow = { id: number; name: string; grade: string; hours: string };
 
@@ -11,7 +17,7 @@ export function CertificateCalculator() {
     { id: 3, name: "Fizik", grade: "", hours: "4" }
   ]);
   const [unexcusedAbsent, setUnexcusedAbsent] = useState("0");
-  const [result, setResult] = useState<{ gpa: number; cert: string; message: string; color: string } | null>(null);
+  const [result, setResult] = useState<{ gpa: number; cert: string; message: string; color: "emerald" | "blue" | "red" | "amber"; icon: React.ReactNode } | null>(null);
 
   const calculate = () => {
     let totalScore = 0;
@@ -34,28 +40,32 @@ export function CertificateCalculator() {
     if (totalHours > 0) {
       const gpa = totalScore / totalHours;
       
-      let cert = "Belge Alamıyorsunuz";
+      let cert = "Belge Alınamadı";
       let message = "Ortalamanız belge almak için gereken sınırın altındadır.";
-      let color = "#ef4444";
+      let color: "emerald" | "blue" | "red" | "amber" = "red";
+      let icon = <AlertCircle className="w-6 h-6 text-red-500" />;
 
-      // Belge alma sartlari: Ozursuz devamsizlik 5 gunu asmamali, zayif ders (50 alti) olmamali.
       if (hasFailedCourse) {
-         message = `Ortalamanız ${gpa.toFixed(2)} ancak başarısız (50 altı) dersiniz olduğu için MEB mevzuatına göre belge alamazsınız.`;
+         message = `Ortalamanız ${gpa.toFixed(2)} ancak başarısız (50 altı) dersiniz olduğu için belge alamazsınız.`;
       } else if (absent > 5) {
          message = `Ortalamanız ${gpa.toFixed(2)} ancak özürsüz devamsızlığınız 5 günü aştığı için belge alamazsınız.`;
       } else {
          if (gpa >= 85) {
             cert = "Takdir Belgesi";
-            message = "Tebrikler! Hem ortalamanız hem de devamsızlık durumunuz Takdir Belgesi almak için yeterlidir.";
-            color = "#22c55e";
+            message = "Tebrikler! Hem ortalamanız hem de devamsızlık durumunuz Takdir Belgesi için yeterlidir.";
+            color = "emerald";
+            icon = <Award className="w-6 h-6 text-emerald-500" />;
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
          } else if (gpa >= 70) {
             cert = "Teşekkür Belgesi";
-            message = "Tebrikler! Ortalamanız 70-84.99 arasında ve tüm koşulları sağladığınız için Teşekkür Belgesi hak ediyorsunuz.";
-            color = "#3b82f6";
+            message = "Tebrikler! Belge alma koşullarını sağlıyorsunuz.";
+            color = "blue";
+            icon = <CheckCircle className="w-6 h-6 text-blue-500" />;
+            confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
          }
       }
 
-      setResult({ gpa, cert, message, color });
+      setResult({ gpa, cert, message, color, icon });
     }
   };
 
@@ -64,52 +74,100 @@ export function CertificateCalculator() {
   };
   const addRow = () => setCourses([...courses, { id: Date.now(), name: "", grade: "", hours: "" }]);
   const removeRow = (id: number) => setCourses(courses.filter(c => c.id !== id));
+  const reset = () => {
+    setCourses([
+      { id: 1, name: "Matematik", grade: "", hours: "6" },
+      { id: 2, name: "Edebiyat", grade: "", hours: "5" },
+      { id: 3, name: "Fizik", grade: "", hours: "4" }
+    ]);
+    setUnexcusedAbsent("0");
+    setResult(null);
+  };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Ortalamanızın 85 veya 70 barajını aşıp aşmadığını test edin. Zayıf ve devamsızlık koşulları da analiz edilir.</p>
-      
-      <div>
-         <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: 500 }}>Özürsüz Devamsızlık (Gün)</label>
-         <input type="number" value={unexcusedAbsent} onChange={e => setUnexcusedAbsent(e.target.value)} className="input-field" placeholder="0" />
-         <p style={{ fontSize: "0.8rem", color: "var(--text-muted)", marginTop: "0.3rem" }}>MEB mevzuatına göre özürsüz devamsızlık 5 günü aşarsa puan ne olursa olsun belge alınamaz.</p>
-      </div>
+    <V2CalculatorWrapper
+      title="TAKDİR TEŞEKKÜR HESAPLA"
+      icon="📜"
+      infoText="MEB yönetmeliğine göre 50 altı dersiniz ve 5 günü aşan özürsüz devamsızlığınız yoksa belge durumunuzu analiz edin."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color={result.color}
+            label="KARNE SONUCU"
+            value={result.cert.toUpperCase()}
+            subLabel={`Ağırlıklı Ortalama: ${result.gpa.toFixed(2)}`}
+            icon={result.color === 'emerald' ? '🏆' : '🎖️'}
+          />
 
-      <div className="panel" style={{ padding: "1.5rem" }}>
-        <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 40px", gap: "1rem", marginBottom: "0.5rem", fontWeight: 500, color: "var(--text-muted)", fontSize: "0.85rem" }}>
-          <div>Ders Adı</div>
-          <div>Not (0-100)</div>
-          <div>Ders Saati</div>
-          <div></div>
-        </div>
-
-        {courses.map(c => (
-          <div key={c.id} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 40px", gap: "1rem", marginBottom: "0.75rem", alignItems: "center" }}>
-             <input type="text" value={c.name} onChange={e => updateField(c.id, "name", e.target.value)} className="input-field" placeholder="Ders" />
-             <input type="number" value={c.grade} onChange={e => updateField(c.id, "grade", e.target.value)} className="input-field" placeholder="Not" />
-             <input type="number" value={c.hours} onChange={e => updateField(c.id, "hours", e.target.value)} className="input-field" placeholder="Saat" />
-             <button onClick={() => removeRow(c.id)} style={{ color: "#ef4444", background: "none", border: "none", cursor: "pointer" }}>✕</button>
+          <div className="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+             <div className="flex items-start gap-3">
+                <div className="mt-1">{result.icon}</div>
+                <div>
+                   <div className={`text-xs font-black uppercase italic mb-1 text-${result.color}-500`}>Ayrıntılı Rapor</div>
+                   <p className="text-[11px] text-muted italic leading-relaxed">{result.message}</p>
+                </div>
+             </div>
           </div>
-        ))}
-        <button onClick={addRow} style={{ color: "var(--accent-primary)", background: "none", border: "none", cursor: "pointer", fontWeight: "bold", marginTop: "1rem" }}>+ Yeni Ders</button>
-      </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>Karne & Belge Hesapla</button>
-
-      {result && (
-        <div className="panel" style={{ marginTop: "2rem", padding: "1.5rem", textAlign: "center", borderTop: `4px solid ${result.color}` }}>
-           <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Karne Sonucu</h3>
-           <div style={{ fontSize: "2.5rem", fontWeight: "bold", color: result.color }}>
-              {result.cert}
-           </div>
-           <p style={{ marginTop: "1rem", fontSize: "0.95rem", color: "var(--text-muted)", lineHeight: "1.5" }}>
-              {result.message}
-           </p>
-           {result.gpa >= 50 && (
-              <p style={{ marginTop: "0.5rem", fontSize: "0.85rem", color: "var(--text-muted)" }}>Ağırlıklı Ortalama: <span style={{ fontWeight: "bold", color: "var(--text-primary)"}}>{result.gpa.toFixed(4)}</span></p>
-           )}
+          <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex gap-3 items-center">
+             <Info className="w-4 h-4 text-blue-500 shrink-0" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               Belge alabilmek için hiçbir dersin <span className="text-white font-bold">50</span> puanın altında olmaması gerekmektedir.
+             </p>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <div className="max-w-xs mx-auto">
+           <V2Input 
+             label="ÖZÜRSÜZ DEVAMSIZLIK (GÜN)" 
+             value={unexcusedAbsent} 
+             onChange={setUnexcusedAbsent} 
+             unit="GÜN" 
+             placeholder="0" 
+             fieldClassName="!bg-red-500/5 !text-red-500 !border-red-500/10 !text-center !text-3xl font-black italic"
+           />
+        </div>
+
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-4">
+           <div className="grid grid-cols-[2fr_1fr_1fr_40px] gap-4 mb-2 text-[10px] font-black text-muted uppercase tracking-widest px-2">
+              <div>Ders Adı</div>
+              <div className="text-center">Not (0-100)</div>
+              <div className="text-center">Saat</div>
+              <div></div>
+           </div>
+
+           <div className="max-h-[300px] overflow-y-auto pr-2 space-y-3 custom-scrollbar">
+              {courses.map(c => (
+                <div key={c.id} className="grid grid-cols-[2fr_1fr_1fr_40px] gap-4 items-center animate-in slide-in-from-left duration-200">
+                   <V2Input label="" value={c.name} onChange={v => updateField(c.id, "name", v)} placeholder="Ders..." fieldClassName="!py-3" />
+                   <V2Input label="" value={c.grade} onChange={v => updateField(c.id, "grade", v)} placeholder="Not" fieldClassName="!py-3 !text-center" />
+                   <V2Input label="" value={c.hours} onChange={v => updateField(c.id, "hours", v)} placeholder="Saat" fieldClassName="!py-3 !text-center" />
+                   <button 
+                     onClick={() => removeRow(c.id)} 
+                     className="p-3 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors flex items-center justify-center border border-red-500/10"
+                   >
+                     <Trash2 className="w-4 h-4" />
+                   </button>
+                </div>
+              ))}
+           </div>
+
+           <button 
+             onClick={addRow} 
+             className="w-full py-4 rounded-2xl border-2 border-dashed border-white/10 text-muted hover:border-primary/50 hover:text-primary transition-all flex items-center justify-center gap-2 text-xs font-black uppercase italic"
+           >
+             <Plus className="w-4 h-4" /> Yeni Ders Ekle
+           </button>
+        </div>
+
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="🏆 Belge Sorgula"
+        />
+      </div>
+    </V2CalculatorWrapper>
   );
 }

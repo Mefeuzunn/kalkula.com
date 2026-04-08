@@ -1,6 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { Droplet, Info, Calculator, RotateCcw } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
 
 export function VolumeCalculator() {
   const [valL, setValL] = useState("1");
@@ -40,42 +44,46 @@ export function VolumeCalculator() {
     setValMl((num * 1000000).toString());
   };
 
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {[
-          { label: "LİTRE (L)", val: valL, update: updateFromL, unit: "L" },
-          { label: "SANTİLİTRE (CL)", val: valCl, update: updateFromCl, unit: "cl" },
-          { label: "MİLİLİTRE (ML)", val: valMl, update: updateFromMl, unit: "ml" },
-          { label: "METREKÜP (M³)", val: valM3, update: updateFromM3, unit: "m³" }
-        ].map((item, i) => (
-          <div key={i} className="flex flex-col">
-            <label className="calc-input-label">{item.label}</label>
-            <div className="calc-input-key">
-               <div className="absolute top-4 right-6 text-[10px] font-black text-accent-primary italic opacity-40">{item.unit}</div>
-               <input 
-                 type="number" 
-                 value={item.val} 
-                 onChange={e => item.update(e.target.value)} 
-                 className="calc-input-field" 
-                 placeholder="0" 
-               />
-            </div>
-          </div>
-        ))}
-      </div>
+  const reset = () => {
+    updateFromL("1");
+  };
 
-      <div className="panel p-8 bg-secondary/5 border-2 border-dashed border-border rounded-[2.5rem] text-center mt-6">
-        <label className="text-[10px] font-black text-muted uppercase tracking-[0.3em] mb-4 block italic opacity-60">Matematiksel Karşılık</label>
-        <div className="font-mono text-xl font-black text-primary tracking-tighter flex items-center justify-center gap-4">
-          <span className="text-3xl text-accent-primary italic drop-shadow-sm">1 Litre = 100 cl = 1000 ml</span>
+  return (
+    <V2CalculatorWrapper
+      title="HACİM & SIVI BİRİM DÖNÜŞTÜRÜCÜ"
+      icon="💧"
+      infoText="Litre, mililitre, santilitre ve metreküp birimleri arasında hızlı dönüşüm yapın. Bir değeri girdiğinizde diğerleri anlık olarak hesaplanır."
+    >
+      <div className="space-y-8">
+        <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/5 space-y-6">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <V2Input label="LİTRE (L)" value={valL} onChange={updateFromL} type="number" placeholder="1" unit="L" fieldClassName="!text-2xl font-black italic" />
+              <V2Input label="SANTİLİTRE (CL)" value={valCl} onChange={updateFromCl} type="number" placeholder="100" unit="cl" fieldClassName="!text-2xl font-black italic" />
+              <V2Input label="MİLİLİTRE (ML)" value={valMl} onChange={updateFromMl} type="number" placeholder="1000" unit="ml" fieldClassName="!text-2xl font-black italic" />
+              <V2Input label="METREKÜP (M³)" value={valM3} onChange={updateFromM3} type="number" placeholder="0.001" unit="m³" fieldClassName="!text-2xl font-black italic" />
+           </div>
+
+           <div className="p-6 rounded-3xl bg-blue-500/5 border border-blue-500/10 flex flex-col items-center justify-center gap-3">
+              <div className="text-[10px] font-black text-blue-400 uppercase tracking-widest italic opacity-60">MATEMATİKSEL EŞİTLİK</div>
+              <div className="flex items-center gap-4 text-primary font-black text-xl italic drop-shadow-sm">
+                 <span className="text-blue-500">1 L</span>
+                 <span className="text-muted text-sm">=</span>
+                 <span>100 cl</span>
+                 <span className="text-muted text-sm">=</span>
+                 <span>1000 ml</span>
+              </div>
+           </div>
+
+           <V2ActionRow onCalculate={() => {}} onReset={reset} calculateLabel="Anlık Dönüşüm" isCalculateDisabled={true} className="!mt-4" />
+        </div>
+
+        <div className="p-5 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-4">
+           <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+           <p className="text-[10px] text-muted leading-relaxed italic">
+              <b>Kullanım Notu:</b> Bu araç mutfak ölçüleri, endüstriyel sıvı transferleri ve laboratuvar çalışmaları için optimize edilmiştir. 1 Litre, tam olarak 1 desimetreküpe (dm³) eşittir.
+           </p>
         </div>
       </div>
-
-      <div className="mt-8 p-6 bg-accent-glow border-2 border-dashed border-accent-primary/20 rounded-3xl flex gap-4 items-center">
-        <span className="text-2xl">💡</span>
-        <p className="text-xs font-bold text-muted italic">Birimlerden herhangi birine değer girdiğinizde diğerleri anlık olarak hesaplanır. Endüstriyel mutfak ve laboratuvar ölçümleri için idealdir.</p>
-      </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

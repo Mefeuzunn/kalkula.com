@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { 
   Heart, 
@@ -14,16 +14,24 @@ import {
   Activity, 
   ShieldAlert,
   Clock,
-  Coins
+  Coins,
+  Target,
+  TrendingUp
 } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 // --- Medical Disclaimer Component ---
 function MedicalDisclaimer() {
   return (
-    <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex gap-3 text-amber-600 dark:text-amber-400 text-xs mb-6">
+    <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-6 flex gap-4 text-amber-500 text-[11px] font-medium leading-relaxed mb-8">
       <ShieldAlert className="w-5 h-5 flex-shrink-0" />
       <p>
-        <strong>Uyarı:</strong> Bu araçlar yalnızca bilgilendirme amaçlıdır. Verilen sonuçlar tıbbi tavsiye yerine geçmez. 
+        <strong className="block mb-1 uppercase tracking-widest text-[10px] font-black">TIBBİ UYARI</strong>
+        Bu araçlar yalnızca bilgilendirme amaçlıdır. Verilen sonuçlar tıbbi tavsiye yerine geçmez. 
         Herhangi bir sağlık sorununuz için lütfen bir sağlık profesyoneline danışın.
       </p>
     </div>
@@ -67,31 +75,27 @@ export function VaccinationCalculator() {
     confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
   };
 
-  return (
-    <div className="flex flex-col gap-6">
-      <MedicalDisclaimer />
-      <div className="flex flex-col gap-2">
-        <label className="text-xs font-bold text-muted uppercase px-1">Bebeğin Doğum Tarihi</label>
-        <div className="flex gap-2">
-          <input type="date" value={birthDate} onChange={e => setBirthDate(e.target.value)} className="input-field flex-1" />
-          <button onClick={calculate} className="btn-primary px-6 text-sm font-bold">Hesapla</button>
-        </div>
-      </div>
+  const reset = () => { setBirthDate(""); setSchedule([]); };
 
-      {schedule.length > 0 && (
-        <div className="flex flex-col gap-3 animate-slide-up">
-          <div className="text-sm font-bold text-muted px-1 flex items-center gap-2">
-            <Calendar className="w-4 h-4" /> Aşı Takvimi Çizelgesi
+  return (
+    <V2CalculatorWrapper
+      title="BEBEK AŞI TAKVİMİ"
+      icon="🛡️"
+      infoText="Sağlık Bakanlığı standart aşı takvimine göre bebeğinizin olması gereken aşıları doğum tarihine göre listeler."
+      results={schedule.length > 0 && (
+        <div className="space-y-4">
+          <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+            <Calendar className="w-4 h-4" /> AŞI LİSTESİ VE TARİHLER
           </div>
           <div className="grid grid-cols-1 gap-3">
             {schedule.map((v, i) => (
-              <div key={i} className="bg-bg-secondary p-4 rounded-2xl border border-border flex items-center justify-between group hover:border-accent-primary/30 transition-colors">
+              <div key={i} className="bg-white/5 p-5 rounded-2xl border border-white/5 flex items-center justify-between group hover:bg-white/10 transition-all border-l-4 border-l-blue-500">
                 <div>
-                  <div className="text-sm font-bold text-accent-primary">{v.name}</div>
-                  <div className="text-[10px] text-muted uppercase font-black">{v.desc}</div>
+                  <div className="text-sm font-black text-primary italic mb-1 uppercase tracking-wide">{v.name}</div>
+                  <div className="text-[10px] text-muted uppercase font-black opacity-60">{v.desc}</div>
                 </div>
                 <div className="text-right">
-                  <div className="text-xs font-bold text-muted flex items-center gap-1">
+                  <div className="text-xs font-black text-blue-500 flex items-center justify-end gap-1">
                      <Clock className="w-3 h-3" /> {v.date}
                   </div>
                 </div>
@@ -100,7 +104,20 @@ export function VaccinationCalculator() {
           </div>
         </div>
       )}
-    </div>
+    >
+      <MedicalDisclaimer />
+      <V2Input
+        label="BEBEĞİN DOĞUM TARİHİ"
+        type="date"
+        value={birthDate}
+        onChange={setBirthDate}
+      />
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="🗓️ Takvimi Oluştur"
+      />
+    </V2CalculatorWrapper>
   );
 }
 
@@ -119,7 +136,6 @@ export function BabyGrowthCalculator() {
 
     if (isNaN(w) || isNaN(h)) return;
 
-    // Simple WHO-inspired logic
     const baseWeight = gender === "male" ? 3.5 + (m * 0.8) : 3.3 + (m * 0.7);
     const baseHeight = 50 + (m * 2.5);
 
@@ -131,54 +147,69 @@ export function BabyGrowthCalculator() {
     });
   };
 
-  return (
-    <div className="flex flex-col gap-6">
-      <MedicalDisclaimer />
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2 col-span-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Cinsiyet</label>
-           <div className="grid grid-cols-2 gap-2 bg-bg-secondary p-1 rounded-xl border border-border">
-              <button onClick={() => setGender("male")} className={`py-2 text-[10px] font-black uppercase rounded-lg transition-all ${gender === "male" ? "bg-blue-500 text-white shadow-lg" : "text-muted hover:bg-white/5"}`}>Erkek</button>
-              <button onClick={() => setGender("female")} className={`py-2 text-[10px] font-black uppercase rounded-lg transition-all ${gender === "female" ? "bg-pink-500 text-white shadow-lg" : "text-muted hover:bg-white/5"}`}>Kız</button>
-           </div>
-        </div>
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Kaç Aylık?</label>
-           <input type="number" value={months} onChange={e => setMonths(e.target.value)} className="input-field" min="0" max="36" />
-        </div>
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Kilo (kg)</label>
-           <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="input-field" placeholder="Örn: 8.5" />
-        </div>
-        <div className="flex flex-col gap-2 col-span-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Boy (cm)</label>
-           <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="input-field" placeholder="Örn: 72" />
-        </div>
-      </div>
-      <button onClick={checkGrowth} className="btn-primary py-4 text-xs font-black uppercase tracking-widest mt-2">Persentil Kontrol Et</button>
+  const reset = () => { setMonths("1"); setWeight(""); setHeight(""); setStatus(null); };
 
-      {status && (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium">
-              <div className="result-badge">Gelişim Analizi</div>
-              <div className="grid grid-cols-2 gap-4 mt-6">
-                <div className="bg-bg-secondary p-4 rounded-2xl border border-border">
-                   <div className="text-[10px] font-black text-muted uppercase mb-1">Kilo Durumu</div>
-                   <div className={`text-lg font-bold ${status.weightPercentile === "Normal" ? "text-green-500" : "text-amber-500"}`}>{status.weightPercentile}</div>
-                </div>
-                <div className="bg-bg-secondary p-4 rounded-2xl border border-border">
-                   <div className="text-[10px] font-black text-muted uppercase mb-1">Boy Durumu</div>
-                   <div className={`text-lg font-bold ${status.heightPercentile === "Normal" ? "text-green-500" : "text-amber-500"}`}>{status.heightPercentile}</div>
-                </div>
-              </div>
-              <div className="mt-6 p-4 bg-accent-glow/5 border border-accent-primary/10 rounded-xl text-center">
-                 <div className="text-[10px] font-black text-accent-primary uppercase mb-1">50. Persentil (Ortalama) Değerleri</div>
-                 <div className="text-sm font-bold text-muted">{status.idealWeight} kg / {status.idealHeight} cm</div>
-              </div>
-           </div>
+  return (
+    <V2CalculatorWrapper
+      title="BEBEK GELİŞİM ANALİZİ (PERSENTİL)"
+      icon="📈"
+      infoText="Bebeğinizin boy ve kilo gelişimini WHO (Dünya Sağlık Örgütü) ortalamalarına göre analiz eder. Unutmayın her bebek eşsizdir."
+      results={status && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-2 gap-4">
+            <V2ResultCard
+              color={status.weightPercentile === "Normal" ? "emerald" : "amber"}
+              label="KİLO DURUMU"
+              value={status.weightPercentile}
+              icon="⚖️"
+            />
+            <V2ResultCard
+              color={status.heightPercentile === "Normal" ? "emerald" : "amber"}
+              label="BOY DURUMU"
+              value={status.heightPercentile}
+              icon="📏"
+            />
+          </div>
+          <div className="p-8 rounded-[2rem] bg-white/5 border border-white/5 text-center">
+             <div className="text-[10px] font-black text-blue-500 uppercase mb-2 tracking-[0.2em]">50. PERSENTİL (ORTALAMA) DEĞERLERİ</div>
+             <div className="text-2xl font-black text-primary italic">{status.idealWeight} KG / {status.idealHeight} CM</div>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <MedicalDisclaimer />
+      <div className="space-y-6">
+        <div className="space-y-3">
+          <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 block italic">Cinsiyet</label>
+          <div className="flex bg-white/5 p-1.5 rounded-2xl gap-1">
+             <button 
+                onClick={() => setGender("male")}
+                className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${gender === "male" ? 'bg-white text-slate-900 shadow-xl scale-105' : 'text-muted hover:text-primary'}`}
+             >
+                ♂ ERKEK
+             </button>
+             <button 
+                onClick={() => setGender("female")}
+                className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${gender === "female" ? 'bg-white text-slate-900 shadow-xl scale-105' : 'text-muted hover:text-primary'}`}
+             >
+                ♀ KIZ
+             </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <V2Input label="KAÇ AYLIK?" value={months} onChange={setMonths} unit="AY" />
+          <V2Input label="KİLO (KG)" value={weight} onChange={setWeight} unit="KG" placeholder="Örn: 8.5" />
+        </div>
+        <V2Input label="BOY (CM)" value={height} onChange={setHeight} unit="CM" placeholder="Örn: 72" />
+      </div>
+
+      <V2ActionRow
+        onCalculate={checkGrowth}
+        onReset={reset}
+        calculateLabel="📈 Gelişimi Kontrol Et"
+      />
+    </V2CalculatorWrapper>
   );
 }
 
@@ -196,57 +227,74 @@ export function WaistHipCalculator() {
 
     const ratio = w / h;
     let risk = "Düşük Risk";
-    let color = "text-green-500";
+    let themeColor: "emerald" | "amber" | "red" = "emerald";
 
     if (gender === "male") {
-      if (ratio >= 1.0) { risk = "Yüksek Risk"; color = "text-red-500"; }
-      else if (ratio >= 0.9) { risk = "Orta Risk"; color = "text-amber-500"; }
+      if (ratio >= 1.0) { risk = "Yüksek Risk"; themeColor = "red"; }
+      else if (ratio >= 0.9) { risk = "Orta Risk"; themeColor = "amber"; }
     } else {
-      if (ratio >= 0.85) { risk = "Yüksek Risk"; color = "text-red-500"; }
-      else if (ratio >= 0.80) { risk = "Orta Risk"; color = "text-amber-500"; }
+      if (ratio >= 0.85) { risk = "Yüksek Risk"; themeColor = "red"; }
+      else if (ratio >= 0.80) { risk = "Orta Risk"; themeColor = "amber"; }
     }
 
-    setResult({ ratio: ratio.toFixed(2), risk, color });
+    setResult({ ratio: ratio.toFixed(2), risk, themeColor });
     confetti({ particleCount: 20, spread: 40, origin: { y: 0.8 } });
   };
 
-  return (
-    <div className="flex flex-col gap-6">
-      <MedicalDisclaimer />
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Cinsiyet</label>
-           <div className="grid grid-cols-2 gap-2 bg-bg-secondary p-1 rounded-xl border border-border">
-              <button onClick={() => setGender("male")} className={`py-2 text-[10px] font-black uppercase rounded-lg transition-all ${gender === "male" ? "bg-accent-primary text-white shadow-lg" : "text-muted hover:bg-white/5"}`}>Erkek</button>
-              <button onClick={() => setGender("female")} className={`py-2 text-[10px] font-black uppercase rounded-lg transition-all ${gender === "female" ? "bg-accent-primary text-white shadow-lg" : "text-muted hover:bg-white/5"}`}>Kadın</button>
-           </div>
-        </div>
-        <div className="grid grid-cols-2 gap-4">
-           <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold text-muted uppercase px-1">Bel Çevresi (cm)</label>
-              <input type="number" value={waist} onChange={e => setWaist(e.target.value)} className="input-field" placeholder="Örn: 90" />
-           </div>
-           <div className="flex flex-col gap-2">
-              <label className="text-xs font-bold text-muted uppercase px-1">Kalça Çevresi (cm)</label>
-              <input type="number" value={hip} onChange={e => setHip(e.target.value)} className="input-field" placeholder="Örn: 100" />
-           </div>
-        </div>
-      </div>
-      <button onClick={calculate} className="btn-primary py-4 text-xs font-black uppercase tracking-widest mt-2">Oranı Hesapla</button>
+  const reset = () => { setWaist(""); setHip(""); setResult(null); };
 
-      {result && (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium">
-              <div className="result-badge">WHR Sonucu</div>
-              <div className="result-value-premium">{result.ratio}</div>
-              <div className={`text-xl font-bold uppercase tracking-widest mt-2 ${result.color}`}>{result.risk}</div>
-              <div className="mt-6 text-[10px] text-muted leading-relaxed">
-                 Bel/Kalça oranı, vücut yağ dağılımını ve abdominal obezite riskini gösteren önemli bir sağlık ölçütüdür.
-              </div>
-           </div>
+  return (
+    <V2CalculatorWrapper
+      title="BEL / KALÇA ORANI (WHR)"
+      icon="⭕"
+      infoText="Vücut yağ dağılımını analiz eder. Bel çevresinin kalça çevresine oranı, abdominal obezite ve metabolik riskler hakkında bilgi verir."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color={result.themeColor}
+            label="RİSK DURUMU"
+            value={result.risk}
+            subLabel={`Hesaplanan Oran: ${result.ratio}`}
+            icon="📊"
+          />
+          <div className="p-6 bg-white/5 rounded-2xl border border-white/5 text-[10px] text-muted italic text-center leading-relaxed">
+             ℹ️ Dünya Sağlık Örgütü'ne göre ideal oran erkeklerde 0.90, kadınlarda ise 0.85 altıdır.
+          </div>
         </div>
       )}
-    </div>
+    >
+      <MedicalDisclaimer />
+      <div className="space-y-6">
+        <div className="space-y-3">
+          <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 block italic">Cinsiyet</label>
+          <div className="flex bg-white/5 p-1.5 rounded-2xl gap-1">
+             <button 
+                onClick={() => setGender("male")}
+                className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${gender === "male" ? 'bg-white text-slate-900 shadow-xl scale-105' : 'text-muted hover:text-primary'}`}
+             >
+                ♂ ERKEK
+             </button>
+             <button 
+                onClick={() => setGender("female")}
+                className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${gender === "female" ? 'bg-white text-slate-900 shadow-xl scale-105' : 'text-muted hover:text-primary'}`}
+             >
+                ♀ KADIN
+             </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <V2Input label="BEL ÇEVRESİ (CM)" value={waist} onChange={setWaist} unit="CM" placeholder="90" />
+          <V2Input label="KALÇA ÇEVRESİ (CM)" value={hip} onChange={setHip} unit="CM" placeholder="100" />
+        </div>
+      </div>
+
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="⭕ Oranı Hesapla"
+      />
+    </V2CalculatorWrapper>
   );
 }
 
@@ -268,51 +316,62 @@ export function DueDateCalculator() {
 
     setResult({
       due: dueDate.toLocaleDateString("tr-TR", { day: 'numeric', month: 'long', year: 'numeric' }),
-      progress: `${weeksPassed} Hafta ${daysPassed} Günlük`,
-      remaining: Math.max(0, Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)))
+      weeks: weeksPassed,
+      remaining: Math.max(0, Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))),
+      trimester: Math.max(0, Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))) > 180 ? 1 : Math.max(0, Math.floor((dueDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))) > 90 ? 2 : 3
     });
     confetti({ particleCount: 30, spread: 70, origin: { y: 0.8 } });
   };
 
-  return (
-    <div className="flex flex-col gap-6">
-      <MedicalDisclaimer />
-      <div className="flex flex-col gap-2">
-        <label className="text-xs font-bold text-muted uppercase px-1">Son Adet Tarihi (SAT)</label>
-        <div className="flex gap-2">
-          <input type="date" value={sat} onChange={e => setSat(e.target.value)} className="input-field flex-1" />
-          <button onClick={calculate} className="btn-primary px-6"><Calendar className="w-4 h-4" /></button>
-        </div>
-      </div>
+  const reset = () => { setSat(""); setResult(null); };
 
-      {result && (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium">
-              <div className="result-badge">Tahmini Doğum Tarihi</div>
-              <div className="text-2xl font-black text-pink-500 my-2">{result.due}</div>
-              <div className="text-sm font-bold text-muted mb-6">{result.progress} Hamilelik</div>
-              
-              <div className="grid grid-cols-2 gap-4 border-t border-border pt-6">
-                 <div className="bg-bg-secondary p-3 rounded-xl border border-border">
-                    <div className="text-[10px] font-black text-muted uppercase mb-1">Kalan Gün</div>
-                    <div className="text-xl font-bold">{result.remaining}</div>
-                 </div>
-                 <div className="bg-bg-secondary p-3 rounded-xl border border-border">
-                    <div className="text-[10px] font-black text-muted uppercase mb-1">Trimester</div>
-                    <div className="text-xl font-bold">{result.remaining > 180 ? "1." : result.remaining > 90 ? "2." : "3."}</div>
-                 </div>
-              </div>
-           </div>
+  return (
+    <V2CalculatorWrapper
+      title="TAHMİNİ DOĞUM TARİHİ"
+      icon="📅"
+      infoText="Son adet tarihinize (SAT) göre bebeğinizin tahmini gelişim süreci ve doğum tarihini hesaplar."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="emerald"
+            label="TAHMİNİ DOĞUM TARİHİ"
+            value={result.due}
+            subLabel={`${result.weeks} Hafta Gebelik`}
+            icon="👶"
+          />
+          <div className="grid grid-cols-2 gap-4">
+             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">KALAN GÜN</div>
+                <div className="text-2xl font-black text-primary italic">{result.remaining}</div>
+             </div>
+             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">TRIMESTER</div>
+                <div className="text-2xl font-black text-primary italic">{result.trimester}. <span className="text-xs opacity-50">DÖNEM</span></div>
+             </div>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <MedicalDisclaimer />
+      <V2Input
+        label="SON ADET TARİHİ (SAT)"
+        type="date"
+        value={sat}
+        onChange={setSat}
+      />
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="🤰 Tarihi Hesapla"
+      />
+    </V2CalculatorWrapper>
   );
 }
 
 // 5. Nutrient Suite (Protein, Karbonhidrat, Yağ, Kreatin)
 interface NutrientProps { type: 'carb' | 'protein' | 'fat' | 'creatine' }
 export function NutrientCalculator({ type }: NutrientProps) {
-  const [weight, setWeight] = useState("");
+  const [weight, setWeight] = useState("70");
   const [activity, setActivity] = useState("1.2");
   const [goal, setGoal] = useState("maintenance");
   const [result, setResult] = useState<any>(null);
@@ -322,22 +381,22 @@ export function NutrientCalculator({ type }: NutrientProps) {
     if (!w) return;
 
     let res: any = {};
-    const bmr = 175 * 6.25 + 10 * w - 5 * 30 + 5; // Simplified BMR template
+    const bmr = 175 * 6.25 + 10 * w - 5 * 30 + 5; 
     const tdee = bmr * parseFloat(activity);
 
     if (type === 'protein') {
       const factor = parseFloat(activity) > 1.5 ? 2.0 : 1.2;
       const grams = w * factor;
-      res = { title: "Protein İhtiyacı", val: `${grams.toFixed(0)}g`, desc: "Günde tüketmeniz gereken protein miktarı." };
+      res = { title: "Protein İhtiyacı", val: `${grams.toFixed(0)}g`, desc: "Günde tüketmeniz gereken protein miktarı.", color: "blue" };
     } else if (type === 'carb') {
       const carbs = (tdee * 0.5) / 4;
-      res = { title: "Karbonhidrat İhtiyacı", val: `${carbs.toFixed(0)}g`, desc: "Enerji dengesi için önerilen miktar." };
+      res = { title: "Karbonhidrat İhtiyacı", val: `${carbs.toFixed(0)}g`, desc: "Enerji dengesi için önerilen miktar.", color: "amber" };
     } else if (type === 'fat') {
       const fatGrams = (tdee * 0.25) / 9;
-      res = { title: "Sağlıklı Yağ İhtiyacı", val: `${fatGrams.toFixed(0)}g`, desc: "Hormonal denge için önerilen miktar." };
+      res = { title: "Sağlıklı Yağ İhtiyacı", val: `${fatGrams.toFixed(0)}g`, desc: "Hormonal denge için önerilen miktar.", color: "emerald" };
     } else {
       const dose = goal === 'maintenance' ? 5 : 20;
-      res = { title: "Kreatin Dozu", val: `${dose}g`, desc: goal === 'maintenance' ? "Günlük koruma dozu." : "Yükleme dönemi (5-7 gün) dozu." };
+      res = { title: "Kreatin Dozu", val: `${dose}g`, desc: goal === 'maintenance' ? "Günlük koruma dozu." : "Yükleme dönemi (5-7 gün) dozu.", color: "red" };
     }
 
     setResult(res);
@@ -345,48 +404,62 @@ export function NutrientCalculator({ type }: NutrientProps) {
   };
 
   const titles = { carb: "Karbonhidrat", protein: "Protein", fat: "Yağ", creatine: "Kreatin" };
+  const icons = { carb: "🍞", protein: "🍗", fat: "🥑", creatine: "💪" };
+
+  const reset = () => { setWeight("70"); setActivity("1.2"); setGoal("maintenance"); setResult(null); };
 
   return (
-    <div className="flex flex-col gap-6">
+    <V2CalculatorWrapper
+      title={`${titles[type].toUpperCase()} HESAPLAYICI`}
+      icon={icons[type]}
+      infoText={`Vücut ağırlığınıza ve aktivite seviyenize göre günlük ${titles[type]} ihtiyacınızı belirler.`}
+      results={result && (
+        <V2ResultCard
+          color={result.color}
+          label={result.title}
+          value={result.val}
+          subLabel={result.desc}
+          icon="⚡"
+        />
+      )}
+    >
       <MedicalDisclaimer />
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Kilo (kg)</label>
-           <input type="number" value={weight} onChange={e => setWeight(e.target.value)} className="input-field text-xl font-bold" placeholder="70" />
-        </div>
+      <div className="space-y-6">
+        <V2Input label="KİLO (KG)" value={weight} onChange={setWeight} unit="KG" />
         
         {type !== 'creatine' ? (
-          <div className="flex flex-col gap-2">
-            <label className="text-xs font-bold text-muted uppercase px-1">Aktivite Seviyesi</label>
-            <select value={activity} onChange={e => setActivity(e.target.value)} className="input-field">
-              <option value="1.2">Sedanter (Hareketsiz)</option>
-              <option value="1.375">Hafif Hareketli</option>
-              <option value="1.55">Orta Hareketli</option>
-              <option value="1.725">Çok Hareketli</option>
-            </select>
-          </div>
+          <V2Select label="AKTİVİTE SEVİYESİ" value={activity} onChange={setActivity}>
+            <option value="1.2" className="bg-slate-900">Sedanter (Hareketsiz)</option>
+            <option value="1.375" className="bg-slate-900">Hafif Hareketli</option>
+            <option value="1.55" className="bg-slate-900">Orta Hareketli</option>
+            <option value="1.725" className="bg-slate-900">Çok Hareketli</option>
+          </V2Select>
         ) : (
-          <div className="flex flex-col gap-2">
-             <label className="text-xs font-bold text-muted uppercase px-1">Hedef / Faz</label>
-             <div className="grid grid-cols-2 gap-2 bg-bg-secondary p-1 rounded-xl border border-border">
-                <button onClick={() => setGoal("maintenance")} className={`py-2 text-[10px] font-black uppercase rounded-lg transition-all ${goal === "maintenance" ? "bg-accent-primary text-white shadow-lg" : "text-muted hover:bg-white/5"}`}>Koruma</button>
-                <button onClick={() => setGoal("loading")} className={`py-2 text-[10px] font-black uppercase rounded-lg transition-all ${goal === "loading" ? "bg-accent-primary text-white shadow-lg" : "text-muted hover:bg-white/5"}`}>Yükleme</button>
+          <div className="space-y-3">
+             <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 block italic">HEDEF / FAZ</label>
+             <div className="flex bg-white/5 p-1.5 rounded-2xl gap-1">
+                <button 
+                   onClick={() => setGoal("maintenance")}
+                   className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${goal === "maintenance" ? 'bg-white text-slate-900 shadow-xl scale-105' : 'text-muted hover:text-primary'}`}
+                >
+                   KORUMA
+                </button>
+                <button 
+                   onClick={() => setGoal("loading")}
+                   className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${goal === "loading" ? 'bg-white text-slate-900 shadow-xl scale-105' : 'text-muted hover:text-primary'}`}
+                >
+                   YÜKLEME
+                </button>
              </div>
           </div>
         )}
       </div>
-      <button onClick={calculate} className="btn-primary py-4 text-xs font-black uppercase tracking-widest mt-2">{titles[type]} Hesapla</button>
-
-      {result && (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium">
-              <div className="result-badge">{result.title}</div>
-              <div className="result-value-premium">{result.val}</div>
-              <div className="text-xs font-bold text-muted mt-4">{result.desc}</div>
-           </div>
-        </div>
-      )}
-    </div>
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel={`${titles[type]} Hesapla`}
+      />
+    </V2CalculatorWrapper>
   );
 }
 
@@ -413,50 +486,50 @@ export function SmokingCostCalculator() {
     confetti({ particleCount: 30, spread: 50, origin: { y: 0.8 } });
   };
 
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-1 gap-4">
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Günde Kaç Paket?</label>
-           <input type="number" value={dailyPacks} onChange={e => setDailyPacks(e.target.value)} className="input-field" placeholder="Örn: 1" />
-        </div>
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Paket Fiyatı (₺)</label>
-           <input type="number" value={pricePerPack} onChange={e => setPricePerPack(e.target.value)} className="input-field" placeholder="Örn: 70" />
-        </div>
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Süre (Yıl)</label>
-           <input type="number" value={years} onChange={e => setYears(e.target.value)} className="input-field" />
-        </div>
-      </div>
-      <button onClick={calculate} className="btn-primary py-4 text-xs font-black uppercase tracking-widest text-red-500 mt-2">Maliyeti Gör</button>
+  const reset = () => { setDailyPacks(""); setPricePerPack(""); setYears("1"); setResult(null); };
 
-      {result && (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium">
-              <div className="result-badge !bg-red-500/10 !text-red-500 !border-red-500/20">Ekonomik Kayıp</div>
-              <div className="grid grid-cols-2 gap-4 mt-6">
-                 <div className="bg-bg-secondary p-4 rounded-xl border border-border">
-                    <div className="text-[10px] font-black text-muted uppercase mb-1">Aylık</div>
-                    <div className="text-lg font-bold">₺{result.monthly.toLocaleString("tr-TR")}</div>
-                 </div>
-                 <div className="bg-bg-secondary p-4 rounded-xl border border-border">
-                    <div className="text-[10px] font-black text-muted uppercase mb-1">Yıllık</div>
-                    <div className="text-lg font-bold">₺{result.yearly.toLocaleString("tr-TR")}</div>
-                 </div>
-              </div>
-              <div className="mt-6 p-4 bg-red-500/5 rounded-xl border border-red-500/10">
-                 <div className="text-[10px] font-black text-red-500 uppercase mb-1">{years} Yılda Toplam</div>
-                 <div className="text-3xl font-black text-red-500">₺{result.total.toLocaleString("tr-TR")}</div>
-              </div>
-              <div className="mt-4 p-3 bg-green-500/5 rounded-xl border border-green-500/10">
-                 <div className="text-[10px] font-black text-green-600 uppercase mb-1">Bu Para Yatırılsaydı (Tahmini)</div>
-                 <div className="text-md font-bold text-green-600">~ ₺{result.opportunity.toLocaleString("tr-TR", { maximumFractionDigits: 0 })}</div>
-              </div>
-           </div>
+  return (
+    <V2CalculatorWrapper
+      title="SİGARA MALİYET ANALİZİ"
+      icon="🚬"
+      infoText="Sigara kullanımının hem doğrudan finansal maliyetini hem de bu paranın yatırım olarak değerlendirilmesi durumundaki fırsat maliyetini gösterir."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="red"
+            label={`${years} YILLIK TOPLAM KAYIP`}
+            value={`₺${result.total.toLocaleString("tr-TR")}`}
+            subLabel="Doğrudan Harcama"
+            icon="💸"
+          />
+          <div className="grid grid-cols-2 gap-4">
+             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">AYLIK</div>
+                <div className="text-xl font-black text-primary italic">₺{result.monthly.toLocaleString("tr-TR")}</div>
+             </div>
+             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">YILLIK</div>
+                <div className="text-xl font-black text-primary italic">₺{result.yearly.toLocaleString("tr-TR")}</div>
+             </div>
+          </div>
+          <div className="p-8 rounded-[2rem] bg-emerald-500/10 border border-emerald-500/20 text-center">
+             <div className="text-[10px] font-black text-emerald-500 uppercase mb-2 tracking-[0.2em]">BU PARA YATIRILSAYDI (TAHMİNİ)</div>
+             <div className="text-2xl font-black text-emerald-500 italic">~ ₺{result.opportunity.toLocaleString("tr-TR", { maximumFractionDigits: 0 })}</div>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-6">
+        <V2Input label="GÜNDE KAÇ PAKET?" value={dailyPacks} onChange={setDailyPacks} placeholder="1" unit="PKT" />
+        <V2Input label="PAKET FİYATI (₺)" value={pricePerPack} onChange={setPricePerPack} placeholder="70" unit="₺" />
+        <V2Input label="SÜRE (YIL)" value={years} onChange={setYears} unit="YIL" />
+      </div>
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="💸 Maliyeti Hesapla"
+      />
+    </V2CalculatorWrapper>
   );
 }
 
@@ -494,32 +567,33 @@ export function BraSizeCalculator() {
     confetti({ particleCount: 20, spread: 30, origin: { y: 0.8 } });
   };
 
-  return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Gövde Çevresi (cm)</label>
-           <input type="number" value={underbust} onChange={e => setUnderbust(e.target.value)} className="input-field" placeholder="Meme Altı" />
-        </div>
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Göğüs Çevresi (cm)</label>
-           <input type="number" value={bust} onChange={e => setBust(e.target.value)} className="input-field" placeholder="Meme Üstü" />
-        </div>
-      </div>
-      <button onClick={calculate} className="btn-primary py-4 text-xs font-black uppercase tracking-widest mt-2">Bedeni Hesapla</button>
+  const reset = () => { setUnderbust(""); setBust(""); setResult(null); };
 
-      {result && (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium">
-              <div className="result-badge">Tahmini Bedeniniz</div>
-              <div className="result-value-premium text-purple-500">{result.band}{result.cup}</div>
-              <div className="mt-4 text-[10px] text-muted leading-relaxed">
-                 Bedenler markadan markaya değişiklik gösterebilir. Bu hesaplama EU (Avrupa) standartlarını baz alır.
-              </div>
-           </div>
-        </div>
+  return (
+    <V2CalculatorWrapper
+      title="SÜTYEN BEDENİ HESAPLAYICI"
+      icon="👗"
+      infoText="Meme altı ve göğüs çevresi ölçülerinize göre EU standartlarında sütyen bedeninizi tahmin eder."
+      results={result && (
+        <V2ResultCard
+          color="blue"
+          label="TAHMİNİ BEDENİNİZ"
+          value={`${result.band}${result.cup}`}
+          subLabel="AB Standartları"
+          icon="🎀"
+        />
       )}
-    </div>
+    >
+      <div className="grid grid-cols-2 gap-4">
+        <V2Input label="MEME ALTI (CM)" value={underbust} onChange={setUnderbust} placeholder="75" unit="CM" />
+        <V2Input label="MEME ÜSTÜ (CM)" value={bust} onChange={setBust} placeholder="90" unit="CM" />
+      </div>
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="🎀 Bedeni Bul"
+      />
+    </V2CalculatorWrapper>
   );
 }
 
@@ -554,39 +628,52 @@ export function LifeExpectancyCalculator() {
   };
 
   return (
-    <div className="flex flex-col gap-6 pt-4">
+    <V2CalculatorWrapper
+      title="YAŞAM SÜRESİ TESTİ"
+      icon="⌛"
+      infoText="Alışkanlıklarınıza ve yaşam tarzınıza göre istatistiksel yaşam sürenizi tahmin eder."
+    >
       <MedicalDisclaimer />
       {!isFinal ? (
-        <div className="animate-slide-up">
-           <div className="flex justify-between items-center mb-6">
-              <div className="text-[10px] font-black text-muted uppercase tracking-widest">Soru {step + 1} / {questions.length}</div>
-              <div className="h-1 flex-1 mx-4 bg-bg-secondary rounded-full overflow-hidden">
-                 <div className="h-full bg-accent-primary transition-all duration-500" style={{ width: `${((step + 1)/questions.length)*100}%` }}></div>
+        <div className="space-y-8">
+           <div className="flex justify-between items-center px-2">
+              <div className="text-[10px] font-black text-muted uppercase tracking-widest italic">Soru {step + 1} / {questions.length}</div>
+              <div className="h-2 flex-1 mx-4 bg-white/5 rounded-full overflow-hidden">
+                 <div className="h-full bg-blue-500 transition-all duration-500" style={{ width: `${((step + 1)/questions.length)*100}%` }}></div>
               </div>
            </div>
-           <h3 className="text-xl font-bold mb-8">{questions[step].q}</h3>
-           <div className="grid grid-cols-1 gap-3">
+           
+           <h3 className="text-xl font-black italic text-primary px-2">{questions[step].q}</h3>
+           
+           <div className="grid grid-cols-1 gap-4">
               {questions[step].options.map((opt, i) => (
-                <button key={i} onClick={() => handleAnswer(opt.v)} className="p-5 text-left border border-border rounded-2xl hover:bg-bg-secondary hover:border-accent-primary transition-all font-bold group flex justify-between items-center">
-                   {opt.l}
-                   <Activity className="w-4 h-4 text-muted group-hover:text-accent-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                <button 
+                   key={i} 
+                   onClick={() => handleAnswer(opt.v)} 
+                   className="p-6 text-left border border-white/5 rounded-[1.5rem] bg-white/5 hover:bg-white/10 hover:border-blue-500/30 transition-all font-bold group flex justify-between items-center active:scale-95"
+                >
+                   <span className="text-sm uppercase tracking-wide">{opt.l}</span>
+                   <Activity className="w-5 h-5 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </button>
               ))}
            </div>
         </div>
       ) : (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium">
-              <div className="result-badge">Tahmini Yaşam Süreniz</div>
-              <div className="result-value-premium !text-5xl">{score} <span className="text-2xl font-black">YIL</span></div>
-              <div className="mt-8 text-center">
-                 <p className="text-xs text-muted mb-6">Bu sonuç istatistiksel ortalamalar ve girdiğiniz alışkanlıklara dayalı bir tahmindir.</p>
-                 <button onClick={restart} className="btn-secondary py-3 px-8 text-xs font-black uppercase tracking-widest">Yeniden Başla</button>
-              </div>
+        <div className="space-y-8 animate-result">
+           <V2ResultCard
+              color="emerald"
+              label="TAHMİNİ YAŞAM SÜRENİZ"
+              value={`${score} YIL`}
+              subLabel="İstatistiksel Tahmin"
+              icon="🌟"
+           />
+           <div className="text-center space-y-4">
+              <p className="text-[10px] text-muted font-medium italic px-8">Bu sonuç istatistiksel ortalamalar ve girdiğiniz alışkanlıklara dayalı bir tahmindir.</p>
+              <button onClick={restart} className="w-full py-5 rounded-[2rem] bg-white/5 border border-white/5 text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all">↻ Testi Yeniden Başla</button>
            </div>
         </div>
       )}
-    </div>
+    </V2CalculatorWrapper>
   );
 }
 
@@ -618,33 +705,39 @@ export function OvulationCalculator() {
     confetti({ particleCount: 20, spread: 40, origin: { y: 0.8 } });
   };
 
-  return (
-    <div className="flex flex-col gap-6">
-      <MedicalDisclaimer />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Son Adet Başlangıcı</label>
-           <input type="date" value={sat} onChange={e => setSat(e.target.value)} className="input-field" />
-        </div>
-        <div className="flex flex-col gap-2">
-           <label className="text-xs font-bold text-muted uppercase px-1">Döngü Süresi (Gün)</label>
-           <input type="number" value={cycle} onChange={e => setCycle(e.target.value)} className="input-field" placeholder="Örn: 28" />
-        </div>
-      </div>
-      <button onClick={calculate} className="btn-primary py-4 text-xs font-black uppercase tracking-widest mt-2">Takvimi Gör</button>
+  const reset = () => { setSat(""); setCycle("28"); setResult(null); };
 
-      {result && (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium">
-              <div className="result-badge !bg-green-500/10 !text-green-500 !border-green-500/20">En Verimli Gün</div>
-              <div className="result-value-premium text-green-500">{result.ov}</div>
-              <div className="mt-6 p-4 bg-bg-secondary rounded-xl border border-border">
-                 <div className="text-[10px] font-black text-muted uppercase mb-1">Doğurganlık Penceresi</div>
-                 <div className="text-sm font-bold">{result.start} - {result.end}</div>
-              </div>
-           </div>
+  return (
+    <V2CalculatorWrapper
+      title="YUMURTLAMA (OVULASYON) DÖNEMİ"
+      icon="🥚"
+      infoText="En doğurgan olduğunuz günleri ve yumurtlama döneminizi belirlemenize yardımcı olur."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="emerald"
+            icon="✨"
+            label="EN VERİMLİ GÜN"
+            value={result.ov}
+            subLabel="Ovulasyon Günü"
+          />
+          <div className="p-8 rounded-[2rem] bg-white/5 border border-white/5 text-center">
+             <div className="text-[10px] font-black text-blue-500 uppercase mb-2 tracking-[0.2em]">DOĞURGANLIK PENCERESİ</div>
+             <div className="text-xl font-black text-primary italic">{result.start} - {result.end}</div>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <MedicalDisclaimer />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <V2Input label="SON ADET BAŞLANGICI" type="date" value={sat} onChange={setSat} />
+        <V2Input label="DÖNGÜ SÜRESİ" value={cycle} onChange={setCycle} unit="GÜN" placeholder="28" />
+      </div>
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="📅 Takvimi Gör"
+      />
+    </V2CalculatorWrapper>
   );
 }

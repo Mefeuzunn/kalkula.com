@@ -1,13 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import confetti from "canvas-confetti";
+import { Info, Scale, Briefcase, Calculator, Star, Calendar, ShieldCheck, CheckCircle, AlertTriangle, TrendingUp } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function SeveranceCalculator() {
   const [startDate, setStartDate] = useState("2020-01-01");
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
   const [grossSalary, setGrossSalary] = useState("30000");
-  const [severanceCeiling, setSeveranceCeiling] = useState("64948.77"); // 2026 Jan-Jun Ceiling
+  const [severanceCeiling, setSeveranceCeiling] = useState("64948.77");
   const [includeNotice, setIncludeNotice] = useState(true);
   
   const [results, setResults] = useState<{
@@ -80,7 +85,7 @@ export function SeveranceCalculator() {
     });
 
     if (totalDays >= 365) {
-      confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 }, colors: ["#10b981", "#3b82f6"] });
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     }
   };
 
@@ -93,89 +98,114 @@ export function SeveranceCalculator() {
     setResults(null);
   };
 
-  useEffect(() => { calculate(); }, [startDate, endDate, grossSalary, severanceCeiling, includeNotice]);
-
   const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">İşe Giriş Tarihi</label>
-          <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} className="calc-input" />
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">İşten Çıkış Tarihi</label>
-          <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} className="calc-input" />
-        </div>
-      </div>
+    <V2CalculatorWrapper
+      title="KIDEM & İHBAR HESAPLA"
+      icon="⚖️"
+      infoText="4857 sayılı İş Kanunu'na göre çalışma süreniz üzerinden kıdem ve ihbar tazminatı tutarlarınızı yasal kesintiler dahil hesaplayın."
+      results={results && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="emerald"
+            label="TOPLAM NET TAZMİNAT"
+            value={fmt(results.grandTotal)}
+            subLabel={`Süre: ${results.durationYears} Yıl, ${results.durationMonths} Ay, ${results.durationDays} Gün`}
+            icon="🏦"
+          />
 
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Son Brüt Maaş (TL)</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={grossSalary} onChange={e => setGrossSalary(e.target.value)} className="calc-input has-unit" placeholder="30000" min="0" />
-            <span className="calc-unit">₺</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Kıdem Tazminatı Tavanı</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={severanceCeiling} onChange={e => setSeveranceCeiling(e.target.value)} className="calc-input has-unit" />
-            <span className="calc-unit">₺</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="calc-input-group">
-        <label className="flex items-center gap-3 cursor-pointer" style={{ userSelect: "none" }}>
-          <input type="checkbox" checked={includeNotice} onChange={e => setIncludeNotice(e.target.checked)} style={{ width: "1.2rem", height: "1.2rem" }} />
-          <div>
-            <div className="font-bold text-sm">İhbar Tazminatını Dahil Et</div>
-            <div className="text-xs text-muted">Kullanılmayan ihbar süresi tazminatını hesaplar</div>
-          </div>
-        </label>
-      </div>
-
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>⚖️ Tazminatı Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
-
-      {results && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">⚖️ Tazminat Hesaplama Sonucu</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Toplam Net Tahsilat</div>
-              <div className="calc-result-hero-value" style={{ color: "#10b981" }}>{fmt(results.grandTotal)}</div>
-              <div className="calc-result-hero-sub">Toplam Çalışma Süresi: {results.durationYears} Yıl, {results.durationMonths} Ay, {results.durationDays} Gün</div>
-            </div>
-
-            <div className="calc-result-cards">
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Net Kıdem Tazminatı</div>
-                <div className="calc-result-card-value text-emerald-600">
-                  {results.totalDays < 365 ? "Yetersiz Süre (1 Yıl Altı)" : fmt(results.netSeverance)}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-2">
+                <div className="text-[10px] font-black text-muted uppercase italic">KIDEM TAZMİNATI (NET)</div>
+                <div className="text-xl font-black italic text-emerald-500">
+                  {results.totalDays < 365 ? "YETERSİZ SÜRE" : fmt(results.netSeverance)}
                 </div>
-                {results.totalDays >= 365 && <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Brüt: {fmt(results.grossSeverance)}</div>}
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Net İhbar Tazminatı</div>
-                <div className="calc-result-card-value text-blue-600">
-                  {includeNotice ? fmt(results.netNotice) : "Dahil Edilmedi"}
+                {results.totalDays >= 365 && <div className="text-[9px] text-muted opacity-50">Brüt: {fmt(results.grossSeverance)}</div>}
+             </div>
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-2">
+                <div className="text-[10px] font-black text-muted uppercase italic">İHBAR TAZMİNATI (NET)</div>
+                <div className="text-xl font-black italic text-blue-500">
+                  {includeNotice ? fmt(results.netNotice) : "DAHİL DEĞİL"}
                 </div>
-                {includeNotice && <div style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}>Süre: {results.noticeWeeks} Hafta</div>}
-              </div>
-            </div>
+                {includeNotice && <div className="text-[9px] text-muted opacity-50">Süre: {results.noticeWeeks} Hafta</div>}
+             </div>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/10 space-y-4">
+             <div className="flex items-start gap-4">
+                <ShieldCheck className="w-5 h-5 text-blue-500 shrink-0 mt-1" />
+                <div>
+                   <div className="text-[10px] font-black uppercase text-blue-500 mb-1 italic">Yasal Kesinti Raporu</div>
+                   <div className="grid grid-cols-2 gap-x-8 gap-y-2">
+                      <div className="flex justify-between text-[10px] italic">
+                         <span className="text-muted">Kıdem Damga V. (%0.759):</span>
+                         <span className="text-primary font-bold">{fmt(results.stampTaxSeverance)}</span>
+                      </div>
+                      <div className="flex justify-between text-[10px] italic">
+                         <span className="text-muted">İhbar Gelir V. (%15):</span>
+                         <span className="text-primary font-bold">{fmt(results.incomeTaxNotice)}</span>
+                      </div>
+                   </div>
+                </div>
+             </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex gap-3 items-center">
+             <Info className="w-4 h-4 text-blue-500 shrink-0" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               Bu hesaplama 4857 sayılı İş Kanunu standartlarına göre yapılmıştır. Yemek, yol ve diğer yan haklar (giydirilmiş ücret) dahil edilmemiştir.
+             </p>
           </div>
         </div>
       )}
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+              <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] flex items-center gap-2">
+                 <Calendar className="w-4 h-4" /> Tarih Bilgileri
+              </div>
+              <V2Input label="İŞE GİRİŞ TARİHİ" type="date" value={startDate} onChange={setStartDate} unit="TAKVİM" />
+              <V2Input label="İŞTEN ÇIKIŞ TARİHİ" type="date" value={endDate} onChange={setEndDate} unit="TAKVİM" />
+           </div>
 
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">⚖️</span>
-        <span className="calc-info-box-text">Bu hesaplayıcı 4857 sayılı İş Kanunu'na uygundur. Kıdem tazminatı tavanı her 6 ayda bir güncellenir. Damga vergisi oranı (%0.759) ve ihbar tazminatı gelir vergisi (%15) standart varsayılanlardır.</span>
+           <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+              <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] flex items-center gap-2">
+                 <Briefcase className="w-4 h-4" /> Finansal Veriler
+              </div>
+              <V2Input label="SON BRÜT MAAŞ (AYLIK)" value={grossSalary} onChange={setGrossSalary} unit="₺" placeholder="30000" />
+              <V2Input label="KIDEM TAZMİNATI TAVANI" value={severanceCeiling} onChange={setSeveranceCeiling} unit="₺" />
+           </div>
+        </div>
+
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 flex items-center justify-between">
+           <div className="flex items-center gap-4">
+              <div className="p-3 rounded-2xl bg-blue-500/10 text-blue-500 border border-blue-500/10">
+                 <TrendingUp className="w-5 h-5" />
+              </div>
+              <div>
+                 <div className="text-xs font-black italic text-primary">İHBAR TAZMİNATI ANALİZİ</div>
+                 <div className="text-[10px] text-muted font-bold uppercase tracking-widest">Tazminat tutarına ekle</div>
+              </div>
+           </div>
+           <label className="relative inline-flex items-center cursor-pointer">
+              <input 
+                type="checkbox" 
+                checked={includeNotice} 
+                onChange={e => setIncludeNotice(e.target.checked)} 
+                className="sr-only peer" 
+              />
+              <div className="w-14 h-8 bg-white/5 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-muted after:border-white/20 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-blue-500 peer-checked:after:bg-white border border-white/5"></div>
+           </label>
+        </div>
+
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="⚖️ Tazminatı Hesapla"
+        />
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Info, UserCheck, BookOpen, Calculator, Star, Wallet, ReceiptText, School } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function MebEkDersCalculator() {
   const [daytimeHours, setDaytimeHours] = useState("15");
@@ -19,7 +26,6 @@ export function MebEkDersCalculator() {
     details: { label: string; gross: number; net: number }[];
   } | null>(null);
 
-  // 2026 April Updated Rates (approx based on katsayı 1.258071)
   const RATES_2026 = {
     DAY: 185.45,
     NIGHT: 198.70,
@@ -47,8 +53,8 @@ export function MebEkDersCalculator() {
     const items = [
       { label: "Gündüz", gross: d * RATES_2026.DAY * multiplier * (1 + eduBonus) },
       { label: "Gece / Hafta Sonu", gross: n * RATES_2026.NIGHT * multiplier * (1 + eduBonus) },
-      { label: "DYK Gündüz", gross: dykD * RATES_2026.DYK_DAY * (SpecialEducationInDYK(specialEducation) ? 1.25 : 1) * (1 + eduBonus) },
-      { label: "DYK Gece", gross: dykN * RATES_2026.DYK_NIGHT * (SpecialEducationInDYK(specialEducation) ? 1.25 : 1) * (1 + eduBonus) },
+      { label: "DYK Gündüz", gross: dykD * RATES_2026.DYK_DAY * (specialEducation ? 1.25 : 1) * (1 + eduBonus) },
+      { label: "DYK Gece", gross: dykN * RATES_2026.DYK_NIGHT * (specialEducation ? 1.25 : 1) * (1 + eduBonus) },
     ];
 
     const grossTotal = items.reduce((acc, curr) => acc + curr.gross, 0);
@@ -63,9 +69,8 @@ export function MebEkDersCalculator() {
       stampTax: stampTaxTotal,
       details: items.filter(i => i.gross > 0).map(i => ({ ...i, net: calcNet(i.gross) }))
     });
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   };
-
-  const SpecialEducationInDYK = (isSpecial: boolean) => isSpecial; // Logic helper
 
   const reset = () => {
     setDaytimeHours("15");
@@ -78,118 +83,107 @@ export function MebEkDersCalculator() {
     setResults(null);
   };
 
-  useEffect(() => { calculate(); }, [daytimeHours, nightHours, dykDayHours, dykNightHours, specialEducation, educationLevel, taxBracket]);
-
   const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Gündüz (Haftalık)</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={daytimeHours} onChange={e => setDaytimeHours(e.target.value)} className="calc-input has-unit" min="0" />
-            <span className="calc-unit">DERS</span>
+    <V2CalculatorWrapper
+      title="MEB EK DERS HESAPLA"
+      icon="👨‍🏫"
+      infoText="2026 Ocak memur maaş katsayıları baz alınarak öğretmenlerin aylık tahmini ek ders ücretini anında hesaplayın."
+      results={results && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="emerald"
+            label="TOPLAM NET (4 HAFTA)"
+            value={fmt(results.netTotal * 4)}
+            subLabel={`Brüt Toplam: ${fmt(results.grossTotal * 4)}`}
+            icon="💰"
+          />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div className="p-5 rounded-2xl bg-red-500/5 border border-red-500/10 text-center">
+                <div className="text-[10px] font-black text-red-500/60 uppercase mb-1">GELİR VERGİSİ (%{taxBracket})</div>
+                <div className="text-xl font-black italic text-red-500">-{fmt(results.incomeTax * 4)}</div>
+             </div>
+             <div className="p-5 rounded-2xl bg-red-500/5 border border-red-500/10 text-center">
+                <div className="text-[10px] font-black text-red-500/60 uppercase mb-1">DAMGA VERGİSİ (0.00759)</div>
+                <div className="text-xl font-black italic text-red-500">-{fmt(results.stampTax * 4)}</div>
+             </div>
           </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Gece / Hafta Sonu</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={nightHours} onChange={e => setNightHours(e.target.value)} className="calc-input has-unit" min="0" />
-            <span className="calc-unit">DERS</span>
+
+          <div className="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+             <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] italic flex items-center gap-2 mb-2">
+                <ReceiptText className="w-3.5 h-3.5" /> Haftalık Detaylar
+             </div>
+             {results.details.map((item, idx) => (
+               <div key={idx} className="flex justify-between items-center py-2 border-b border-white/5 last:border-0">
+                  <span className="text-xs font-bold text-muted italic">{item.label}</span>
+                  <span className="text-xs font-black text-primary italic">{fmt(item.net)} <span className="text-[9px] text-muted/50">(Net)</span></span>
+               </div>
+             ))}
           </div>
-        </div>
-      </div>
 
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">DYK Gündüz</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={dykDayHours} onChange={e => setDykDayHours(e.target.value)} className="calc-input has-unit" min="0" />
-            <span className="calc-unit">DERS</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">DYK Gece</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={dykNightHours} onChange={e => setDykNightHours(e.target.value)} className="calc-input has-unit" min="0" />
-            <span className="calc-unit">DERS</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Eğitim Seviyesi</label>
-          <select value={educationLevel} onChange={e => setEducationLevel(e.target.value as any)} className="calc-input">
-            <option value="none">Lisans</option>
-            <option value="master">Yüksek Lisans (+%7)</option>
-            <option value="phd">Doktora (+%20)</option>
-          </select>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Vergi Dilimi</label>
-          <select value={taxBracket} onChange={e => setTaxBracket(e.target.value as any)} className="calc-input">
-            <option value="15">%15 (Yıl Başlangıcı)</option>
-            <option value="20">%20</option>
-            <option value="27">%27</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="calc-input-group">
-        <label className="flex items-center gap-3 cursor-pointer">
-          <input type="checkbox" checked={specialEducation} onChange={e => setSpecialEducation(e.target.checked)} style={{ width: "1.2rem", height: "1.2rem" }} />
-          <div>
-            <div className="font-bold text-sm">Özel Eğitim / Cezaevi (+%25)</div>
-            <div className="text-xs text-muted">Özel eğitim öğretmenleri veya cezaevinde görevli olanlar için arttırımlı ücret</div>
-          </div>
-        </label>
-      </div>
-
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>👨‍🏫 Ek Ders Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
-
-      {results && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">📅 Aylık Tahmini Ek Ders Ücreti (4 Hafta)</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Toplam Net Alınacak</div>
-              <div className="calc-result-hero-value" style={{ color: "#3b82f6" }}>{fmt(results.netTotal * 4)}</div>
-              <div className="calc-result-hero-sub">Brüt Toplam: {fmt(results.grossTotal * 4)}</div>
-            </div>
-
-            <div className="calc-result-cards">
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Gelir Vergisi (Dilim: %{taxBracket})</div>
-                <div className="calc-result-card-value text-red-600">-{fmt(results.incomeTax * 4)}</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Damga Vergisi (0.00759)</div>
-                <div className="calc-result-card-value text-red-600">-{fmt(results.stampTax * 4)}</div>
-              </div>
-            </div>
-
-            <div style={{ marginTop: "1.5rem" }}>
-              <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-3">Haftalık Detaylar</div>
-              {results.details.map((item, idx) => (
-                <div key={idx} className="calc-result-row">
-                  <span className="calc-result-row-label">{item.label}</span>
-                  <span className="calc-result-row-value">{fmt(item.net)} <span className="text-[10px] text-muted">(Net)</span></span>
-                </div>
-              ))}
-            </div>
+          <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex gap-3 items-center">
+             <Info className="w-4 h-4 text-blue-500 shrink-0" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               Hesaplamalar 4 haftalık (1 ay) üzerinden tahmin edilmektedir. Bordro işlemleri sırasında vergi matrahınıza göre küçük farklar oluşabilir.
+             </p>
           </div>
         </div>
       )}
+    >
+      <div className="space-y-8">
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <V2Input label="GÜNDÜZ (HAFTALIK)" value={daytimeHours} onChange={setDaytimeHours} unit="DERS" placeholder="15" min="0" />
+              <V2Input label="GECE / HAFTA SONU" value={nightHours} onChange={setNightHours} unit="DERS" placeholder="0" min="0" />
+              <V2Input label="DYK GÜNDÜZ" value={dykDayHours} onChange={setDykDayHours} unit="DERS" placeholder="0" min="0" />
+              <V2Input label="DYK GECE" value={dykNightHours} onChange={setDykNightHours} unit="DERS" placeholder="0" min="0" />
+           </div>
+        </div>
 
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">💡</span>
-        <span className="calc-info-box-text">Bu hesaplama 2026 Ocak memur maaş katsayıları baz alınarak yapılmıştır. Hesaplamalar 4 haftalık (1 ay) üzerinden tahmin edilmektedir. Bordro işlemleri sırasında vergi matrahınıza göre küçük farklar oluşabilir.</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <V2Select 
+             label="EĞİTİM SEVİYESİ" 
+             value={educationLevel} 
+             onChange={val => setEducationLevel(val as any)} 
+             options={[
+               { value: "none", label: "Lisans" },
+               { value: "master", label: "Yüksek Lisans (+%7)" },
+               { value: "phd", label: "Doktora (+%20)" }
+             ]}
+           />
+           <V2Select 
+             label="VERGİ DİLİMİ" 
+             value={taxBracket} 
+             onChange={val => setTaxBracket(val as any)} 
+             options={[
+               { value: "15", label: "%15 (Yıl Başlangıcı)" },
+               { value: "20", label: "%20" },
+               { value: "27", label: "%27" }
+             ]}
+           />
+        </div>
+
+        <div className="p-4 rounded-2xl bg-primary/5 border border-primary/10 flex items-start gap-4 cursor-pointer hover:bg-primary/10 transition-colors" onClick={() => setSpecialEducation(!specialEducation)}>
+           <input 
+             type="checkbox" 
+             checked={specialEducation} 
+             onChange={() => {}} 
+             className="w-5 h-5 rounded-md border-primary/20 bg-white/5 text-primary focus:ring-primary/20 mt-1"
+           />
+           <div>
+              <div className="text-xs font-black text-primary uppercase italic mb-1">Özel Eğitim / Cezaevi (+%25)</div>
+              <p className="text-[10px] text-muted italic leading-tight">Özel eğitim öğretmenleri veya cezaevinde görevli olanlar için arttırımlı ücret katsayısı uygulanır.</p>
+           </div>
+        </div>
+
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="👨‍🏫 Ek Ders Hesapla"
+        />
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

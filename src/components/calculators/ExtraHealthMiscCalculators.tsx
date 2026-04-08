@@ -1,6 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Calendar, Moon, Star, Sparkles, Droplets } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 // Adet/Ovulasyon Takibi (Period Tracker)
 export function PeriodCalculator() {
@@ -15,19 +22,15 @@ export function PeriodCalculator() {
     const donguGun = parseInt(dongu) || 28;
     const kanamaGun = parseInt(kanama) || 5;
 
-    // Sonraki adet başlangıcı
     const nextDate = new Date(d1);
     nextDate.setDate(d1.getDate() + donguGun);
 
-    // Adet bitişi (geçerli)
     const bitisDate = new Date(d1);
     bitisDate.setDate(d1.getDate() + kanamaGun);
 
-    // Ovulasyon (Genelde döngüden 14 gün önce)
     const ovulasyonDate = new Date(nextDate);
     ovulasyonDate.setDate(nextDate.getDate() - 14);
 
-    // Doğurganlık penceresi (ovulasyondan 5 gün önce başlar, 1 gün sonra biter)
     const dogBas = new Date(ovulasyonDate);
     dogBas.setDate(ovulasyonDate.getDate() - 5);
     const dogBit = new Date(ovulasyonDate);
@@ -42,47 +45,60 @@ export function PeriodCalculator() {
       dogurganBas: fmt(dogBas),
       dogurganBit: fmt(dogBit),
     });
+    confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 } });
   };
 
+  const reset = () => { setSonTarih(""); setDongu("28"); setKanama("5"); setResult(null); };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div style={{ gridColumn: "1 / -1" }}>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Son Adet Başlangıç Tarihi</label>
-          <input type="date" value={sonTarih} onChange={e => setSonTarih(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Adet Döngüsü Süresi (Gün)</label>
-          <input type="number" placeholder="Genelde 28" value={dongu} onChange={e => setDongu(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Kanama Süresi (Gün)</label>
-          <input type="number" placeholder="Genelde 5" value={kanama} onChange={e => setKanama(e.target.value)} className="input-field" />
+    <V2CalculatorWrapper
+       title="ADET VE YUMURTLAMA TAKVİMİ"
+       icon="🩸"
+       infoText="Son adet tarihinize göre sonraki adet döneminizi ve en yüksek doğurganlık günlerinizi hesaplar."
+       results={result && (
+         <div className="space-y-6">
+           <V2ResultCard
+             color="red"
+             label="SONRAKİ ADET BAŞLANGICI"
+             value={result.next}
+             icon="🩸"
+           />
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+                 <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-500">
+                    <Sparkles className="w-6 h-6" />
+                 </div>
+                 <div>
+                    <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-1">YUMURTLAMA GÜNÜ</div>
+                    <div className="text-sm font-black text-primary italic">{result.ovulasyon}</div>
+                 </div>
+              </div>
+              <div className="p-6 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+                 <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-500">
+                    <Droplets className="w-6 h-6" />
+                 </div>
+                 <div>
+                    <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-1">ADET BİTİŞİ</div>
+                    <div className="text-sm font-black text-primary italic">{result.adetBit}</div>
+                 </div>
+              </div>
+           </div>
+           <div className="p-8 rounded-[2rem] bg-amber-500/10 border border-amber-500/20 text-center">
+              <div className="text-[10px] font-black text-amber-500 uppercase mb-2 tracking-[0.2em]">YÜKSEK DOĞURGANLIK DÖNEMİ</div>
+              <div className="text-xl font-black text-amber-500 italic">{result.dogurganBas.split(" ")[0]} - {result.dogurganBit}</div>
+           </div>
+         </div>
+       )}
+    >
+      <div className="space-y-6">
+        <V2Input label="SON ADET BAŞLANGICI" type="date" value={sonTarih} onChange={setSonTarih} />
+        <div className="grid grid-cols-2 gap-4">
+          <V2Input label="DÖNGÜ SÜRESİ" value={dongu} onChange={setDongu} unit="GÜN" placeholder="28" />
+          <V2Input label="KANAMA SÜRESİ" value={kanama} onChange={setKanama} unit="GÜN" placeholder="5" />
         </div>
       </div>
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Hesapla</button>
-
-      {result && (
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1.5rem" }}>
-          <h3 style={{ fontSize: "1.2rem", fontWeight: 700, marginBottom: "1.5rem", textAlign: "center", color: "var(--accent-primary)" }}>Tahmini Takviminiz</h3>
-          <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-            {[
-              { icon: "🩸", title: "Sonraki Adet Başlangıcı", val: result.next, color: "#ef4444" },
-              { icon: "✨", title: "Yüksek Doğurganlık Dönemi", val: `${result.dogurganBas.split(" ")[0]} - ${result.dogurganBit}`, color: "#f59e0b" },
-              { icon: "🥚", title: "Tahmini Yumurtlama (Ovulasyon)", val: result.ovulasyon, color: "#8b5cf6" },
-            ].map((r, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1rem", background: "var(--bg-secondary)", borderRadius: "8px" }}>
-                <div style={{ fontSize: "2rem" }}>{r.icon}</div>
-                <div>
-                  <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", fontWeight: 600, textTransform: "uppercase" }}>{r.title}</div>
-                  <div style={{ fontWeight: 700, color: r.color, fontSize: "1.05rem" }}>{r.val}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </div>
+      <V2ActionRow onCalculate={hesapla} onReset={reset} calculateLabel="🗓️ Takvimi Hesapla" />
+    </V2CalculatorWrapper>
   );
 }
 
@@ -113,47 +129,50 @@ export function ZodiacCalculator() {
     else if ((m === 2 && d >= 19) || (m === 3 && d <= 20)) { burc = "Balık"; element = "Su"; yonetici = "Neptün/Jüpiter"; icon = "♓"; }
 
     setResult({ burc, element, yonetici, icon });
+    confetti({ particleCount: 50, spread: 80, origin: { y: 0.7 } });
   };
 
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Doğum Günü</label>
-          <select value={gun} onChange={e => setGun(e.target.value)} className="input-field">
-            <option value="">Gün Seçin</option>
-            {Array.from({ length: 31 }, (_, i) => <option key={i+1} value={i+1}>{i+1}</option>)}
-          </select>
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Doğum Ayı</label>
-          <select value={ay} onChange={e => setAy(e.target.value)} className="input-field">
-            <option value="">Ay Seçin</option>
-            {["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"].map((m, i) => (
-              <option key={i+1} value={i+1}>{m}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Güneş Burcumu Bul</button>
+  const reset = () => { setGun(""); setAy(""); setResult(null); };
 
-      {result && (
-        <div style={{ background: "linear-gradient(145deg, #1e293b, #0f172a)", border: "1px solid #334155", borderRadius: "12px", padding: "2rem", textAlign: "center", color: "white" }}>
-          <div style={{ fontSize: "5rem", lineHeight: 1, marginBottom: "0.5rem" }}>{result.icon}</div>
-          <div style={{ fontSize: "2.5rem", fontWeight: 800, color: "var(--accent-secondary)", marginBottom: "1rem" }}>{result.burc}</div>
-          
-          <div style={{ display: "flex", justifyContent: "center", gap: "1.5rem" }}>
-             <div style={{ background: "rgba(255,255,255,0.1)", padding: "0.5rem 1rem", borderRadius: "8px" }}>
-                <div style={{ fontSize: "0.75rem", opacity: 0.7, textTransform: "uppercase" }}>Grup</div>
-                <div style={{ fontWeight: 600 }}>{result.element}</div>
-             </div>
-             <div style={{ background: "rgba(255,255,255,0.1)", padding: "0.5rem 1rem", borderRadius: "8px" }}>
-                <div style={{ fontSize: "0.75rem", opacity: 0.7, textTransform: "uppercase" }}>Yönetici Gezegen</div>
-                <div style={{ fontWeight: 600 }}>{result.yonetici}</div>
-             </div>
-          </div>
+  return (
+    <V2CalculatorWrapper
+      title="BURÇ HESAPLAYICI"
+      icon="✨"
+      infoText="Doğum tarihinize göre güneş burcunuzu, grubunuzu ve yönetici gezegeninizi bulur."
+      results={result && (
+        <div className="space-y-8">
+           <div className="glass-morphism p-10 rounded-[3rem] border border-white/10 text-center relative overflow-hidden group">
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-blue-500/10 to-purple-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="text-8xl mb-4 animate-float drop-shadow-2xl">{result.icon}</div>
+              <h3 className="text-5xl font-black italic text-primary tracking-tighter mb-6 underline decoration-blue-500/30 underline-offset-8">{result.burc.toUpperCase()}</h3>
+              
+              <div className="grid grid-cols-2 gap-4 relative z-10">
+                 <div className="p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-xl">
+                    <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-1">GRUP / ELEMENT</div>
+                    <div className="text-lg font-black text-primary italic">{result.element}</div>
+                 </div>
+                 <div className="p-6 rounded-2xl bg-white/5 border border-white/5 backdrop-blur-xl">
+                    <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-1">YÖNETİCİ GEZEGEN</div>
+                    <div className="text-lg font-black text-primary italic">{result.yonetici}</div>
+                 </div>
+              </div>
+           </div>
         </div>
       )}
-    </div>
+    >
+      <div className="grid grid-cols-2 gap-4">
+        <V2Select label="DOĞUM GÜNÜ" value={gun} onChange={setGun}>
+          <option value="" className="bg-slate-900">Gün Seçin</option>
+          {Array.from({ length: 31 }, (_, i) => <option key={i+1} value={i+1} className="bg-slate-900">{i+1}</option>)}
+        </V2Select>
+        <V2Select label="DOĞUM AYI" value={ay} onChange={setAy}>
+          <option value="" className="bg-slate-900">Ay Seçin</option>
+          {["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"].map((m, i) => (
+            <option key={i+1} value={i+1} className="bg-slate-900">{m}</option>
+          ))}
+        </V2Select>
+      </div>
+      <V2ActionRow onCalculate={hesapla} onReset={reset} calculateLabel="✨ Burcumu Bul" />
+    </V2CalculatorWrapper>
   );
 }

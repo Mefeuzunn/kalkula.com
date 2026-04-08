@@ -1,6 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Info, GraduationCap, BookOpen, Calculator, Star, Award, Wallet, ReceiptText } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function AkademisyenEkDersCalculator() {
   const [title, setTitle] = useState<"prof" | "assoc" | "asst" | "lect">("prof");
@@ -16,7 +23,6 @@ export function AkademisyenEkDersCalculator() {
     totalTax: number;
   } | null>(null);
 
-  // 2026 April Points & Katsayı (approx based on katsayı 1.487871)
   const KATSAYI_2026 = 1.487871;
   const POINTS = {
     prof: 300,
@@ -49,6 +55,7 @@ export function AkademisyenEkDersCalculator() {
       totalGross: monthlyGross,
       totalTax: incomeTax + stampTax
     });
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   };
 
   const reset = () => {
@@ -59,96 +66,112 @@ export function AkademisyenEkDersCalculator() {
     setResults(null);
   };
 
-  useEffect(() => { calculate(); }, [title, daytimeHours, nightHours, taxBracket]);
-
   const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
 
   const getTitleName = (t: string) => {
     switch(t) {
-      case "prof": return "Profesör";
-      case "assoc": return "Doçent";
-      case "asst": return "Dr. Öğretim Üyesi";
-      case "lect": return "Öğretim Görevlisi";
+      case "prof": return "PROFESÖR";
+      case "assoc": return "DOÇENT";
+      case "asst": return "DR. ÖĞRETİM ÜYESİ";
+      case "lect": return "ÖĞRETİM GÖREVLİSİ";
       default: return "";
     }
   };
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-input-group">
-        <label className="calc-label">Akademik Unvan</label>
-        <select value={title} onChange={e => setTitle(e.target.value as any)} className="calc-input">
-          <option value="prof">Profesör (300 Puan)</option>
-          <option value="assoc">Doçent (250 Puan)</option>
-          <option value="asst">Dr. Öğretim Üyesi (200 Puan)</option>
-          <option value="lect">Öğretim Görevlisi (160 Puan)</option>
-        </select>
-      </div>
+    <V2CalculatorWrapper
+      title="AKADEMİK EK DERS HESAPLA"
+      icon="🎓"
+      infoText="Üniversitelerde görevli akademik unvanlara göre 2026 memur katsayıları baz alınarak aylık ek ders ücretinizi hesaplayın."
+      results={results && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="purple"
+            label={`${getTitleName(title)} - TOPLAM NET`}
+            value={fmt(results.monthlyNet)}
+            subLabel={`Brüt Toplam: ${fmt(results.totalGross)}`}
+            icon="💰"
+          />
 
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Haftalık Gündüz Saati</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={daytimeHours} onChange={e => setDaytimeHours(e.target.value)} className="calc-input has-unit" min="0" />
-            <span className="calc-unit">SAAT</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-center">
+                <div className="text-[10px] font-black text-muted uppercase mb-1">GÜNDÜZ SAATLİK (BRÜT)</div>
+                <div className="text-xl font-black italic text-primary">{fmt(results.hourlyGrossDay)}</div>
+             </div>
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-center">
+                <div className="text-[10px] font-black text-muted uppercase mb-1">GECE SAATLİK (BRÜT)</div>
+                <div className="text-xl font-black italic text-emerald-500">{fmt(results.hourlyGrossNight)}</div>
+             </div>
           </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Haftalık Gece / T2 Saati</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={nightHours} onChange={e => setNightHours(e.target.value)} className="calc-input has-unit" min="0" />
-            <span className="calc-unit">SAAT</span>
+
+          <div className="p-5 rounded-2xl bg-red-500/5 border border-red-500/10 flex justify-between items-center">
+             <div>
+                <div className="text-[10px] font-black text-red-500/60 uppercase italic">TOPLAM VERGİ KESİNTİSİ</div>
+                <p className="text-[10px] text-muted italic leading-tight">Gelir Vergisi + Damga Vergisi</p>
+             </div>
+             <div className="text-xl font-black italic text-red-500">-{fmt(results.totalTax)}</div>
           </div>
-        </div>
-      </div>
 
-      <div className="calc-input-group">
-        <label className="calc-label">Vergi Dilimi</label>
-        <select value={taxBracket} onChange={e => setTaxBracket(e.target.value as any)} className="calc-input">
-          <option value="15">%15 (Başlangıç)</option>
-          <option value="20">%20</option>
-          <option value="27">%27</option>
-        </select>
-      </div>
-
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>🎓 Ek Ders Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
-
-      {results && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">📑 Akademik Ek Ders Detayları (Aylık Tahmini)</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">{getTitleName(title)} - Toplam Net</div>
-              <div className="calc-result-hero-value" style={{ color: "#8b5cf6" }}>{fmt(results.monthlyNet)}</div>
-              <div className="calc-result-hero-sub">Brüt Toplam: {fmt(results.totalGross)}</div>
-            </div>
-
-            <div className="calc-result-cards">
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Gündüz Saatlik (Brüt)</div>
-                <div className="calc-result-card-value">{fmt(results.hourlyGrossDay)}</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Gece Saatlik (Brüt)</div>
-                <div className="calc-result-card-value">{fmt(results.hourlyGrossNight)}</div>
-              </div>
-            </div>
-
-            <div className="calc-result-row" style={{ marginTop: "1rem" }}>
-              <span className="calc-result-row-label">Toplam Vergi Kesintisi</span>
-              <span className="calc-result-row-value danger">-{fmt(results.totalTax)}</span>
-            </div>
+          <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex gap-3 items-center">
+             <Info className="w-4 h-4 text-blue-500 shrink-0" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               2026 yılı akademik puan katsayıları üzerinden 4 haftalık (1 ay) tahmini hesaplamadır. Bordronuzdaki diğer kesintiler farklılık yaratabilir.
+             </p>
           </div>
         </div>
       )}
+    >
+      <div className="space-y-8">
+        <V2Select 
+          label="AKADEMİK UNVAN" 
+          value={title} 
+          onChange={val => setTitle(val as any)} 
+          options={[
+            { value: "prof", label: "Profesör (300 Puan)" },
+            { value: "assoc", label: "Doçent (250 Puan)" },
+            { value: "asst", label: "Dr. Öğretim Üyesi (200 Puan)" },
+            { value: "lect", label: "Öğretim Görevlisi (160 Puan)" }
+          ]}
+          fieldClassName="font-bold"
+        />
 
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">📜</span>
-        <span className="calc-info-box-text">2026 yılı memur maaş katsayısı (1.387871) üzerinden hesaplanmıştır. Gece/Hafta sonu dersleri için 1.5x çarpanı uygulanmıştır. Bordronuzdaki diğer kesintiler (emekli keseneği vb.) farklılık yaratabilir.</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <V2Input 
+             label="FİİLİ GÜNDÜZ SAATİ" 
+             value={daytimeHours} 
+             onChange={setDaytimeHours} 
+             unit="SA" 
+             placeholder="10" 
+             min="0" 
+           />
+           <V2Input 
+             label="GECE / HAFTA SONU SAATİ" 
+             value={nightHours} 
+             onChange={setNightHours} 
+             unit="SA" 
+             placeholder="0" 
+             min="0" 
+             fieldClassName="!bg-purple-500/5 !text-purple-500 !border-purple-500/10"
+           />
+        </div>
+
+        <V2Select 
+          label="SİZE UYGULANAN VERGİ DİLİMİ" 
+          value={taxBracket} 
+          onChange={val => setTaxBracket(val as any)} 
+          options={[
+            { value: "15", label: "%15 (Yıl Başlangıcı)" },
+            { value: "20", label: "%20" },
+            { value: "27", label: "%27" }
+          ]}
+        />
+
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="🎓 Ek Ders Hesapla"
+        />
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

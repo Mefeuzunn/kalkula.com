@@ -1,4 +1,11 @@
+"use client";
+
 import React, { useState } from "react";
+import { Type, AlignLeft, Clock, MessageSquare, Hash, Timer, Trash2, Zap, Info, Quote, FileText, Sparkles } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function WordCounter() {
   const [text, setText] = useState("");
@@ -8,63 +15,113 @@ export function WordCounter() {
   const charsNoSpace = text.replace(/\s/g, "").length;
   const paragraphs = text.trim() ? text.split(/\n+/).filter(p => p.trim().length > 0).length : 0;
   
-  // Ortalama okuma hızı dakikada 200-250 kelimedir, konuşma hızı ise 130-150.
+  // Average reading speed is 200-250 wpm, speaking is 130-150.
   const readingTime = Math.ceil(words / 225) || 0;
   const speakingTime = Math.ceil(words / 140) || 0;
 
+  const reset = () => setText("");
+
   return (
-    <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {[
-          { label: "Kelime", val: words, color: "var(--accent-primary)" },
-          { label: "Karakter", val: chars, color: "var(--primary)" },
-          { label: "Boşluksuz", val: charsNoSpace, color: "var(--text-secondary)" },
-          { label: "Paragraf", val: paragraphs, color: "#8b5cf6" },
-          { label: "Okuma (Dk)", val: readingTime, color: "#10b981" },
-          { label: "Konuşma (Dk)", val: speakingTime, color: "#f59e0b" }
-        ].map((item, i) => (
-          <div key={i} className="panel flex flex-col items-center justify-center p-6 border-2 border-border hover:border-accent-primary/30 transition-all group rounded-3xl relative overflow-hidden bg-secondary/5">
-            <div className="absolute top-0 right-0 p-1 opacity-20 transition-opacity group-hover:opacity-100">
-               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 2v20M2 12h20"/></svg>
-            </div>
-            <div style={{ color: item.color || "var(--text-primary)" }} className="text-3xl font-black italic tracking-tighter">{item.val}</div>
-            <div className="text-[9px] uppercase font-black text-muted mt-2 tracking-widest">{item.label}</div>
-          </div>
-        ))}
-      </div>
-      
-      <div className="relative group">
-         <div className="absolute -inset-1 bg-gradient-to-br from-accent-primary/20 to-accent-secondary/20 rounded-[2.5rem] blur-xl opacity-20 group-focus-within:opacity-40 transition-all duration-700"></div>
-         <textarea 
-           placeholder="Saymak istediğiniz metni buraya yapıştırın veya yazmaya başlayın..." 
-           value={text} 
-           onChange={e => setText(e.target.value)} 
-           className="input-field p-10 text-xl border-4 border-border rounded-[2.5rem] min-h-[450px] leading-relaxed shadow-inner placeholder:opacity-30 relative z-10 focus:border-accent-primary transition-all scrollbar-custom"
-           style={{ resize: "vertical" }}
-         />
-         <div className="absolute bottom-6 right-8 text-[10px] font-black text-muted uppercase tracking-[0.3em] italic z-20 pointer-events-none opacity-40">
-            Kalkula AI Word Analysis Engine
-         </div>
-      </div>
+    <V2CalculatorWrapper
+      title="KELİME & KARAKTER SAYACI"
+      icon="📝"
+      infoText="Metinlerinizin uzunluğunu, kelime sayısını ve tahmini okuma sürelerini anında analiz edin. Blog yazıları, akademik makaleler ve sosyal medya içerikleri için idealdir."
+      results={(chars > 0) && (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+           <V2ResultCard 
+             color="blue" 
+             label="KELİME" 
+             value={words.toLocaleString()} 
+             icon="🔤" 
+           />
+           <V2ResultCard 
+             color="emerald" 
+             label="KARAKTER" 
+             value={chars.toLocaleString()} 
+             icon="🔢" 
+           />
+           <V2ResultCard 
+             color="purple" 
+             label="BOŞLUKSUZ" 
+             value={charsNoSpace.toLocaleString()} 
+             icon="🚫" 
+           />
+           <V2ResultCard 
+             color="indigo" 
+             label="PARAGRAF" 
+             value={paragraphs.toLocaleString()} 
+             icon="¶" 
+           />
+           <V2ResultCard 
+             color="amber" 
+             label="OKUMA SÜRESİ" 
+             value={`${readingTime} DK`} 
+             icon="📖" 
+           />
+           <V2ResultCard 
+             color="pink" 
+             label="KONUŞMA SÜRESİ" 
+             value={`${speakingTime} DK`} 
+             icon="🗣️" 
+           />
+        </div>
+      )}
+    >
+      <div className="space-y-8">
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+           <div className="flex justify-between items-center px-2">
+              <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] flex items-center gap-2">
+                 <AlignLeft className="w-4 h-4 text-blue-500" /> SAYILACAK METİN
+              </div>
+              <button 
+                onClick={reset}
+                className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[9px] font-black italic hover:bg-red-600 hover:text-white transition-all flex items-center gap-2"
+              >
+                 <Trash2 className="w-3 h-3" /> TEMİZLE
+              </button>
+           </div>
+           
+           <div className="relative group">
+              <textarea 
+                placeholder="Metninizi buraya yapıştırın veya yazmaya başlayın..." 
+                value={text} 
+                onChange={e => setText(e.target.value)} 
+                className="w-full p-8 rounded-2xl bg-white/5 border-2 border-white/10 text-primary font-medium text-lg min-h-[400px] leading-relaxed focus:outline-none focus:border-blue-500/50 transition-all placeholder:text-muted/20 scrollbar-custom resize-none"
+              />
+              <div className="absolute right-6 bottom-6 pointer-events-none opacity-10 group-focus-within:opacity-30 transition-opacity">
+                 <FileText className="w-12 h-12 text-blue-500" />
+              </div>
+           </div>
+        </div>
 
-      <div className="flex flex-wrap justify-between items-center px-4">
-         <div className="flex gap-6 items-center">
-            <div className="text-[10px] font-black text-muted uppercase tracking-widest flex items-center gap-2">
-               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-               Real-Time Analysis
-            </div>
-            <div className="hidden md:flex text-[10px] font-black text-muted uppercase tracking-widest border-l border-border pl-6 italic">
-               Okunabilirlik Analizi: {words > 100 ? "OPTIMUM" : "ANALİZ EDİLİYOR"}
-            </div>
-         </div>
-         <button onClick={() => setText("")} className="text-[10px] font-black text-red-500 uppercase tracking-widest hover:underline">Temizle</button>
-      </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-blue-500/10 text-blue-500">
+                 <Zap className="w-5 h-5" />
+              </div>
+              <div>
+                 <div className="text-[10px] font-black text-blue-500 uppercase italic">GERÇEK ZAMANLI</div>
+                 <div className="text-[10px] text-muted font-bold opacity-60">Siz yazdıkça anlık analiz</div>
+              </div>
+           </div>
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-purple-500/10 text-purple-500">
+                 <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                 <div className="text-[10px] font-black text-purple-500 uppercase italic">OKUNABİLİRLİK</div>
+                 <div className="text-[10px] text-muted font-bold opacity-60">Zamanlama ve hacim denetimi</div>
+              </div>
+           </div>
+        </div>
 
-      <div className="mt-8 p-6 bg-secondary/5 border border-border rounded-3xl text-center">
-         <p className="text-[10px] text-muted font-medium italic leading-relaxed max-w-2xl mx-auto">
-            💡 <b>Hesaplama Notu:</b> Okuma süresi dakikada ortalama 225 kelime, konuşma süresi ise dakikada 140 kelime baz alınarak bir yetişkinin ortalama hızı üzerinden hesaplanmıştır.
-         </p>
+        <div className="p-4 rounded-3xl bg-blue-600/5 border border-blue-600/10 flex gap-4 items-center">
+           <Info className="w-6 h-6 text-blue-500 shrink-0" />
+           <p className="text-[10px] text-muted italic leading-relaxed">
+             <b>Bilgi:</b> Okuma süresi dakikada 225 kelime, konuşma süresi ise 140 kelime ortalaması üzerinden hesaplanmıştır.
+           </p>
+        </div>
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

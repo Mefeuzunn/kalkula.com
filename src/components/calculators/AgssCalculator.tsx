@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Info, GraduationCap, Target, Calculator, Star, BookOpen, Award, FileText } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function AgssCalculator() {
   const [gkgyCorrect, setGkgyCorrect] = useState("45");
@@ -22,79 +28,75 @@ export function AgssCalculator() {
 
     if (totalNet > 0) {
       setResult({ net: totalNet, point: point, gkgyNet, alanNet });
+      if (point >= 60) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
     } else {
       setResult(null);
     }
   };
 
-  const reset = () => { setGkgyCorrect("45"); setGkgyWrong("10"); setAlanCorrect("60"); setAlanWrong("15"); setResult(null); };
-
-  useEffect(() => { calculate(); }, [gkgyCorrect, gkgyWrong, alanCorrect, alanWrong]);
+  const reset = () => {
+    setGkgyCorrect("45");
+    setGkgyWrong("10");
+    setAlanCorrect("60");
+    setAlanWrong("15");
+    setResult(null);
+  };
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-grid-2">
-        <div>
-          <div className="calc-section-title">Genel Yetenek / G. Kültür</div>
-          <div className="calc-input-group" style={{ marginBottom: "0.5rem" }}>
-            <label className="calc-label">Doğru Sayısı</label>
-            <input type="number" value={gkgyCorrect} onChange={e => setGkgyCorrect(e.target.value)} className="calc-input" style={{ borderColor: "#22c55e", color: "#22c55e" }} placeholder="45" min="0" />
-          </div>
-          <div className="calc-input-group">
-            <label className="calc-label">Yanlış Sayısı</label>
-            <input type="number" value={gkgyWrong} onChange={e => setGkgyWrong(e.target.value)} className="calc-input" style={{ borderColor: "#ef4444", color: "#ef4444" }} placeholder="10" min="0" />
-          </div>
-        </div>
-        <div>
-          <div className="calc-section-title">Akademik Personel Alan Bilgisi</div>
-          <div className="calc-input-group" style={{ marginBottom: "0.5rem" }}>
-            <label className="calc-label">Doğru Sayısı</label>
-            <input type="number" value={alanCorrect} onChange={e => setAlanCorrect(e.target.value)} className="calc-input" style={{ borderColor: "#22c55e", color: "#22c55e" }} placeholder="60" min="0" />
-          </div>
-          <div className="calc-input-group">
-            <label className="calc-label">Yanlış Sayısı</label>
-            <input type="number" value={alanWrong} onChange={e => setAlanWrong(e.target.value)} className="calc-input" style={{ borderColor: "#ef4444", color: "#ef4444" }} placeholder="15" min="0" />
-          </div>
-        </div>
-      </div>
+    <V2CalculatorWrapper
+      title="AGS PUAN HESAPLA"
+      icon="🎓"
+      infoText="Akademik Personel Seçme Sınavı (AGS) Genel Yetenek ve Alan Bilgisi netlerinize göre tahmini yerleştirme puanınızı hesaplayın."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="blue"
+            label="TAHMİNİ AGS PUANI"
+            value={result.point.toFixed(2)}
+            subLabel="Olası Standart Sapma Dahil Değildir"
+            icon="📊"
+          />
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>🎓 Puanı Analiz Et</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             <V2ResultCard color="emerald" label="TOPLAM NET" value={result.net.toFixed(2)} subLabel="Toplam Başarı" icon="✅" />
+             <V2ResultCard color="purple" label="GKGY NETİ" value={result.gkgyNet.toFixed(2)} subLabel="Genel Yetenek/Kültür" icon="📖" />
+             <V2ResultCard color="amber" label="ALAN NETİ" value={result.alanNet.toFixed(2)} subLabel="Alan Bilgisi" icon="🎯" />
+          </div>
 
-      {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">🎓 AGS Sınav Performansı</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Tahmini AGS Puanı</div>
-              <div className="calc-result-hero-value" style={{ color: "var(--accent-primary)", fontSize: "3.5rem" }}>{result.point.toFixed(2)}</div>
-              <div className="calc-result-hero-sub">Olası Standart Sapma Dahil Değildir</div>
-            </div>
-            
-            <div className="calc-result-cards" style={{ gridTemplateColumns: "1fr 1fr 1fr" }}>
-              <div className="calc-result-card" style={{ borderTop: "4px solid var(--accent-primary)" }}>
-                <div className="calc-result-card-label" style={{ color: "var(--accent-primary)" }}>Toplam Net</div>
-                <div className="calc-result-card-value">{result.net.toFixed(2)}</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">GKGY Neti</div>
-                <div className="calc-result-card-value font-bold">{result.gkgyNet.toFixed(2)}</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Alan Bilgisi Neti</div>
-                <div className="calc-result-card-value font-bold">{result.alanNet.toFixed(2)}</div>
-              </div>
-            </div>
+          <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex gap-3 items-center">
+             <Info className="w-4 h-4 text-blue-500 shrink-0" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               Hesaplama, genel katsayı ortalamalarına göre 4 yanlışın 1 doğruyu götürdüğü varsayımsal projeksiyonlar kullanılarak yapılmıştır.
+             </p>
           </div>
         </div>
       )}
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+           <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+              <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] italic mb-2 flex items-center gap-2">
+                 <FileText className="w-4 h-4" /> GK-GY Bölümü
+              </div>
+              <V2Input label="DOĞRU SAYISI" value={gkgyCorrect} onChange={setGkgyCorrect} unit="D" placeholder="45" min="0" fieldClassName="!text-emerald-500" />
+              <V2Input label="YANLIŞ SAYISI" value={gkgyWrong} onChange={setGkgyWrong} unit="Y" placeholder="10" min="0" fieldClassName="!text-red-500" />
+           </div>
 
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">💡</span>
-        <span className="calc-info-box-text">Hesaplama, genel katsayı ortalamalarına göre 4 yanlışın 1 doğruyu götürdüğü varsayımsal projeksiyonlar kullanılarak yapılmıştır.</span>
+           <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+              <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] italic mb-2 flex items-center gap-2">
+                 <Target className="w-4 h-4" /> ALAN BİLGİSİ
+              </div>
+              <V2Input label="DOĞRU SAYISI" value={alanCorrect} onChange={setAlanCorrect} unit="D" placeholder="60" min="0" fieldClassName="!text-emerald-500" />
+              <V2Input label="YANLIŞ SAYISI" value={alanWrong} onChange={setAlanWrong} unit="Y" placeholder="15" min="0" fieldClassName="!text-red-500" />
+           </div>
+        </div>
+
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="🎓 Puanı Analiz Et"
+        />
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

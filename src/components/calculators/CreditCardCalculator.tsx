@@ -1,11 +1,13 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function CreditCardCalculator() {
   const [debt, setDebt] = useState("15000");
   const [limit, setLimit] = useState("50000");
-  const [interestRate, setInterestRate] = useState("5.00"); // Current TCMB cap is around 5%
+  const [interestRate, setInterestRate] = useState("5.00");
   const [result, setResult] = useState<{ 
     minPayment: number; 
     ratio: number; 
@@ -24,7 +26,6 @@ export function CreditCardCalculator() {
     const minPayment = d * ratio;
     const remaining = d - minPayment;
     
-    // Daily Interest = Remaining * (Monthly Rate / 100 / 30)
     const dailyInterest = remaining > 0 ? remaining * (r / 100 / 30) : 0;
     const monthlyInterest = dailyInterest * 30;
 
@@ -43,69 +44,66 @@ export function CreditCardCalculator() {
   const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-grid-3">
-        <div className="calc-input-group">
-          <label className="calc-label">Kredi Kartı Limiti</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={limit} onChange={e => setLimit(e.target.value)} className="calc-input has-unit" placeholder="50000" min="0" />
-            <span className="calc-unit">₺</span>
+    <V2CalculatorWrapper
+      title="ASGARİ ÖDEME VE FAİZ ANALİZİ"
+      icon="💳"
+      infoText="Sadece asgari ödeme yapılması durumunda kalan borca akdi faiz uygulanır. Faiz maliyeti borca eklenerek bir sonraki dönem borcunuzu oluşturur. BDDK kuralları gereği 25.000 TL altı limitlerde %20, üstü limitlerde %40 asgari ödeme oranı uygulanır."
+      results={result && (
+        <div className="space-y-8">
+          <V2ResultCard
+            color="red"
+            icon="⚠️"
+            label="ÖDENMESİ GEREKEN ASGARİ TUTAR"
+            value={fmt(result.minPayment)}
+            subLabel={`Uygulanan Oran: %${(result.ratio * 100).toFixed(0)} (BDDK Kuralı)`}
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">GÜNLÜK FAİZ YÜKÜ</div>
+                <div className="text-xl font-black text-[#ef4444]">{fmt(result.dailyInterest)}</div>
+             </div>
+             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">30 GÜNLÜK MALİYET</div>
+                <div className="text-xl font-black text-[#ef4444]">{fmt(result.monthlyInterest)}</div>
+             </div>
           </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Dönem Borcu</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={debt} onChange={e => setDebt(e.target.value)} className="calc-input has-unit" placeholder="15000" min="0" />
-            <span className="calc-unit">₺</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Aylık Akdi Faiz (%)</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={interestRate} onChange={e => setInterestRate(e.target.value)} className="calc-input has-unit" placeholder="5.00" step="0.01" min="0" />
-            <span className="calc-unit">%</span>
-          </div>
-        </div>
-      </div>
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>💳 Faiz Dahil Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
-
-      {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">💳 Asgari Ödeme ve Faiz Analizi</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Ödenmesi Gereken Asgari Tutar</div>
-              <div className="calc-result-hero-value">{fmt(result.minPayment)}</div>
-              <div className="calc-result-hero-sub">Uygulanan Oran: %{(result.ratio * 100).toFixed(0)} — BDDK kuralı</div>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '1rem' }}>
-                <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '1.25rem', borderRadius: '16px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Günlük Faiz Yükü</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ef4444' }}>{fmt(result.dailyInterest)}</div>
-                </div>
-                <div style={{ background: 'rgba(239, 68, 68, 0.1)', padding: '1.25rem', borderRadius: '16px', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                    <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>30 Günlük Faiz Maliyeti</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 800, color: '#ef4444' }}>{fmt(result.monthlyInterest)}</div>
-                </div>
-            </div>
-
-            <div className="calc-result-row" style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border)' }}>
-              <span className="calc-result-row-label">Kalan Borç (Asgari Sonrası)</span>
-              <span className="calc-result-row-value danger">{fmt(result.remaining)}</span>
-            </div>
+          <div className="pt-6 border-t border-white/5 flex justify-between items-center">
+             <span className="text-xs font-black text-muted uppercase tracking-widest">ASGARİ SONRASI KALAN BORÇ</span>
+             <span className="text-2xl font-black text-[#ef4444]">{fmt(result.remaining)}</span>
           </div>
         </div>
       )}
-
-      <div className="calc-info-box warning" style={{ background: 'rgba(245, 158, 11, 0.1)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
-        <span className="calc-info-box-icon">⚠️</span>
-        <span className="calc-info-box-text">Sadece asgari ödeme yapılması durumunda kalan borca akdi faiz uygulanır. Faiz maliyeti borca eklenerek bir sonraki dönem borcunuzu oluşturur.</span>
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <V2Input
+          label="KREDİ KARTI LİMİTİ"
+          value={limit}
+          onChange={setLimit}
+          unit="₺"
+        />
+        <V2Input
+          label="DÖNEM BORCU"
+          value={debt}
+          onChange={setDebt}
+          unit="₺"
+        />
       </div>
-    </div>
+
+      <V2Input
+        label="AYLIK AKDİ FAİZ (%)"
+        value={interestRate}
+        onChange={setInterestRate}
+        unit="%"
+        step="0.01"
+      />
+
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="💳 Faiz Dahil Analiz Et"
+      />
+    </V2CalculatorWrapper>
   );
 }

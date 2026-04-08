@@ -1,6 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Info, BarChart3, ShoppingBag, Factory, TrendingUp, TrendingDown, Calculator, Star, ArrowRight, CheckCircle, AlertTriangle, PieChart } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 /* ─── Kar/Zarar Hesaplama ─── */
 export function KarZararCalculator() {
@@ -16,68 +22,113 @@ export function KarZararCalculator() {
     const gz = parseFloat(gider);
     const kdv = parseFloat(kdvOran) / 100;
     if (isNaN(g) || isNaN(gz)) return;
+    
     const karZarar = g - gz;
     const yuzde = gz > 0 ? (karZarar / gz) * 100 : 0;
     const kdvHesabi = g * kdv;
     const netKar = karZarar - kdvHesabi;
+    
     setResult({ karZarar, yuzde, kdvHesabi, netKar });
+    
+    if (karZarar > 0) {
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    }
   };
 
-  const fmt = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const reset = () => {
+    setGelir("");
+    setGider("");
+    setKdvOran("20");
+    setResult(null);
+  };
+
+  const fmt = (n: number) => n.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
   const isKar = result && result.karZarar >= 0;
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Toplam Gelir (₺)</label>
-          <input type="number" placeholder="Örn: 50000" value={gelir} onChange={e => setGelir(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Toplam Gider (₺)</label>
-          <input type="number" placeholder="Örn: 35000" value={gider} onChange={e => setGider(e.target.value)} className="input-field" />
-        </div>
-      </div>
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>KDV Oranı (%)</label>
-        <div style={{ display: "flex", gap: "0.5rem" }}>
-          {["0", "10", "20"].map(o => (
-            <button key={o} onClick={() => setKdvOran(o)}
-              style={{ padding: "0.45rem 1rem", borderRadius: "7px", border: `1px solid ${kdvOran === o ? "var(--accent-primary)" : "var(--border)"}`, background: kdvOran === o ? "var(--accent-glow)" : "var(--surface)", color: kdvOran === o ? "var(--accent-primary)" : "var(--text-secondary)", fontWeight: 600, cursor: "pointer" }}>
-              %{o}
-            </button>
-          ))}
-        </div>
-      </div>
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Hesapla</button>
+    <V2CalculatorWrapper
+      title="KAR / ZARAR ANALİZİ"
+      icon="📈"
+      infoText="İşletmenizin gelir ve gider kalemlerini girerek net kar oranınızı, KDV yükümlülüğünüzü ve karlılık performansınızı anında analiz edin."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color={isKar ? "emerald" : "red"}
+            label={isKar ? "TOPLAM KAR" : "TOPLAM ZARAR"}
+            value={fmt(result.karZarar)}
+            subLabel={`Karlılık Oranı: %${Math.abs(result.yuzde).toFixed(1)}`}
+            icon={isKar ? "📈" : "📉"}
+          />
 
-      {result && (
-        <div style={{
-          background: isKar ? "rgba(34,197,94,0.08)" : "rgba(239,68,68,0.08)",
-          border: `1px solid ${isKar ? "rgba(34,197,94,0.3)" : "rgba(239,68,68,0.3)"}`,
-          borderRadius: "12px", padding: "1.5rem",
-        }}>
-          <div style={{ textAlign: "center", marginBottom: "1.25rem" }}>
-            <div style={{ fontSize: "2.5rem", marginBottom: "0.25rem" }}>{isKar ? "📈" : "📉"}</div>
-            <div style={{ fontSize: "2rem", fontWeight: 800, color: isKar ? "#22c55e" : "#ef4444" }}>
-              {isKar ? "+" : ""}₺{fmt(result.karZarar)}
-            </div>
-            <div style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>
-              {isKar ? "Kar" : "Zarar"} — Gidere göre %{Math.abs(result.yuzde).toFixed(1)}
-            </div>
+          <div className="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+             <div className="text-[10px] font-black text-muted uppercase tracking-widest italic mb-2">Finansal Detaylar</div>
+             <div className="space-y-3">
+                <div className="flex justify-between items-center text-xs italic">
+                   <span className="text-muted">KDV Yükümlülüğü:</span>
+                   <span className="text-primary font-bold">{fmt(result.kdvHesabi)}</span>
+                </div>
+                <div className="flex justify-between items-center text-xs italic border-t border-white/5 pt-3">
+                   <span className="text-muted">Vergi Sonrası Net Kar:</span>
+                   <span className={`font-black ${isKar ? 'text-emerald-500' : 'text-red-500'}`}>{fmt(result.netKar)}</span>
+                </div>
+             </div>
           </div>
-          {[
-            { label: "KDV Yükümlülüğü", value: `₺${fmt(result.kdvHesabi)}` },
-            { label: "KDV Sonrası Net Kar/Zarar", value: `₺${fmt(result.netKar)}` },
-          ].map(r => (
-            <div key={r.label} style={{ display: "flex", justifyContent: "space-between", padding: "0.5rem 0", borderTop: "1px solid var(--border)" }}>
-              <span style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>{r.label}</span>
-              <span style={{ fontWeight: 700 }}>{r.value}</span>
-            </div>
-          ))}
+
+          <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex gap-3 items-center">
+             <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               Bu hesaplama yüzeysel bir maliyet analizidir. Gelir vergisi, personel giderleri ve amortisman kalemleri ayrıca değerlendirilmelidir.
+             </p>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <V2Input 
+             label="TOPLAM GELİR" 
+             value={gelir} 
+             onChange={setGelir} 
+             unit="₺" 
+             placeholder="50000" 
+             fieldClassName="!py-6 font-black text-2xl !bg-emerald-500/5 !border-emerald-500/10 text-emerald-500"
+           />
+           <V2Input 
+             label="TOPLAM GİDER" 
+             value={gider} 
+             onChange={setGider} 
+             unit="₺" 
+             placeholder="35000" 
+             fieldClassName="!py-6 font-black text-2xl !bg-red-500/5 !border-red-500/10 text-red-500"
+           />
+        </div>
+
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-4">
+           <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em]">KDV ORANI (%)</div>
+           <div className="flex gap-4">
+              {["0", "1", "10", "20"].map(o => (
+                <button 
+                  key={o} 
+                  onClick={() => setKdvOran(o)}
+                  className={`flex-1 py-4 rounded-2xl font-black italic transition-all border-b-4 ${
+                    kdvOran === o 
+                    ? "bg-blue-600 text-white border-blue-800 translate-y-[2px]" 
+                    : "bg-white/5 text-muted border-white/10 hover:bg-white/10 active:translate-y-1"
+                  }`}
+                >
+                  %{o}
+                </button>
+              ))}
+           </div>
+        </div>
+
+        <V2ActionRow 
+          onCalculate={hesapla} 
+          onReset={reset} 
+          calculateLabel="📊 Karlılığımı Analiz Et"
+        />
+      </div>
+    </V2CalculatorWrapper>
   );
 }
 
@@ -91,7 +142,7 @@ export function TopPriceCalculator() {
     topFiyat: number; perFiyat: number; topKar: number; perKar: number; topKdv: number; perKdv: number;
   }>(null);
 
-  const fmt = (n: number) => n.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const fmt = (n: number) => n.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
 
   const hesapla = () => {
     const m = parseFloat(maliyet);
@@ -99,8 +150,10 @@ export function TopPriceCalculator() {
     const pm = parseFloat(perMarj) / 100;
     const a = parseFloat(adet) || 1;
     if (!m) return;
+    
     const topFiyat = m * (1 + tm);
     const perFiyat = m * (1 + pm);
+    
     setResult({
       topFiyat, perFiyat,
       topKar: (topFiyat - m) * a,
@@ -108,66 +161,86 @@ export function TopPriceCalculator() {
       topKdv: topFiyat * 0.20,
       perKdv: perFiyat * 0.20,
     });
+
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  };
+
+  const reset = () => {
+    setMaliyet("");
+    setTopMarj("25");
+    setPerMarj("60");
+    setAdet("1");
+    setResult(null);
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Birim Maliyet (₺)</label>
-          <input type="number" placeholder="Örn: 80" value={maliyet} onChange={e => setMaliyet(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Adet</label>
-          <input type="number" placeholder="Örn: 100" value={adet} onChange={e => setAdet(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Toptan Kar Marjı (%)</label>
-          <input type="number" placeholder="25" value={topMarj} onChange={e => setTopMarj(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Perakende Kar Marjı (%)</label>
-          <input type="number" placeholder="60" value={perMarj} onChange={e => setPerMarj(e.target.value)} className="input-field" />
-        </div>
-      </div>
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Hesapla</button>
+    <V2CalculatorWrapper
+      title="TOPTAN & PERAKENDE ANALİZİ"
+      icon="🛍️"
+      infoText="Maliyet ve kar marjlarınıza göre ideal toptan ve perakende satış fiyatlarınızı belirleyin, potansiyel karlılığınızı görün."
+      results={result && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <V2ResultCard
+               color="blue"
+               label="TOPTAN SATIŞ"
+               value={fmt(result.topFiyat)}
+               subLabel={`Toplam Kar: ${fmt(result.topKar)}`}
+               icon="🏭"
+             />
+             <V2ResultCard
+               color="purple"
+               label="PERAKENDE SATIŞ"
+               value={fmt(result.perFiyat)}
+               subLabel={`Toplam Kar: ${fmt(result.perKar)}`}
+               icon="🛍️"
+             />
+          </div>
 
-      {result && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-          {[
-            {
-              title: "🏭 Toptan",
-              fiyat: result.topFiyat,
-              kar: result.topKar,
-              kdv: result.topKdv,
-              color: "#3b82f6",
-            },
-            {
-              title: "🛍️ Perakende",
-              fiyat: result.perFiyat,
-              kar: result.perKar,
-              kdv: result.perKdv,
-              color: "#8b5cf6",
-            },
-          ].map(c => (
-            <div key={c.title} style={{ background: "var(--surface)", border: `2px solid ${c.color}22`, borderRadius: "12px", padding: "1.25rem" }}>
-              <div style={{ fontWeight: 700, fontSize: "1rem", color: c.color, marginBottom: "0.75rem" }}>{c.title}</div>
-              <div style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--text-primary)", marginBottom: "0.25rem" }}>₺{fmt(c.fiyat)}</div>
-              <div style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>birim fiyat</div>
-              <div style={{ marginTop: "0.75rem", paddingTop: "0.75rem", borderTop: "1px solid var(--border)" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "0.35rem" }}>
-                  <span style={{ color: "var(--text-muted)" }}>Toplam Kar</span>
-                  <span style={{ fontWeight: 700, color: "#22c55e" }}>₺{fmt(c.kar)}</span>
+          <div className="p-5 rounded-2xl bg-white/5 border border-white/5 space-y-4">
+             <div className="text-[10px] font-black text-muted uppercase tracking-widest italic mb-2">Vergi ve Marj Raporu</div>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                   <div className="text-[9px] font-bold text-blue-500 uppercase italic">Toptan Detay</div>
+                   <div className="flex justify-between text-[11px] italic">
+                      <span className="text-muted">Birim Kar:</span>
+                      <span className="text-primary font-bold">{fmt(result.topKar / (parseFloat(adet) || 1))}</span>
+                   </div>
+                   <div className="flex justify-between text-[11px] italic">
+                      <span className="text-muted">KDV (%20):</span>
+                      <span className="text-primary font-bold">{fmt(result.topKdv)}</span>
+                   </div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem" }}>
-                  <span style={{ color: "var(--text-muted)" }}>KDV (%20)</span>
-                  <span style={{ fontWeight: 600 }}>₺{fmt(c.kdv)}</span>
+                <div className="space-y-2 border-l border-white/5 pl-6">
+                   <div className="text-[9px] font-bold text-purple-500 uppercase italic">Perakende Detay</div>
+                   <div className="flex justify-between text-[11px] italic">
+                      <span className="text-muted">Birim Kar:</span>
+                      <span className="text-primary font-bold">{fmt(result.perKar / (parseFloat(adet) || 1))}</span>
+                   </div>
+                   <div className="flex justify-between text-[11px] italic">
+                      <span className="text-muted">KDV (%20):</span>
+                      <span className="text-primary font-bold">{fmt(result.perKdv)}</span>
+                   </div>
                 </div>
-              </div>
-            </div>
-          ))}
+             </div>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <V2Input label="BİRİM MALİYET" value={maliyet} onChange={setMaliyet} unit="₺" placeholder="80" />
+           <V2Input label="TOPLAM ADET" value={adet} onChange={setAdet} unit="ADET" placeholder="100" />
+           <V2Input label="TOPTAN KAR MARJI" value={topMarj} onChange={setTopMarj} unit="%" placeholder="25" />
+           <V2Input label="PERAKENDE KAR MARJI" value={perMarj} onChange={setPerMarj} unit="%" placeholder="60" />
+        </div>
+
+        <V2ActionRow 
+          onCalculate={hesapla} 
+          onReset={reset} 
+          calculateLabel="🛍️ Fiyatları Belirle"
+        />
+      </div>
+    </V2CalculatorWrapper>
   );
 }

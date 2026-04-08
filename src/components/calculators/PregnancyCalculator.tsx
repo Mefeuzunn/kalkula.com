@@ -1,10 +1,12 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function PregnancyCalculator() {
   const [lastPeriod, setLastPeriod] = useState("");
-  const [result, setResult] = useState<{ dueDate: string; weeks: number; daysLeft: number; trimester: string; trimesterColor: string } | null>(null);
+  const [result, setResult] = useState<{ dueDate: string; weeks: number; daysLeft: number; trimester: string; trimesterColor: string; themeColor: "blue" | "emerald" | "amber" | "red" } | null>(null);
 
   const calculate = () => {
     if (!lastPeriod) { setResult(null); return; }
@@ -17,10 +19,20 @@ export function PregnancyCalculator() {
 
     let trimester = "1. Trimester";
     let trimesterColor = "#3b82f6";
-    if (weeks >= 14 && weeks < 28) { trimester = "2. Trimester"; trimesterColor = "#22c55e"; }
-    else if (weeks >= 28) { trimester = "3. Trimester"; trimesterColor = "#f59e0b"; }
+    let themeColor: "blue" | "emerald" | "amber" | "red" = "blue";
 
-    setResult({ dueDate: dueDate.toLocaleDateString("tr-TR"), weeks, daysLeft, trimester, trimesterColor });
+    if (weeks >= 14 && weeks < 28) { 
+       trimester = "2. Trimester"; 
+       trimesterColor = "#22c55e"; 
+       themeColor = "emerald";
+    }
+    else if (weeks >= 28) { 
+       trimester = "3. Trimester"; 
+       trimesterColor = "#f59e0b"; 
+       themeColor = "amber";
+    }
+
+    setResult({ dueDate: dueDate.toLocaleDateString("tr-TR"), weeks, daysLeft, trimester, trimesterColor, themeColor });
   };
 
   const reset = () => {
@@ -36,57 +48,61 @@ export function PregnancyCalculator() {
   useEffect(() => { calculate(); }, [lastPeriod]);
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-input-group">
-        <label className="calc-label">Son Adet Tarihiniz (SAT)</label>
-        <input type="date" value={lastPeriod} onChange={e => setLastPeriod(e.target.value)} className="calc-input" />
-      </div>
+    <V2CalculatorWrapper
+      title="GEBELİK TAKİP ANALİZİ"
+      icon="🤰"
+      infoText="Tahmini doğum tarihi, son adet baş tarihinden 280 gün (40 hafta) sonrasına karşılık gelir. Gebelik süreci kişiden kişiye farklılık gösterebilir, detaylar için doktorunuza başvurunuz."
+      results={result && (
+        <div className="space-y-8">
+          <V2ResultCard
+            color={result.themeColor}
+            icon="👶"
+            label="TAHMİNİ DOĞUM TARİHİ"
+            value={result.dueDate}
+            subLabel={result.trimester}
+          />
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>🤰 Gebeliği Takip Et</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
+          <div className="grid grid-cols-2 gap-4">
+             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">GEÇEN SÜRE</div>
+                <div className="text-2xl font-black text-primary italic">{result.weeks} <span className="text-xs opacity-50">HAFTA</span></div>
+             </div>
+             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">KALAN SÜRE</div>
+                <div className="text-2xl font-black text-primary italic">{result.daysLeft} <span className="text-xs opacity-50">GÜN</span></div>
+             </div>
+          </div>
 
-      {result && (
-        <div className="calc-result-panel animate-result">
-          <div className="calc-result-header">🤰 Gebelik Takip Özeti</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Tahmini Doğum Tarihi</div>
-              <div className="calc-result-hero-value accent">{result.dueDate}</div>
-              <div className="calc-result-hero-sub" style={{ color: result.trimesterColor }}>{result.trimester}</div>
-            </div>
-
-            <div className="calc-result-cards">
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Haftalık İlerleme</div>
-                <div className="calc-result-card-value" style={{ color: result.trimesterColor }}>{result.weeks}</div>
-                <div className="calc-result-card-unit">Haftalık</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Kalan Süre</div>
-                <div className="calc-result-card-value">{result.daysLeft}</div>
-                <div className="calc-result-card-unit">Gün</div>
-              </div>
-            </div>
-
-            <div className="calc-result-section">
-              <div className="calc-result-row">
-                <span className="calc-result-row-label">Tamamlanma Oranı</span>
-                <span className="calc-result-row-value accent">%{Math.min(100, ((result.weeks / 40) * 100)).toFixed(0)}</span>
-              </div>
-              <div className="calc-scale-bar">
-                <div className="calc-scale-fill" style={{ width: `${Math.min(100, (result.weeks / 40) * 100)}%`, background: result.trimesterColor }} />
-              </div>
-            </div>
+          <div className="p-8 rounded-[2rem] bg-white/5 border border-white/5 space-y-4">
+             <div className="flex justify-between items-center text-[10px] font-black uppercase tracking-widest text-muted">
+                <span>Tamamlanma Oranı</span>
+                <span>%{Math.min(100, ((result.weeks / 40) * 100)).toFixed(0)}</span>
+             </div>
+             <div className="relative h-4 bg-white/5 rounded-full overflow-hidden">
+                <div 
+                   className="h-full transition-all duration-1000 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                   style={{ 
+                      width: `${Math.min(100, (result.weeks / 40) * 100)}%`, 
+                      background: result.trimesterColor 
+                   }}
+                />
+             </div>
           </div>
         </div>
       )}
+    >
+      <V2Input
+        label="SON ADET TARİHİNİZ (SAT)"
+        type="date"
+        value={lastPeriod}
+        onChange={setLastPeriod}
+      />
 
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">🏥</span>
-        <span className="calc-info-box-text">Tahmini doğum tarihi, son adet baş tarihinden 280 gün (40 hafta) sonrasına karşılık gelir. Gebelik süreci kişiden kişiye farklılık gösterebilir, detaylar için doktorunuza başvurunuz.</span>
-      </div>
-    </div>
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="🤰 Gebelik Takibini Başlat"
+      />
+    </V2CalculatorWrapper>
   );
 }

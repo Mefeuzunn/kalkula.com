@@ -1,8 +1,10 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
-import { Landmark, Download, RefreshCw, Share2 } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 type VatMode = "hariç" | "dahil";
 
@@ -49,184 +51,135 @@ export function VatCalculator() {
     const finalVat = vat - withheldVat;
     const grandTotal = base + finalVat;
 
-    setResults({ 
-      base, 
-      vat, 
-      total, 
-      withheldVat, 
-      finalVat, 
-      grandTotal 
-    });
+    setResults({ base, vat, total, withheldVat, finalVat, grandTotal });
 
     if (val > 0) {
-      confetti({
-        particleCount: 40,
-        spread: 60,
-        origin: { y: 0.8 },
-        colors: ["#3b82f6", "#10b981"]
-      });
+      confetti({ particleCount: 40, spread: 60, origin: { y: 0.8 }, colors: ["#3b82f6", "#10b981"] });
     }
   };
 
-  useEffect(() => {
-    calculate();
-  }, [amount, vatRate, mode, hasWithholding, withholdingRate]);
+  useEffect(() => { calculate(); }, [amount, vatRate, mode, hasWithholding, withholdingRate]);
 
   return (
-    <div className="flex flex-col gap-6 max-w-4xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Input Section */}
-        <div className="lg:col-span-12 flex flex-col gap-5">
-           <div className="panel p-6 bg-secondary/5 border-border rounded-[2rem] border-b-4 border-accent-primary/20">
-              <div className="flex flex-col lg:flex-row gap-6">
-                 {/* Mode Toggle */}
-                 <div className="flex bg-secondary/10 p-1.5 rounded-2xl gap-1 lg:w-1/3">
-                    <button 
-                       onClick={() => setMode("hariç")}
-                       className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${mode === "hariç" ? 'bg-surface text-accent-primary shadow-sm' : 'text-muted hover:text-primary'}`}
-                    >
-                       KDV HARİÇ
-                    </button>
-                    <button 
-                       onClick={() => setMode("dahil")}
-                       className={`flex-1 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${mode === "dahil" ? 'bg-surface text-accent-primary shadow-sm' : 'text-muted hover:text-primary'}`}
-                    >
-                       KDV DAHİL
-                    </button>
-                 </div>
+    <V2CalculatorWrapper
+      title="FATURA VERGİ ANALİZİ"
+      icon="🧾"
+      infoText="Bu hesaplama güncel vergi mevzuatına uygundur. Tevkifatlı işlemlerde satıcının beyan edeceği KDV tutarı 'Ödenecek KDV' kısmıdır."
+      results={results && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="blue"
+            icon="🏦"
+            label="GENEL TOPLAM (TAHSİLAT)"
+            value={`${results.grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺`}
+            subLabel="Beyan Edilecek Toplam Tutar"
+          />
 
-                 {/* Amount Input */}
-                 <div className="relative group flex-1">
-                    <label className="text-[10px] font-black text-muted uppercase tracking-widest mb-2 px-2 block italic">Tutar (TL)</label>
-                    <input 
-                       type="number" 
-                       value={amount} 
-                       onChange={(e) => setAmount(e.target.value)}
-                       placeholder="0,00"
-                       className="input-field !py-4 !text-3xl font-black border-4 border-border focus:border-accent-primary transition-all pr-12"
-                    />
-                    <span className="absolute right-6 top-[55%] font-black text-muted text-xl opacity-30 italic">₺</span>
+          <div className="p-8 rounded-[2rem] bg-white/5 border border-white/5 space-y-4">
+             <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest border-b border-white/5 pb-4">
+                <span className="text-muted">Matrah (KDV Hariç)</span>
+                <span className="text-primary">{results.base.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
+             </div>
+             <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest border-b border-white/5 pb-4">
+                <span className="text-muted">KDV Tutarı (%{vatRate})</span>
+                <span className="text-[#3b82f6]">{results.vat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
+             </div>
+             {hasWithholding && (
+               <>
+                 <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest border-b border-white/5 pb-4 text-[#ef4444]">
+                    <span>Tevkif Edilen KDV ({withholdingRate})</span>
+                    <span>-{results.withheldVat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
                  </div>
-              </div>
+                 <div className="flex justify-between items-center text-xs font-bold uppercase tracking-widest border-b border-white/5 pb-4 text-[#10b981]">
+                    <span>Ödenecek KDV</span>
+                    <span>{results.finalVat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
+                 </div>
+               </>
+             )}
+             <div className="flex justify-between items-center text-sm font-black uppercase tracking-[0.2em] pt-2">
+                <span className="text-muted">Genel Toplam</span>
+                <span className="text-primary">{results.grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</span>
+             </div>
+          </div>
+        </div>
+      )}
+    >
+      <div className="flex bg-white/5 p-1.5 rounded-2xl gap-1">
+        <button 
+          onClick={() => setMode("hariç")}
+          className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${mode === "hariç" ? 'bg-white text-slate-900 shadow-xl scale-105' : 'text-muted hover:text-primary'}`}
+        >
+          KDV HARİÇTEN HESAPLA
+        </button>
+        <button 
+          onClick={() => setMode("dahil")}
+          className={`flex-1 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${mode === "dahil" ? 'bg-white text-slate-900 shadow-xl scale-105' : 'text-muted hover:text-primary'}`}
+        >
+          KDV DAHİLDEN HESAPLA
+        </button>
+      </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-                 {/* VAT Rates */}
-                 <div className="flex flex-col gap-2">
-                    <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 block italic">KDV Oranı (%)</label>
-                    <div className="flex gap-2">
-                       {["1", "10", "20"].map((r) => (
-                          <button 
-                             key={r}
-                             onClick={() => setVatRate(r)}
-                             className={`flex-1 py-3 rounded-xl text-sm font-black transition-all border-2 ${vatRate === r ? 'bg-accent-primary text-white border-accent-primary shadow-lg' : 'bg-surface border-border text-muted hover:border-accent-primary/30'}`}
-                          >
-                             %{r}
-                          </button>
-                       ))}
-                       <div className="relative w-24">
-                          <input 
-                             type="number" 
-                             value={!["1", "10", "20"].includes(vatRate) ? vatRate : ""} 
-                             onChange={(e) => setVatRate(e.target.value)}
-                             placeholder="Özel"
-                             className="input-field !py-3 !text-center font-bold text-sm border-2 border-border"
-                          />
-                       </div>
-                    </div>
-                 </div>
+      <V2Input
+        label={mode === "hariç" ? "KDV HARİÇ TUTAR" : "KDV DAHİL TUTAR"}
+        value={amount}
+        onChange={setAmount}
+        unit="₺"
+        placeholder="0,00"
+      />
 
-                 {/* Withholding Toggle */}
-                 <div className={`p-4 rounded-3xl border-2 transition-all ${hasWithholding ? 'bg-orange-500/5 border-orange-500/20' : 'bg-secondary/5 border-border'}`}>
-                    <div className="flex items-center justify-between mb-4">
-                       <div className="flex flex-col">
-                          <span className="text-[10px] font-black text-primary uppercase tracking-widest italic">KDV Tevkifatı</span>
-                          <span className="text-[9px] text-muted font-bold">Kesinti Uygulayılsın Mı?</span>
-                       </div>
-                       <label className="relative inline-flex items-center cursor-pointer">
-                          <input type="checkbox" checked={hasWithholding} onChange={(e) => setHasWithholding(e.target.checked)} className="sr-only peer" />
-                          <div className="w-11 h-6 bg-border peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-500"></div>
-                       </label>
-                    </div>
-                    {hasWithholding && (
-                       <select 
-                          value={withholdingRate} 
-                          onChange={(e) => setWithholdingRate(e.target.value)}
-                          className="input-field !py-2 !text-sm font-bold bg-white dark:bg-zinc-800"
-                       >
-                          {["1/10", "2/10", "3/10", "4/10", "5/10", "7/10", "9/10", "10/10"].map(r => (
-                             <option key={r} value={r}>{r} Tevkifat Oranı</option>
-                          ))}
-                       </select>
-                    )}
-                 </div>
-              </div>
-           </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="space-y-2">
+          <label className="calc-input-label">KDV ORANI (%)</label>
+          <div className="flex gap-2">
+             {["1", "10", "20"].map((r) => (
+                <button 
+                   key={r}
+                   onClick={() => setVatRate(r)}
+                   className={`flex-1 py-4 rounded-xl text-lg font-black transition-all border-b-4 ${vatRate === r ? 'bg-[#3b82f6] text-white border-blue-800' : 'bg-white/5 border-white/5 text-muted'}`}
+                >
+                   %{r}
+                </button>
+             ))}
+             <input 
+                type="number" 
+                value={!["1", "10", "20"].includes(vatRate) ? vatRate : ""} 
+                onChange={(e) => setVatRate(e.target.value)}
+                placeholder="Özel"
+                className="w-20 bg-white/5 rounded-xl border border-white/10 text-center font-bold"
+             />
+          </div>
         </div>
 
-        {/* Results Section */}
-        <div className="lg:col-span-12 flex flex-col gap-4">
-           {results ? (
-              <div className="result-container-premium animate-result">
-                 <div className="result-card-premium">
-                    <div className="result-badge">
-                       <Landmark size={14} className="mr-2" /> VERGİ ANALİZİ TAMAMLANDI
-                    </div>
-                    
-                    <div className="result-label-premium text-center">Genel Toplam (Tahsilat Tutarınız)</div>
-                    <div className="result-value-premium tracking-tighter">
-                       {results.grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺
-                    </div>
-
-                    <div className="max-w-2xl mx-auto">
-                       <table className="result-table-premium">
-                          <tbody>
-                             <tr>
-                                <td>MATRAH (KDV HARİÇ TUTAR)</td>
-                                <td>{results.base.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
-                             </tr>
-                             <tr className="row-accent">
-                                <td>KDV TUTARI (%{vatRate})</td>
-                                <td>{results.vat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
-                             </tr>
-                             {hasWithholding && (
-                                <>
-                                   <tr className="row-danger">
-                                      <td>TEVKİF EDİLEN KDV ({withholdingRate})</td>
-                                      <td>-{results.withheldVat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
-                                   </tr>
-                                   <tr className="row-success">
-                                      <td>BEYAN EDİLECEK (ÖDENECEK) KDV</td>
-                                      <td>{results.finalVat.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
-                                   </tr>
-                                </>
-                             )}
-                             <tr className="row-total">
-                                <td>ÖDENECEK TOPLAM TUTAR</td>
-                                <td>{results.grandTotal.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ₺</td>
-                             </tr>
-                          </tbody>
-                       </table>
-                    </div>
-
-                    <div className="result-footer-premium">
-                       <button className="btn-secondary !py-2 !px-4 text-[10px]"><Download size={14} /> PDF</button>
-                       <button className="btn-secondary !py-2 !px-4 text-[10px]" onClick={() => setAmount("")}><RefreshCw size={14} /> SIFIRLA</button>
-                       <button className="btn-primary !py-2 !px-4 text-[10px]"><Share2 size={14} /> PAYLAŞ</button>
-                    </div>
-
-                    <div className="mt-8 p-6 bg-blue-500/5 rounded-2xl border border-blue-500/10 text-[10px] text-blue-600 dark:text-blue-300 italic text-center leading-relaxed">
-                       💡 Bu hesaplama güncel vergi mevzuatına uygundur. Tevkifatlı işlemlerde satıcının beyan edeceği KDV tutarı "Ödenecek KDV" kısmıdır.
-                    </div>
-                 </div>
-              </div>
-           ) : (
-              <div className="panel flex flex-col items-center justify-center p-20 bg-secondary/5 rounded-[3rem] border-dashed border-4 border-border/40 text-center grayscale opacity-40">
-                 <div className="text-6xl mb-6">🧾</div>
-                 <h4 className="text-xs font-black text-muted uppercase tracking-[0.2em] italic">FATURA ANALİZİ İÇİN<br/> TUTAR GİRİNİZ</h4>
-              </div>
-           )}
+        <div className={`p-5 rounded-3xl border-2 transition-all ${hasWithholding ? 'bg-amber-500/10 border-amber-500/20' : 'bg-white/5 border-white/5'}`}>
+          <div className="flex items-center justify-between mb-4">
+             <div className="flex flex-col">
+                <span className="text-[10px] font-black text-primary uppercase tracking-widest italic">KDV Tevkifatı</span>
+                <span className="text-[9px] text-muted font-bold">Uygulansın Mı?</span>
+             </div>
+             <label className="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" checked={hasWithholding} onChange={(e) => setHasWithholding(e.target.checked)} className="sr-only peer" />
+                <div className="w-11 h-6 bg-white/10 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+             </label>
+          </div>
+          {hasWithholding && (
+             <V2Select
+                label=""
+                value={withholdingRate}
+                onChange={setWithholdingRate}
+             >
+                {["1/10", "2/10", "3/10", "4/10", "5/10", "7/10", "9/10", "10/10"].map(r => (
+                   <option key={r} value={r} className="bg-slate-900">{r} Oranında Tevkifat</option>
+                ))}
+             </V2Select>
+          )}
         </div>
       </div>
-    </div>
+
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={() => { setAmount(""); setVatRate("20"); setHasWithholding(false); }}
+        calculateLabel="🧾 KDV Analizini Başlat"
+      />
+    </V2CalculatorWrapper>
   );
 }

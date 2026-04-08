@@ -2,6 +2,11 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import confetti from "canvas-confetti";
+import { Rocket, Info, RotateCcw, Activity, Play, Gauge, Ruler, Clock, Zap, Target } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
 
 export function PhysicsVisualizers() {
   const [velocity, setVelocity] = useState(50);
@@ -33,7 +38,7 @@ export function PhysicsVisualizers() {
 
   const drawTrajectory = (ctx: CanvasRenderingContext2D, t: number) => {
     const rad = (angle * Math.PI) / 180;
-    const scale = 5; // Scaling for visualization
+    const scale = 5; 
     
     const x = velocity * Math.cos(rad) * t * scale;
     const y = (velocity * Math.sin(rad) * t - 0.5 * gravity * t * t) * scale;
@@ -41,8 +46,14 @@ export function PhysicsVisualizers() {
     ctx.beginPath();
     ctx.arc(50 + x, 350 - y, 6, 0, Math.PI * 2);
     ctx.fillStyle = "#3b82f6";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "rgba(59, 130, 246, 0.5)";
     ctx.fill();
+    ctx.strokeStyle = "white";
+    ctx.lineWidth = 2;
+    ctx.stroke();
     ctx.closePath();
+    ctx.shadowBlur = 0;
   };
 
   const startSimulation = () => {
@@ -63,7 +74,8 @@ export function PhysicsVisualizers() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       
       // Draw Ground
-      ctx.strokeStyle = "#e2e8f0";
+      ctx.strokeStyle = "rgba(255, 255, 255, 0.1)";
+      ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(0, 350);
       ctx.lineTo(canvas.width, 350);
@@ -108,71 +120,164 @@ export function PhysicsVisualizers() {
     };
   }, [velocity, angle, gravity]);
 
+  const reset = () => {
+    setVelocity(50);
+    setAngle(45);
+    setGravity(9.8);
+    setIsAnimating(false);
+    confetti({ particleCount: 30, spread: 20, origin: { y: 0.8 }, colors: ["#3b82f6"] });
+    if (animationRef.current) cancelAnimationFrame(animationRef.current);
+    const canvas = canvasRef.current;
+    if (canvas) {
+       const ctx = canvas.getContext("2d");
+       if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+  };
+
   return (
-    <div className="flex flex-col gap-8 max-w-6xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Controls */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
-           <div className="panel p-8 bg-secondary/5 border-border rounded-[2.5rem] border-b-8 border-blue-500/20 flex flex-col gap-6">
-              <div className="flex flex-col gap-2">
-                 <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 italic font-mono">İlk Hız (v₀): {velocity} m/s</label>
-                 <input type="range" min="10" max="100" value={velocity} onChange={e => setVelocity(parseInt(e.target.value))} className="w-full accent-blue-600 cursor-pointer h-2 bg-secondary/20 rounded-lg appearance-none"/>
+    <V2CalculatorWrapper
+      title="EĞİK ATIŞ SİMÜLATÖRÜ"
+      icon="🚀"
+      infoText="Hız, açı ve yerçekimi parametrelerini ayarlayarak mermi yolunu görselleştirin. Menzil, maksimum yükseklik ve uçuş süresini anlık analiz edin."
+      results={stats && (
+        <div className="space-y-6 animate-result">
+           <div className="p-4 rounded-[2.5rem] bg-black/40 border border-white/10 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-4 left-6 flex flex-col gap-0 z-10">
+                 <div className="text-[10px] font-black text-blue-500 uppercase tracking-[0.3em] italic">YÖRÜNGE ANALİZİ</div>
+                 <div className="text-[8px] text-muted uppercase font-bold tracking-widest opacity-50">V2.0 HIGH-FIDELITY PROJECTILE</div>
               </div>
-
-              <div className="flex flex-col gap-2">
-                 <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 italic font-mono">Fırlatma Açısı (θ): {angle}°</label>
-                 <input type="range" min="1" max="89" value={angle} onChange={e => setAngle(parseInt(e.target.value))} className="w-full accent-blue-600 cursor-pointer h-2 bg-secondary/20 rounded-lg appearance-none"/>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                 <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 italic font-mono">Yerçekimi (g): {gravity} m/s²</label>
-                 <input type="range" min="1" max="25" step="0.1" value={gravity} onChange={e => setGravity(parseFloat(e.target.value))} className="w-full accent-blue-600 cursor-pointer h-2 bg-secondary/20 rounded-lg appearance-none"/>
-              </div>
-
-              <button 
-                 onClick={startSimulation}
-                 disabled={isAnimating}
-                 className={`w-full py-5 rounded-[2rem] text-[10px] font-black uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3 ${isAnimating ? 'bg-secondary/40 text-muted opacity-50' : 'bg-primary text-surface hover:scale-[1.02] shadow-xl hover:shadow-blue-500/20'}`}
-              >
-                 <span className="text-xl">🚀</span> {isAnimating ? 'SİMÜLASYON SÜRÜYOR' : 'SİMÜLASYONU BAŞLAT'}
-              </button>
-           </div>
-        </div>
-
-        {/* Visualizer & Stats */}
-        <div className="lg:col-span-8 flex flex-col gap-4 h-full">
-           <div className="panel p-6 bg-surface border-4 border-primary/5 rounded-[3rem] shadow-2xl relative overflow-hidden min-h-[450px]">
-              <div className="absolute top-6 left-10 flex flex-col gap-1 z-10">
-                 <h3 className="text-xl font-black italic tracking-tighter text-primary uppercase">Eğik Atış Simülatörü</h3>
-                 <p className="text-[9px] font-bold text-muted uppercase tracking-[0.2em]">Kinetik Yörünge Analizi v2.0</p>
-              </div>
-
               <canvas 
                  ref={canvasRef} 
                  width={800} 
                  height={400} 
-                 className="w-full h-auto mt-10 rounded-2xl cursor-crosshair"
+                 className="w-full h-auto mt-6 rounded-2xl cursor-crosshair bg-white/[0.02]"
               />
+           </div>
 
-              {stats && (
-                 <div className="grid grid-cols-3 gap-6 mt-8 border-t border-border pt-8 px-6">
-                    <div className="flex flex-col">
-                       <span className="text-[9px] font-black text-muted uppercase italic tracking-widest mb-1">Menzil (X)</span>
-                       <span className="text-xl font-black text-blue-600 tracking-tighter">{stats.range.toLocaleString('tr-TR', { maximumFractionDigits: 1 })} m</span>
-                    </div>
-                    <div className="flex flex-col border-l border-border px-6">
-                       <span className="text-[9px] font-black text-muted uppercase italic tracking-widest mb-1">Maks. Yükseklik (H)</span>
-                       <span className="text-xl font-black text-blue-600 tracking-tighter">{stats.maxHeight.toLocaleString('tr-TR', { maximumFractionDigits: 1 })} m</span>
-                    </div>
-                    <div className="flex flex-col border-l border-border px-6">
-                       <span className="text-[9px] font-black text-muted uppercase italic tracking-widest mb-1">Uçuş Süresi (t)</span>
-                       <span className="text-xl font-black text-blue-600 tracking-tighter">{stats.time.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} s</span>
-                    </div>
-                 </div>
-              )}
+           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <V2ResultCard 
+                color="blue" 
+                label="MENZİL (X)" 
+                value={stats.range.toLocaleString('tr-TR', { maximumFractionDigits: 1 })} 
+                unit="Metre"
+                icon="📏"
+                subLabel="Yatayda Katedilen Yol"
+              />
+              <V2ResultCard 
+                color="emerald" 
+                label="MAKS. YÜKSEKLİK (H)" 
+                value={stats.maxHeight.toLocaleString('tr-TR', { maximumFractionDigits: 1 })} 
+                unit="Metre"
+                icon="🏔️"
+                subLabel="Dikeyde En Tepe Nokta"
+              />
+              <V2ResultCard 
+                color="purple" 
+                label="UÇUŞ SÜRESİ (T)" 
+                value={stats.time.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} 
+                unit="Saniye"
+                icon="⏱️"
+                subLabel="Havadaki Toplam Zaman"
+              />
            </div>
         </div>
+      )}
+    >
+      <div className="space-y-8">
+        <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/5 space-y-10">
+           <div className="space-y-6">
+              <div className="flex flex-col gap-4 p-6 rounded-3xl bg-white/5 border border-white/5">
+                 <div className="flex justify-between items-center px-2">
+                    <div className="flex items-center gap-2">
+                       <Zap className="w-4 h-4 text-blue-500" />
+                       <span className="text-[10px] font-black text-muted uppercase tracking-widest">İLK HIZ (V₀)</span>
+                    </div>
+                    <span className="text-sm font-black italic text-blue-500">{velocity} m/s</span>
+                 </div>
+                 <input 
+                   type="range" min="10" max="100" value={velocity} 
+                   onChange={e => setVelocity(parseInt(e.target.value))} 
+                   className="w-full accent-blue-600 cursor-pointer h-1.5 bg-white/10 rounded-lg appearance-none"
+                 />
+              </div>
+
+              <div className="flex flex-col gap-4 p-6 rounded-3xl bg-white/5 border border-white/5">
+                 <div className="flex justify-between items-center px-2">
+                    <div className="flex items-center gap-2">
+                       <Target className="w-4 h-4 text-emerald-500" />
+                       <span className="text-[10px] font-black text-muted uppercase tracking-widest">FIRLATMA AÇISI (Θ)</span>
+                    </div>
+                    <span className="text-sm font-black italic text-emerald-500">{angle}°</span>
+                 </div>
+                 <input 
+                   type="range" min="1" max="89" value={angle} 
+                   onChange={e => setAngle(parseInt(e.target.value))} 
+                   className="w-full accent-emerald-600 cursor-pointer h-1.5 bg-white/10 rounded-lg appearance-none"
+                 />
+              </div>
+
+              <div className="flex flex-col gap-4 p-6 rounded-3xl bg-white/5 border border-white/5">
+                 <div className="flex justify-between items-center px-2">
+                    <div className="flex items-center gap-2">
+                       <Activity className="w-4 h-4 text-purple-500" />
+                       <span className="text-[10px] font-black text-muted uppercase tracking-widest">YERÇEKİMİ (G)</span>
+                    </div>
+                    <span className="text-sm font-black italic text-purple-500">{gravity} m/s²</span>
+                 </div>
+                 <input 
+                   type="range" min="1" max="25" step="0.1" value={gravity} 
+                   onChange={e => setGravity(parseFloat(e.target.value))} 
+                   className="w-full accent-purple-600 cursor-pointer h-1.5 bg-white/10 rounded-lg appearance-none"
+                 />
+              </div>
+           </div>
+
+           <div className="flex flex-col gap-4">
+              <button 
+                onClick={startSimulation}
+                disabled={isAnimating}
+                className={`w-full py-6 rounded-3xl font-black italic flex items-center justify-center gap-3 transition-all active:scale-95 shadow-2xl ${
+                  isAnimating 
+                  ? "bg-white/5 text-muted border border-white/10 opacity-50 cursor-not-allowed" 
+                  : "bg-blue-600 text-white border-b-4 border-blue-800 hover:bg-blue-500 shadow-blue-500/20"
+                }`}
+              >
+                 {isAnimating ? <RotateCcw className="w-5 h-5 animate-spin" /> : <Play className="w-5 h-5 fill-current" />}
+                 {isAnimating ? "SİMÜLASYON YÜRÜTÜLÜYOR..." : "SİMÜLASYONU BAŞLAT"}
+              </button>
+              
+              <V2ActionRow onCalculate={() => {}} onReset={reset} isCalculateDisabled={true} showCalculate={false} />
+           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-blue-500/10 text-blue-500">
+                 <Target className="w-5 h-5" />
+              </div>
+              <div>
+                 <div className="text-[10px] font-black text-blue-500 uppercase italic">BALİSTİK</div>
+                 <div className="text-[10px] text-muted font-bold opacity-60">Hassas koordinat takibi</div>
+              </div>
+           </div>
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-500">
+                 <Activity className="w-5 h-5" />
+              </div>
+              <div>
+                 <div className="text-[10px] font-black text-emerald-500 uppercase italic">KİNETİK</div>
+                 <div className="text-[10px] text-muted font-bold opacity-60">Anlık enerji transferi</div>
+              </div>
+           </div>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex items-start gap-4">
+           <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+           <p className="text-[10px] text-muted leading-relaxed italic">
+              <b>Fizik Notu:</b> Eğik atış, yerçekimi ivmesi altında gerçekleşen iki boyutlu bir harekettir. Bu simülatörde hava sürtünmesi (drag) ihmal edilmiştir ve cisim noktasal kabul edilmiştir.
+           </p>
+        </div>
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

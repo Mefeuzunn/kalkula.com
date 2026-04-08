@@ -1,6 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Info, Award, Star, GraduationCap, Calculator, Target } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function HighSchoolGraduationCalculator() {
   const [ybpList, setYbpList] = useState<string[]>(["", "", "", ""]);
@@ -14,6 +20,9 @@ export function HighSchoolGraduationCalculator() {
       const obp = graduationScore * 5;
       
       setResult({ graduationScore, obp });
+      if (graduationScore >= 70) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    } else {
+      setResult(null);
     }
   };
 
@@ -23,44 +32,73 @@ export function HighSchoolGraduationCalculator() {
     setYbpList(n);
   };
 
+  const reset = () => {
+    setYbpList(["", "", "", ""]);
+    setResult(null);
+  };
+
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-      <p style={{ color: "var(--text-muted)", fontSize: "0.9rem" }}>Lise öğrenimi boyunca aldığınız tüm yıl sonu başarı puanlarının (YBP) size üniversite sınavında (YKS) getireceği OBP (Ortaöğretim Başarı Puanı) değerini hesaplayın.</p>
-      
-      <div className="panel" style={{ padding: "1.5rem" }}>
-        {ybpList.map((ybp, idx) => (
-          <div key={idx} style={{ marginBottom: "1rem", display: "flex", alignItems: "center", gap: "1rem" }}>
-            <span style={{ fontWeight: 500, width: "120px", color: "var(--text-muted)" }}>{idx + 9}. Sınıf YBP:</span>
-            <input 
-              type="number" 
-              value={ybp} 
-              onChange={e => updateVal(idx, e.target.value)} 
-              className="input-field" 
-              placeholder="Örn: 85.50" 
-            />
+    <V2CalculatorWrapper
+      title="MEZUNİYET & OBP HESAPLA"
+      icon="📜"
+      infoText="Lise öğrenimi boyunca aldığınız tüm yıl sonu başarı puanlarının (YBP) size üniversite sınavında (YKS) getireceği OBP değerini ve puan katkısını hesaplayın."
+      results={result && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <V2ResultCard
+               color="blue"
+               label="LİSE MEZUNİYET PUANI"
+               value={result.graduationScore.toFixed(2)}
+               subLabel="Diploma Notu"
+               icon="🎓"
+             />
+             <V2ResultCard
+               color="emerald"
+               label="YKS OBP DEĞERİ"
+               value={result.obp.toFixed(2)}
+               subLabel="Başarı Puanı"
+               icon="🏆"
+             />
           </div>
-        ))}
-      </div>
 
-      <button className="btn-primary" onClick={calculate} style={{ marginTop: "1rem" }}>Diploma ve OBP Hesapla</button>
-
-      {result && (
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "2rem" }}>
-          <div className="panel" style={{ padding: "1.5rem", textAlign: "center" }}>
-            <h3 style={{ fontSize: "1.1rem", color: "var(--text-secondary)", marginBottom: "0.5rem" }}>Lise Mezuniyet Puanınız</h3>
-            <div style={{ fontSize: "2.5rem", fontWeight: "bold", color: "var(--text-primary)" }}>
-               {result.graduationScore.toFixed(2)}
-            </div>
-          </div>
-          <div className="panel" style={{ padding: "1.5rem", textAlign: "center", borderTop: "4px solid var(--accent-primary)" }}>
-            <h3 style={{ fontSize: "1.1rem", color: "var(--accent-primary)", marginBottom: "0.5rem" }}>OBP (YKS Katkısı)</h3>
-            <div style={{ fontSize: "2.5rem", fontWeight: "bold", color: "var(--accent-primary)" }}>
-               {result.obp.toFixed(2)}
-            </div>
-            <p style={{ fontSize: "0.80rem", color: "var(--text-muted)", marginTop: "0.5rem"}}>* Bu değerin 0.12 ile çarpımı ham puanınıza eklenecektir.</p>
+          <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex gap-4 items-center">
+             <div className="p-3 rounded-2xl bg-primary/10 text-primary">
+                <Target className="w-5 h-5" />
+             </div>
+             <div>
+                <div className="text-[10px] font-black text-muted uppercase tracking-widest italic mb-1">PUAN KATKISI</div>
+                <p className="text-[12px] text-white font-black italic">
+                   YKS Puanınıza: <span className="text-emerald-500">+{(result.obp * 0.12).toFixed(2)}</span> Puan Eklenecek
+                </p>
+                <p className="text-[10px] text-muted italic mt-1 leading-tight">
+                  Bu değer, OBP'nizin 0,12 katsayısı ile çarpımı sonucu ham puanınıza eklenen yerleştirme puanıdır.
+                </p>
+             </div>
           </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           {["9. SINIF", "10. SINIF", "11. SINIF", "12. SINIF"].map((label, idx) => (
+             <V2Input 
+               key={idx}
+               label={label} 
+               value={ybpList[idx]} 
+               onChange={val => updateVal(idx, val)} 
+               unit="P" 
+               placeholder="Örn: 85.50" 
+               max="100" 
+             />
+           ))}
+        </div>
+
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="📊 Diploma ve OBP Hesapla"
+        />
+      </div>
+    </V2CalculatorWrapper>
   );
 }

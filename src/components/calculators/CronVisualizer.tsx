@@ -1,7 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Clock, Calendar, Check, Info, AlertCircle, RefreshCw, Layers } from "lucide-react";
+import confetti from "canvas-confetti";
+import { Clock, Calendar, Check, Info, AlertCircle, RefreshCw, Layers, Zap, Terminal, Code, Sparkles, HelpCircle } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function CronVisualizer() {
   const [cron, setCron] = useState("0 0 * * 1");
@@ -24,10 +29,11 @@ export function CronVisualizer() {
     if (month !== "*") text += `${month}. ayda `;
     
     // Day of Week
-    const days = ["Pazar", "Pazartesi", "Salı", "Çarsamba", "Perşembe", "Cuma", "Cumartesi"];
+    const days = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
     if (dow !== "*") {
       const d = parseInt(dow);
       if (days[d]) text += `${days[d]} günü `;
+      else text += `haftanın ${dow}. günü `;
     }
 
     // Day of Month
@@ -53,7 +59,7 @@ export function CronVisualizer() {
       setDescription(desc);
       setError("");
       
-      // Simulate next dates (Static example for UX)
+      // Simulate next dates for visualization
       setNextDates([
         "Bugün, 09:00",
         "Gelecek hafta Pazartesi, 09:00",
@@ -72,105 +78,117 @@ export function CronVisualizer() {
     { label: "Ayın 1. Günü", val: "0 0 1 * *" },
   ];
 
+  const handlePreset = (val: string) => {
+    setCron(val);
+    confetti({ particleCount: 50, spread: 30, origin: { y: 0.8 }, colors: ["#3b82f6"] });
+  };
+
   return (
-    <div className="calc-wrapper animate-fade-in max-w-5xl mx-auto">
-      <div className="flex items-center gap-4 mb-8">
-        <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-600">
-          <Clock size={24} />
-        </div>
-        <div>
-          <h1 className="text-2xl font-black">Cron Expression Visualizer</h1>
-          <p className="text-muted text-sm uppercase tracking-widest font-bold">Zamanlanmış Görev Çözümleyici</p>
-        </div>
-      </div>
+    <V2CalculatorWrapper
+      title="CRON VISUALIZER"
+      icon="⏰"
+      infoText="Karmaşık Cron ifadelerini saniyeler içinde insan diline çevirin ve zamanlanmış görevlerinizi (crontab) profesyonelce yönetin."
+      results={(description || error) && (
+        <div className="space-y-6">
+          {error ? (
+            <div className="p-8 rounded-3xl bg-red-500/5 border border-red-500/20 text-center space-y-4">
+               <AlertCircle className="w-12 h-12 text-red-500 mx-auto" />
+               <div className="text-[10px] font-black text-red-500 uppercase tracking-widest italic">{error}</div>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <V2ResultCard
+                color="blue"
+                label="İNSAN DİLİNDE KARŞILIĞI"
+                value={`“${description}”`}
+                subLabel="Sözdizimi Başarıyla Çözüldü"
+                icon="💬"
+                className="italic"
+              />
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Input & Presets */}
-        <div className="lg:col-span-5 space-y-6">
-          <div className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-xl">
-             <div className="space-y-6">
-                <div className="space-y-4">
-                   <label className="text-xs font-black text-muted uppercase tracking-widest ml-1 flex items-center gap-2">
-                      <Layers size={14} className="text-blue-500" /> CRONTAB İFADESİ
-                   </label>
-                   <input 
-                     type="text" 
-                     value={cron}
-                     onChange={(e) => setCron(e.target.value)}
-                     className="input-field w-full !text-2xl font-mono text-center tracking-widest focus:ring-4 focus:ring-blue-500/10 transition-all py-6"
-                     placeholder="* * * * *"
-                   />
-                </div>
-
-                <div className="space-y-3">
-                   <p className="text-[10px] font-black text-muted uppercase tracking-tighter">HIZLI ŞABLONLAR</p>
-                   <div className="grid grid-cols-2 gap-2">
-                      {presets.map(p => (
-                         <button 
-                            key={p.val}
-                            onClick={() => setCron(p.val)}
-                            className="p-3 bg-secondary/10 border border-border rounded-xl text-[10px] font-bold text-muted hover:bg-blue-500 hover:text-white hover:border-blue-500 transition-all"
-                         >
-                            {p.label}
-                         </button>
-                      ))}
-                   </div>
-                </div>
-             </div>
-          </div>
-        </div>
-
-        {/* Translation & Preview */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
-           {error ? (
-              <div className="bg-red-500/10 border border-red-500/20 p-8 rounded-[2.5rem] text-center flex flex-col items-center justify-center gap-4 text-red-600 h-full">
-                 <AlertCircle size={48} />
-                 <p className="font-black text-sm uppercase tracking-widest">{error}</p>
-              </div>
-           ) : (
-              <div className="space-y-6 flex flex-col h-full">
-                 {/* Human Readable Translation */}
-                 <div className="bg-blue-600 p-8 rounded-[2.5rem] shadow-xl text-white relative overflow-hidden group">
-                    <div className="absolute -right-8 -bottom-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                       <Clock size={200} />
-                    </div>
-                    <p className="text-[10px] font-black opacity-80 uppercase tracking-widest mb-2">İNSAN DİLİNDE KARŞILIĞI</p>
-                    <h3 className="text-3xl font-black leading-tight italic">
-                       “{description}”
-                    </h3>
-                    <div className="mt-8 flex items-center gap-3 bg-white/10 p-3 rounded-2xl w-fit backdrop-blur-sm">
-                       <Check size={16} />
-                       <span className="text-[10px] font-black uppercase tracking-widest">Sözdizimi Geçerli</span>
-                    </div>
+              <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+                 <div className="flex items-center gap-2 text-[10px] font-black text-muted uppercase tracking-[0.2em] italic">
+                    <RefreshCw className="w-4 h-4 text-blue-500" /> Tahmini Gelecek Çalışma Tarihleri
                  </div>
-
-                 {/* Next Runs Illustration */}
-                 <div className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-xl flex-grow">
-                    <h4 className="text-xs font-black text-muted uppercase tracking-widest mb-6 flex items-center gap-2">
-                       <RefreshCw size={14} className="text-blue-500" /> Tahmini Gelecek Çalışma Tarihleri
-                    </h4>
-                    <div className="space-y-3">
-                       {nextDates.map((date, idx) => (
-                          <div key={idx} className="flex items-center gap-4 p-4 bg-secondary/10 rounded-2xl border border-border/40 hover:bg-secondary/20 transition-all cursor-default">
-                             <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-600 flex items-center justify-center font-black text-[10px]">
-                                {idx + 1}
-                             </div>
-                             <span className="text-sm font-bold text-primary">{date}</span>
+                 <div className="space-y-3">
+                    {nextDates.map((date, idx) => (
+                       <div key={idx} className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 hover:bg-blue-600/5 transition-all group">
+                          <div className="w-8 h-8 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-black text-[10px] group-hover:scale-110 transition-transform">
+                             {idx + 1}
                           </div>
-                       ))}
-                    </div>
+                          <span className="text-xs font-bold text-primary italic opacity-70">{date}</span>
+                       </div>
+                    ))}
                  </div>
               </div>
-           )}
+            </div>
+          )}
+        </div>
+      )}
+    >
+      <div className="space-y-8">
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+           <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-blue-500" /> CRONTAB İFADESİ
+           </div>
+           
+           <div className="relative group">
+              <input 
+                type="text" 
+                value={cron}
+                onChange={(e) => setCron(e.target.value)}
+                className="w-full p-8 rounded-2xl bg-white/5 border-2 border-white/10 text-primary font-mono text-3xl font-black text-center tracking-widest focus:outline-none focus:border-blue-500/50 transition-all placeholder:text-muted/20"
+                placeholder="* * * * *"
+              />
+              <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none opacity-20 group-focus-within:opacity-50 transition-opacity">
+                 <Code className="w-8 h-8 text-blue-500" />
+              </div>
+           </div>
+
+           <div className="space-y-3">
+              <div className="text-[10px] font-black text-muted uppercase tracking-tighter opacity-40 ml-1 italic">HIZLI ŞABLONLAR</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                 {presets.map(p => (
+                    <button 
+                       key={p.val}
+                       onClick={() => handlePreset(p.val)}
+                       className="p-4 rounded-2xl bg-white/5 border border-white/5 text-[10px] font-black text-muted italic hover:bg-blue-600/10 hover:text-blue-500 hover:border-blue-500/30 transition-all"
+                    >
+                       {p.label}
+                    </button>
+                 ))}
+              </div>
+           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-blue-500/10 text-blue-500">
+                 <Zap className="w-5 h-5" />
+              </div>
+              <div>
+                 <div className="text-[10px] font-black text-blue-500 uppercase italic">GERÇEK ZAMANLI</div>
+                 <div className="text-[10px] text-muted font-bold opacity-60">Anında görselleştirme</div>
+              </div>
+           </div>
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-emerald-500/10 text-emerald-500">
+                 <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                 <div className="text-[10px] font-black text-emerald-500 uppercase italic">ANALİZ</div>
+                 <div className="text-[10px] text-muted font-bold opacity-60">Hata denetimi ve validasyon</div>
+              </div>
+           </div>
+        </div>
+
+        <div className="p-4 rounded-3xl bg-blue-600/5 border border-blue-600/10 flex gap-4 items-center">
+           <HelpCircle className="w-6 h-6 text-blue-500 shrink-0" />
+           <p className="text-[10px] text-muted italic leading-relaxed">
+             Dizilim sırası: <b>Dakika, Saat, Gün, Ay, Haftanın Günü</b>. `*` her birim anlamına gelirken, `0 0` her gece yarısını temsil eder.
+           </p>
         </div>
       </div>
-
-      <div className="calc-info-box mt-12">
-        <span className="calc-info-box-icon">💡</span>
-        <span className="calc-info-box-text text-muted">
-           <b>Kullanım Notu:</b> Cron ifadeleri soldan sağa doğru; <b>Dakika, Saat, Ayın Günü, Ay ve Haftanın Günü</b> sırasını takip eder. <code>*</code> işareti "her birim" anlamına gelirken, <code>*/5</code> gibi ifadeler "her 5 birimde bir" anlamına gelir.
-        </span>
-      </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

@@ -1,9 +1,16 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Info, Banknote, Percent, Calculator, TrendingUp, ArrowRight, CheckCircle, PieChart, ShieldCheck } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function IncomeTaxCalculator() {
-  const [brutto, setBrutto] = useState("70000"); // Aylık Brüt (2026 avg)
+  const [brutto, setBrutto] = useState("70000");
   const [period, setPeriod] = useState("aylik");
   const [year, setYear] = useState("2026");
   
@@ -24,112 +31,147 @@ export function IncomeTaxCalculator() {
     if (yearlyGross <= 0) { setResults(null); return; }
 
     const yearBrackets = TAX_DATA[year];
-    let totalTax = 0; let remaining = yearlyGross; let prevLimit = 0; const bracketDetails = [];
+    let totalTax = 0; 
+    let remaining = yearlyGross; 
+    let prevLimit = 0; 
+    const bracketDetails = [];
 
     for (const b of yearBrackets) {
       const taxableInRange = Math.min(remaining, b.limit - prevLimit);
       if (taxableInRange <= 0) break;
       const tax = taxableInRange * b.rate;
-      totalTax += tax; remaining -= taxableInRange;
-      bracketDetails.push({ rate: b.rate * 100, taxable: taxableInRange, tax: tax, range: `${prevLimit.toLocaleString()} - ${b.limit === Infinity ? '∞' : b.limit.toLocaleString()} TL` });
+      totalTax += tax; 
+      remaining -= taxableInRange;
+      bracketDetails.push({ 
+        rate: b.rate * 100, 
+        taxable: taxableInRange, 
+        tax: tax, 
+        range: `${prevLimit.toLocaleString()} - ${b.limit === Infinity ? '∞' : b.limit.toLocaleString()} TL` 
+      });
       prevLimit = b.limit;
     }
 
     const yearlyNet = yearlyGross - totalTax;
-    setResults({ yearlyGross, brackets: bracketDetails, totalTax, effectiveRate: (totalTax / yearlyGross) * 100, yearlyNet, avgMonthlyNet: yearlyNet / 12 });
+    setResults({ 
+      yearlyGross, 
+      brackets: bracketDetails, 
+      totalTax, 
+      effectiveRate: (totalTax / yearlyGross) * 100, 
+      yearlyNet, 
+      avgMonthlyNet: yearlyNet / 12 
+    });
+    
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   };
 
-  const reset = () => { setBrutto("70000"); setPeriod("aylik"); setYear("2026"); setResults(null); };
-
-  useEffect(() => { calculate(); }, [brutto, period, year]);
+  const reset = () => {
+    setBrutto("70000");
+    setPeriod("aylik");
+    setYear("2026");
+    setResults(null);
+  };
 
   const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 });
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-flex-row" style={{ gap: "1rem", flexWrap: "wrap" }}>
-        <div className="calc-input-group" style={{ flex: "2" }}>
-          <label className="calc-label">Brüt Gelir (₺)</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={brutto} onChange={e => setBrutto(e.target.value)} className="calc-input has-unit" placeholder="50000" min="0" />
-            <span className="calc-unit">₺</span>
+    <V2CalculatorWrapper
+      title="GELİR VERGİSİ HESAPLA"
+      icon="💰"
+      infoText="Gelir vergisi dilim usulü hesaplanır. Kümülatif matrah dilim sınırını aşan kısım için yüksek vergi ödenir. 2026 tebliğine uygundur."
+      results={results && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="emerald"
+            label="YILLIK NET KAZANCINIZ"
+            value={fmt(results.yearlyNet)}
+            subLabel={`Ortalama Aylık Net: ${fmt(results.avgMonthlyNet)}`}
+            icon="🏦"
+          />
+
+          <div className="grid grid-cols-2 gap-4">
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-center">
+                <div className="text-[10px] font-black text-muted uppercase mb-1">TOPLAM VERGİ</div>
+                <div className="text-xl font-black italic text-red-500">{fmt(results.totalTax)}</div>
+             </div>
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-center">
+                <div className="text-[10px] font-black text-muted uppercase mb-1">EFEKTİF ORAN</div>
+                <div className="text-xl font-black italic text-purple-500">%{results.effectiveRate.toFixed(1)}</div>
+             </div>
           </div>
-        </div>
-        <div className="calc-input-group" style={{ flex: "1" }}>
-          <label className="calc-label">Periyot</label>
-          <select value={period} onChange={e => setPeriod(e.target.value)} className="calc-select">
-            <option value="aylik">Aylık</option>
-            <option value="yillik">Yıllık</option>
-          </select>
-        </div>
-        <div className="calc-input-group" style={{ flex: "1" }}>
-          <label className="calc-label">Vergi Yılı</label>
-          <select value={year} onChange={e => setYear(e.target.value)} className="calc-select">
-            <option value="2026">2026 (Güncel)</option>
-            <option value="2025">2025 (Arşiv)</option>
-            <option value="2024">2024</option>
-          </select>
-        </div>
-      </div>
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>📉 Vergimi Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
-
-      {results && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">🏢 Gelir Vergisi Beyanname Projeksiyonu</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero" style={{ background: "linear-gradient(135deg, rgba(99,102,241,0.1), transparent)" }}>
-              <div className="calc-result-hero-label text-indigo-500">Yıllık Net Kazancınız</div>
-              <div className="calc-result-hero-value text-indigo-600" style={{ fontSize: "3rem" }}>{fmt(results.yearlyNet)}</div>
-              <div className="calc-result-hero-sub mt-2">Ortalama Aylık Net: {fmt(results.avgMonthlyNet)}</div>
-            </div>
-
-            <div className="calc-result-cards" style={{ gridTemplateColumns: "1fr 1fr" }}>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Brüt Gelir (Yıllık)</div>
-                <div className="calc-result-card-value text-primary">{fmt(results.yearlyGross)}</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Toplam Vergi Yükü</div>
-                <div className="calc-result-card-value text-red-500">{fmt(results.totalTax)}</div>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-                <span className="calc-result-row-label">Vergi Dilimi Dağılımı</span>
-                <span className="calc-result-row-value accent">Efektif: %{results.effectiveRate.toFixed(1)}</span>
-              </div>
-              <div className="calc-scale-bar" style={{ height: "12px", background: "var(--border)", display: "flex" }}>
+          <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/10 space-y-4">
+             <div className="flex justify-between items-center text-[10px] font-black italic text-muted uppercase tracking-widest">
+                VERGİ DİLİMİ DAĞILIMI
+             </div>
+             
+             <div className="h-3 w-full bg-white/5 rounded-full flex overflow-hidden border border-white/5">
                 {results.brackets.map((b, idx) => (
                   <div key={idx} style={{ 
                     width: `${(b.taxable / results.yearlyGross) * 100}%`, 
-                    background: idx === 0 ? '#818cf8' : idx === 1 ? '#6366f1' : idx === 2 ? '#4f46e5' : idx === 3 ? '#3730a3' : '#312e81',
-                    borderRight: "1px solid rgba(255,255,255,0.2)"
+                    background: idx === 0 ? '#10b981' : idx === 1 ? '#3b82f6' : idx === 2 ? '#8b5cf6' : idx === 3 ? '#f59e0b' : '#ef4444',
                   }} title={`%${b.rate} Dilim`} />
                 ))}
-              </div>
-            </div>
+             </div>
 
-            <div className="mt-4" style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-              {results.brackets.map((b, idx) => (
-                <div key={idx} style={{ display: "flex", justifyContent: "space-between", padding: "0.5rem", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "8px", fontSize: "0.8rem" }}>
-                   <div style={{ color: "var(--text-muted)" }}>%{b.rate} Dilimi (<span style={{ fontSize: "0.7rem", opacity: 0.7 }}>{b.range}</span>)</div>
-                   <div style={{ fontWeight: 700, color: "var(--text-primary)" }}>{fmt(b.tax)}</div>
-                </div>
-              ))}
-            </div>
+             <div className="space-y-2 max-h-[150px] overflow-y-auto custom-scrollbar pr-2">
+                {results.brackets.map((b, idx) => (
+                  <div key={idx} className="flex justify-between items-center p-3 rounded-xl bg-white/5 border border-white/5">
+                     <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full" style={{ background: idx === 0 ? '#10b981' : idx === 1 ? '#3b82f6' : idx === 2 ? '#8b5cf6' : idx === 3 ? '#f59e0b' : '#ef4444' }} />
+                        <span className="text-[10px] font-bold text-muted uppercase tracking-tighter">%{b.rate} Dilimi <span className="opacity-50 text-[8px] ml-1">({b.range})</span></span>
+                     </div>
+                     <span className="text-xs font-black text-primary italic">{fmt(b.tax)}</span>
+                  </div>
+                ))}
+             </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex gap-3 items-center">
+             <ShieldCheck className="w-5 h-5 text-emerald-500 shrink-0" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               Bu hesaplama kümülatif matrah üzerinden yapılmıştır. Şirket türü, istisnalar ve diğer kesintiler (SGK, damga vergisi vb.) dahil değildir.
+             </p>
           </div>
         </div>
       )}
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+           <V2Input 
+             label="BRÜT GELİR" 
+             value={brutto} 
+             onChange={setBrutto} 
+             unit="₺" 
+             placeholder="70000" 
+             fieldClassName="!py-6 font-black text-3xl italic !bg-blue-500/5 !border-blue-500/10 text-primary"
+           />
+           <V2Select 
+             label="GELİR PERİYODU" 
+             value={period} 
+             onChange={setPeriod} 
+             options={[
+               { value: "aylik", label: "Aylık kazanç" },
+               { value: "yillik", label: "Yıllık toplam kazanç" }
+             ]}
+           />
+           <V2Select 
+             label="VERGİ YILI" 
+             value={year} 
+             onChange={setYear} 
+             options={[
+               { value: "2026", label: "2026 (Yeni Tebliğ)" },
+               { value: "2025", label: "2025 Dilimleri" },
+               { value: "2024", label: "2024 Arşiv" }
+             ]}
+           />
+        </div>
 
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">📌</span>
-        <span className="calc-info-box-text">Gelir vergisi dilim usulü hesaplanır. Üst dilime geçildiğinde kümülatif matrah dilim sınırını aşan kısmı için yüksek vergi ödenir. 2026 rakamları 332 Seri No'lu Gelir Vergisi Genel Tebliği'ne uygundur.</span>
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="📉 Vergimi Hesapla"
+        />
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

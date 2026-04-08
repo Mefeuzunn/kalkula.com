@@ -1,15 +1,21 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import confetti from "canvas-confetti";
+import { Info, Ruler, User, Zap } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function BodyFatCalculator() {
   const [gender, setGender] = useState<"male" | "female">("male");
   const [height, setHeight] = useState("180");
   const [neck, setNeck] = useState("40");
   const [waist, setWaist] = useState("90");
-  const [hip, setHip] = useState("100"); // Female only
+  const [hip, setHip] = useState("100");
 
-  const [results, setResults] = useState<{ bodyFat: number; category: string; color: string; } | null>(null);
+  const [result, setResult] = useState<{ bodyFat: number; category: string; color: string; themeColor: "emerald" | "blue" | "amber" | "red" } | null>(null);
 
   const calculate = () => {
     const h = parseFloat(height) || 0;
@@ -17,7 +23,7 @@ export function BodyFatCalculator() {
     const w = parseFloat(waist) || 0;
     const hp = parseFloat(hip) || 0;
 
-    if (h <= 0 || n <= 0 || w <= 0 || (gender === "female" && hp <= 0)) { setResults(null); return; }
+    if (h <= 0 || n <= 0 || w <= 0 || (gender === "female" && hp <= 0)) { setResult(null); return; }
 
     let bf = 0;
     if (gender === "male") {
@@ -27,103 +33,102 @@ export function BodyFatCalculator() {
     }
     if (bf < 0) bf = 0;
 
-    let category = "Normal"; let color = "#3b82f6";
+    let category = "Normal"; 
+    let themeColor: "emerald" | "blue" | "amber" | "red" = "blue";
+
     if (gender === "male") {
-      if (bf < 2) { category = "Çok Az Yağlı"; color = "#f87171"; }
-      else if (bf < 6) { category = "Atletik"; color = "#34d399"; }
-      else if (bf < 14) { category = "Fit"; color = "#10b981"; }
-      else if (bf < 18) { category = "Ortalama"; color = "#60a5fa"; }
-      else if (bf < 25) { category = "Normal"; color = "#fbbf24"; }
-      else { category = "Aşırı Yağlanma (Obez)"; color = "#ef4444"; }
+      if (bf < 6) { category = "Atletik / Düşük"; themeColor = "emerald"; }
+      else if (bf < 14) { category = "Fit"; themeColor = "emerald"; }
+      else if (bf < 18) { category = "Ortalama"; themeColor = "blue"; }
+      else if (bf < 25) { category = "Normal"; themeColor = "amber"; }
+      else { category = "Yüksek (Obez)"; themeColor = "red"; }
     } else {
-      if (bf < 10) { category = "Çok Az Yağlı"; color = "#f87171"; }
-      else if (bf < 14) { category = "Atletik"; color = "#34d399"; }
-      else if (bf < 21) { category = "Fit"; color = "#10b981"; }
-      else if (bf < 25) { category = "Ortalama"; color = "#60a5fa"; }
-      else if (bf < 32) { category = "Normal"; color = "#fbbf24"; }
-      else { category = "Aşırı Yağlanma (Obez)"; color = "#ef4444"; }
+      if (bf < 14) { category = "Atletik / Düşük"; themeColor = "emerald"; }
+      else if (bf < 21) { category = "Fit"; themeColor = "emerald"; }
+      else if (bf < 25) { category = "Ortalama"; themeColor = "blue"; }
+      else if (bf < 32) { category = "Normal"; themeColor = "amber"; }
+      else { category = "Yüksek (Obez)"; themeColor = "red"; }
     }
-    setResults({ bodyFat: bf, category, color });
+    setResult({ bodyFat: bf, category, color: "", themeColor });
+    confetti({ particleCount: 30, spread: 60, origin: { y: 0.8 } });
   };
 
-  const reset = () => { setHeight("180"); setNeck("40"); setWaist("90"); setHip("100"); setResults(null); };
+  const reset = () => { setHeight("180"); setNeck("40"); setWaist("90"); setHip("100"); setResult(null); };
 
-  useEffect(() => { calculate(); }, [gender, height, neck, waist, hip]);
+  useEffect(() => { calculate(); }, [gender]);
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-toggle-group" style={{ marginBottom: "1rem" }}>
-         <button className={`calc-toggle-btn ${gender === "male" ? "active" : ""}`} onClick={() => setGender("male")}>♂ ERKEK</button>
-         <button className={`calc-toggle-btn ${gender === "female" ? "active" : ""}`} onClick={() => setGender("female")}>♀ KADIN</button>
-      </div>
-
-      <div className={`calc-grid-${gender === "female" ? '2' : '3'}`}>
-         <div className="calc-input-group">
-            <label className="calc-label">Boy</label>
-            <div className="calc-input-wrapper">
-               <input type="number" value={height} onChange={e => setHeight(e.target.value)} className="calc-input has-unit" placeholder="180" min="0" />
-               <span className="calc-unit">cm</span>
-            </div>
-         </div>
-         <div className="calc-input-group">
-            <label className="calc-label">Boyun Çevresi</label>
-            <div className="calc-input-wrapper">
-               <input type="number" value={neck} onChange={e => setNeck(e.target.value)} className="calc-input has-unit" placeholder="40" min="0" />
-               <span className="calc-unit">cm</span>
-            </div>
-         </div>
-         <div className="calc-input-group">
-            <label className="calc-label">Bel Çevresi</label>
-            <div className="calc-input-wrapper">
-               <input type="number" value={waist} onChange={e => setWaist(e.target.value)} className="calc-input has-unit" placeholder="90" min="0" />
-               <span className="calc-unit">cm</span>
-            </div>
-         </div>
-         {gender === "female" && (
-            <div className="calc-input-group">
-               <label className="calc-label">Kalça Çevresi</label>
-               <div className="calc-input-wrapper">
-                  <input type="number" value={hip} onChange={e => setHip(e.target.value)} className="calc-input has-unit" placeholder="100" min="0" />
-                  <span className="calc-unit">cm</span>
-               </div>
-            </div>
-         )}
-      </div>
-
-      <div className="calc-action-row">
-         <button className="calc-btn-calculate" onClick={calculate}>🧑‍🔬 Yağ Oranını Analiz Et</button>
-         <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
-
-      {results && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header" style={{ color: results.color }}>🧑‍🔬 US Navy Vücut Yağ Oranı (BF%) Analizi</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero" style={{ background: `linear-gradient(135deg, ${results.color}22, transparent)` }}>
-              <div className="calc-result-hero-label">Vücut Yağ Oranı</div>
-              <div className="calc-result-hero-value" style={{ color: results.color, fontSize: "4rem" }}>
-                %{results.bodyFat.toFixed(1)}
-              </div>
-              <div className="calc-result-hero-sub" style={{ marginTop: "1rem" }}>
-                <span style={{ background: results.color, color: "#fff", padding: "4px 12px", borderRadius: "12px", fontWeight: "bold" }}>{results.category}</span>
-              </div>
-            </div>
-            
-            <div style={{ marginTop: "1rem", display: "flex", gap: "2px", height: "12px", borderRadius: "8px", overflow: "hidden" }}>
-              <div style={{ flex: 1, background: "#34d399", opacity: results.category === "Atletik" || results.category === "Çok Az Yağlı" ? 1 : 0.3 }} title="Atletik"></div>
-              <div style={{ flex: 1, background: "#10b981", opacity: results.category === "Fit" ? 1 : 0.3 }} title="Fit"></div>
-              <div style={{ flex: 1, background: "#60a5fa", opacity: results.category === "Ortalama" ? 1 : 0.3 }} title="Ortalama"></div>
-              <div style={{ flex: 1, background: "#fbbf24", opacity: results.category === "Normal" ? 1 : 0.3 }} title="Normal"></div>
-              <div style={{ flex: 1, background: "#ef4444", opacity: results.category === "Aşırı Yağlanma (Obez)" ? 1 : 0.3 }} title="Aşırı Yağlı"></div>
-            </div>
+    <V2CalculatorWrapper
+      title="VÜCUT YAĞ ORANI (US NAVY)"
+      icon="🧑‍🔬"
+      infoText="Amerikan Donanması (US Navy) tarafından geliştirilen bu metod, boy ve çevre ölçümlerinizi kullanarak vücut yağ oranınızı yüksek doğrulukla tahmin eder."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color={result.themeColor}
+            label="VÜCUT YAĞ ORANI"
+            value={`%${result.bodyFat.toFixed(1)}`}
+            subLabel={result.category}
+            icon="⚖️"
+          />
+          <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
+             <div className="flex justify-between items-center mb-4">
+                <span className="text-[10px] font-black text-muted uppercase tracking-widest">KATEGORİ ANALİZİ</span>
+                <span className="text-[10px] font-medium text-muted italic">US Navy Standards</span>
+             </div>
+             <div className="flex gap-2 h-3 rounded-full overflow-hidden bg-white/5">
+                <div className={`flex-1 ${result.themeColor === 'emerald' ? 'bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]' : 'bg-white/10'}`}></div>
+                <div className={`flex-1 ${result.themeColor === 'blue' ? 'bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]' : 'bg-white/10'}`}></div>
+                <div className={`flex-1 ${result.themeColor === 'amber' ? 'bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)]' : 'bg-white/10'}`}></div>
+                <div className={`flex-1 ${result.themeColor === 'red' ? 'bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.5)]' : 'bg-white/10'}`}></div>
+             </div>
           </div>
         </div>
       )}
+    >
+      <div className="space-y-8">
+        <div className="space-y-3">
+          <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 block italic">Cinsiyet</label>
+          <div className="flex bg-white/5 p-2 rounded-[2rem] gap-2 shadow-inner">
+             <button 
+                onClick={() => setGender("male")}
+                className={`flex-1 py-4 rounded-3xl text-[10px] font-black uppercase tracking-widest transition-all ${gender === "male" ? 'bg-white text-slate-900 shadow-xl scale-[1.02]' : 'text-muted hover:text-primary'}`}
+             >
+                ♂ ERKEK
+             </button>
+             <button 
+                onClick={() => setGender("female")}
+                className={`flex-1 py-4 rounded-3xl text-[10px] font-black uppercase tracking-widest transition-all ${gender === "female" ? 'bg-white text-slate-900 shadow-xl scale-[1.02]' : 'text-muted hover:text-primary'}`}
+             >
+                ♀ KADIN
+             </button>
+          </div>
+        </div>
 
-      <div className="calc-info-box">
-         <span className="calc-info-box-icon">💡</span>
-         <span className="calc-info-box-text">US Navy (Amerikan Donanması) metodunda ölçümleri mezura ile doğru almak sonucu %99 etkiler. Bel ölçümünü mutlaka göbek deliği hizasından yapınız.</span>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <V2Input label="BOY (CM)" value={height} onChange={setHeight} unit="CM" placeholder="180" />
+          <V2Input label="BOYUN (CM)" value={neck} onChange={setNeck} unit="CM" placeholder="40" />
+          <V2Input label="BEL (CM)" value={waist} onChange={setWaist} unit="CM" placeholder="90" />
+          {gender === "female" && (
+            <div className="animate-slide-up">
+              <V2Input label="KALÇA (CM)" value={hip} onChange={setHip} unit="CM" placeholder="100" />
+            </div>
+          )}
+        </div>
+
+        <div className="p-6 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex gap-4 items-center">
+           <Info className="w-5 h-5 text-blue-500" />
+           <p className="text-[10px] text-muted font-medium italic leading-relaxed">
+              Bel çevresini göbek deliği hizasından, boyun çevresini ise gırtlağın hemen altından ölçünüz.
+           </p>
+        </div>
       </div>
-    </div>
+
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="🧑‍🔬 Analiz Et"
+      />
+    </V2CalculatorWrapper>
   );
 }

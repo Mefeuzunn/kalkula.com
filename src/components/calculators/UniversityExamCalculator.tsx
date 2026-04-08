@@ -1,5 +1,12 @@
+"use client";
+
 import React, { useState } from "react";
 import confetti from "canvas-confetti";
+import { Info, GraduationCap, Target, Calculator, Star, FileText, CheckCircle, AlertTriangle, TrendingUp } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function UniversityExamCalculator() {
   const [vize, setVize] = useState("");
@@ -7,7 +14,7 @@ export function UniversityExamCalculator() {
   const [finalScore, setFinalScore] = useState("");
   const [finalWeight, setFinalWeight] = useState("60");
   const [target, setTarget] = useState("50");
-  const [result, setResult] = useState<{ average: number; needed?: number; status: string; color: string } | null>(null);
+  const [result, setResult] = useState<{ average: number; needed: number; status: string; color: "emerald" | "purple" | "blue" | "amber" | "red"; risk: string } | null>(null);
 
   const calculate = () => {
     const v = parseFloat(vize);
@@ -16,117 +23,124 @@ export function UniversityExamCalculator() {
     const fw = parseFloat(finalWeight) / 100;
     const t = parseFloat(target);
 
-    let average = 0;
-    let needed = undefined;
-
     if (!isNaN(v) && vw + fw > 0) {
-       // Final notu girilmişse ortalama hesapla
-       if(!isNaN(f)) {
-          average = (v * vw + f * fw) / (vw + fw);
-       }
-       
-       // Hedef not için gereken finali hesapla -> target = (v*vw + needed*fw) / (vw+fw)
-       needed = (t * (vw + fw) - (v * vw)) / fw;
-    }
+      let average = 0;
+      if (!isNaN(f)) {
+        average = (v * vw + f * fw) / (vw + fw);
+      }
+      
+      const needed = (t * (vw + fw) - (v * vw)) / fw;
+      
+      let status = "ANALİZ EDİLDİ";
+      let color: "emerald" | "purple" | "blue" | "amber" | "red" = "blue";
+      let risk = "DÜŞÜK";
 
-    const status = (!isNaN(f) && average >= t) ? "BAŞARILI" : (!isNaN(f) ? "BAŞARISIZ" : "HESAPLANDI");
-    const color = status === "BAŞARILI" ? "#10b981" : (status === "BAŞARISIZ" ? "#ef4444" : "#3b82f6");
+      if (!isNaN(f)) {
+        status = average >= t ? "BAŞARILI" : "BAŞARISIZ";
+        color = average >= t ? "emerald" : "red";
+      }
 
-    setResult({ average, needed: needed, status, color });
-    
-    if (status === "BAŞARILI") {
-       confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ["#10b981", "#ffffff"] });
+      if (needed > 70) risk = "YÜKSEK";
+      else if (needed > 45) risk = "ORTA";
+      else risk = "DÜŞÜK";
+
+      if (needed > 100) { color = "red"; risk = "İMKANSIZ"; }
+
+      setResult({ average, needed: Math.max(0, needed), status, color, risk });
+      
+      if (status === "BAŞARILI" || (isNaN(f) && needed <= 50)) {
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      }
+    } else {
+      setResult(null);
     }
   };
 
+  const reset = () => {
+    setVize("");
+    setVizeWeight("40");
+    setFinalScore("");
+    setFinalWeight("60");
+    setTarget("50");
+    setResult(null);
+  };
+
   return (
-    <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="panel p-6 border-2 border-border/50 bg-secondary/5 rounded-3xl">
-           <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-4 italic">Vize (Ara Sınav) Ayarları</div>
-           <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                 <label className="text-xs font-bold text-primary px-1">Notunuz</label>
-                 <input type="number" value={vize} onChange={e => setVize(e.target.value)} className="input-field py-4 font-black" placeholder="Örn: 65" />
-              </div>
-              <div className="flex flex-col gap-2">
-                 <label className="text-xs font-bold text-primary px-1">Etkisi (%)</label>
-                 <input type="number" value={vizeWeight} onChange={e => setVizeWeight(e.target.value)} className="input-field py-3 font-bold opacity-70" />
-              </div>
-           </div>
-        </div>
+    <V2CalculatorWrapper
+      title="VİZE - FİNAL HESAPLA"
+      icon="🎓"
+      infoText="Vize notunuzu ve hedeflediğiniz geçme notunu girerek final sınavından kaç almanız gerektiğini anında öğrenin."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color={result.color}
+            label="FİNALDE GEREKEN NOT"
+            value={result.needed > 100 ? "KALDI" : result.needed.toFixed(0)}
+            subLabel={result.needed > 100 ? "Başarı Hedefi İmkansız" : `Hedeflenen Geçme Notu: ${target}`}
+            icon="🎯"
+          />
 
-        <div className="panel p-6 border-2 border-border/50 bg-secondary/5 rounded-3xl">
-           <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-4 italic">Final (Dönem Sonu) Ayarları</div>
-           <div className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                 <label className="text-xs font-bold text-primary px-1">Notunuz (Opsiyonel)</label>
-                 <input type="number" value={finalScore} onChange={e => setFinalScore(e.target.value)} className="input-field py-4 font-black border-accent-primary/20" placeholder="Örn: 70" />
-              </div>
-              <div className="flex flex-col gap-2">
-                 <label className="text-xs font-bold text-primary px-1">Etkisi (%)</label>
-                 <input type="number" value={finalWeight} onChange={e => setFinalWeight(e.target.value)} className="input-field py-3 font-bold opacity-70" />
-              </div>
-           </div>
-        </div>
-      </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-center">
+                <div className="text-[10px] font-black text-muted uppercase mb-1">MEVCUT ORTALAMA</div>
+                <div className="text-2xl font-black italic text-primary">{result.average > 0 ? result.average.toFixed(2) : "--"}</div>
+             </div>
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-center">
+                <div className="text-[10px] font-black text-muted uppercase mb-1">RİSK SEVİYESİ</div>
+                <div className={`text-2xl font-black italic ${result.risk === 'YÜKSEK' || result.risk === 'İMKANSIZ' ? 'text-red-500' : 'text-emerald-500'}`}>{result.risk}</div>
+             </div>
+          </div>
 
-      <div className="max-w-md mx-auto w-full">
-         <div className="flex flex-col gap-2 text-center mb-6">
-            <label className="text-xs font-black text-muted uppercase tracking-[0.2em]">Hedef Geçme Notu</label>
-            <input type="number" value={target} onChange={e => setTarget(e.target.value)} className="input-field !text-3xl py-4 font-black text-center border-accent-primary shadow-2xl" />
-         </div>
-         <button className="btn-primary w-full py-5 text-xl font-black shadow-2xl uppercase tracking-widest italic" onClick={calculate}>Durumumu Analiz Et</button>
-      </div>
-
-      {result && (
-        <div className="result-container-premium animate-result">
-           <div className="result-card-premium border-2 shadow-[0_0_50px_rgba(59,130,246,0.1)]" style={{ borderColor: result.color + "33" }}>
-              <div className="result-badge" style={{ backgroundColor: result.color + "11", color: result.color, borderColor: result.color + "33" }}>
-                 SINAV ANALİZ RAPORU
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center mt-6">
-                 <div className="flex flex-col items-center gap-1">
-                    <div className="text-6xl font-black italic tracking-tighter" style={{ color: result.color }}>
-                      {finalScore ? result.average.toFixed(2) : "--"}
-                    </div>
-                    <div className="text-[10px] font-black text-muted uppercase tracking-widest">Mevcut Ortalamanız</div>
-                 </div>
-
-                 <div className="text-center p-6 bg-secondary/10 rounded-3xl border border-border relative overflow-hidden">
-                    <div className="absolute top-0 right-0 p-2 bg-accent-primary/10 rounded-bl-xl text-[8px] font-black italic text-accent-primary">HEDEF: {target}</div>
-                    <div className="text-[10px] font-black text-muted uppercase mb-1 tracking-widest">Finalde Gereken Not</div>
-                    <div className={`text-4xl font-black ${result.needed && result.needed > 100 ? 'text-red-500' : 'text-primary'}`}>
-                       {result.needed !== undefined ? Math.max(0, result.needed).toFixed(0) : "?"}
-                    </div>
-                 </div>
-              </div>
-
-              <div className="mt-10 pt-8 border-t border-border">
-                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="flex flex-col items-center">
-                       <span className="text-[9px] font-black text-muted uppercase mb-1">Durum</span>
-                       <span className="text-xs font-black italic" style={{ color: result.color }}>{result.status}</span>
-                    </div>
-                    <div className="flex flex-col items-center border-l border-border px-4">
-                       <span className="text-[9px] font-black text-muted uppercase mb-1">Risk Seviyesi</span>
-                       <span className="text-xs font-black italic text-primary">
-                          {result.needed && result.needed > 70 ? "YÜKSEK" : (result.needed && result.needed > 45 ? "ORTA" : "DÜŞÜK")}
-                       </span>
-                    </div>
-                    <div className="flex flex-col items-center border-l border-border px-4 col-span-2">
-                       <p className="text-[10px] font-medium leading-relaxed italic text-muted text-left">
-                          💡 {result.needed && result.needed > 100 
-                             ? "Üzgünüz, vize notunuz çok düşük olduğu için finalden 100 alsanız bile hedeflediğiniz nota ulaşamıyorsunuz." 
-                             : `Finalden ${result.needed?.toFixed(0)} veya üzerinde alırsanız dersi başarıyla tamamlarsınız.`}
-                       </p>
-                    </div>
-                 </div>
-              </div>
-           </div>
+          <div className={`p-5 rounded-2xl border flex gap-4 ${result.needed > 100 ? 'bg-red-500/5 border-red-500/10' : 'bg-blue-500/5 border-blue-500/10'}`}>
+             {result.needed > 100 ? <AlertTriangle className="w-6 h-6 text-red-500 shrink-0 mt-1" /> : <TrendingUp className="w-6 h-6 text-blue-500 shrink-0 mt-1" />}
+             <div>
+                <div className={`text-xs font-black uppercase italic mb-1 ${result.needed > 100 ? 'text-red-500' : 'text-blue-500'}`}>Analiz Sonucu</div>
+                <p className="text-[11px] text-muted italic leading-relaxed">
+                  {result.needed > 100 
+                    ? "Maalesef vize notunuz çok düşük olduğu için finalden 100 alsanız bile hedefinize ulaşamıyorsunuz." 
+                    : `Final sınavından ${result.needed.toFixed(0)} veya üzerinde bir not alırsanız dersi başarıyla tamamlarsınız.`}
+                </p>
+             </div>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+              <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] flex items-center gap-2">
+                 <FileText className="w-4 h-4" /> Vize (Ara Sınav)
+              </div>
+              <V2Input label="VİZE NOTUNUZ" value={vize} onChange={setVize} unit="P" placeholder="65" />
+              <V2Input label="VİZE ETKİSİ (%)" value={vizeWeight} onChange={setVizeWeight} unit="%" placeholder="40" />
+           </div>
+
+           <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+              <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] flex items-center gap-2">
+                 <GraduationCap className="w-4 h-4" /> Final (Dönem Sonu)
+              </div>
+              <V2Input label="FİNAL NOTU (İsteğe Bağlı)" value={finalScore} onChange={setFinalScore} unit="P" placeholder="70" />
+              <V2Input label="FİNAL ETKİSİ (%)" value={finalWeight} onChange={setFinalWeight} unit="%" placeholder="60" />
+           </div>
+        </div>
+
+        <div className="max-w-xs mx-auto">
+           <V2Input 
+             label="HEDEF GEÇME NOTU" 
+             value={target} 
+             onChange={setTarget} 
+             unit="P" 
+             placeholder="50" 
+             fieldClassName="!py-6 text-center text-4xl font-black italic text-primary"
+           />
+        </div>
+
+        <V2ActionRow 
+          onCalculate={calculate} 
+          onReset={reset} 
+          calculateLabel="📉 Durumumu Analiz Et"
+        />
+      </div>
+    </V2CalculatorWrapper>
   );
 }

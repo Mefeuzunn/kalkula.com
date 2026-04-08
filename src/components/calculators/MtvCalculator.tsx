@@ -1,13 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import confetti from "canvas-confetti";
+import { Info, Car, Calendar, Calculator, Star, TrendingUp, ArrowRight, CheckCircle, AlertTriangle } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function MtvCalculator() {
   const [engineVolume, setEngineVolume] = useState("1301-1600");
   const [age, setAge] = useState("1-3");
   const [registrationDate, setRegistrationDate] = useState("after_2018");
-  const [value, setValue] = useState("medium"); // Range of vehicle value (TR specific)
+  const [value, setValue] = useState("medium");
   
   const [results, setResults] = useState<{
     mtv2025: number;
@@ -17,7 +23,6 @@ export function MtvCalculator() {
     increaseAmount: number;
   } | null>(null);
 
-  // Simplified MTV Data Logic (2026)
   const calculateResult = () => {
     let base2024 = 0;
     
@@ -45,7 +50,7 @@ export function MtvCalculator() {
     if (value === "low") base2024 *= 0.9;
 
     const rate2025 = 1.4393; 
-    const rate2026 = 1.1895; // Official 2026 increase
+    const rate2026 = 1.1895;
 
     const mtv2025 = base2024 * rate2025;
     const mtv2026 = mtv2025 * rate2026;
@@ -58,114 +63,122 @@ export function MtvCalculator() {
       increaseAmount: mtv2026 - mtv2025
     });
 
-    confetti({ particleCount: 20, spread: 40, origin: { y: 0.7 }, colors: ["#3b82f6", "#10b981"] });
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
   };
 
-  useEffect(() => {
-    calculateResult();
-  }, [engineVolume, age, registrationDate, value]);
+  const reset = () => {
+    setEngineVolume("1301-1600");
+    setAge("1-3");
+    setRegistrationDate("after_2018");
+    setValue("medium");
+    setResults(null);
+  };
 
   return (
-    <div className="flex flex-col gap-8 max-w-5xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Input Sidebar */}
-        <div className="lg:col-span-5 flex flex-col gap-6">
-           <div className="panel p-8 bg-secondary/5 border-border rounded-[3rem] border-b-8 border-blue-500/20 flex flex-col gap-6">
-              <div className="flex flex-col gap-2">
-                 <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 italic">Tescil Tarihi</label>
-                 <select value={registrationDate} onChange={e => setRegistrationDate(e.target.value)} className="input-field font-bold">
-                    <option value="after_2018">01.01.2018 ve Sonrası</option>
-                    <option value="before_2018">01.01.2018 Öncesi</option>
-                 </select>
-              </div>
+    <V2CalculatorWrapper
+      title="MTV HESAPLA"
+      icon="🚗"
+      infoText="Aracınızın tescil tarihi, motor hacmi ve yaşına göre 2026 yılı Motorlu Taşıtlar Vergisi tutarını ve taksit dönemlerini anında öğrenin."
+      results={results && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color="blue"
+            label="2026 TOPLAM YILLIK MTV"
+            value={`${results.mtv2026.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺`}
+            subLabel="YDO Bazlı 2026 Tahmini"
+            icon="📅"
+          />
 
-              <div className="flex flex-col gap-2">
-                 <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 italic">Motor Silindir Hacmi</label>
-                 <select value={engineVolume} onChange={e => setEngineVolume(e.target.value)} className="input-field font-black !text-lg">
-                    <option value="0-1300">1300 cm³ ve altı</option>
-                    <option value="1301-1600">1301 - 1600 cm³</option>
-                    <option value="1601-1800">1601 - 1800 cm³</option>
-                    <option value="1801-2000">1801 - 2000 cm³</option>
-                    <option value="2000+">2001 cm³ ve üzeri</option>
-                 </select>
-              </div>
+          <div className="grid grid-cols-2 gap-4">
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-center">
+                <div className="text-[10px] font-black text-muted uppercase mb-1">1. TAKSİT (OCAK)</div>
+                <div className="text-xl font-black italic text-primary">{results.firstInstallment.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</div>
+             </div>
+             <div className="p-5 rounded-2xl bg-white/5 border border-white/5 text-center">
+                <div className="text-[10px] font-black text-muted uppercase mb-1">2. TAKSİT (TEMMUZ)</div>
+                <div className="text-xl font-black italic text-primary">{results.secondInstallment.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</div>
+             </div>
+          </div>
 
-              <div className="flex flex-col gap-2">
-                 <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 italic">Taşıt Yaşı</label>
-                 <select value={age} onChange={e => setAge(e.target.value)} className="input-field font-bold">
-                    <option value="1-3">1 - 3 Yaş</option>
-                    <option value="4-6">4 - 6 Yaş</option>
-                    <option value="7-11">7 - 11 Yaş</option>
-                    <option value="12-15">12 - 15 Yaş</option>
-                    <option value="16+">16 ve üzeri</option>
-                 </select>
-              </div>
+          <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/10 space-y-4">
+             <div className="flex justify-between items-center text-[11px] font-black italic">
+                <span className="text-muted uppercase tracking-widest">KARŞILAŞTIRMA</span>
+                <span className="text-red-500 uppercase tracking-widest">Zam Oranı: %18.95</span>
+             </div>
+             <div className="flex flex-col gap-3">
+                <div className="flex justify-between text-xs italic">
+                   <span className="text-muted">2025 Yılı Toplam:</span>
+                   <span className="text-primary font-bold">{results.mtv2025.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</span>
+                </div>
+                <div className="flex justify-between text-xs italic border-t border-white/5 pt-3">
+                   <span className="text-muted">Yıllık Artış Tutarı:</span>
+                   <span className="text-red-500 font-bold">+{results.increaseAmount.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</span>
+                </div>
+             </div>
+          </div>
 
-              <div className="flex flex-col gap-2">
-                 <label className="text-[10px] font-black text-muted uppercase tracking-widest px-2 italic">Taşıt Değeri (Matrah)</label>
-                 <select value={value} onChange={e => setValue(e.target.value)} className="input-field font-bold">
-                    <option value="low">Ekonomik (Alt Segment)</option>
-                    <option value="medium">Standart (Orta Segment)</option>
-                    <option value="high">Premium (Üst Segment)</option>
-                 </select>
-              </div>
-           </div>
+          <div className="p-4 rounded-2xl bg-white/5 border border-white/5 flex gap-3 items-center">
+             <Info className="w-4 h-4 text-blue-500 shrink-0" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               Bu hesaplama 2026 yılı için beklenen %18.95 (YDO) MTV artış oranı baz alınarak yapılmıştır. Resmi tutarlar Ocak ayında kesinleşir.
+             </p>
+          </div>
+        </div>
+      )}
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <V2Select 
+             label="TESCİL TARİHİ" 
+             value={registrationDate} 
+             onChange={setRegistrationDate} 
+             options={[
+               { value: "after_2018", label: "01.01.2018 ve Sonrası" },
+               { value: "before_2018", label: "01.01.2018 Öncesi" }
+             ]}
+           />
+           <V2Select 
+             label="MOTOR SİLİNDİR HACMİ" 
+             value={engineVolume} 
+             onChange={setEngineVolume} 
+             options={[
+               { value: "0-1300", label: "1300 cm³ ve altı" },
+               { value: "1301-1600", label: "1301 - 1600 cm³" },
+               { value: "1601-1800", label: "1601 - 1800 cm³" },
+               { value: "1801-2000", label: "1801 - 2000 cm³" },
+               { value: "2000+", label: "2001 cm³ ve üzeri" }
+             ]}
+           />
+           <V2Select 
+             label="TAŞIT YAŞI" 
+             value={age} 
+             onChange={setAge} 
+             options={[
+               { value: "1-3", label: "1 - 3 Yaş" },
+               { value: "4-6", label: "4 - 6 Yaş" },
+               { value: "7-11", label: "7 - 11 Yaş" },
+               { value: "12-15", label: "12 - 15 Yaş" },
+               { value: "16+", label: "16 ve üzeri" }
+             ]}
+           />
+           <V2Select 
+             label="TAŞIT DEĞERİ (MATRAH)" 
+             value={value} 
+             onChange={setValue} 
+             options={[
+               { value: "low", label: "Ekonomik (Alt Segment)" },
+               { value: "medium", label: "Standart (Orta Segment)" },
+               { value: "high", label: "Premium (Üst Segment)" }
+             ]}
+           />
         </div>
 
-        {/* Comparison Result Panel */}
-        <div className="lg:col-span-7 flex flex-col gap-4">
-           {results ? (
-              <div className="result-container-premium !animate-none h-full">
-                 <div className="result-card-premium !p-8 h-full bg-white dark:bg-zinc-900 border-4 border-blue-500/10 shadow-2xl relative overflow-hidden flex flex-col">
-                    <div className="absolute top-0 right-0 p-6 opacity-5 font-black italic text-[10px] text-blue-600 tracking-[0.3em] uppercase rotate-12">Auto Tax Engine v3.0</div>
-                    
-                    <div className="flex flex-col items-center text-center mb-10">
-                       <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.4em] mb-4 bg-blue-500/10 px-4 py-1 rounded-full border border-blue-500/20 italic">2026 Toplam Yıllık MTV</span>
-                       <div className="text-6xl font-black italic tracking-tighter text-primary">
-                          {results.mtv2026.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} <span className="text-2xl not-italic ml-1">₺</span>
-                       </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 mb-8">
-                       <div className="p-6 bg-secondary/5 rounded-3xl border border-border flex flex-col items-center">
-                          <span className="text-[9px] font-black text-muted uppercase tracking-widest italic mb-2 text-center leading-tight">1. Taksit<br/>(Ocak)</span>
-                          <span className="text-xl font-black text-blue-600">{results.firstInstallment.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</span>
-                       </div>
-                       <div className="p-6 bg-secondary/5 rounded-3xl border border-border flex flex-col items-center">
-                          <span className="text-[9px] font-black text-muted uppercase tracking-widest italic mb-2 text-center leading-tight">2. Taksit<br/>(Temmuz)</span>
-                          <span className="text-xl font-black text-blue-600">{results.secondInstallment.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</span>
-                       </div>
-                    </div>
-
-                    <div className="mt-auto p-6 bg-blue-500/5 rounded-3xl border border-blue-500/10">
-                       <div className="flex justify-between items-center mb-4">
-                          <span className="text-[10px] font-black text-primary uppercase italic">Karşılaştırmalı Analiz</span>
-                          <span className="text-[10px] font-black text-red-500 uppercase italic">2026 Zam Oranı: %18.95</span>
-                       </div>
-                       <div className="flex flex-col gap-3">
-                          <div className="flex justify-between text-[11px] font-medium italic">
-                             <span className="text-muted">2025 Yılı Toplam:</span>
-                             <span className="text-primary font-black">{results.mtv2025.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</span>
-                          </div>
-                          <div className="flex justify-between text-[11px] font-medium italic">
-                             <span className="text-muted">Yıllık Artış Tutarı:</span>
-                             <span className="text-red-500 font-black">+{results.increaseAmount.toLocaleString('tr-TR', { maximumFractionDigits: 0 })} ₺</span>
-                          </div>
-                       </div>
-                    </div>
-
-                    <p className="mt-6 text-[8px] text-muted/50 font-bold uppercase text-center tracking-[0.2em] leading-relaxed">
-                       * Bu hesaplama 2026 yılı için belirlenen %18.95 (YDO Bazlı) MTV artış oranı baz alınarak yapılmıştır. Resmi rakamlar 2026 yılı için geçerli en güncel tutarları yansıtmaktadır.
-                    </p>
-                 </div>
-              </div>
-           ) : (
-              <div className="panel h-full flex items-center justify-center bg-secondary/5 rounded-[3rem] grayscale opacity-40">
-                 <span className="text-xl font-black italic text-muted">Verileri Doldurun 🚗</span>
-              </div>
-           )}
-        </div>
+        <V2ActionRow 
+          onCalculate={calculateResult} 
+          onReset={reset} 
+          calculateLabel="📊 MTV Sorgula"
+        />
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

@@ -2,31 +2,37 @@
 
 import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
+import { Soup, Wheat, Droplets, FlaskConical, Scale, Trash2, Zap, Info, Utensils, ArrowLeftRight, Coffee, Candy, Beef, ChefHat, Sparkles } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 interface Material {
   name: string;
   density: number; // g/ml
+  icon: string;
 }
 
 const MATERIALS: Material[] = [
-  { name: "Su / Süt / Sirke", density: 1.0 },
-  { name: "Un (Elenmiş)", density: 0.53 },
-  { name: "Şeker (Toz)", density: 0.85 },
-  { name: "Pudra Şekeri", density: 0.56 },
-  { name: "Tereyağı (Eritilmiş)", density: 0.91 },
-  { name: "Zeytinyağı / Sıvı Yağ", density: 0.92 },
-  { name: "Bal / Pekmez", density: 1.42 },
-  { name: "Kakao", density: 0.45 },
-  { name: "Pirinç", density: 0.85 },
-  { name: "İrmik", density: 0.75 },
+  { name: "Su / Süt / Sirke", density: 1.0, icon: "🥛" },
+  { name: "Un (Elenmiş)", density: 0.53, icon: "🌾" },
+  { name: "Şeker (Toz)", density: 0.85, icon: "🍬" },
+  { name: "Pudra Şekeri", density: 0.56, icon: "✨" },
+  { name: "Tereyağı (Eritilmiş)", density: 0.91, icon: "🧈" },
+  { name: "Zeytinyağı / Sıvı Yağ", density: 0.92, icon: "🫒" },
+  { name: "Bal / Pekmez", density: 1.42, icon: "🍯" },
+  { name: "Kakao", density: 0.45, icon: "🍫" },
+  { name: "Pirinç", density: 0.85, icon: "🍚" },
+  { name: "İrmik", density: 0.75, icon: "🥣" },
 ];
 
 const UNITS: any = {
-  ml: 1,
-  gram: 1, // Will be calculated with density
-  cup: 240,
-  tbsp: 15,
-  tsp: 5,
+  ml: { id: "ml", name: "Mililitre", val: 1 },
+  gram: { id: "gram", name: "Gram", val: 1 }, // Calculated with density
+  cup: { id: "cup", name: "Su Bardağı", val: 240 },
+  tbsp: { id: "tbsp", name: "Yemek Kaşığı", val: 15 },
+  tsp: { id: "tsp", name: "Tatlı Kaşığı", val: 5 },
 };
 
 export function GastroConverter() {
@@ -48,7 +54,7 @@ export function GastroConverter() {
     if (fromUnit === "gram") {
       mlValue = val / material.density;
     } else {
-      mlValue = val * UNITS[fromUnit];
+      mlValue = val * UNITS[fromUnit].val;
     }
 
     // Convert from ML to target
@@ -56,142 +62,140 @@ export function GastroConverter() {
     if (toUnit === "gram") {
       finalValue = mlValue * material.density;
     } else {
-      finalValue = mlValue / UNITS[toUnit];
+      finalValue = mlValue / UNITS[toUnit].val;
     }
 
     setResult(finalValue);
-
-    confetti({
-      particleCount: 15,
-      spread: 30,
-      origin: { y: 0.7 },
-      colors: ["#6366f1", "#a855f7"]
-    });
   };
 
   useEffect(() => {
     calculate();
   }, [material, fromUnit, toUnit, amount]);
 
+  const swap = () => {
+    const temp = fromUnit;
+    setFromUnit(toUnit);
+    setToUnit(temp);
+    confetti({ particleCount: 20, spread: 30, origin: { y: 0.8 }, colors: ["#6366f1", "#ffffff"] });
+  };
+
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col">
-        <label className="calc-input-label">MALZEME TÜRÜ</label>
-        <div className="calc-input-key">
-            <div className="bg-secondary/10 p-4 border-b border-border flex justify-between items-center px-8">
-               <span className="text-[10px] font-bold text-muted uppercase tracking-widest italic opacity-40">Hesaplanacak Özkütle Seçimi</span>
-            </div>
-            <select 
-               className="calc-input-field !text-2xl py-6 appearance-none cursor-pointer"
-               onChange={(e) => setMaterial(MATERIALS.find(m => m.name === e.target.value) || MATERIALS[0])}
-            >
-               {MATERIALS.map(m => (
-                  <option key={m.name} value={m.name} className="bg-surface text-primary">{m.name}</option>
-               ))}
-            </select>
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-4">
-        {/* Desktop Labels Row */}
-        <div className="hidden lg:flex justify-between px-6">
-          <label className="calc-input-label !mb-0 text-xs text-indigo-600/60">MİKTAR VE BİRİM</label>
-          <label className="calc-input-label !mb-0 text-xs text-right text-indigo-600/60">HEDEF BİRİM</label>
-        </div>
-
-        <div className="relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 items-stretch">
-            
-            {/* Left Input Block */}
-            <div className="flex flex-col gap-2">
-              <label className="calc-input-label lg:hidden px-2">MİKTAR VE BİRİM</label>
-              <div className="calc-input-key">
-                  <div className="absolute top-4 right-6 z-10">
-                    <select 
-                        value={fromUnit} 
-                        onChange={e => setFromUnit(e.target.value)}
-                        className="bg-accent-glow border border-accent-primary/20 rounded-lg text-[9px] font-black uppercase tracking-widest px-3 py-1 cursor-pointer outline-none"
-                    >
-                        <option value="cup">Su Bardağı</option>
-                        <option value="tbsp">Yemek Kaşığı</option>
-                        <option value="tsp">Tatlı Kaşığı</option>
-                        <option value="gram">Gram</option>
-                        <option value="ml">Mililitre</option>
-                    </select>
-                  </div>
-                  <input 
-                    type="number" 
-                    value={amount} 
-                    onChange={e => setAmount(e.target.value)} 
-                    className="calc-input-field !py-10" 
-                    placeholder="1" 
-                  />
-              </div>
-            </div>
-
-            {/* Right Input Block */}
-            <div className="flex flex-col gap-2">
-              <label className="calc-input-label lg:hidden px-2 text-right">HEDEF BİRİM</label>
-              <div className="calc-input-key">
-                  <div className="bg-secondary/10 p-3 border-b border-border text-center">
-                    <span className="text-[10px] font-bold text-muted uppercase tracking-widest italic opacity-40">Sonuç Birimi</span>
-                  </div>
-                  <select 
-                    value={toUnit} 
-                    onChange={e => setToUnit(e.target.value)}
-                    className="calc-input-field !text-xl py-8 appearance-none cursor-pointer"
-                  >
-                    <option value="gram" className="bg-surface text-primary">Gram</option>
-                    <option value="ml" className="bg-surface text-primary">Mililitre</option>
-                    <option value="cup" className="bg-surface text-primary">Su Bardağı</option>
-                    <option value="tbsp" className="bg-surface text-primary">Yemek Kaşığı</option>
-                    <option value="tsp" className="bg-surface text-primary">Tatlı Kaşığı</option>
-                  </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Central 3D Swap Button - Guaranteed Center */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] pointer-events-none">
-             <button 
-                onClick={() => {
-                  const temp = fromUnit;
-                  setFromUnit(toUnit);
-                  setToUnit(temp);
-                  confetti({ particleCount: 20, spread: 40, origin: { y: 0.8 } });
-                }}
-                className="calc-swap-glass group/swapbtn pointer-events-auto shadow-2xl"
-                title="Birimleri Değiştir"
-             >
-                <div className="relative w-full h-full flex items-center justify-center">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0 transition-all duration-500 group-hover/swapbtn:rotate-180 group-hover/swapbtn:scale-110"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
-                </div>
-             </button>
-          </div>
-        </div>
-      </div>
-
-      {result !== null && (
-        <div className="panel p-0 bg-transparent border-none shadow-none mt-4">
-          <div className="calc-result-header">
-            <span>🥣</span> MUTFAK DÖNÜŞÜM SONUCU
-          </div>
-          
-          <div className="calc-result-card !bg-secondary/5 border-indigo-500/20 !items-start overflow-hidden">
-             <div className="absolute top-0 right-0 p-8 opacity-5 pointer-events-none text-9xl">🍳</div>
-             <div className="calc-result-card-label text-indigo-600">{material.name.toUpperCase()}</div>
-             <div className="calc-result-card-value text-indigo-600 !text-6xl md:!text-7xl">
-                {result.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} <span className="text-2xl not-italic ml-2 font-black text-primary uppercase">{toUnit}</span>
-             </div>
-             <div className="calc-result-card-desc italic mt-2">{amount} {fromUnit} baz alınarak hesaplandı</div>
-          </div>
+    <V2CalculatorWrapper
+      title="MUTFAK & GASTRONOMİ"
+      icon="🥣"
+      infoText="Malzemelerin özkütle farklarını hesaplayarak ölçü birimleri arasında profesyonel dönüşümler yapın. Tariflerinizde mükemmel sonuçlar için idealdir."
+      results={result !== null && (
+        <div className="space-y-6">
+           <V2ResultCard 
+             color="indigo" 
+             label={material.name.toUpperCase()} 
+             value={`${result.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ${UNITS[toUnit].name}`}
+             icon={material.icon}
+             subLabel="Özkütle Odaklı Hesaplama"
+             className="!text-3xl font-black italic"
+           />
+           <div className="p-4 rounded-2xl bg-white/5 border border-white/5 text-[10px] text-muted font-bold tracking-widest text-center italic opacity-60">
+              {amount} {UNITS[fromUnit].name} baz alınarak hesaplandı
+           </div>
         </div>
       )}
+    >
+      <div className="space-y-8">
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-8">
+           <div className="space-y-4">
+              <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] flex items-center gap-2 px-2">
+                 <ChefHat className="w-4 h-4 text-indigo-500" /> MALZEME TÜRÜ SEÇİMİ
+              </div>
+              <V2Select 
+                value={material.name} 
+                onChange={(val) => setMaterial(MATERIALS.find(m => m.name === val) || MATERIALS[0])}
+                options={MATERIALS.map(m => ({ value: m.name, label: `${m.icon} ${m.name}` }))}
+              />
+           </div>
 
-      <div className="mt-8 p-6 bg-indigo-500/5 border-2 border-dashed border-indigo-500/20 rounded-3xl flex gap-4 items-center">
-        <span className="text-2xl">💡</span>
-        <p className="text-xs font-bold text-muted italic">Her malzemenin özkütlesi farklıdır. Örn: 1 bardak un (140g) ile 1 bardak şeker (200g) aynı ağırlıkta değildir. Mutfak motoru bu farkları 2026 hassasiyetiyle hesaplar.</p>
+           <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-6 items-end relative">
+              <div className="space-y-4">
+              <V2Select 
+                label="KAYNAK BİRİM" 
+                value={fromUnit} 
+                onChange={setFromUnit}
+                options={[
+                  { value: "cup", label: "Su Bardağı" },
+                  { value: "tbsp", label: "Yemek Kaşığı" },
+                  { value: "tsp", label: "Tatlı Kaşığı" },
+                  { value: "gram", label: "Gram" },
+                  { value: "ml", label: "Mililitre" },
+                ]}
+              />
+                 <V2Input 
+                   label="MİKTAR" 
+                   value={amount} 
+                   onChange={setAmount} 
+                   type="number"
+                   fieldClassName="!text-3xl font-black italic"
+                 />
+              </div>
+
+              <div className="flex items-center justify-center pb-4">
+                 <button 
+                   onClick={swap}
+                   className="w-14 h-14 rounded-2xl bg-white/5 border-2 border-white/10 flex items-center justify-center text-muted hover:text-indigo-500 hover:border-indigo-500/40 transition-all hover:scale-110 active:scale-95 group shadow-xl"
+                 >
+                    <ArrowLeftRight className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" />
+                 </button>
+              </div>
+
+              <div className="space-y-4">
+              <V2Select 
+                label="HEDEF BİRİM" 
+                value={toUnit} 
+                onChange={setToUnit}
+                options={[
+                  { value: "gram", label: "Gram" },
+                  { value: "ml", label: "Mililitre" },
+                  { value: "cup", label: "Su Bardağı" },
+                  { value: "tbsp", label: "Yemek Kaşığı" },
+                  { value: "tsp", label: "Tatlı Kaşığı" },
+                ]}
+              />
+                 <V2Input 
+                   label="KARŞILIK" 
+                   value={result?.toLocaleString('tr-TR', { maximumFractionDigits: 2 }) || "0"} 
+                   readOnly
+                   fieldClassName="!text-3xl font-black italic text-indigo-400"
+                 />
+              </div>
+           </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-indigo-500/10 text-indigo-500">
+                 <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                 <div className="text-[10px] font-black text-indigo-500 uppercase italic">HASSASİYET</div>
+                 <div className="text-[10px] text-muted font-bold opacity-60">Özkütle Odaklı Ölçüm</div>
+              </div>
+           </div>
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-4">
+              <div className="p-3 rounded-xl bg-purple-500/10 text-purple-500">
+                 <Utensils className="w-5 h-5" />
+              </div>
+              <div>
+                 <div className="text-[10px] font-black text-purple-500 uppercase italic">KULLANIM</div>
+                 <div className="text-[10px] text-muted font-bold opacity-60">Tüm Mutfak Ölçüleri</div>
+              </div>
+           </div>
+        </div>
+
+        <div className="p-4 rounded-3xl bg-indigo-600/5 border border-indigo-600/10 flex gap-4 items-center">
+           <Info className="w-6 h-6 text-indigo-500 shrink-0" />
+           <p className="text-[10px] text-muted italic leading-relaxed">
+             <b>Önemli:</b> Her malzemenin hacim/ağırlık oranı farklıdır. Bu araç, malzemelerin bilimsel özkütle verilerini kullanarak hesaplama yapar.
+           </p>
+        </div>
       </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

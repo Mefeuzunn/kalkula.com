@@ -1,7 +1,10 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
+import { ArrowLeftRight } from "lucide-react";
 
 // Ortak Çevirici Şablonu (Premium, Live, Bidirectional)
 interface Unit {
@@ -18,7 +21,7 @@ interface UniversalConverterProps {
   customConverter?: (val: number, from: string, to: string) => number;
 }
 
-function UniversalConverter({ units, defaultLeft, defaultRight, customConverter }: UniversalConverterProps) {
+function UniversalConverter({ title, units, defaultLeft, defaultRight, customConverter }: UniversalConverterProps) {
   const [leftUnit, setLeftUnit] = useState(defaultLeft);
   const [rightUnit, setRightUnit] = useState(defaultRight);
   const [leftValue, setLeftValue] = useState<string>("1");
@@ -66,88 +69,62 @@ function UniversalConverter({ units, defaultLeft, defaultRight, customConverter 
   };
 
   return (
-    <div className="flex flex-col gap-8">
-      <div className="flex flex-col gap-4">
-        {/* Desktop Labels Row */}
-        <div className="hidden lg:flex justify-between px-6">
-          <label className="calc-input-label !mb-0 text-xs">{units[leftUnit].name.toUpperCase()}</label>
-          <label className="calc-input-label !mb-0 text-xs text-right">{units[rightUnit].name.toUpperCase()}</label>
+    <V2CalculatorWrapper
+      title={`${title.toUpperCase()} DÖNÜŞÜM ANALİZİ`}
+      icon="🔄"
+      infoText={`${units[leftUnit].name} ve ${units[rightUnit].name} birimleri arasında gerçek zamanlı, çift yönlü dönüşüm yapabilirsiniz.`}
+      results={(
+        <div className="space-y-6">
+          <V2ResultCard
+            color="blue"
+            label="Dönüşüm Katsayısı"
+            value={`1 ${units[leftUnit].id.toUpperCase()} = ${convert("1", leftUnit, rightUnit)} ${units[rightUnit].id.toUpperCase()}`}
+            subLabel="Hassas Hesaplama Uygulandı"
+          />
+          
+          <div className="p-8 rounded-[2rem] bg-white/5 border border-white/5 flex flex-col items-center justify-center gap-2">
+             <span className="text-[10px] font-black text-muted uppercase tracking-[0.2em] italic">Sonuç (Canlı)</span>
+             <div className="flex items-baseline gap-3">
+                <span className="text-5xl font-black text-primary italic tracking-tighter">{rightValue || "0"}</span>
+                <span className="text-xl font-bold text-muted uppercase">{units[rightUnit].id}</span>
+             </div>
+          </div>
         </div>
-
-        <div className="relative">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-24 items-stretch">
-            
-            {/* Left Input Block */}
-            <div className="flex flex-col gap-2">
-              <label className="calc-input-label lg:hidden px-2">{units[leftUnit].name.toUpperCase()}</label>
-              <div className="calc-input-key">
-                  <div className="bg-secondary/10 p-3 border-b border-border">
-                    <select 
-                        value={leftUnit} 
-                        onChange={e => { setLeftUnit(e.target.value); handleLeftChange(leftValue, e.target.value, rightUnit); }} 
-                        className="w-full bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer appearance-none text-center"
-                    >
-                        {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
-                    </select>
-                  </div>
-                  <input 
-                    type="number" 
-                    value={leftValue} 
-                    onChange={e => handleLeftChange(e.target.value)} 
-                    className="calc-input-field !text-5xl py-10"
-                    placeholder="0"
-                  />
-              </div>
-            </div>
-
-            {/* Right Input Block */}
-            <div className="flex flex-col gap-2">
-              <label className="calc-input-label lg:hidden px-2 text-right">{units[rightUnit].name.toUpperCase()}</label>
-              <div className="calc-input-key">
-                  <div className="bg-secondary/10 p-3 border-b border-border">
-                    <select 
-                        value={rightUnit} 
-                        onChange={e => { setRightUnit(e.target.value); handleLeftChange(leftValue, leftUnit, e.target.value); }} 
-                        className="w-full bg-transparent border-none outline-none font-black text-[10px] uppercase tracking-widest cursor-pointer appearance-none text-center"
-                    >
-                        {Object.values(units).map(u => <option key={u.id} value={u.id} className="bg-surface text-primary font-bold">{u.name}</option>)}
-                    </select>
-                  </div>
-                  <input 
-                    type="number" 
-                    value={rightValue} 
-                    onChange={e => handleRightChange(e.target.value)} 
-                    className="calc-input-field !text-5xl py-10 text-accent-primary"
-                    placeholder="0"
-                  />
-              </div>
-            </div>
+      )}
+    >
+      <div className="space-y-8 relative">
+        <div className="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-4 items-end">
+          <div className="space-y-4">
+             <V2Select 
+               label="KAYNAK BİRİM" 
+               value={leftUnit} 
+               onChange={val => { setLeftUnit(val); handleLeftChange(leftValue, val, rightUnit); }}
+               options={Object.values(units).map(u => ({ value: u.id, label: u.name }))}
+             />
+             <V2Input label="DEĞER" value={leftValue} onChange={handleLeftChange} fieldClassName="!text-4xl" />
           </div>
 
-          {/* Central 3D Swap Button - Guaranteed Center */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[60] pointer-events-none">
+          <div className="flex items-center justify-center h-full pb-4">
              <button 
                 onClick={swapUnits}
-                className="calc-swap-glass group/swapbtn pointer-events-auto shadow-2xl"
-                title="Birimleri Değiştir"
+                className="w-14 h-14 rounded-2xl bg-white/5 border-2 border-white/10 flex items-center justify-center text-muted hover:text-primary hover:border-primary/40 hover:scale-110 active:scale-95 transition-all shadow-xl group"
              >
-                <div className="relative w-full h-full flex items-center justify-center">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="rotate-90 lg:rotate-0 transition-all duration-500 group-hover/swapbtn:rotate-180 group-hover/swapbtn:scale-110"><path d="m7 16-4-4 4-4"/><path d="M3 12h18"/><path d="m17 8 4 4-4 4"/></svg>
-                </div>
+                <ArrowLeftRight size={24} className="group-hover:rotate-180 transition-transform duration-500" />
              </button>
+          </div>
+
+          <div className="space-y-4">
+             <V2Select 
+               label="HEDEF BİRİM" 
+               value={rightUnit} 
+               onChange={val => { setRightUnit(val); handleLeftChange(leftValue, leftUnit, val); }}
+               options={Object.values(units).map(u => ({ value: u.id, label: u.name }))}
+             />
+             <V2Input label="KARŞILIK" value={rightValue} onChange={handleRightChange} fieldClassName="!text-4xl !text-blue-400" />
           </div>
         </div>
       </div>
-
-      <div className="panel p-8 bg-secondary/5 border-2 border-dashed border-border rounded-[2.5rem] text-center mt-6">
-        <label className="text-[10px] font-black text-muted uppercase tracking-[0.4em] mb-4 block italic opacity-60">Dönüşüm Katsayısı</label>
-        <div className="font-mono text-xl font-black text-primary tracking-tighter flex items-center justify-center gap-4">
-          <span className="opacity-40 whitespace-nowrap">1 {units[leftUnit].id.toUpperCase()} =</span>
-          <span className="text-4xl text-accent-primary italic drop-shadow-sm">{convert("1", leftUnit, rightUnit)}</span>
-          <span className="opacity-40 whitespace-nowrap">{units[rightUnit].id.toUpperCase()}</span>
-        </div>
-      </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }
 

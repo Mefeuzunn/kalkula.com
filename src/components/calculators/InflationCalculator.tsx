@@ -1,6 +1,8 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 export function InflationCalculator() {
   const [amount, setAmount] = useState("1000");
@@ -26,69 +28,72 @@ export function InflationCalculator() {
   const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-input-group">
-        <label className="calc-label">Hesaplanacak Tutar</label>
-        <div className="calc-input-wrapper">
-          <input type="number" value={amount} onChange={e => setAmount(e.target.value)} className="calc-input has-unit" placeholder="1000" min="0" />
-          <span className="calc-unit">₺</span>
-        </div>
-      </div>
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Yıllık Ortalama Enflasyon</label>
-          <div className="calc-input-wrapper">
-            <input type="number" step="0.1" value={inflationRate} onChange={e => setInflationRate(e.target.value)} className="calc-input has-unit" placeholder="50" min="0" />
-            <span className="calc-unit">%</span>
+    <V2CalculatorWrapper
+      title={`Alım Gücü Analizi — ${years} Yıl`}
+      icon="📊"
+      infoText={`Enflasyon paranızın alım gücünü düşürür. Bugün ${amount} ₺'ye aldığınız ürün, %${inflationRate} enflasyonla ${years} yıl sonra ~${result ? result.futureCost.toFixed(0) : "?"} ₺ seviyesine çıkacaktır.`}
+      results={result && (
+        <>
+          <div className="grid grid-cols-2 gap-6">
+            <V2ResultCard
+              color="red"
+              icon="🛒"
+              label="Aynı Ürünün Fiyatı"
+              value={fmt(result.futureCost)}
+              subLabel={`${years} Yıl Sonra`}
+            />
+            <V2ResultCard
+              color="amber"
+              icon="💸"
+              label="Paranızın Değeri"
+              value={fmt(result.purchasingPower)}
+              subLabel={`${years} Yıl Sonra`}
+            />
           </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Süre</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={years} onChange={e => setYears(e.target.value)} className="calc-input has-unit" placeholder="5" min="1" />
-            <span className="calc-unit">YIL</span>
-          </div>
-        </div>
-      </div>
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>📉 Enflasyon Etkisini Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
-
-      {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">📊 Alım Gücü Analizi — {years} Yıl</div>
-          <div className="calc-result-body">
-            <div className="calc-result-cards">
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">🛒 Aynı Ürünün Fiyatı</div>
-                <div className="calc-result-card-value" style={{ color: "#ef4444", fontSize: "1.2rem" }}>{fmt(result.futureCost)}</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>{years} yıl sonra</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">💸 Paranızın Değeri</div>
-                <div className="calc-result-card-value" style={{ color: "#f59e0b", fontSize: "1.2rem" }}>{fmt(result.purchasingPower)}</div>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>{years} yıl sonra</div>
-              </div>
-            </div>
-            <div className="calc-result-row">
-              <span className="calc-result-row-label">Alım Gücü Kaybı</span>
-              <span className="calc-result-row-value danger">%{result.lossRate.toFixed(1)}</span>
-            </div>
-            <div style={{ paddingTop: "0.5rem" }}>
-              <div className="calc-scale-bar">
-                <div className="calc-scale-fill" style={{ width: `${Math.min(result.lossRate, 100)}%`, background: "linear-gradient(90deg, #f59e0b, #ef4444)" }} />
-              </div>
-            </div>
+          <div className="mt-8 pt-8 border-t border-white/5 flex justify-between items-center">
+             <span className="text-xs font-black text-muted uppercase tracking-widest">Alım Gücü Kaybı</span>
+             <span className="text-2xl font-black text-[#ef4444]">-%{result.lossRate.toFixed(1)}</span>
           </div>
-        </div>
+
+          <div className="mt-4 h-3 bg-white/5 rounded-full overflow-hidden">
+             <div 
+               className="h-full bg-gradient-to-r from-amber-500 to-red-600 transition-all duration-1000 ease-out"
+               style={{ width: `${Math.min(result.lossRate, 100)}%` }}
+             />
+          </div>
+        </>
       )}
+    >
+      <V2Input
+        label="Hesaplanacak Tutar"
+        value={amount}
+        onChange={setAmount}
+        unit="₺"
+      />
 
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">📌</span>
-        <span className="calc-info-box-text">Enflasyon paranızın alım gücünü düşürür. Bugün {amount} ₺'ye aldığınız ürün, %{inflationRate} enflasyonla {years} yıl sonra ~{result ? result.futureCost.toFixed(0) : "?"} ₺'ye çıkacaktır.</span>
+      <div className="grid grid-cols-2 gap-4">
+        <V2Input
+          label="Yıllık Ortalama Enflasyon"
+          value={inflationRate}
+          onChange={setInflationRate}
+          unit="%"
+          fieldClassName="!text-3xl"
+        />
+        <V2Input
+          label="Süre"
+          value={years}
+          onChange={setYears}
+          unit="YIL"
+          fieldClassName="!text-3xl"
+        />
       </div>
-    </div>
+
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="📉 Enflasyon Etkisini Hesapla"
+      />
+    </V2CalculatorWrapper>
   );
 }

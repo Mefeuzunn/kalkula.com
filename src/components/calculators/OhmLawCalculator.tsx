@@ -2,6 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
+import { Zap, Info, RotateCcw, Activity, Cpu, Gauge, ZapOff } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
 
 export function OhmLawCalculator() {
   const [v, setV] = useState("");
@@ -17,7 +22,7 @@ export function OhmLawCalculator() {
       setActiveInputs(prev => prev.filter(item => item !== name));
     } else if (!activeInputs.includes(name)) {
       if (activeInputs.length >= 2) {
-        // En eski girişi çıkar yeniyi ekle (LIFO tarzı veya basitçe kaydır)
+        // Remove the oldest input if we already have 2, then add the new one
         setActiveInputs(prev => [...prev.slice(1), name]);
       } else {
         setActiveInputs(prev => [...prev, name]);
@@ -77,127 +82,162 @@ export function OhmLawCalculator() {
     }
 
     setResults({ v: resV, i: resI, r: resR, p: resP, formula });
-    
-    confetti({
-      particleCount: 20,
-      spread: 40,
-      origin: { y: 0.6 },
-      colors: ["#6366f1", "#a855f7"]
-    });
   };
 
   useEffect(() => {
     calculate();
   }, [v, i, r, p, activeInputs]);
 
-  const clear = () => {
+  const reset = () => {
     setV(""); setI(""); setR(""); setP("");
     setActiveInputs([]);
     setResults(null);
   };
 
+  const handleReset = () => {
+    reset();
+    confetti({ particleCount: 30, spread: 20, origin: { y: 0.8 }, colors: ["#6366f1"] });
+  }
+
   return (
-    <div className="calc-wrapper">
-      <div className="calc-grid-2">
-        {/* Input Master Panel */}
-        <div className="calc-input-section">
-          <div className="calc-input-group mb-6">
-            <label className="calc-label uppercase tracking-widest text-xs opacity-70">Parametre Girişi</label>
-            <p className="text-[10px] text-muted font-bold uppercase mb-4">
-              {activeInputs.length < 2 
-                ? `Lütfen hesaplama için ${2 - activeInputs.length} parametre daha girin.` 
-                : "Hesaplama 2 parametre üzerinden anlık yapılıyor."}
-            </p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {[
-                { n: "v", l: "GERİLİM (VOLTAJ)", u: "V", c: "accent" },
-                { n: "i", l: "AKIM (AMPER)", u: "A", c: "success" },
-                { n: "r", l: "DİRENÇ (OHM)", u: "Ω", c: "warning" },
-                { n: "p", l: "GÜÇ (WATT)", u: "W", c: "danger" }
-              ].map((item) => (
-                <div key={item.n} className={`calc-input-group transition-all duration-300 ${activeInputs.includes(item.n) ? "opacity-100" : "opacity-60"}`}>
-                  <label className="calc-label text-[10px]">{item.l}</label>
-                  <div className="calc-input-wrapper">
-                    <input 
-                      type="number" 
-                      value={item.n === "v" ? v : item.n === "i" ? i : item.n === "r" ? r : p}
-                      onChange={(e) => handleInput(item.n, e.target.value)}
-                      className={`calc-input has-unit ${activeInputs.includes(item.n) ? "border-accent-primary" : ""}`}
-                      placeholder="0"
-                    />
-                    <span className="calc-unit font-bold">{item.u}</span>
-                    {activeInputs.includes(item.n) && (
-                      <span className="absolute -top-2 -left-1 flex h-5 w-5 items-center justify-center rounded-full bg-accent-primary text-[9px] font-black text-white shadow-lg">
-                        {activeInputs.indexOf(item.n) + 1}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
+    <V2CalculatorWrapper
+      title="OHM KANUNU HESAPLAYICI"
+      icon="⚡"
+      infoText="Elektriksel parametreler (Voltaj, Akım, Direnç, Güç) arasındaki ilişkiyi hesaplayın. İki değer girdiğinizde diğerleri anlık olarak hesaplanır."
+      results={results && (
+        <div className="space-y-6 animate-result">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <V2ResultCard 
+                color="blue" 
+                label="VOLTAJ (GERİLİM)" 
+                value={results.v.toLocaleString('tr-TR', { maximumFractionDigits: 4 })} 
+                unit="Volt"
+                icon="⚡"
+                subLabel={activeInputs.includes("v") ? "Sizin Değeriniz" : "Hesaplanan Değer"}
+                className={!activeInputs.includes("v") ? "border-blue-500/30" : "opacity-70"}
+              />
+              <V2ResultCard 
+                color="emerald" 
+                label="AKIM (AMPER)" 
+                value={results.i.toLocaleString('tr-TR', { maximumFractionDigits: 4 })} 
+                unit="Amper"
+                icon="🔌"
+                subLabel={activeInputs.includes("i") ? "Sizin Değeriniz" : "Hesaplanan Değer"}
+                className={!activeInputs.includes("i") ? "border-emerald-500/30" : "opacity-70"}
+              />
+              <V2ResultCard 
+                color="amber" 
+                label="DİRENÇ (OHM)" 
+                value={results.r.toLocaleString('tr-TR', { maximumFractionDigits: 4 })} 
+                unit="Ω"
+                icon="🚧"
+                subLabel={activeInputs.includes("r") ? "Sizin Değeriniz" : "Hesaplanan Değer"}
+                className={!activeInputs.includes("r") ? "border-amber-500/30" : "opacity-70"}
+              />
+              <V2ResultCard 
+                color="purple" 
+                label="GÜÇ (WATT)" 
+                value={results.p.toLocaleString('tr-TR', { maximumFractionDigits: 4 })} 
+                unit="Watt"
+                icon="🔥"
+                subLabel={activeInputs.includes("p") ? "Sizin Değeriniz" : "Hesaplanan Değer"}
+                className={!activeInputs.includes("p") ? "border-purple-500/30" : "opacity-70"}
+              />
+           </div>
 
-            <button 
-              onClick={clear}
-              className="calc-btn-reset w-full mt-8"
-            >
-              ↺ Değerleri Sıfırla
-            </button>
-          </div>
-        </div>
-
-        {/* Results / Analysis Panel */}
-        <div className="calc-result-section">
-          {results ? (
-            <div className="calc-result-panel animate-result h-full">
-              <div className="calc-result-header">🔢 Devre Analizi Özeti</div>
-              <div className="calc-result-body">
-                <div className="grid grid-cols-2 gap-3 mb-6">
-                   {[
-                     { v: results.v, l: "Voltaj", u: "V", c: "accent", s: activeInputs.includes("v") },
-                     { v: results.i, l: "Akım", u: "A", c: "success", s: activeInputs.includes("i") },
-                     { v: results.r, l: "Direnç", u: "Ω", c: "warning", s: activeInputs.includes("r") },
-                     { v: results.p, l: "Güç", u: "W", c: "danger", s: activeInputs.includes("p") }
-                   ].map((r, idx) => (
-                      <div key={idx} className={`calc-result-card !p-4 ${r.s ? "opacity-50 grayscale" : ""}`}>
-                         <div className="calc-result-card-label">{r.l}</div>
-                         <div className={`calc-result-card-value !text-xl ${r.c}`}>
-                            {r.v.toLocaleString('tr-TR', { maximumFractionDigits: 4 })}
-                         </div>
-                         <div className="calc-result-card-unit">{r.u}</div>
-                      </div>
-                   ))}
-                </div>
-
-                <div className="calc-result-section mt-auto border-t border-border pt-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <span className="text-[10px] font-black text-accent-primary uppercase tracking-widest">Çözüm Yolu</span>
-                  </div>
-                  <div className="calc-info-box !mt-0 !mb-0 !bg-accent-glow/30 !border-accent-primary/20">
-                    <span className="calc-info-box-text font-mono italic text-[11px] accent">
-                      {results.formula}
-                    </span>
-                  </div>
-                </div>
+           <div className="p-6 rounded-3xl bg-blue-500/5 border border-blue-500/10 space-y-3">
+              <div className="text-[10px] font-black text-blue-500 uppercase tracking-widest italic px-2">ÇÖZÜM ANALİZİ</div>
+              <div className="font-mono text-xs text-primary/80 bg-black/20 p-4 rounded-2xl border border-white/5 italic">
+                 {results.formula}
               </div>
-            </div>
-          ) : (
-            <div className="calc-result-panel h-full flex flex-col items-center justify-center text-center opacity-40 border-dashed">
-              <div className="text-5xl mb-4">⚡</div>
-              <h4 className="text-[10px] font-black uppercase tracking-widest text-muted">
-                Analiz Başlatmak İçin<br/>2 Değer Girin
-              </h4>
-            </div>
-          )}
+           </div>
+        </div>
+      )}
+    >
+      <div className="space-y-8">
+        <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/5 space-y-8">
+           <div className="flex flex-col gap-2 px-2">
+              <div className="flex items-center gap-2">
+                <Activity className="w-4 h-4 text-blue-500" />
+                <span className="text-[10px] font-black text-muted uppercase tracking-[0.2em]">DEVRE PARAMETRELERİ</span>
+              </div>
+              <p className="text-[10px] text-muted italic opacity-60">En az iki değer girdiğinizde sistem otomatik olarak devreyi tamamlar.</p>
+           </div>
+
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <V2Input 
+                label="GERİLİM (V)" 
+                value={v} 
+                onChange={(val) => handleInput("v", val)} 
+                type="number" 
+                unit="Volt" 
+                placeholder="220" 
+                fieldClassName="!text-2xl font-black italic"
+                className={activeInputs.includes("v") ? "!border-blue-500/50 shadow-[0_0_20px_rgba(59,130,246,0.1)]" : ""}
+              />
+              <V2Input 
+                label="AKIM (I)" 
+                value={i} 
+                onChange={(val) => handleInput("i", val)} 
+                type="number" 
+                unit="Amper" 
+                placeholder="10" 
+                fieldClassName="!text-2xl font-black italic"
+                className={activeInputs.includes("i") ? "!border-emerald-500/50 shadow-[0_0_20px_rgba(16,185,129,0.1)]" : ""}
+              />
+              <V2Input 
+                label="DİRENÇ (R)" 
+                value={r} 
+                onChange={(val) => handleInput("r", val)} 
+                type="number" 
+                unit="Ω" 
+                placeholder="22" 
+                fieldClassName="!text-2xl font-black italic"
+                className={activeInputs.includes("r") ? "!border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.1)]" : ""}
+              />
+              <V2Input 
+                label="GÜÇ (P)" 
+                value={p} 
+                onChange={(val) => handleInput("p", val)} 
+                type="number" 
+                unit="Watt" 
+                placeholder="2200" 
+                fieldClassName="!text-2xl font-black italic"
+                className={activeInputs.includes("p") ? "!border-purple-500/50 shadow-[0_0_20px_rgba(168,85,247,0.1)]" : ""}
+              />
+           </div>
+
+           <V2ActionRow 
+              onCalculate={() => {}} 
+              onReset={handleReset} 
+              calculateLabel="Otomatik Analiz" 
+              isCalculateDisabled={true} 
+              className="!mt-4" 
+           />
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center gap-3">
+              <Gauge className="w-5 h-5 text-blue-500" />
+              <div className="text-[9px] font-black text-muted uppercase tracking-widest text-center">HASSAS ÖLÇÜM</div>
+           </div>
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center gap-3">
+              <Cpu className="w-5 h-5 text-emerald-500" />
+              <div className="text-[9px] font-black text-muted uppercase tracking-widest text-center">NATIVE MOTOR</div>
+           </div>
+           <div className="p-5 rounded-2xl bg-white/5 border border-white/5 flex flex-col items-center gap-3">
+              <ZapOff className="w-5 h-5 text-amber-500" />
+              <div className="text-[9px] font-black text-muted uppercase tracking-widest text-center">KAYIP ANALİZİ</div>
+           </div>
+        </div>
+
+        <div className="p-5 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex items-start gap-4">
+           <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
+           <p className="text-[10px] text-muted leading-relaxed italic">
+              <b>Kullanım Notu:</b> Ohm Kanunu (V=IR), elektrik devrelerinde gerilim, akım ve direnç arasındaki temel bağıntıdır. Bu araç, girdiğiniz son 2 değeri baz alarak tüm devreyi anlık olarak çözümler.
+           </p>
         </div>
       </div>
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">📘</span>
-        <span className="calc-info-box-text">
-          <b>Ohm Kanunu (V=IR)</b>, elektrik devrelerinin temel prensibidir. Bu araç girdiğiniz son 2 veriyi baz alarak diğer parametreleri anlık hesaplar. DC devreler ve güç faktörünün 1 olduğu AC devreler için uygundur.
-        </span>
-      </div>
-    </div>
+    </V2CalculatorWrapper>
   );
 }

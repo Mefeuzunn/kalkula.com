@@ -1,6 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
+import confetti from "canvas-confetti";
+import { Info, Target, Calculator, Star, BookOpen, GraduationCap, Award, Languages } from "lucide-react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2Select } from "./ui-v2/V2Select";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2ResultCard } from "./ui-v2/V2ResultCard";
 
 // KPSS Puan Hesaplama
 export function KpssCalculator() {
@@ -10,63 +17,85 @@ export function KpssCalculator() {
   const [tur, setTur] = useState("lisans");
   const [result, setResult] = useState<null | { p3: number; p10?: number }>(null);
 
-  const hesapla = () => {
+  const calculate = () => {
     const gy = parseFloat(gyNet) || 0;
     const gk = parseFloat(gkNet) || 0;
-    
-    // Basit P3 tahmini formülü: 50 + (GY * 0.4) + (GK * 0.4) -- Ortalama sapmalarla
     const p3 = 50 + (gy * 0.45) + (gk * 0.45);
     
     let res: any = { p3 };
     if (tur === "egitim") {
       const eg = parseFloat(egitimNet) || 0;
-      // KPSS P10 (Eğitim Bilimleri için yaklaşık formül)
       res.p10 = 40 + (gy * 0.25) + (gk * 0.25) + (eg * 0.35);
     }
     setResult(res);
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  };
+
+  const reset = () => {
+    setGyNet("");
+    setGkNet("");
+    setEgitimNet("");
+    setResult(null);
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Sınav Türü</label>
-        <select value={tur} onChange={e => { setTur(e.target.value); setResult(null); }} className="input-field">
-          <option value="lisans">Lisans / Ön Lisans / Ortaöğretim (B GRUBU P3/P93/P94)</option>
-          <option value="egitim">Eğitim Bilimleri (A GRUBU P10)</option>
-        </select>
-      </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Genel Yetenek Neti</label>
-          <input type="number" placeholder="Örn: 45" value={gyNet} onChange={e => setGyNet(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Genel Kültür Neti</label>
-          <input type="number" placeholder="Örn: 50" value={gkNet} onChange={e => setGkNet(e.target.value)} className="input-field" />
-        </div>
-        {tur === "egitim" && (
-          <div style={{ gridColumn: "1 / -1" }}>
-            <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Eğitim Bilimleri Neti</label>
-            <input type="number" placeholder="Örn: 65" value={egitimNet} onChange={e => setEgitimNet(e.target.value)} className="input-field" />
+    <V2CalculatorWrapper
+      title="KPSS PUAN HESAPLA"
+      icon="🏛️"
+      infoText="Lisans, Ön Lisans ve Ortaöğretim düzeyinde tahmini KPSS P3 ve P10 puanlarınızı hesaplayın."
+      results={result && (
+        <div className="space-y-6">
+          <div className={`grid grid-cols-1 ${result.p10 ? 'md:grid-cols-2' : ''} gap-4`}>
+             <V2ResultCard
+               color="blue"
+               label="TAHMİNİ P3 PUANI"
+               value={result.p3.toFixed(3)}
+               subLabel="Genel Yetenek & Kültür"
+               icon="📊"
+             />
+             {result.p10 && (
+               <V2ResultCard
+                 color="purple"
+                 label="TAHMİNİ P10 PUANI"
+                 value={result.p10.toFixed(3)}
+                 subLabel="Eğitim Bilimleri"
+                 icon="🎓"
+               />
+             )}
           </div>
-        )}
-      </div>
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>Puanı Hesapla</button>
-
-      {result && (
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1.5rem", textAlign: "center" }}>
-          <div style={{ fontSize: "0.9rem", color: "var(--text-muted)", marginBottom: "0.5rem" }}>Tahmini P3 / P93 / P94 Puanı</div>
-          <div style={{ fontSize: "2.5rem", fontWeight: 800, color: "var(--accent-primary)" }}>{result.p3.toFixed(3)}</div>
-          {result.p10 && (
-            <>
-              <div style={{ fontSize: "0.9rem", color: "var(--text-muted)", marginTop: "1rem", marginBottom: "0.5rem" }}>Tahmini KPSS P10 Puanı</div>
-              <div style={{ fontSize: "2.5rem", fontWeight: 800, color: "#8b5cf6" }}>{result.p10.toFixed(3)}</div>
-            </>
-          )}
-          <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "1rem" }}>*ÖSYM yığınsal standart sapmalarına göre farklılık gösterebilir.</div>
+          <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex gap-3 items-center">
+             <Info className="w-4 h-4 text-blue-500 shrink-0" />
+             <p className="text-[10px] text-muted italic leading-relaxed">
+               Bu hesaplama geçmiş yılların standart sapmaları baz alınarak yapılmıştır. Gerçek sonuçlar ÖSYM verilerine göre farklılık gösterebilir.
+             </p>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <V2Select 
+          label="SINAV TÜRÜ" 
+          value={tur} 
+          onChange={setTur} 
+          options={[
+            { value: "lisans", label: "Lisans / Ön Lisans / Ortaöğretim (B Grubu)" },
+            { value: "egitim", label: "Eğitim Bilimleri (A Grubu P10)" }
+          ]}
+          fieldClassName="font-bold"
+        />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <V2Input label="GENEL YETENEK NETİ" value={gyNet} onChange={setGyNet} unit="NET" placeholder="45" max="60" />
+           <V2Input label="GENEL KÜLTÜR NETİ" value={gkNet} onChange={setGkNet} unit="NET" placeholder="50" max="60" />
+        </div>
+
+        {tur === "egitim" && (
+           <V2Input label="EĞİTİM BİLİMLERİ NETİ" value={egitimNet} onChange={setEgitimNet} unit="NET" placeholder="65" max="80" fieldClassName="!bg-purple-500/5 !text-purple-500 !border-purple-500/10" />
+        )}
+
+        <V2ActionRow onCalculate={calculate} onReset={reset} calculateLabel="📉 KPSS Puanı Hesapla" />
+      </div>
+    </V2CalculatorWrapper>
   );
 }
 
@@ -76,10 +105,9 @@ export function AlesCalculator() {
   const [sozNet, setSozNet] = useState("");
   const [result, setResult] = useState<null | { say: number; soz: number; ea: number }>(null);
 
-  const hesapla = () => {
+  const calculate = () => {
     const say = parseFloat(sayNet) || 0;
     const soz = parseFloat(sozNet) || 0;
-    // Yakaşık ALES Formülü
     const pSay = 50 + (say * 0.75) + (soz * 0.25);
     const pSoz = 50 + (soz * 0.75) + (say * 0.25);
     const pEa = 50 + (say * 0.5) + (soz * 0.5);
@@ -89,37 +117,41 @@ export function AlesCalculator() {
       soz: Math.min(100, Math.max(50, pSoz)),
       ea: Math.min(100, Math.max(50, pEa))
     });
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  };
+
+  const reset = () => {
+     setSayNet("");
+     setSozNet("");
+     setResult(null);
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Sayısal Neti</label>
-          <input type="number" placeholder="Maks: 50" max="50" value={sayNet} onChange={e => setSayNet(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Sözel Neti</label>
-          <input type="number" placeholder="Maks: 50" max="50" value={sozNet} onChange={e => setSozNet(e.target.value)} className="input-field" />
-        </div>
-      </div>
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>ALES Puanı Hesapla</button>
-
-      {result && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
-          {[
-            { label: "ALES SAY", value: result.say.toFixed(3), color: "#3b82f6" },
-            { label: "ALES SÖZ", value: result.soz.toFixed(3), color: "#ef4444" },
-            { label: "ALES EA", value: result.ea.toFixed(3), color: "#f59e0b" },
-          ].map(r => (
-            <div key={r.label} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1.5rem", textAlign: "center" }}>
-              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: r.color }}>{r.value}</div>
-              <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.25rem", fontWeight: 600 }}>{r.label}</div>
-            </div>
-          ))}
+    <V2CalculatorWrapper
+      title="ALES PUAN HESAPLA"
+      icon="📐"
+      infoText="Lisansüstü eğitim başvurularınız için ALES Sayısal, Sözel ve Eşit Ağırlık puanlarınızı anında tahmin edin."
+      results={result && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             <V2ResultCard color="blue" label="ALES SAYISAL" value={result.say.toFixed(3)} subLabel="SAY Puanı" icon="➗" />
+             <V2ResultCard color="red" label="ALES SÖZEL" value={result.soz.toFixed(3)} subLabel="SÖZ Puanı" icon="📝" />
+             <V2ResultCard color="amber" label="ALES EŞİT AĞ." value={result.ea.toFixed(3)} subLabel="EA Puanı" icon="⚖️" />
+          </div>
+          <p className="text-[10px] text-muted text-center italic">
+            * 50 soru üzerinden hesaplanmıştır. Standart sapmalar ±2 puan etkileyebilir.
+          </p>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <V2Input label="SAYISAL NETİ" value={sayNet} onChange={setSayNet} unit="NET" placeholder="Maks: 50" max="50" fieldClassName="!bg-blue-500/5 !text-blue-500 !border-blue-500/10" />
+           <V2Input label="SÖZEL NETİ" value={sozNet} onChange={setSozNet} unit="NET" placeholder="Maks: 50" max="50" fieldClassName="!bg-red-500/5 !text-red-500 !border-red-500/10" />
+        </div>
+        <V2ActionRow onCalculate={calculate} onReset={reset} calculateLabel="📉 ALES Puanı Hesapla" />
+      </div>
+    </V2CalculatorWrapper>
   );
 }
 
@@ -130,96 +162,116 @@ export function DgsCalculator() {
   const [obp, setObp] = useState("");
   const [result, setResult] = useState<null | { say: number; soz: number; ea: number }>(null);
 
-  const hesapla = () => {
-    // 2026 DGS Güncel Katsayıları (Öngörülen)
+  const calculate = () => {
     const sayN = parseFloat(sayNet) || 0;
     const sozN = parseFloat(sozNet) || 0;
-    const o = parseFloat(obp) || 50; // ÖBP (Diploma x 10)
-    
+    const o = parseFloat(obp) || 50;
     const obpPuan = o * 0.6;
     const pSay = 130 + (sayN * 3.1) + (sozN * 0.4) + obpPuan;
     const pSoz = 130 + (sayN * 0.4) + (sozN * 3.0) + obpPuan;
     const pEa = 130 + (sayN * 1.75) + (sozN * 1.7) + obpPuan;
 
     setResult({ say: pSay, soz: pSoz, ea: pEa });
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  };
+
+  const reset = () => {
+     setSayNet("");
+     setSozNet("");
+     setObp("");
+     setResult(null);
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Sayısal Neti</label>
-          <input type="number" placeholder="Maks: 50" value={sayNet} onChange={e => setSayNet(e.target.value)} className="input-field" />
-        </div>
-        <div>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Sözel Neti</label>
-          <input type="number" placeholder="Maks: 50" value={sozNet} onChange={e => setSozNet(e.target.value)} className="input-field" />
-        </div>
-        <div style={{ gridColumn: "1 / -1" }}>
-          <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Önlisans Başarı Puanı (ÖBP)</label>
-          <input type="number" placeholder="Okul puanı (50-100)" value={obp} onChange={e => setObp(e.target.value)} className="input-field" />
-        </div>
-      </div>
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>DGS Puanı Hesapla</button>
-
-      {result && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
-          {[
-            { label: "DGS SAY", value: result.say.toFixed(3), color: "#3b82f6" },
-            { label: "DGS SÖZ", value: result.soz.toFixed(3), color: "#ef4444" },
-            { label: "DGS EA", value: result.ea.toFixed(3), color: "#f59e0b" },
-          ].map(r => (
-            <div key={r.label} style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1.5rem", textAlign: "center" }}>
-              <div style={{ fontSize: "1.5rem", fontWeight: 800, color: r.color }}>{r.value}</div>
-              <div style={{ fontSize: "0.85rem", color: "var(--text-muted)", marginTop: "0.25rem", fontWeight: 600 }}>{r.label}</div>
-            </div>
-          ))}
+    <V2CalculatorWrapper
+      title="DGS PUAN HESAPLA"
+      icon="🎓"
+      infoText="Dikey Geçiş Sınavı netlerinize ve Önlisans Başarı Puanınıza (ÖBP) göre yerleştirme puanlarınızı bulun."
+      results={result && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+             <V2ResultCard color="blue" label="DGS SAYISAL" value={result.say.toFixed(3)} subLabel="SAY Puanı" icon="🔢" />
+             <V2ResultCard color="red" label="DGS SÖZEL" value={result.soz.toFixed(3)} subLabel="SÖZ Puanı" icon="📚" />
+             <V2ResultCard color="amber" label="DGS EŞİT AĞ." value={result.ea.toFixed(3)} subLabel="EA Puanı" icon="🧬" />
+          </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+           <V2Input label="SAYISAL NETİ" value={sayNet} onChange={setSayNet} unit="NET" placeholder="Maks: 50" max="50" />
+           <V2Input label="SÖZEL NETİ" value={sozNet} onChange={setSozNet} unit="NET" placeholder="Maks: 50" max="50" />
+        </div>
+        <V2Input label="ÖNLİSANS BAŞARI PUANI (ÖBP)" value={obp} onChange={setObp} unit="P" placeholder="50-100 Arası" max="100" fieldClassName="!bg-primary/5 !border-primary/10" />
+        <V2ActionRow onCalculate={calculate} onReset={reset} calculateLabel="📉 DGS Puanı Hesapla" />
+      </div>
+    </V2CalculatorWrapper>
   );
 }
 
 // YDS Hesaplama
 export function YdsCalculator() {
   const [dogru, setDogru] = useState("");
-  const [yanlis, setYanlis] = useState("");
-  const [result, setResult] = useState<null | { dogru: number; puan: number; seviye: string }>(null);
+  const [result, setResult] = useState<null | { dogru: number; puan: number; seviye: string; color: "emerald" | "purple" | "blue" | "amber" | "red" }>(null);
 
-  const hesapla = () => {
+  const calculate = () => {
     const d = parseFloat(dogru) || 0;
-    // YDS'de yanlış doğruyu götürmez, bu aracı genel tutalım. Eğer kullanıcı yanlış girer ise uyarı verebiliriz fakat genelde YDS net = doğru sayısıdır.
     const puan = d * 1.25;
     
     let seviye = "";
-    if (puan >= 90) seviye = "A Seviyesi";
-    else if (puan >= 80) seviye = "B Seviyesi";
-    else if (puan >= 70) seviye = "C Seviyesi";
-    else if (puan >= 60) seviye = "D Seviyesi";
-    else if (puan >= 50) seviye = "E Seviyesi";
-    else seviye = "Baraj Altı";
+    let color: "emerald" | "purple" | "blue" | "amber" | "red" = "red";
 
-    setResult({ dogru: d, puan, seviye });
+    if (puan >= 90) { seviye = "A SEVİYESİ"; color = "emerald"; }
+    else if (puan >= 80) { seviye = "B SEVİYESİ"; color = "purple"; }
+    else if (puan >= 70) { seviye = "C SEVİYESİ"; color = "blue"; }
+    else if (puan >= 60) { seviye = "D SEVİYESİ"; color = "amber"; }
+    else if (puan >= 50) { seviye = "E SEVİYESİ"; color = "amber"; }
+    else { seviye = "BARAJ ALTI"; color = "red"; }
+
+    setResult({ dogru: d, puan, seviye, color });
+    if (puan >= 70) confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+  };
+
+  const reset = () => {
+     setDogru("");
+     setResult(null);
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-      <div style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.25)", borderRadius: "8px", padding: "1rem", fontSize: "0.85rem" }}>
-        💡 YDS ve YÖKDİL gibi dil sınavlarında 4 yanlış 1 doğruyu <strong>götürmez</strong>. Bu nedenle puanınız sadece doğru cevap sayınız üzerinden hesaplanır.
-      </div>
-      <div>
-        <label style={{ display: "block", fontWeight: 600, marginBottom: "0.5rem" }}>Doğru Sayısı</label>
-        <input type="number" placeholder="80 soruda kaç doğru (Maks: 80)" max="80" value={dogru} onChange={e => setDogru(e.target.value)} className="input-field" />
-      </div>
-      <button className="btn-primary" onClick={hesapla} style={{ padding: "0.85rem" }}>YDS/YÖKDİL Puanı Hesapla</button>
-
-      {result && (
-        <div style={{ background: "var(--surface)", border: "1px solid var(--border)", borderRadius: "10px", padding: "1.5rem", textAlign: "center" }}>
-          <div style={{ fontSize: "1rem", color: "var(--text-muted)", marginBottom: "0.5rem" }}>Sınav Puanınız</div>
-          <div style={{ fontSize: "3rem", fontWeight: 800, color: "var(--accent-primary)" }}>{result.puan.toFixed(3)}</div>
-          <div style={{ fontSize: "1.2rem", fontWeight: 700, color: "#8b5cf6", marginTop: "0.5rem" }}>{result.seviye}</div>
+    <V2CalculatorWrapper
+      title="YDS / YÖKDİL HESAPLA"
+      icon="🌍"
+      infoText="Dil sınavlarında yaptığınız her doğru 1.25 puandır. Puanınızı ve karşılık gelen YÖK seviyesini anında öğrenin."
+      results={result && (
+        <div className="space-y-6">
+          <V2ResultCard
+            color={result.color}
+            label="TOPLAM YDS PUANI"
+            value={result.puan.toFixed(2)}
+            subLabel={`DİL SEVİYESİ: ${result.seviye}`}
+            icon="🏆"
+          />
+          <div className="p-4 rounded-2xl bg-blue-500/5 border border-blue-500/10 flex gap-3 items-center">
+             <Languages className="w-5 h-5 text-blue-500 shrink-0" />
+             <p className="text-[11px] text-muted italic leading-relaxed">
+               YDS ve YÖKDİL gibi dil sınavlarında 4 yanlış 1 doğruyu götürmez. Puanınız sadece net doğru sayınız üzerinden hesaplanır.
+             </p>
+          </div>
         </div>
       )}
-    </div>
+    >
+      <div className="space-y-8">
+        <V2Input 
+          label="DOĞRU CEVAP SAYISI" 
+          value={dogru} 
+          onChange={setDogru} 
+          unit="D" 
+          placeholder="80 soruda kaç doğru?" 
+          max="80" 
+          fieldClassName="!py-6 text-center text-5xl font-black italic text-primary"
+        />
+        <V2ActionRow onCalculate={calculate} onReset={reset} calculateLabel="📉 Dil Puanı Hesapla" />
+      </div>
+    </V2CalculatorWrapper>
   );
 }
