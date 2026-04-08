@@ -5,9 +5,10 @@ import React from "react";
 interface V2ResultCardProps {
   label: string;
   value: string | number;
+  unit?: string;
   icon?: string;
   subLabel?: string;
-  color?: "red" | "amber" | "emerald" | "blue" | "purple" | "indigo" | "pink";
+  color?: "red" | "amber" | "emerald" | "blue" | "purple" | "indigo" | "pink" | "slate";
   className?: string;
   onClick?: () => void;
 }
@@ -15,6 +16,7 @@ interface V2ResultCardProps {
 export const V2ResultCard: React.FC<V2ResultCardProps> = ({
   label,
   value,
+  unit,
   icon,
   subLabel,
   color = "blue",
@@ -30,6 +32,7 @@ export const V2ResultCard: React.FC<V2ResultCardProps> = ({
     purple: "text-[#8b5cf6]",
     indigo: "text-[#6366f1]",
     pink: "text-[#ec4899]",
+    slate: "text-[#64748b]",
   }[color];
 
   return (
@@ -39,7 +42,10 @@ export const V2ResultCard: React.FC<V2ResultCardProps> = ({
     >
       {icon && <span className="text-xl mb-2">{icon}</span>}
       <span className="calc-input-label !m-0">{label}</span>
-      <div className={`calc-result-card-v2-value ${valueColor}`}>{value}</div>
+      <div className={`calc-result-card-v2-value ${valueColor}`}>
+        {value}
+        {unit && <span className="text-lg ml-2 opacity-60 font-medium">{unit}</span>}
+      </div>
       {subLabel && (
         <span className="text-[10px] font-bold text-muted uppercase tracking-widest">
           {subLabel}
