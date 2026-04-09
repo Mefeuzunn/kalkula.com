@@ -10,7 +10,8 @@ import {
   HelpCircle,
   Clock,
   TrendingDown,
-  Info
+  Info,
+  DollarSign
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
