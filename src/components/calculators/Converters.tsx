@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
