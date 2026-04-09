@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { Calendar, PieChart, ArrowLeft, Download, Share2, Info, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { downloadCSV } from "@/lib/ExportUtils";
 
 export function LoanAmortization() {
   const searchParams = useSearchParams();
@@ -57,6 +58,19 @@ export function LoanAmortization() {
     }
 
     setSummary({ monthlyPayment, totalPayment, totalInterest, schedule });
+  };
+
+  const handleDownload = () => {
+    if (!summary) return;
+    const headers = ["Donem", "Odeme", "Anapara", "Faiz", "Kalan Bakiye"];
+    const rows = summary.schedule.map(s => [
+      s.period,
+      s.payment.toFixed(2),
+      s.principal.toFixed(2),
+      s.interestAmt.toFixed(2),
+      s.balance.toFixed(2)
+    ]);
+    downloadCSV(headers, rows, `odeme-plani-${amount}-tutar`);
   };
 
   useEffect(() => {
@@ -166,8 +180,8 @@ export function LoanAmortization() {
                           <h3 className="text-sm font-black text-primary uppercase tracking-widest italic">Aylık Ödeme Planı Özeti</h3>
                        </div>
                        <div className="flex gap-2">
-                          <button className="p-3 bg-white dark:bg-zinc-800 rounded-xl border border-border shadow-sm hover:translate-y-[-2px] transition-all"><Download size={14} /></button>
-                          <button className="p-3 bg-white dark:bg-zinc-800 rounded-xl border border-border shadow-sm hover:translate-y-[-2px] transition-all"><Share2 size={14} /></button>
+                          <button onClick={handleDownload} className="p-3 bg-white dark:bg-zinc-800 rounded-xl border border-border shadow-sm hover:translate-y-[-2px] transition-all hover:text-emerald-500"><Download size={14} /></button>
+                          <button className="p-3 bg-white dark:bg-zinc-800 rounded-xl border border-border shadow-sm hover:translate-y-[-2px] transition-all cursor-not-allowed opacity-50"><Share2 size={14} /></button>
                        </div>
                     </div>
 

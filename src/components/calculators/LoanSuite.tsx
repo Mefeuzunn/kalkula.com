@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
+import { downloadCSV } from "@/lib/ExportUtils";
 
 
 type LoanType = "personal" | "housing" | "vehicle" | "commercial";
@@ -26,6 +27,14 @@ interface InternalResult {
   totalTax: number;
   totalPayment: number;
   apr: number;
+  amortization: Array<{
+    month: number;
+    payment: number;
+    interestPart: number;
+    taxPart: number;
+    principalPart: number;
+    remaining: number;
+  }>;
 }
 
 export function LoanSuite() {
@@ -34,6 +43,20 @@ export function LoanSuite() {
   const [rate, setRate] = useState("3.89"); // Current average rate
   const [months, setMonths] = useState("24");
   const [fee, setFee] = useState("500"); // Dosya masrafı
+
+  const downloadAmortization = () => {
+    if (!results) return;
+    const headers = ["Ay", "Taksit", "Anapara", "Faiz", "Vergi", "Kalan Borç"];
+    const rows = (results as any).amortization.map((row: any) => [
+      row.month,
+      row.payment.toFixed(2),
+      row.principalPart.toFixed(2),
+      row.interestPart.toFixed(2),
+      row.taxPart.toFixed(2),
+      row.remaining.toFixed(2)
+    ]);
+    downloadCSV(headers, rows, `kredi-odeme-plani-${loanType}`);
+  };
 
   // Turkish Banking Tax Decoders
   const taxConfig = useMemo(() => {
@@ -73,12 +96,31 @@ export function LoanSuite() {
     // Annual Cost Ratio (Maliyet Oranı)
     const annualCostRatio = ((totalCostWithFee - P) / P / (N / 12)) * 100;
 
+    // Amortization
+    let remainingPrincipal = P;
+    const amortization = [];
+    for (let i = 1; i <= N; i++) {
+        const interestPart = remainingPrincipal * IR;
+        const taxPart = interestPart * (taxConfig.kkdf + taxConfig.bsmv);
+        const principalPart = monthlyPayment - interestPart - taxPart;
+        remainingPrincipal -= principalPart;
+        amortization.push({
+            month: i,
+            payment: monthlyPayment,
+            interestPart,
+            taxPart,
+            principalPart,
+            remaining: Math.max(0, remainingPrincipal)
+        });
+    }
+
     return {
       monthlyPayment,
       totalInterest,
       totalTax,
       totalPayment: totalPayment + F,
-      apr: annualCostRatio
+      apr: annualCostRatio,
+      amortization
     };
   }, [amount, rate, months, fee, taxConfig]);
 
@@ -195,6 +237,7 @@ export function LoanSuite() {
                 subLabel="TOPLAM GERİ ÖDEME (MASRAFLI)"
                 subValue={fmt(results.totalPayment)}
                 color="emerald"
+                variant="list"
                 gaugePercentage={results.apr}
                 gaugeLabel="APR / MALİYET"
                 accentIcon={<TrendingUp size={32} />}
@@ -214,7 +257,10 @@ export function LoanSuite() {
                 ]}
               />
 
-              <div className="bg-surface-variant/50 p-6 rounded-[2rem] border border-border flex items-center justify-between group cursor-pointer hover:bg-emerald-500/5 transition-all">
+              <div 
+              className="bg-surface-variant/50 p-6 rounded-[2rem] border border-border flex items-center justify-between group cursor-pointer hover:bg-emerald-500/5 transition-all"
+              onClick={downloadAmortization}
+            >
                   <div className="flex items-center gap-4">
                       <div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-2xl flex items-center justify-center shadow-md">
                          <Calendar size={24} className="text-emerald-500" />

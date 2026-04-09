@@ -16,6 +16,7 @@ interface V2Premium3DResultProps {
     icon?: React.ReactNode;
     color?: string;
   }>;
+  variant?: "grid" | "list";
   gaugePercentage?: number;
   gaugeLabel?: string;
   footerText?: string;
@@ -30,6 +31,7 @@ export const V2Premium3DResult: React.FC<V2Premium3DResultProps> = ({
   subLabel,
   color = "emerald",
   items = [],
+  variant = "grid",
   gaugePercentage,
   gaugeLabel = "DAĞILIM",
   footerText,
@@ -99,7 +101,7 @@ export const V2Premium3DResult: React.FC<V2Premium3DResultProps> = ({
             </div>
           </div>
 
-          {(subValue || subLabel) && (
+          {((subValue && subValue !== "") || (subLabel && subLabel !== "")) && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 border-t border-white/20 pt-10">
               {subValue && (
                 <div>
@@ -148,21 +150,41 @@ export const V2Premium3DResult: React.FC<V2Premium3DResultProps> = ({
         </div>
       </div>
 
-      {/* ITEMS GRID (3D TILES) */}
+      {/* ITEMS RENDERER */}
       {items.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {items.map((item, idx) => (
-            <div key={idx} className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-2xl space-y-4 hover:-translate-y-1 transition-transform border-b-8 border-secondary/10">
-              <div className="flex items-center gap-3 mb-2">
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${item.color || "bg-blue-500/10 text-blue-500"}`}>
-                  {item.icon || <Info size={16} />}
+        variant === "grid" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {items.map((item, idx) => (
+              <div key={idx} className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-2xl space-y-4 hover:-translate-y-1 transition-transform border-b-8 border-secondary/10">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center ${item.color || "bg-blue-500/10 text-blue-500"}`}>
+                    {item.icon || <Info size={16} />}
+                  </div>
+                  <span className="text-[10px] font-black text-muted uppercase tracking-[0.2em]">{item.label}</span>
                 </div>
-                <span className="text-[10px] font-black text-muted uppercase tracking-[0.2em]">{item.label}</span>
+                <p className="text-2xl font-black text-primary tracking-tight">{item.value}</p>
               </div>
-              <p className="text-2xl font-black text-primary tracking-tight">{item.value}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="bg-surface rounded-[2.5rem] border border-border shadow-2xl overflow-hidden divide-y divide-border/50">
+            {items.map((item, idx) => (
+              <div key={idx} className="flex items-center justify-between p-7 hover:bg-secondary/5 transition-colors">
+                <div className="flex items-center gap-4">
+                  {item.icon && (
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${item.color || "bg-secondary/10 text-muted"}`}>
+                      {item.icon}
+                    </div>
+                  )}
+                  <span className="text-[11px] font-black text-muted/70 uppercase tracking-widest">{item.label}</span>
+                </div>
+                <span className={`text-lg font-black tracking-tight ${item.color?.includes('text-') ? item.color.split(' ').find(c => c.startsWith('text-')) : 'text-primary'}`}>
+                  {item.value}
+                </span>
+              </div>
+            ))}
+          </div>
+        )
       )}
 
       {/* FOOTER / INFO SECTION */}

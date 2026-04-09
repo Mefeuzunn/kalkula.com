@@ -144,6 +144,7 @@ export function BankingAdvanced() {
                subLabel="MAKSİMUM AYLIK TAKSİT GÜCÜNÜZ"
                subValue={`${fmt(results.maxMonthlyPayment ?? 0)} / ay`}
                color="emerald"
+               variant="list"
                gaugePercentage={results.dtiRatio}
                gaugeLabel="BORÇ / GELİR"
                accentIcon={<Target size={32} />}
@@ -167,6 +168,7 @@ export function BankingAdvanced() {
                subLabel="KALAN ANAPARA BORCU"
                subValue={fmt(results.principal ?? 0)}
                color="zinc"
+               variant="list"
                accentIcon={<RefreshCw size={32} />}
                items={[
                  {

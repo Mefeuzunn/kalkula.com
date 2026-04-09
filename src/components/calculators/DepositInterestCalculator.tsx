@@ -2,11 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
+import { Landmark, TrendingUp, Percent, Calculator, PiggyBank, DollarSign } from "lucide-react";
+
 export function DepositInterestCalculator() {
   const [principal, setPrincipal] = useState("250000");
   const [days, setDays] = useState("32");
   const [interestRate, setInterestRate] = useState("48");
-  const [taxRate, setTaxRate] = useState("7.5"); // Turkiye genelinde kisa vadeli stopaj orani
+  const [taxRate, setTaxRate] = useState("7.5");
   const [result, setResult] = useState<{ gross: number; net: number; taxAmount: number; totalEnd: number; dailyNet: number } | null>(null);
 
   const calculate = () => {
@@ -30,72 +36,60 @@ export function DepositInterestCalculator() {
 
   useEffect(() => { calculate(); }, [principal, days, interestRate, taxRate]);
 
-  const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+  const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 2 });
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-input-group">
-        <label className="calc-label">Yatırılacak Anapara</label>
-        <div className="calc-input-wrapper">
-          <input type="number" value={principal} onChange={e => setPrincipal(e.target.value)} className="calc-input has-unit" placeholder="250000" min="0" />
-          <span className="calc-unit">₺</span>
-        </div>
-      </div>
-      <div className="calc-grid-3">
-        <div className="calc-input-group">
-          <label className="calc-label">Faiz Oranı</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={interestRate} onChange={e => setInterestRate(e.target.value)} className="calc-input has-unit" placeholder="48" step="0.1" min="0" />
-            <span className="calc-unit">%</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Vade</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={days} onChange={e => setDays(e.target.value)} className="calc-input has-unit" placeholder="32" min="1" />
-            <span className="calc-unit">GÜN</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Stopaj</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={taxRate} onChange={e => setTaxRate(e.target.value)} className="calc-input has-unit" placeholder="7.5" step="0.1" min="0" />
-            <span className="calc-unit">%</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>🏦 Mevduat Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
-
-      {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">🏦 Mevduat Getiri Analizi</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Vade Sonu Toplam Tutar</div>
-              <div className="calc-result-hero-value" style={{ color: "var(--accent-primary)", fontSize: "2.5rem" }}>{fmt(result.totalEnd)}</div>
-              <div className="calc-result-hero-sub">Müşteriye net kalan faiz: {fmt(result.net)}</div>
-            </div>
-            <div className="calc-result-cards" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Brüt Kazanç</div>
-                <div className="calc-result-card-value font-bold">{fmt(result.gross)}</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Vergi (Stopaj)</div>
-                <div className="calc-result-card-value text-red-500 font-bold">-{fmt(result.taxAmount)}</div>
-              </div>
-              <div className="calc-result-card">
-                <div className="calc-result-card-label">Günlük Net</div>
-                <div className="calc-result-card-value text-green-500 font-bold">{fmt(result.dailyNet)}</div>
-              </div>
-            </div>
-          </div>
-        </div>
+    <V2CalculatorWrapper
+      title="MEVDUAT GETİRİ ANALİZİ"
+      icon="💰"
+      results={result && (
+        <V2Premium3DResult
+          title="VADELİ MEVDUAT GETİRİSİ"
+          mainLabel="VADE SONU NET GETİRİ"
+          mainValue={`+${fmt(result.net)}`}
+          subLabel={`%${taxRate} stopaj kesintisi uygulandı`}
+          subValue=""
+          color="blue"
+          variant="list"
+          accentIcon={<PiggyBank size={32} />}
+          items={[
+            {
+              label: "BRÜT FAİZ GETİRİSİ",
+              value: fmt(result.gross),
+              icon: <TrendingUp size={16} />,
+              color: "bg-blue-500/10 text-blue-500"
+            },
+            {
+              label: `STOPAJ VERGİSİ (%${taxRate})`,
+              value: `-${fmt(result.taxAmount)}`,
+              icon: <Calculator size={16} />,
+              color: "bg-red-500/10 text-red-500"
+            },
+            {
+              label: "VADE SONU TOPLAM TUTAR",
+              value: fmt(result.totalEnd),
+              icon: <Landmark size={16} />,
+              color: "bg-blue-500/10 text-blue-600 font-black"
+            }
+          ]}
+        />
       )}
+    >
+      <V2Input label="Yatırılacak Anapara" value={principal} onChange={setPrincipal} unit="₺" />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <V2Input label="Faiz Oranı" value={interestRate} onChange={setInterestRate} unit="%" />
+        <V2Input label="Vade (Gün)" value={days} onChange={setDays} unit="GÜN" />
+        <V2Input label="Stopaj" value={taxRate} onChange={setTaxRate} unit="%" />
+      </div>
+
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="🏦 Mevduat Getirisini Hesapla"
+      />
+    </V2CalculatorWrapper>
+  );
+}
 
       <div className="calc-info-box">
         <span className="calc-info-box-icon">⚖️</span>
