@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Landmark, ArrowRight, Wallet, Percent, Calendar } from "lucide-react";

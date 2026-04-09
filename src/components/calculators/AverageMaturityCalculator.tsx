@@ -1,3 +1,6 @@
+"use client";
+
+import React, { useState, useEffect } from "react";
 import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
 import { V2Input } from "./ui-v2/V2Input";
 import { V2ActionRow } from "./ui-v2/V2ActionRow";
