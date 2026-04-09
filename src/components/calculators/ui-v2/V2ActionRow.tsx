@@ -22,17 +22,17 @@ export const V2ActionRow: React.FC<V2ActionRowProps> = ({
   className = "",
 }) => {
   return (
-    <div className={`grid ${showCalculate ? 'grid-cols-[1fr_auto]' : 'grid-cols-1'} gap-4 mt-6 mb-6 ${className}`}>
+    <div className={`grid ${showCalculate ? 'grid-cols-1 md:grid-cols-[1fr_auto]' : 'grid-cols-1'} gap-4 mt-6 mb-6 ${className}`}>
       {showCalculate && (
         <button 
-          className={`calc-btn-calculate-v2 ${isCalculateDisabled ? 'opacity-50 cursor-not-allowed scale-95 shadow-none' : ''}`} 
+          className={`calc-btn-calculate-v2 w-full md:w-auto ${isCalculateDisabled ? 'opacity-50 cursor-not-allowed scale-95 shadow-none' : ''}`} 
           onClick={onCalculate}
           disabled={isCalculateDisabled}
         >
           {calculateLabel}
         </button>
       )}
-      <button className="calc-btn-reset-v2" onClick={onReset}>
+      <button className="calc-btn-reset-v2 w-full md:w-auto" onClick={onReset}>
          ↻ {resetLabel}
       </button>
     </div>

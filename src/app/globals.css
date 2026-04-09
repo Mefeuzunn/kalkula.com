@@ -136,6 +136,14 @@ input, textarea, select {
   text-transform: uppercase;
 }
 
+@media (max-width: 640px) {
+  .btn-primary {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+    box-shadow: 0 3px 0pt rgb(30 64 175 / 0.8), 0 6px 12px rgb(37 99(235 / 0.1));
+  }
+}
+
 @media (hover: hover) {
   .btn-primary:hover {
     transform: translateY(-3px);
@@ -180,6 +188,13 @@ input, textarea, select {
 .btn-secondary:active {
   transform: translateY(1px);
   box-shadow: 0 1px 0pt var(--border), 0 2px 4px rgb(0 0 0 / 0.1);
+}
+
+@media (max-width: 640px) {
+  .btn-secondary {
+    padding: 0.6rem 1.25rem;
+    font-size: 0.85rem;
+  }
 }
 
 /* 3D Key Utility (For Calculators and Games) */
@@ -1416,6 +1431,13 @@ input, textarea, select {
   appearance: textfield;
 }
 
+@media (max-width: 640px) {
+  .calc-input-field {
+    font-size: 1.75rem;
+    padding: 1rem 1.25rem;
+  }
+}
+
 .calc-input-field::-webkit-outer-spin-button,
 .calc-input-field::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -1517,6 +1539,18 @@ input, textarea, select {
   box-shadow: 0 8px 15px rgba(37, 99, 235, 0.2);
 }
 
+@media (max-width: 640px) {
+  .calc-btn-calculate-v2 {
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    border-bottom-width: 6px;
+  }
+  
+  .calc-btn-calculate-v2:active {
+    border-bottom-width: 2px;
+  }
+}
+
 .calc-btn-reset-v2 {
   background: #334155;
   color: white;
@@ -1535,6 +1569,14 @@ input, textarea, select {
 .calc-btn-reset-v2:active {
   transform: translateY(4px);
   border-bottom-width: 2px;
+}
+
+@media (max-width: 640px) {
+  .calc-btn-reset-v2 {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    border-bottom-width: 6px;
+  }
 }
 
 /* --- PREMIUM 3D GLASS SWAP BUTTON --- */

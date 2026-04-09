@@ -14,6 +14,8 @@ import {
   ChevronRight
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
+
 
 type Tool = "eligibility" | "early-repayment" | "dosya-masrafi";
 
@@ -133,44 +135,50 @@ export function BankingAdvanced() {
            </div>
         </div>
 
-        {/* RESULTS AREA */}
         <div className="flex flex-col gap-6">
            {tool === "eligibility" && results && "maxPossibleLoan" in results ? (
-             <div className="flex flex-col gap-6">
-               <div className="bg-emerald-600 p-12 rounded-[3.5rem] shadow-2xl text-white relative overflow-hidden border-b-[8px] border-emerald-800/30">
-                  <p className="text-[11px] font-black opacity-60 uppercase tracking-widest mb-3 italic">TAHMİNİ KREDİ LİMİTİNİZ</p>
-                  <h3 className="text-6xl font-black tracking-tight mb-8">~ {fmt(results.maxPossibleLoan ?? 0)}</h3>
-                  <div className="bg-white/10 p-4 rounded-2xl border border-white/20 backdrop-blur-sm">
-                      <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1">Maksimum Aylık Taksit Gücünüz</p>
-                      <p className="text-2xl font-black">{fmt(results.maxMonthlyPayment ?? 0)} / ay</p>
-                  </div>
-               </div>
-
-               <div className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-xl">
-                  <div className="flex justify-between items-center mb-4">
-                     <span className="text-[10px] font-black text-muted uppercase">Borç / Gelir Oranı</span>
-                     <span className={`text-xl font-black ${(results.dtiRatio ?? 0) > 50 ? "text-red-500" : "text-emerald-500"}`}>%{(results.dtiRatio ?? 0).toFixed(1)}</span>
-                  </div>
-                  <div className="h-3 w-full bg-secondary/20 rounded-full overflow-hidden">
-                     <div className={`h-full transition-all duration-1000 ${(results.dtiRatio ?? 0) > 50 ? "bg-red-500" : "bg-emerald-500"}`} style={{ width: `${Math.min(100, results.dtiRatio ?? 0)}%` }} />
-                  </div>
-                  <p className="text-[10px] text-muted italic mt-4 font-bold">* %50 üzerindeki oranlarda bankalar genellikle kredi onaylamazlar.</p>
-               </div>
-             </div>
+             <V2Premium3DResult
+               title="KREDİ KAPASİTE ANALİZİ"
+               mainLabel="TAHMİNİ KREDİ LİMİTİNİZ"
+               mainValue={`~ ${fmt(results.maxPossibleLoan ?? 0)}`}
+               subLabel="MAKSİMUM AYLIK TAKSİT GÜCÜNÜZ"
+               subValue={`${fmt(results.maxMonthlyPayment ?? 0)} / ay`}
+               color="emerald"
+               gaugePercentage={results.dtiRatio}
+               gaugeLabel="BORÇ / GELİR"
+               accentIcon={<Target size={32} />}
+               footerText="<b>Finansör Notu:</b> Bu veriler simülasyon amaçlıdır. Kredi puanınız (Findeks) ve banka içi limitleriniz nihai sonucu etkileyecektir."
+               items={[
+                 {
+                   label: "BORÇLULUK DURUMU",
+                   value: (results.dtiRatio ?? 0) > 50 ? "YÜKSEK" : "SAĞLIKLI",
+                   icon: <ShieldCheck size={16} />,
+                   color: (results.dtiRatio ?? 0) > 50 ? "bg-red-500/10 text-red-500" : "bg-emerald-500/10 text-emerald-500"
+                 }
+               ]}
+             />
            ) : null}
 
            {tool === "early-repayment" && results && "penaltyAmount" in results ? (
-             <div className="flex flex-col gap-6">
-                <div className="bg-zinc-900 p-12 rounded-[3.5rem] shadow-2xl text-white relative overflow-hidden border-b-[8px] border-black/50">
-                    <p className="text-[11px] font-black opacity-40 uppercase tracking-widest mb-3 italic">ERKEN KAPATMA TOPLAM ÖDEME</p>
-                    <h3 className="text-6xl font-black tracking-tighter mb-8">{fmt(results.totalToPay ?? 0)}</h3>
-                    <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/10 uppercase tracking-widest text-[10px] font-black">
-                       <span className="opacity-60">Uygulanan Ceza Tutarı</span>
-                       <span className="text-red-400 text-lg">+{fmt(results.penaltyAmount ?? 0)}</span>
-                    </div>
-                </div>
-             </div>
+             <V2Premium3DResult
+               title="ERKEN KAPATMA HESABI"
+               mainLabel="ERKEN KAPATMA TOPLAM ÖDEME"
+               mainValue={fmt(results.totalToPay ?? 0)}
+               subLabel="KALAN ANAPARA BORCU"
+               subValue={fmt(results.principal ?? 0)}
+               color="zinc"
+               accentIcon={<RefreshCw size={32} />}
+               items={[
+                 {
+                   label: "ERKEN KAPAMA CEZASI",
+                   value: `+${fmt(results.penaltyAmount ?? 0)}`,
+                   icon: <DollarSign size={16} />,
+                   color: "bg-red-500/10 text-red-400"
+                 }
+               ]}
+             />
            ) : null}
+
 
            <div className="bg-surface p-6 rounded-[2.5rem] border border-border flex items-start gap-4">
               <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500 shrink-0">

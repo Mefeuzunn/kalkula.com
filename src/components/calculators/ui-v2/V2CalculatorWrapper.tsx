@@ -22,13 +22,13 @@ export const V2CalculatorWrapper: React.FC<V2CalculatorWrapperProps> = ({
   return (
     <div className={`calc-wrapper max-w-2xl mx-auto ${className}`}>
       {/* INPUTS SECTION */}
-      <div className="space-y-6">
+      <div className="space-y-4 md:space-y-6">
         {children}
       </div>
 
       {/* RESULTS SECTION */}
       {results && (
-        <div className="mt-12 calc-result-panel-v2 border border-white/5 rounded-[2.5rem] bg-[#0f172a] shadow-inner overflow-hidden">
+        <div className="mt-8 md:mt-12 calc-result-panel-v2 border border-white/5 rounded-[2.5rem] bg-[#0f172a] shadow-inner overflow-hidden">
           {title && (
             <div className="calc-result-header-v2 bg-white/5">
                {icon && <span className="text-xl">{icon}</span>}
@@ -36,7 +36,7 @@ export const V2CalculatorWrapper: React.FC<V2CalculatorWrapperProps> = ({
             </div>
           )}
           
-          <div className="p-8">
+          <div className="p-5 md:p-8">
             {results}
           </div>
         </div>

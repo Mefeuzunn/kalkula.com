@@ -191,9 +191,9 @@ export function ResistorCalculator() {
         </div>
       )}
     >
-      <div className="space-y-8">
+      <div className="space-y-6 md:space-y-8">
         {/* Band Config */}
-        <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/5 space-y-8">
+        <div className="p-4 md:p-8 rounded-[2.5rem] bg-white/5 border border-white/5 space-y-6 md:space-y-8">
            <div className="flex justify-center">
               <div className="flex bg-white/5 p-1.5 rounded-[2rem] gap-1 border border-white/10 shadow-lg">
                  {[4, 5, 6].map((b) => (
@@ -224,7 +224,7 @@ export function ResistorCalculator() {
                             <div className="w-3.5 h-3.5 rounded-full border border-white/20" style={{ backgroundColor: COLORS[band].hex }}></div>
                          </div>
                       </div>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-5 md:grid-cols-4 gap-1.5">
                          {Object.entries(COLORS).map(([key, info]) => {
                             if (isTolerance && info.tolerance === undefined) return null;
                             if (isPPM && info.tempCoeff === undefined) return null;

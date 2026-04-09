@@ -15,6 +15,8 @@ import {
   Briefcase
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
+
 
 type LoanType = "personal" | "housing" | "vehicle" | "commercial";
 
@@ -186,61 +188,31 @@ export function LoanSuite() {
         <div className="lg:col-span-7 flex flex-col gap-6">
           {results ? (
             <>
-              <div className="bg-emerald-600 p-12 rounded-[3.5rem] shadow-2xl text-white relative overflow-hidden group border-b-[10px] border-emerald-800/30">
-                <div className="absolute -right-16 -top-16 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
-                <div className="relative z-10">
-                  <div className="flex justify-between items-start mb-10">
-                    <div>
-                        <p className="text-[11px] font-black opacity-60 uppercase tracking-[0.4em] mb-2">{taxConfig.title} — AYLIK TAKSİT</p>
-                        <h3 className="text-6xl font-black leading-tight italic tracking-tighter drop-shadow-lg">
-                           {fmt(results.monthlyPayment)}
-                        </h3>
-                    </div>
-                    <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20">
-                        <TrendingUp size={32} className="text-emerald-200" />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-10 border-t border-white/20 pt-10">
-                    <div>
-                        <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mb-2 flex items-center gap-2">
-                           <DollarSign size={12} /> TOPLAM GERİ ÖDEME
-                        </p>
-                        <p className="text-3xl font-black tracking-tight">{fmt(results.totalPayment)}</p>
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-black opacity-60 uppercase tracking-widest mb-2 flex items-center gap-2">
-                           <Info size={12} /> YILLIK MALİYET (APR)
-                        </p>
-                        <p className="text-3xl font-black text-emerald-200">%{results.apr.toFixed(2)}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-xl space-y-4">
-                      <div className="flex items-center gap-3 mb-2">
-                          <div className="w-8 h-8 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500">
-                              <Percent size={16} />
-                          </div>
-                          <span className="text-[10px] font-black text-muted uppercase tracking-widest">Faiz Maliyeti</span>
-                      </div>
-                      <p className="text-2xl font-black text-primary">{fmt(results.totalInterest)}</p>
-                      <p className="text-[10px] text-muted italic font-bold">Banka tarafından tahsil edilen brüt faiz.</p>
-                  </div>
-
-                  <div className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-xl space-y-4">
-                      <div className="flex items-center gap-3 mb-2">
-                          <div className="w-8 h-8 bg-purple-500/10 rounded-xl flex items-center justify-center text-purple-500">
-                              <Calculator size={16} />
-                          </div>
-                          <span className="text-[10px] font-black text-muted uppercase tracking-widest">Vergi Yükü</span>
-                      </div>
-                      <p className="text-2xl font-black text-primary">{fmt(results.totalTax)}</p>
-                      <p className="text-[10px] text-muted italic font-bold">Devlete aktarılan KKDF ve BSMV toplamı.</p>
-                  </div>
-              </div>
+              <V2Premium3DResult
+                title={`${taxConfig.title} ÖZETİ`}
+                mainLabel="AYLIK TAKSİT TUTARI"
+                mainValue={fmt(results.monthlyPayment)}
+                subLabel="TOPLAM GERİ ÖDEME (MASRAFLI)"
+                subValue={fmt(results.totalPayment)}
+                color="emerald"
+                gaugePercentage={results.apr}
+                gaugeLabel="APR / MALİYET"
+                accentIcon={<TrendingUp size={32} />}
+                items={[
+                  {
+                    label: "TOPLAM FAİZ",
+                    value: fmt(results.totalInterest),
+                    icon: <Percent size={16} />,
+                    color: "bg-emerald-500/10 text-emerald-500"
+                  },
+                  {
+                    label: "VERGİ YÜKÜ",
+                    value: fmt(results.totalTax),
+                    icon: <Calculator size={16} />,
+                    color: "bg-purple-500/10 text-purple-500"
+                  }
+                ]}
+              />
 
               <div className="bg-surface-variant/50 p-6 rounded-[2rem] border border-border flex items-center justify-between group cursor-pointer hover:bg-emerald-500/5 transition-all">
                   <div className="flex items-center gap-4">
@@ -255,6 +227,7 @@ export function LoanSuite() {
                   <ChevronRight size={20} className="text-muted group-hover:translate-x-2 transition-transform" />
               </div>
             </>
+
           ) : (
              <div className="flex-grow flex flex-col items-center justify-center p-20 bg-secondary/5 rounded-[4rem] border-4 border-dashed border-border opacity-50 grayscale">
                 <Landmark size={80} className="mb-8 opacity-20" />

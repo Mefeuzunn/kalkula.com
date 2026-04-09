@@ -13,6 +13,8 @@ import {
   Info
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
+
 
 type CardTask = "minimum" | "installment" | "cash-advance" | "late-interest";
 
@@ -148,53 +150,60 @@ export function CreditCardSuite() {
            </div>
         </div>
 
-        {/* RESULTS AREA */}
         <div className="flex flex-col gap-6">
            {task === "minimum" && results && "minPayment" in results ? (
-             <>
-               <div className="bg-blue-600 p-12 rounded-[3.5rem] shadow-2xl text-white relative overflow-hidden border-b-[8px] border-blue-800/40">
-                  <p className="text-[11px] font-black opacity-60 uppercase tracking-[0.3em] mb-3">ASGARİ ÖDEME TUTARI</p>
-                  <h3 className="text-6xl font-black tracking-tighter mb-8">{fmt(results.minPayment ?? 0)}</h3>
-                  <div className="flex items-center gap-2 bg-white/10 w-fit px-4 py-2 rounded-xl border border-white/10">
-                     <AlertCircle size={14} />
-                     <span className="text-[10px] font-black uppercase tracking-widest">Uygulanan Oran: %{((results.ratio ?? 0) * 100).toFixed(0)}</span>
-                  </div>
-               </div>
-               
-               <div className="bg-surface p-8 rounded-[3rem] border border-border shadow-xl space-y-6">
-                  <div className="flex justify-between items-center border-b border-border pb-4">
-                     <span className="text-[10px] font-black text-muted uppercase">Kalan Borç (Bakiye Devri)</span>
-                     <span className="text-xl font-black text-primary">{fmt(results.remaining ?? 0)}</span>
-                  </div>
-                  <div className="flex justify-between items-center bg-red-500/5 p-4 rounded-2xl border border-red-500/10">
-                     <div className="flex items-center gap-2 text-red-500">
-                        <TrendingDown size={16} />
-                        <span className="text-[10px] font-black uppercase">Aylık Faiz Maliyeti</span>
-                     </div>
-                     <span className="text-xl font-black text-red-600">+{fmt(results.monthlyInterest ?? 0)}</span>
-                  </div>
-               </div>
-             </>
+             <V2Premium3DResult
+               title="KREDİ KARTI ANALİZİ"
+               mainLabel="ASGARI ÖDEME TUTARI"
+               mainValue={fmt(results.minPayment ?? 0)}
+               subLabel="KALAN BORÇ (BAKİYE DEVRİ)"
+               subValue={fmt(results.remaining ?? 0)}
+               color="blue"
+               accentIcon={<CreditCard size={32} />}
+               footerText="<b>Kart Sahibi Notu:</b> Asgari ödeme yapıldığında kalan borca akdi faiz uygulanır. Borcun tamamı ödenmediği sürece 'faizsiz dönem' avantajı kaybolur."
+               items={[
+                 {
+                   label: "AYLIK FAİZ MALİYETİ",
+                   value: `+${fmt(results.monthlyInterest ?? 0)}`,
+                   icon: <TrendingDown size={16} />,
+                   color: "bg-red-500/10 text-red-500"
+                 },
+                 {
+                   label: "ASGARİ ORANI",
+                   value: `%${((results.ratio ?? 0) * 100).toFixed(0)}`,
+                   icon: <AlertCircle size={16} />,
+                   color: "bg-blue-500/10 text-blue-500"
+                 }
+               ]}
+             />
            ) : null}
 
            {task === "installment" && results && "monthlyPayment" in results ? (
-              <>
-                <div className="bg-zinc-900 p-12 rounded-[3.5rem] shadow-2xl text-white relative overflow-hidden border-b-[8px] border-black/40">
-                   <p className="text-[11px] font-black opacity-60 uppercase tracking-[0.3em] mb-3">AYLIK TAKSİT TUTARI</p>
-                   <h3 className="text-6xl font-black tracking-tighter mb-8">{fmt(results.monthlyPayment ?? 0)}</h3>
-                   <div className="grid grid-cols-2 gap-6 pt-6 border-t border-white/10">
-                      <div>
-                         <p className="text-[9px] font-black opacity-40 uppercase tracking-widest mb-1">Toplam Geri Ödeme</p>
-                         <p className="text-xl font-black">{fmt(results.totalRepayment ?? 0)}</p>
-                      </div>
-                      <div>
-                         <p className="text-[9px] font-black opacity-40 uppercase tracking-widest mb-1">Toplam Maliyet</p>
-                         <p className="text-xl font-black text-blue-400">+{fmt(results.totalCost ?? 0)}</p>
-                      </div>
-                   </div>
-                </div>
-              </>
+              <V2Premium3DResult
+                title="TAKSİTLENDİRME ANALİZİ"
+                mainLabel="AYLIK TAKSİT TUTARI"
+                mainValue={fmt(results.monthlyPayment ?? 0)}
+                subLabel="TOPLAM GERİ ÖDEME"
+                subValue={fmt(results.totalRepayment ?? 0)}
+                color="zinc"
+                accentIcon={<Clock size={32} />}
+                items={[
+                  {
+                    label: "TOPLAM MALİYET",
+                    value: `+${fmt(results.totalCost ?? 0)}`,
+                    icon: <DollarSign size={16} />,
+                    color: "bg-blue-500/10 text-blue-400"
+                  },
+                  {
+                    label: "TAKSİT SAYISI",
+                    value: `${installmentCount} Ay`,
+                    icon: <Clock size={16} />,
+                    color: "bg-zinc-500/10 text-zinc-400"
+                  }
+                ]}
+              />
            ) : null}
+
 
            <div className="bg-surface p-6 rounded-[2.5rem] border border-border flex items-start gap-4">
               <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 shrink-0">
