@@ -99,35 +99,3 @@ export function CreditCardCalculator() {
     </V2CalculatorWrapper>
   );
 }
-    >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <V2Input
-          label="KREDİ KARTI LİMİTİ"
-          value={limit}
-          onChange={setLimit}
-          unit="₺"
-        />
-        <V2Input
-          label="DÖNEM BORCU"
-          value={debt}
-          onChange={setDebt}
-          unit="₺"
-        />
-      </div>
-
-      <V2Input
-        label="AYLIK AKDİ FAİZ (%)"
-        value={interestRate}
-        onChange={setInterestRate}
-        unit="%"
-        step="0.01"
-      />
-
-      <V2ActionRow
-        onCalculate={calculate}
-        onReset={reset}
-        calculateLabel="💳 Faiz Dahil Analiz Et"
-      />
-    </V2CalculatorWrapper>
-  );
-}
