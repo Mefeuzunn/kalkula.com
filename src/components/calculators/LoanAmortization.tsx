@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import { Calendar, PieChart, ArrowLeft, Download, Share2, Info, ChevronDown } from "lucide-react";
+import { Calendar, PieChart, ArrowLeft, Download, Share2, Info, ChevronDown, TrendingUp, Clock } from "lucide-react";
 import Link from "next/link";
 import { downloadCSV } from "@/lib/ExportUtils";
+import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
 
 export function LoanAmortization() {
   const searchParams = useSearchParams();
@@ -156,21 +157,31 @@ export function LoanAmortization() {
         <div className="lg:col-span-8 space-y-8">
            {summary ? (
               <div className="space-y-10">
-                 {/* Top Stats Dashboard */}
-                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-xl text-center">
-                       <p className="text-[10px] font-black text-muted uppercase tracking-widest mb-2">AYLIK TAKSİT</p>
-                       <p className="text-2xl font-black text-primary">{formatCurrency(summary.monthlyPayment)}</p>
-                    </div>
-                    <div className="bg-surface p-8 rounded-[2.5rem] border border-border shadow-xl text-center border-b-8 border-red-500/20">
-                       <p className="text-[10px] font-black text-muted uppercase tracking-widest mb-2">TOPLAM FAİZ</p>
-                       <p className="text-2xl font-black text-red-600">{formatCurrency(summary.totalInterest)}</p>
-                    </div>
-                    <div className="bg-zinc-900 p-8 rounded-[2.5rem] shadow-2xl text-center text-white">
-                       <p className="text-[10px] font-black opacity-40 uppercase tracking-widest mb-2">TOPLAM GERİ ÖDEME</p>
-                       <p className="text-2xl font-black">{formatCurrency(summary.totalPayment)}</p>
-                    </div>
-                 </div>
+                  {/* Top Stats Dashboard (Precise Modernization) */}
+                  <V2Premium3DResult
+                    title="KREDİ GERİ ÖDEME PROJEKSİYONU"
+                    mainLabel="AYLIK TAKSİT TUTARI"
+                    mainValue={formatCurrency(summary.monthlyPayment)}
+                    subLabel="TOPLAM GERİ ÖDEME"
+                    subValue={formatCurrency(summary.totalPayment)}
+                    color="blue"
+                    variant="precise"
+                    accentIcon={<Calendar size={32} />}
+                    items={[
+                      {
+                        label: "TOPLAM FAİZ YÜKÜ",
+                        value: formatCurrency(summary.totalInterest),
+                        icon: <TrendingDown size={16} />,
+                        color: "bg-red-500/10 text-red-500"
+                      },
+                      {
+                        label: "VADE SÜRESİ",
+                        value: `${months} Ay`,
+                        icon: <Clock size={16} />,
+                        color: "bg-blue-500/10 text-blue-500"
+                      }
+                    ]}
+                  />
 
                  {/* The Table */}
                  <div className="bg-surface border-4 border-border rounded-[3rem] shadow-2xl overflow-hidden animate-slide-up">

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
 import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
 import { V2Input } from "./ui-v2/V2Input";
 import { V2ActionRow } from "./ui-v2/V2ActionRow";
-import { V2ResultCard } from "./ui-v2/V2ResultCard";
+import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
+import { CreditCard, AlertCircle, TrendingDown, Clock } from "lucide-react";
 
 export function CreditCardCalculator() {
   const [debt, setDebt] = useState("15000");
@@ -47,34 +47,55 @@ export function CreditCardCalculator() {
     <V2CalculatorWrapper
       title="ASGARİ ÖDEME VE FAİZ ANALİZİ"
       icon="💳"
-      infoText="Sadece asgari ödeme yapılması durumunda kalan borca akdi faiz uygulanır. Faiz maliyeti borca eklenerek bir sonraki dönem borcunuzu oluşturur. BDDK kuralları gereği 25.000 TL altı limitlerde %20, üstü limitlerde %40 asgari ödeme oranı uygulanır."
+      infoText="Sadece asgari ödeme yapılması durumunda kalan borca akdi faiz uygulanır. BDDK kuralları gereği 25.000 TL altı limitlerde %20, üstü limitlerde %40 asgari ödeme oranı uygulanır."
       results={result && (
-        <div className="space-y-8">
-          <V2ResultCard
-            color="red"
-            icon="⚠️"
-            label="ÖDENMESİ GEREKEN ASGARİ TUTAR"
-            value={fmt(result.minPayment)}
-            subLabel={`Uygulanan Oran: %${(result.ratio * 100).toFixed(0)} (BDDK Kuralı)`}
-          />
-
-          <div className="grid grid-cols-2 gap-4">
-             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
-                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">GÜNLÜK FAİZ YÜKÜ</div>
-                <div className="text-xl font-black text-[#ef4444]">{fmt(result.dailyInterest)}</div>
-             </div>
-             <div className="p-6 rounded-2xl bg-white/5 border border-white/5">
-                <div className="text-[10px] font-black uppercase text-muted tracking-widest mb-1">30 GÜNLÜK MALİYET</div>
-                <div className="text-xl font-black text-[#ef4444]">{fmt(result.monthlyInterest)}</div>
-             </div>
-          </div>
-
-          <div className="pt-6 border-t border-white/5 flex justify-between items-center">
-             <span className="text-xs font-black text-muted uppercase tracking-widest">ASGARİ SONRASI KALAN BORÇ</span>
-             <span className="text-2xl font-black text-[#ef4444]">{fmt(result.remaining)}</span>
-          </div>
-        </div>
+        <V2Premium3DResult
+          title="KREDİ KARTI ANALİZ ANALİZİ"
+          mainLabel="GEREKLİ ASGARİ ÖDEME"
+          mainValue={fmt(result.minPayment)}
+          subLabel={`%${(result.ratio * 100).toFixed(0)} asgari ödeme oranı uygulandı`}
+          subValue=""
+          color="red"
+          variant="precise"
+          accentIcon={<CreditCard size={32} />}
+          items={[
+            {
+              label: "DÖNEM SONU KALAN BORÇ",
+              value: fmt(result.remaining),
+              icon: <Clock size={16} />,
+              color: "bg-zinc-500/10 text-zinc-400"
+            },
+            {
+              label: "AYLIK FAİZ YÜKÜ",
+              value: `+${fmt(result.monthlyInterest)}`,
+              icon: <TrendingDown size={16} />,
+              color: "bg-red-500/10 text-red-500"
+            },
+            {
+              label: "GÜNLÜK FAİZ MALİYETİ",
+              value: fmt(result.dailyInterest),
+              icon: <AlertCircle size={16} />,
+              color: "bg-red-500/10 text-red-400"
+            }
+          ]}
+        />
       )}
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <V2Input label="KREDİ KARTI LİMİTİ" value={limit} onChange={setLimit} unit="₺" />
+        <V2Input label="DÖNEM BORCU" value={debt} onChange={setDebt} unit="₺" />
+      </div>
+
+      <V2Input label="AYLIK AKDİ FAİZ (%)" value={interestRate} onChange={setInterestRate} unit="%" step="0.01" />
+
+      <V2ActionRow
+        onCalculate={calculate}
+        onReset={reset}
+        calculateLabel="💳 Faiz Dahil Analiz Et"
+      />
+    </V2CalculatorWrapper>
+  );
+}
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <V2Input
