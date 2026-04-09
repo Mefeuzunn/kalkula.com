@@ -118,11 +118,3 @@ export function RentIncreaseCalculator() {
     </V2CalculatorWrapper>
   );
 }
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">⚖️</span>
-        <span className="calc-info-box-text">Temmuz 2024 itibarıyla konutlarda %25 sınırı kalkmıştır. Hem konut hem işyerinde yasal tavan artış oranı, son 12 ayın TÜFE ortalamasıdır. Kiracıdan bu oranın üzerinde artış talep edilemez.</span>
-      </div>
-    </div>
-  );
-}

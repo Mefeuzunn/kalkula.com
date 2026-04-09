@@ -230,6 +230,8 @@ export const calculators: CalculatorInfo[] = [
   { id: "qr-gen", title: "QR Kod Üreticisi", slug: "qr-kod-olusturucu", categoryId: "araclar", description: "Linklerinizi veya metinlerinizi saniyeler içinde QR koda dönüştürün ve indirin." },
   
   { id: "raffle", title: "Profesyonel Çekiliş Yapıcı", slug: "cekilis-yapici", categoryId: "eglence", description: "İsim listesi üzerinden adil ve görsel olarak şık çekilişler düzenleyin." },
+  { id: "zar-atma", title: "Zar Atma", slug: "zar-atma", categoryId: "eglence", description: "İnteraktif 3D zarlar ile şansınızı deneyin. Birden fazla zar atma desteğiyle oyunlarınız için ideal." },
+  { id: "yazi-tura", title: "Yazı Tura Atma", slug: "yazi-tura", categoryId: "eglence", description: "Anlık karar vermeniz gereken anlarda şık animasyonlu yazı tura aracı." },
   { id: "rng", title: "Rastgele Sayı Üretici", slug: "rastgele-sayi", categoryId: "eglence", description: "Belirlediğiniz aralıkta tamamen şans eseri rastgele sayılar ve zarlar üretin." },
   
   { id: "json-fmt", title: "JSON Formatlayıcı (Prettier)", slug: "json-formatter", categoryId: "gelistirici", description: "Karmaşık JSON verilerini okunaklı hale getirin, küçültün ve doğrulayın." },

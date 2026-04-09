@@ -129,6 +129,8 @@ const ColorConverter = dynamic(() => import("@/components/calculators/ColorConve
 const Base64Converter = dynamic(() => import("@/components/calculators/Base64Converter").then(m => m.Base64Converter), { loading: () => <LoadingCalculator /> });
 const XCharacterCounter = dynamic(() => import("@/components/calculators/XCharacterCounter").then(m => m.XCharacterCounter), { loading: () => <LoadingCalculator /> });
 const StyleTextGenerator = dynamic(() => import("@/components/calculators/StyleTextGenerator").then(m => m.StyleTextGenerator), { loading: () => <LoadingCalculator /> });
+const DiceRoller = dynamic(() => import("@/components/calculators/DiceRoller").then(m => m.DiceRoller), { loading: () => <LoadingCalculator /> });
+const CoinFlipper = dynamic(() => import("@/components/calculators/CoinFlipper").then(m => m.CoinFlipper), { loading: () => <LoadingCalculator /> });
 const MebEkDersCalculator = dynamic(() => import("@/components/calculators/MebEkDersCalculator").then(m => m.MebEkDersCalculator), { loading: () => <LoadingCalculator /> });
 const AkademisyenEkDersCalculator = dynamic(() => import("@/components/calculators/AkademisyenEkDersCalculator").then(m => m.AkademisyenEkDersCalculator), { loading: () => <LoadingCalculator /> });
 const CurrencyCommodityCalculator = dynamic(() => import("@/components/calculators/CurrencyCommodityCalculator").then(m => m.CurrencyCommodityCalculator), { loading: () => <LoadingCalculator /> });
@@ -420,6 +422,8 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "kelime-sayaci": return <WordCounter />;
       case "qr-kod-olusturucu": return <QRCodeGenerator />;
       case "cekilis-yapici": return <RaffleMaker />;
+      case "zar-atma": return <DiceRoller />;
+      case "yazi-tura": return <CoinFlipper />;
       case "rastgele-sayi": return <RandomNumberGenerator />;
       case "json-formatter": return <JsonFormatter />;
       case "hash-generator": return <HashGenerator />;
@@ -465,13 +469,13 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
         <AdPlaceholder type="leaderboard" />
         
         {category && (
-          <div style={{ marginBottom: "1rem" }}>
-            <Link href={`/kategori/${category.slug}`} style={{ color: "var(--text-muted)", fontSize: "0.875rem", display: "inline-flex", alignItems: "center", gap: "0.25rem" }}>
-              <span>{category.name}</span>
-              <span>&rsaquo;</span>
-              <span style={{ color: "var(--text-primary)" }}>{calc.title}</span>
-            </Link>
-          </div>
+          <nav style={{ marginBottom: "1.5rem", fontSize: "0.875rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+            <Link href="/" style={{ color: "var(--text-muted)" }}>Ana Sayfa</Link>
+            <span>›</span>
+            <Link href={`/kategori/${category.slug}`} style={{ color: "var(--text-muted)" }}>{category.name}</Link>
+            <span>›</span>
+            <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{calc.title}</span>
+          </nav>
         )}
 
         <div className="panel" style={{ padding: 0 }}>

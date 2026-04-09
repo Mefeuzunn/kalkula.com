@@ -94,11 +94,3 @@ export function RealReturnCalculator() {
     </V2CalculatorWrapper>
   );
 }
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">💡</span>
-        <span className="calc-info-box-text">Reel getiri hesaplamasında Fisher Denklemi [(1+Nominal)/(1+Enflasyon)-1] kullanılır. Yüksek enflasyonlu ortamlarda basit çıkarma işlemi (Nominal - Enflasyon) hatalı sonuçlar verir.</span>
-      </div>
-    </div>
-  );
-}

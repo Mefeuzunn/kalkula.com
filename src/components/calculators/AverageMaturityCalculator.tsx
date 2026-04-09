@@ -156,11 +156,3 @@ export function AverageMaturityCalculator() {
     </V2CalculatorWrapper>
   );
 }
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">💡</span>
-        <span className="calc-info-box-text">Ortalama vade, portföyünüzdeki her bir alacağın/borcun büyüklüğüne göre süresinin matematiksel ağırlığı alınarak(Tutar x Gün / Toplam Tutar) hesaplanır.</span>
-      </div>
-    </div>
-  );
-}

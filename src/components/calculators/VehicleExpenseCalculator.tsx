@@ -101,11 +101,3 @@ export function VehicleExpenseCalculator() {
     </V2CalculatorWrapper>
   );
 }
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">⚖️</span>
-        <span className="calc-info-box-text">Kiralık binek araçta KDV hariç kira bedelinin aylık {fmt(RENT_LIMIT)} üzerindeki kısmı KKEG'dir. Genel giderlerin (yakıt, bakım, sigorta) %30'u KKEG sayılır. (GVK 2024)</span>
-      </div>
-    </div>
-  );
-}

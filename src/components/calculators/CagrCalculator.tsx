@@ -103,11 +103,3 @@ export function CagrCalculator() {
     </V2CalculatorWrapper>
   );
 }
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">💡</span>
-        <span className="calc-info-box-text">CAGR (Bileşik Yıllık Büyüme Oranı), farklı sürelerdeki yatırımları karşılaştırmak için kullanılır. Gerçek getirinin her yıl sabit kaldığını varsayar.</span>
-      </div>
-    </div>
-  );
-}

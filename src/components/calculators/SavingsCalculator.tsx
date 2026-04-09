@@ -117,11 +117,3 @@ export function SavingsCalculator() {
     </V2CalculatorWrapper>
   );
 }
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">📊</span>
-        <span className="calc-info-box-text">Bileşik faiz hesaplaması yapılmaktadır. Aylık faiz aylık anaparaya eklenerek büyüme sağlanır. Gerçek getiri enflasyona göre farklılık gösterebilir.</span>
-      </div>
-    </div>
-  );
-}

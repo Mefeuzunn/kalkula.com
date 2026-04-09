@@ -104,11 +104,3 @@ export function BillCalculator() {
     </V2CalculatorWrapper>
   );
 }
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">📋</span>
-        <span className="calc-info-box-text">Hazine Bonosu, Finansman Bonosu gibi iskontolu (kuponsuz) menkul kıymetler için yıllık getiri oranı hesaplanır. Vergi kesilmeden önceki brüt verim gösterilmektedir.</span>
-      </div>
-    </div>
-  );
-}

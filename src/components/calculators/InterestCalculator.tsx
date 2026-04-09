@@ -37,6 +37,7 @@ export function InterestCalculator() {
     <V2CalculatorWrapper
       title="MEVDUAT GETİRİ HESAPLAYICI"
       icon="💰"
+      infoText="Stopaj oranı banka ve vadeye göre %5–%15 arasında değişebilir. Bu hesaplama %5 stopaj esas alınmıştır."
       results={result && (
         <V2Premium3DResult
           title="VADELİ MEVDUAT GETİRİSİ"
@@ -82,13 +83,5 @@ export function InterestCalculator() {
         calculateLabel="🏦 Mevduat Getirisini Hesapla"
       />
     </V2CalculatorWrapper>
-  );
-}
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">ℹ️</span>
-        <span className="calc-info-box-text">Stopaj oranı banka ve vadeye göre %5–%15 arasında değişebilir. Bu hesaplama %5 stopaj esas alınmıştır.</span>
-      </div>
-    </div>
   );
 }

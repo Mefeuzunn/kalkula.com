@@ -141,11 +141,3 @@ export function BondCalculator() {
     </V2CalculatorWrapper>
   );
 }
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">💡</span>
-        <span className="calc-info-box-text">Tahvilin fiyatı, gelecekteki tüm nakit akışlarının (kuponlar + anapara) piyasadaki geçerli faiz oranıyla bugüne indirgenmiş (Bugünkü Değer) toplamıdır.</span>
-      </div>
-    </div>
-  );
-}
