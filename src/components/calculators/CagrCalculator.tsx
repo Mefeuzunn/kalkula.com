@@ -1,6 +1,8 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
+import { TrendingUp, BarChart3, Clock, DollarSign, ArrowUpRight } from "lucide-react";
 
 export function CagrCalculator() {
   const [initialValue, setInitialValue] = useState("10000");
@@ -23,61 +25,81 @@ export function CagrCalculator() {
 
   useEffect(() => { calculate(); }, [initialValue, finalValue, years]);
 
+  const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+
   return (
-    <div className="calc-wrapper">
-      <div className="calc-input-group">
-        <label className="calc-label">Başlangıç Değeri</label>
-        <div className="calc-input-wrapper">
-          <input type="number" value={initialValue} onChange={e => setInitialValue(e.target.value)} className="calc-input has-unit" placeholder="10000" min="0" />
-          <span className="calc-unit">₺</span>
-        </div>
-      </div>
-      <div className="calc-input-group">
-        <label className="calc-label">Bitiş Değeri</label>
-        <div className="calc-input-wrapper">
-          <input type="number" value={finalValue} onChange={e => setFinalValue(e.target.value)} className="calc-input has-unit" placeholder="25000" min="0" />
-          <span className="calc-unit">₺</span>
-        </div>
-      </div>
-      <div className="calc-input-group">
-        <label className="calc-label">Geçen Süre</label>
-        <div className="calc-input-wrapper">
-          <input type="number" value={years} onChange={e => setYears(e.target.value)} className="calc-input has-unit" placeholder="5" min="1" />
-          <span className="calc-unit">YIL</span>
+    <V2CalculatorWrapper
+      title="BİLEŞİK YILLIK BÜYÜME HESABI"
+      icon="📈"
+      infoText="CAGR (Bileşik Yıllık Büyüme Oranı), farklı sürelerdeki yatırımları karşılaştırmak için kullanılır. Gerçek getirinin her yıl sabit kaldığını varsayar."
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <V2Input 
+          label="Başlangıç Değeri" 
+          value={initialValue} 
+          onChange={setInitialValue} 
+          unit="₺" 
+          placeholder="10000"
+        />
+        <V2Input 
+          label="Bitiş Değeri" 
+          value={finalValue} 
+          onChange={setFinalValue} 
+          unit="₺" 
+          placeholder="25000"
+        />
+        <div className="md:col-span-2">
+          <V2Input 
+            label="Geçen Süre" 
+            value={years} 
+            onChange={setYears} 
+            unit="YIL" 
+            placeholder="5"
+          />
         </div>
       </div>
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>📈 CAGR Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
+      <V2ActionRow 
+        onCalculate={calculate} 
+        onReset={reset} 
+        calculateLabel="📈 CAGR Hesapla"
+      />
 
       {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">📊 Bileşik Büyüme Analizi</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Yıllık Bileşik Büyüme Oranı (CAGR)</div>
-              <div className="calc-result-hero-value" style={{ color: result.cagr >= 0 ? "#22c55e" : "#ef4444" }}>
-                %{result.cagr.toFixed(2)}
-              </div>
-              <div className="calc-result-hero-sub">{years} yıllık dönem için yıllıklandırılmış getiri</div>
-            </div>
-            <div className="calc-result-row">
-              <span className="calc-result-row-label">Toplam Getiri</span>
-              <span className="calc-result-row-value" style={{ color: result.totalReturn >= 0 ? "#22c55e" : "#ef4444" }}>
-                {result.totalReturn >= 0 ? "+" : ""}{result.totalReturn.toFixed(1)}%
-              </span>
-            </div>
-            <div className="calc-result-row">
-              <span className="calc-result-row-label">Net Kazanç</span>
-              <span className="calc-result-row-value success">
-                +{(parseFloat(finalValue) - parseFloat(initialValue)).toLocaleString("tr-TR", { style: "currency", currency: "TRY" })}
-              </span>
-            </div>
-          </div>
-        </div>
+        <V2Premium3DResult
+          title="BİLEŞİK BÜYÜME ANALİZİ"
+          mainLabel="YILLIK BİLEŞİK BÜYÜME ORANI (CAGR)"
+          mainValue={`%${result.cagr.toFixed(2)}`}
+          subLabel={`${years} yıllık dönem için yıllıklandırılmış getiri`}
+          subValue=""
+          color="emerald"
+          variant="precise"
+          accentIcon={<TrendingUp size={32} />}
+          items={[
+            {
+              label: "TOPLAM GETİRİ ORANI",
+              value: `${result.totalReturn >= 0 ? "+" : ""}${result.totalReturn.toFixed(1)}%`,
+              icon: <ArrowUpRight size={16} />,
+              color: result.totalReturn >= 0 ? "bg-emerald-500/10 text-emerald-500" : "bg-red-500/10 text-red-500"
+            },
+            {
+              label: "NET KAZANÇ",
+              value: fmt(parseFloat(finalValue) - parseFloat(initialValue)),
+              icon: <DollarSign size={16} />,
+              color: "bg-blue-500/10 text-blue-500"
+            },
+            {
+              label: "ANALİZ DÖNEMİ",
+              value: `${years} Yıl`,
+              icon: <Clock size={16} />,
+              color: "bg-zinc-500/10 text-zinc-400"
+            }
+          ]}
+        />
       )}
+    </V2CalculatorWrapper>
+  );
+}
 
       <div className="calc-info-box">
         <span className="calc-info-box-icon">💡</span>

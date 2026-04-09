@@ -1,6 +1,8 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
+import { PiggyBank, Landmark, TrendingUp, Calendar, Percent } from "lucide-react";
 
 export function SavingsCalculator() {
   const [initialAmount, setInitialAmount] = useState("10000");
@@ -35,72 +37,83 @@ export function SavingsCalculator() {
   const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Başlangıç Birikimi</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={initialAmount} onChange={e => setInitialAmount(e.target.value)} className="calc-input has-unit" placeholder="10000" min="0" />
-            <span className="calc-unit">₺</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Aylık Katkı</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={monthlyContribution} onChange={e => setMonthlyContribution(e.target.value)} className="calc-input has-unit" placeholder="1000" min="0" />
-            <span className="calc-unit">₺</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Yatırım Süresi</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={years} onChange={e => setYears(e.target.value)} className="calc-input has-unit" placeholder="5" min="1" />
-            <span className="calc-unit">YIL</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Yıllık Faiz Oranı</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={annualRate} onChange={e => setAnnualRate(e.target.value)} className="calc-input has-unit" placeholder="40" min="0" />
-            <span className="calc-unit">%</span>
-          </div>
-        </div>
+    <V2CalculatorWrapper
+      title="BİRİKİM PROJEKSİYONU"
+      icon="💰"
+      infoText="Bileşik faiz hesaplaması yapılmaktadır. Aylık faiz aylık anaparaya eklenerek büyüme sağlanır. Gerçek getiri enflasyona göre farklılık gösterebilir."
+    >
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <V2Input 
+          label="Başlangıç Birikimi" 
+          value={initialAmount} 
+          onChange={setInitialAmount} 
+          unit="₺" 
+          placeholder="10000"
+        />
+        <V2Input 
+          label="Aylık Katkı Payı" 
+          value={monthlyContribution} 
+          onChange={setMonthlyContribution} 
+          unit="₺" 
+          placeholder="1000"
+        />
+        <V2Input 
+          label="Yatırım Süresi" 
+          value={years} 
+          onChange={setYears} 
+          unit="YIL" 
+          placeholder="5"
+        />
+        <V2Input 
+          label="Yıllık Faiz Oranı" 
+          value={annualRate} 
+          onChange={setAnnualRate} 
+          unit="%" 
+          placeholder="40"
+        />
       </div>
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>📈 Birikimi Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
+      <V2ActionRow 
+        onCalculate={calculate} 
+        onReset={reset} 
+        calculateLabel="📈 Birikimi Hesapla"
+      />
 
       {results && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">💰 Birikim Projeksiyonu</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">{years} Yıl Sonraki Toplam Değer</div>
-              <div className="calc-result-hero-value">{fmt(results.totalValue)}</div>
-              <div className="calc-result-hero-sub">Toplam büyüme: %{results.growthRate.toFixed(0)}</div>
-            </div>
-            <div className="calc-result-row">
-              <span className="calc-result-row-label">Toplam Yatırdığınız (Anapara)</span>
-              <span className="calc-result-row-value">{fmt(results.totalPrincipal)}</span>
-            </div>
-            <div className="calc-result-row">
-              <span className="calc-result-row-label">Toplam Faiz Getirisi</span>
-              <span className="calc-result-row-value success">+{fmt(results.totalInterest)}</span>
-            </div>
-            <div style={{ paddingTop: "1rem" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 600 }}>Faiz / Anapara Oranı</span>
-                <span style={{ fontSize: "0.8rem", fontWeight: 700, color: "#22c55e" }}>%{results.growthRate.toFixed(0)}</span>
-              </div>
-              <div className="calc-scale-bar">
-                <div className="calc-scale-fill" style={{ width: `${Math.min(results.growthRate, 100)}%` }} />
-              </div>
-            </div>
-          </div>
-        </div>
+        <V2Premium3DResult
+          title="BİRİKİM ANALİZİ"
+          mainLabel={`${years} YIL SONRAKİ TOPLAM DEĞER`}
+          mainValue={fmt(results.totalValue)}
+          subLabel={`Toplam büyüme oranı: %${results.growthRate.toFixed(0)}`}
+          subValue=""
+          color="emerald"
+          variant="precise"
+          accentIcon={<PiggyBank size={32} />}
+          items={[
+            {
+              label: "KÜMÜLATİF ANAPARA",
+              value: fmt(results.totalPrincipal),
+              icon: <Landmark size={16} />,
+              color: "bg-zinc-500/10 text-zinc-400"
+            },
+            {
+              label: "TOPLAM FAİZ GETİRİSİ",
+              value: `+${fmt(results.totalInterest)}`,
+              icon: <TrendingUp size={16} />,
+              color: "bg-emerald-500/10 text-emerald-500"
+            },
+            {
+              label: "VADE SÜRESİ",
+              value: `${years} Yıl`,
+              icon: <Calendar size={16} />,
+              color: "bg-blue-500/10 text-blue-500"
+            }
+          ]}
+        />
       )}
+    </V2CalculatorWrapper>
+  );
+}
 
       <div className="calc-info-box">
         <span className="calc-info-box-icon">📊</span>

@@ -1,6 +1,8 @@
-"use client";
-
-import React, { useState, useEffect } from "react";
+import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
+import { V2Input } from "./ui-v2/V2Input";
+import { V2ActionRow } from "./ui-v2/V2ActionRow";
+import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
+import { BarChart3, TrendingUp, Landmark, Calculator, ReceiptText } from "lucide-react";
 
 export function BondCalculator() {
   const [mode, setMode] = useState<"coupon" | "discount">("coupon");
@@ -39,79 +41,103 @@ export function BondCalculator() {
   const fmt = (val: number) => val.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
   return (
-    <div className="calc-wrapper">
-      <div className="calc-toggle-group" style={{ marginBottom: "1rem" }}>
-        <button className={`calc-toggle-btn ${mode === "coupon" ? "active" : ""}`} onClick={() => setMode("coupon")}>Kuponlu Tahvil</button>
-        <button className={`calc-toggle-btn ${mode === "discount" ? "active" : ""}`} onClick={() => setMode("discount")}>İskontolu Bono</button>
+    <V2CalculatorWrapper
+      title="TAHVİL & BONO FİYAT ANALİZİ"
+      icon="📈"
+      infoText="Tahvilin fiyatı, gelecekteki tüm nakit akışlarının (kuponlar + anapara) piyasadaki geçerli faiz oranıyla bugüne indirgenmiş (Bugünkü Değer) toplamıdır."
+    >
+      <div className="flex gap-2 mb-8 bg-secondary/10 p-1.5 rounded-2xl border border-border/50">
+        <button 
+          onClick={() => setMode("coupon")}
+          className={`flex-1 py-3 px-4 rounded-xl text-xs font-black transition-all duration-300 ${mode === "coupon" ? "bg-emerald-500 text-white shadow-lg" : "text-muted hover:bg-secondary/20"}`}
+        >
+          KUPONLU TAHVİL
+        </button>
+        <button 
+          onClick={() => setMode("discount")}
+          className={`flex-1 py-3 px-4 rounded-xl text-xs font-black transition-all duration-300 ${mode === "discount" ? "bg-emerald-500 text-white shadow-lg" : "text-muted hover:bg-secondary/20"}`}
+        >
+          İSKONTOLU BONO
+        </button>
       </div>
 
-      <div className="calc-grid-2">
-        <div className="calc-input-group">
-          <label className="calc-label">Nominal Değer (Vade Sonu)</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={faceValue} onChange={e => setFaceValue(e.target.value)} className="calc-input has-unit" placeholder="1000" min="0" />
-            <span className="calc-unit">₺</span>
-          </div>
-        </div>
-        <div className="calc-input-group">
-          <label className="calc-label">Piyasa Getiri Oranı</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={marketRate} onChange={e => setMarketRate(e.target.value)} className="calc-input has-unit" placeholder="45" step="0.1" min="0" />
-            <span className="calc-unit">%</span>
-          </div>
-        </div>
-        
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <V2Input 
+          label="Nominal Değer (Vade Sonu)" 
+          value={faceValue} 
+          onChange={setFaceValue} 
+          unit="₺" 
+          placeholder="1000"
+        />
+        <V2Input 
+          label="Piyasa Getiri Oranı" 
+          value={marketRate} 
+          onChange={setMarketRate} 
+          unit="%" 
+          step="0.1"
+          placeholder="45"
+        />
         {mode === "coupon" && (
-          <div className="calc-input-group">
-            <label className="calc-label">Yıllık Kupon Oranı</label>
-            <div className="calc-input-wrapper">
-              <input type="number" value={couponRate} onChange={e => setCouponRate(e.target.value)} className="calc-input has-unit" placeholder="30" step="0.1" min="0" />
-              <span className="calc-unit">%</span>
-            </div>
-          </div>
+          <V2Input 
+            label="Yıllık Kupon Oranı" 
+            value={couponRate} 
+            onChange={setCouponRate} 
+            unit="%" 
+            step="0.1"
+            placeholder="30"
+          />
         )}
-        
-        <div className={`calc-input-group ${mode === 'discount' ? 'calc-col-span-2' : ''}`}>
-          <label className="calc-label">Vadeye Kalan Yıl</label>
-          <div className="calc-input-wrapper">
-            <input type="number" value={years} onChange={e => setYears(e.target.value)} className="calc-input has-unit" placeholder="2" min="0.1" step="0.1" />
-            <span className="calc-unit">YIL</span>
-          </div>
-        </div>
+        <V2Input 
+          label="Vadeye Kalan Yıl" 
+          value={years} 
+          onChange={setYears} 
+          unit="YIL" 
+          step="0.1"
+          placeholder="2"
+        />
       </div>
 
-      <div className="calc-action-row">
-        <button className="calc-btn-calculate" onClick={calculate}>📈 Fiyat Hesapla</button>
-        <button className="calc-btn-reset" onClick={reset}>↺ Sıfırla</button>
-      </div>
+      <V2ActionRow 
+        onCalculate={calculate} 
+        onReset={reset} 
+        calculateLabel="📈 Fiyat Hesapla"
+      />
 
       {result && (
-        <div className="calc-result-panel">
-          <div className="calc-result-header">📈 Tahvil / Bono Fiyat Analizi</div>
-          <div className="calc-result-body">
-            <div className="calc-result-hero">
-              <div className="calc-result-hero-label">Adil Piyasa Fiyatı (Hisse Başı)</div>
-              <div className="calc-result-hero-value" style={{ color: "#f59e0b" }}>₺{fmt(result.price)}</div>
-              <div className="calc-result-hero-sub">Bu fiyatın üzerinde alırsanız zarar edebilirsiniz.</div>
-            </div>
-
-            <div className="calc-result-cards" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-               <div className="calc-result-card">
-                 <div className="calc-result-card-label">Anapara B. Değeri</div>
-                 <div className="calc-result-card-value font-bold">₺{fmt(result.pvFace)}</div>
-               </div>
-               <div className="calc-result-card">
-                 <div className="calc-result-card-label">Kupon B. Değeri</div>
-                 <div className="calc-result-card-value font-bold text-accent-primary">₺{fmt(result.pvCoupons)}</div>
-               </div>
-               <div className="calc-result-card" style={{ borderTop: "4px solid var(--accent-primary)" }}>
-                 <div className="calc-result-card-label">Vade Sonu T. Giriş</div>
-                 <div className="calc-result-card-value font-bold text-primary">₺{fmt(result.totalReturn)}</div>
-               </div>
-            </div>
-          </div>
-        </div>
+        <V2Premium3DResult
+          title="FİYATLAMA ANALİZİ"
+          mainLabel="ADİL PİYASA FİYATI"
+          mainValue={`₺${fmt(result.price)}`}
+          subLabel="Hisse başına ödenmesi gereken tutar"
+          subValue=""
+          color="emerald"
+          variant="precise"
+          accentIcon={<BarChart3 size={32} />}
+          items={[
+            {
+              label: "ANAPARA BUGÜNKÜ DEĞERİ",
+              value: `₺${fmt(result.pvFace)}`,
+              icon: <Landmark size={16} />,
+              color: "bg-emerald-500/10 text-emerald-500"
+            },
+            {
+              label: "KUPON BUGÜNKÜ DEĞERİ",
+              value: `₺${fmt(result.pvCoupons)}`,
+              icon: <ReceiptText size={16} />,
+              color: "bg-blue-500/10 text-blue-500"
+            },
+            {
+              label: "VADE SONU TOPLAM NAKİT",
+              value: `₺${fmt(result.totalReturn)}`,
+              icon: <TrendingUp size={16} />,
+              color: "bg-zinc-500/10 text-zinc-400"
+            }
+          ]}
+        />
       )}
+    </V2CalculatorWrapper>
+  );
+}
 
       <div className="calc-info-box">
         <span className="calc-info-box-icon">💡</span>
