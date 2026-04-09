@@ -90,11 +90,3 @@ export function DepositInterestCalculator() {
     </V2CalculatorWrapper>
   );
 }
-
-      <div className="calc-info-box">
-        <span className="calc-info-box-icon">⚖️</span>
-        <span className="calc-info-box-text">Mevduat getirisinden devlet tarafından vadeye göre değişen oranlarda stopaj (gelir vergisi) kesilir. Burada girdiğiniz stopaj oranına göre brüt kazançtan vergi düşülerek net kazanç bulunur.</span>
-      </div>
-    </div>
-  );
-}
