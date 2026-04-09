@@ -160,7 +160,7 @@ export function CreditCardSuite() {
                subLabel="KALAN BORÇ (BAKİYE DEVRİ)"
                subValue={fmt(results.remaining ?? 0)}
                color="blue"
-               variant="list"
+               variant="precise"
                accentIcon={<CreditCard size={32} />}
                footerText="<b>Kart Sahibi Notu:</b> Asgari ödeme yapıldığında kalan borca akdi faiz uygulanır. Borcun tamamı ödenmediği sürece 'faizsiz dönem' avantajı kaybolur."
                items={[
@@ -188,7 +188,7 @@ export function CreditCardSuite() {
                 subLabel="TOPLAM GERİ ÖDEME"
                 subValue={fmt(results.totalRepayment ?? 0)}
                 color="zinc"
-                variant="list"
+                variant="precise"
                 accentIcon={<Clock size={32} />}
                 items={[
                   {

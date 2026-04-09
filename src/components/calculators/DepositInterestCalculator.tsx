@@ -50,7 +50,7 @@ export function DepositInterestCalculator() {
           subLabel={`%${taxRate} stopaj kesintisi uygulandı`}
           subValue=""
           color="blue"
-          variant="list"
+          variant="precise"
           accentIcon={<PiggyBank size={32} />}
           items={[
             {

@@ -54,7 +54,7 @@ export function LoanCalculator() {
             subLabel="TOPLAM GERİ ÖDEME"
             subValue={fmt(result.total)}
             color="emerald"
-            variant="list"
+            variant="precise"
             gaugePercentage={interestRatio}
             gaugeLabel="FAİZ YÜKÜ"
             accentIcon={<Landmark size={32} />}

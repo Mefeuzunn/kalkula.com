@@ -237,7 +237,7 @@ export function LoanSuite() {
                 subLabel="TOPLAM GERİ ÖDEME (MASRAFLI)"
                 subValue={fmt(results.totalPayment)}
                 color="emerald"
-                variant="list"
+                variant="precise"
                 gaugePercentage={results.apr}
                 gaugeLabel="APR / MALİYET"
                 accentIcon={<TrendingUp size={32} />}
