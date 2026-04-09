@@ -40,8 +40,8 @@ const HsyCalculator = dynamic(() => import("@/components/calculators/HsyCalculat
 const VehicleExpenseCalculator = dynamic(() => import("@/components/calculators/VehicleExpenseCalculator").then(m => m.VehicleExpenseCalculator), { loading: () => <LoadingCalculator /> });
 const PriceCalculator = dynamic(() => import("@/components/calculators/PriceCalculator").then(m => m.PriceCalculator), { loading: () => <LoadingCalculator /> });
 const DayOfYearCalculator = dynamic(() => import("@/components/calculators/DayOfYearCalculator").then(m => m.DayOfYearCalculator), { loading: () => <LoadingCalculator /> });
-const BmrCalculator = dynamic(() => import("./calculators/BmrCalculator").then(m => m.BmrCalculator), { loading: () => <LoadingCalculator /> });
-const MacroCalculator = dynamic(() => import("./calculators/MacroCalculator").then(m => m.MacroCalculator), { loading: () => <LoadingCalculator /> });
+const BmrCalculator = dynamic(() => import("@/components/calculators/BmrCalculator").then(m => m.BmrCalculator), { loading: () => <LoadingCalculator /> });
+const MacroCalculator = dynamic(() => import("@/components/calculators/MacroCalculator").then(m => m.MacroCalculator), { loading: () => <LoadingCalculator /> });
 const CagrCalculator = dynamic(() => import("@/components/calculators/CagrCalculator").then(m => m.CagrCalculator), { loading: () => <LoadingCalculator /> });
 const SavingsCalculator = dynamic(() => import("@/components/calculators/SavingsCalculator").then(m => m.SavingsCalculator), { loading: () => <LoadingCalculator /> });
 const BillCalculator = dynamic(() => import("@/components/calculators/BillCalculator").then(m => m.BillCalculator), { loading: () => <LoadingCalculator /> });
@@ -173,7 +173,6 @@ const DibMbstsCalculator = dynamic(() => import("@/components/calculators/ExamCa
 const EusCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.EusCalculator), { loading: () => <LoadingCalculator /> });
 const IyosCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.IyosCalculator), { loading: () => <LoadingCalculator /> });
 const OypCalculator = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.OypCalculator), { loading: () => <LoadingCalculator /> });
-const HsyCalculatorInternal = dynamic(() => import("@/components/calculators/ExamCalculators").then(m => m.HsyCalculator), { loading: () => <LoadingCalculator /> });
 
 // Yeni Araçlar ve Oyunlar
 const Game2048 = dynamic(() => import("@/components/games/Game2048").then(m => m.Game2048), { loading: () => <LoadingCalculator /> });
@@ -331,7 +330,6 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "eus-puan": return <EusCalculator />;
       case "iyos-puan": return <IyosCalculator />;
       case "oyp-puan": return <OypCalculator />;
-      case "hakim-savci-puan": return <HsyCalculatorInternal />;
       
       case "netten-brute": return <NetGrossCalculator />;
       case "kidem-tazminati": return <SeveranceCalculator />;

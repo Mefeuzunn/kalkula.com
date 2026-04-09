@@ -446,42 +446,6 @@ export function OypCalculator() {
   );
 }
 
-// 14. HSY (Hâkim ve Savcı Yardımcılığı)
-export function HsyCalculator() {
-  const [genel, setGenel] = useState("25");
-  const [alan, setAlan] = useState("60");
-  const [result, setResult] = useState<{ puan: number; passed: boolean } | null>(null);
-
-  const calculate = () => {
-    const g = parseFloat(genel) || 0;
-    const a = parseFloat(alan) || 0;
-    const puan = 40 + (g * 0.4) + (a * 0.6); 
-    setResult({ puan, passed: puan >= 70 });
-    if (puan >= 70) confetti();
-  };
-
-  return (
-    <V2ExamWrapper title="HSY PUAN ANALİZİ" icon="⚖️" info="Hâkim ve Savcı Yardımcılığı sınavı tahmini puanı.">
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 gap-4">
-          <V2Input label="GENEL KÜLTÜR (30 S)" value={genel} onChange={setGenel} unit="D" max="30" placeholder="25" />
-          <V2Input label="ALAN BİLGİSİ (70 S)" value={alan} onChange={setAlan} unit="D" max="70" placeholder="60" />
-        </div>
-        <V2ActionRow onCalculate={calculate} onReset={() => { setGenel(""); setAlan(""); setResult(null); }} calculateLabel="Hesapla" />
-        {result && (
-          <V2ResultCard 
-            color={result.passed ? "emerald" : "red"} 
-            label="HSY PUANI" 
-            value={result.puan.toFixed(2)} 
-            subLabel={result.passed ? "✨ MÜLAKAT BARAJINI GEÇTİNİZ!" : "❌ MÜLAKAT İÇİN YETERSİZ OLABİLİR."}
-            icon="🏛️"
-          />
-        )}
-      </div>
-    </V2ExamWrapper>
-  );
-}
-
 // 15. OBP / Diploma Puanı
 export function ObpCalculator() {
   const [diploma, setDiploma] = useState("85");
