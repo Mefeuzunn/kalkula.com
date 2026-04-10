@@ -56,16 +56,16 @@ export function CreditCardCalculator() {
         <V2Premium3DResult
           title="KART ANALİZİ"
           mainLabel="ASGARİ ÖDEME"
-          mainValue={formatCurrency(results.minPayment)}
+          mainValue={formatCurrency(results.minPayment || 0)}
           subLabel="GELECEK AYA DEVREDEN BORÇ"
-          subValue={formatCurrency(results.remainingBalance)}
+          subValue={formatCurrency(results.remainingBalance || 0)}
           color="blue"
           variant="precise"
           accentIcon={<CreditCard size={32} />}
           items={[
             {
               label: "AYLIK FAİZ MALİYETİ",
-              value: `+${formatCurrency(results.estimatedInterest)}`,
+              value: `+${formatCurrency(results.estimatedInterest || 0)}`,
               icon: <TrendingUp size={16} />,
               color: "text-red-500",
             },

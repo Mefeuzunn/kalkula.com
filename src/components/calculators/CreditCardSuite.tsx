@@ -137,9 +137,9 @@ export function CreditCardSuite() {
              <V2Premium3DResult
                title="KREDİ KARTI ANALİZİ"
                mainLabel="ASGARİ ÖDEME TUTARI"
-               mainValue={fmt(results.minPayment)}
+               mainValue={fmt(results.minPayment || 0)}
                subLabel="GELECEK AYA DEVREDEN BORÇ"
-               subValue={fmt(results.remaining)}
+               subValue={fmt(results.remaining || 0)}
                color="blue"
                variant="precise"
                accentIcon={<CreditCard size={32} />}
@@ -165,9 +165,9 @@ export function CreditCardSuite() {
               <V2Premium3DResult
                 title="TAKSİTLENDİRME ANALİZİ"
                 mainLabel="AYLIK TAKSİT TUTARI"
-                mainValue={fmt(results.monthlyPayment)}
+                mainValue={fmt(results.monthlyPayment || 0)}
                 subLabel="TOPLAM GERİ ÖDEME"
-                subValue={fmt(results.totalRepayment)}
+                subValue={fmt(results.totalRepayment || 0)}
                 color="zinc"
                 variant="precise"
                 accentIcon={<Clock size={32} />}

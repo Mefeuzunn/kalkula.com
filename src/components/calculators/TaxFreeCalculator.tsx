@@ -116,8 +116,8 @@ export function TaxFreeCalculator() {
           <V2ResultCard
             color={results.isEligible ? "emerald" : "amber"}
             label={results.isEligible ? "TAHMİNİ İADE TUTARI" : "LİMİT ALTI HARCAMA"}
-            value={results.isEligible ? `${results.estimatedRefund.toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ${country.symbol}` : "0.00"}
-            subLabel={results.isEligible ? `≈ ${results.refundTRY.toLocaleString('tr-TR', { style: "currency", currency: "TRY" })}` : `Min: ${country.minSpend} ${country.symbol}`}
+            value={results.isEligible ? `${(results.estimatedRefund || 0).toLocaleString('tr-TR', { maximumFractionDigits: 2 })} ${country.symbol}` : "0.00"}
+            subLabel={results.isEligible ? `≈ ${(results.refundTRY || 0).toLocaleString('tr-TR', { style: "currency", currency: "TRY" })}` : `Min: ${country.minSpend} ${country.symbol}`}
             icon={results.isEligible ? "💰" : "⚠️"}
           />
 

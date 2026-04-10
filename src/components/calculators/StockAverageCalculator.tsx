@@ -73,9 +73,9 @@ export function StockAverageCalculator() {
           <V2ResultCard
             color={results.newAverage < (parseFloat(currentAvg) || 0) ? "emerald" : "amber"}
             label="YENİ ORTALAMA MALİYET"
-            value={results.newAverage.toLocaleString('tr-TR', { maximumFractionDigits: 4, minimumFractionDigits: 2 }) + " ₺"}
+            value={(results.newAverage || 0).toLocaleString('tr-TR', { maximumFractionDigits: 4, minimumFractionDigits: 2 }) + " ₺"}
             subLabel={results.priceImpact !== 0 
-              ? `${results.priceImpact > 0 ? '+' : ''}${results.priceImpact.toFixed(2)}% Maliyet Değişimi`
+              ? `${results.priceImpact > 0 ? '+' : ''}${(results.priceImpact || 0).toFixed(2)}% Maliyet Değişimi`
               : "Maliyet değişmedi"}
             icon="🎯"
           />
@@ -83,11 +83,11 @@ export function StockAverageCalculator() {
           <div className="grid grid-cols-2 gap-4">
              <div className="p-5 rounded-3xl bg-white/5 border border-white/5 flex flex-col items-center justify-center text-center">
                 <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-2">TOPLAM LOT</div>
-                <div className="text-xl font-black text-primary">{results.totalQty.toLocaleString('tr-TR')}</div>
+                <div className="text-xl font-black text-primary">{(results.totalQty || 0).toLocaleString('tr-TR')}</div>
              </div>
              <div className="p-5 rounded-3xl bg-white/5 border border-white/5 flex flex-col items-center justify-center text-center">
                 <div className="text-[10px] font-black text-muted uppercase tracking-widest mb-2">TOPLAM YATIRIM</div>
-                <div className="text-xl font-black text-primary">{results.totalInvested.toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</div>
+                <div className="text-xl font-black text-primary">{(results.totalInvested || 0).toLocaleString('tr-TR', { style: 'currency', currency: 'TRY' })}</div>
              </div>
           </div>
 
