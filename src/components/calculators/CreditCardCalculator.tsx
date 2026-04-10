@@ -1,101 +1,124 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { CreditCard, TrendingUp, Info, AlertCircle, RefreshCw, DollarSign } from "lucide-react";
 import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
 import { V2Input } from "./ui-v2/V2Input";
 import { V2ActionRow } from "./ui-v2/V2ActionRow";
 import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
-import { CreditCard, AlertCircle, TrendingDown, Clock } from "lucide-react";
 
 export function CreditCardCalculator() {
-  const [debt, setDebt] = useState("15000");
-  const [limit, setLimit] = useState("50000");
+  const [balance, setBalance] = useState("20000");
   const [interestRate, setInterestRate] = useState("5.00");
-  const [result, setResult] = useState<{ 
-    minPayment: number; 
-    ratio: number; 
-    remaining: number;
-    dailyInterest: number;
-    monthlyInterest: number;
+  const [minPaymentRate, setMinPaymentRate] = useState("20");
+  const [results, setResults] = useState<{
+    minPayment: number;
+    remainingBalance: number;
+    estimatedInterest: number;
   } | null>(null);
 
   const calculate = () => {
-    const d = parseFloat(debt);
-    const l = parseFloat(limit);
-    const r = parseFloat(interestRate);
-    if (!d || !l || d <= 0 || l <= 0) { setResult(null); return; }
-    
-    const ratio = l > 25000 ? 0.40 : 0.20;
-    const minPayment = d * ratio;
-    const remaining = d - minPayment;
-    
-    const dailyInterest = remaining > 0 ? remaining * (r / 100 / 30) : 0;
-    const monthlyInterest = dailyInterest * 30;
+    const b = parseFloat(balance) || 0;
+    const i = parseFloat(interestRate) || 0;
+    const m = parseFloat(minPaymentRate) || 0;
 
-    setResult({ minPayment, ratio, remaining, dailyInterest, monthlyInterest });
+    const minPayment = (b * m) / 100;
+    const remaining = b - minPayment;
+    const monthlyInterest = (remaining * i) / 100;
+
+    setResults({
+      minPayment,
+      remainingBalance: remaining,
+      estimatedInterest: monthlyInterest,
+    });
   };
 
-  const reset = () => { 
-    setDebt("15000"); 
-    setLimit("50000"); 
+  useEffect(() => {
+    calculate();
+  }, [balance, interestRate, minPaymentRate]);
+
+  const reset = () => {
+    setBalance("20000");
     setInterestRate("5.00");
-    setResult(null); 
+    setMinPaymentRate("20");
+    setResults(null);
   };
 
-  useEffect(() => { calculate(); }, [debt, limit, interestRate]);
-
-  const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY" });
+  const formatCurrency = (val: number) => 
+    new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(val);
 
   return (
     <V2CalculatorWrapper
-      title="ASGARİ ÖDEME VE FAİZ ANALİZİ"
+      title="KREDİ KARTI HESAPLAMA"
       icon="💳"
-      infoText="Sadece asgari ödeme yapılması durumunda kalan borca akdi faiz uygulanır. BDDK kuralları gereği 25.000 TL altı limitlerde %20, üstü limitlerde %40 asgari ödeme oranı uygulanır."
-      results={result && (
+      infoText="Kredi kartı dönem borcunuz üzerinden asgari ödeme tutarını ve gelecek aya devreden borcun faiz maliyetini hesaplayın."
+      results={results && (
         <V2Premium3DResult
-          title="KREDİ KARTI ANALİZ ANALİZİ"
-          mainLabel="GEREKLİ ASGARİ ÖDEME"
-          mainValue={fmt(result.minPayment)}
-          subLabel={`%${(result.ratio * 100).toFixed(0)} asgari ödeme oranı uygulandı`}
-          subValue=""
-          color="red"
+          title="KART ANALİZİ"
+          mainLabel="ASGARİ ÖDEME"
+          mainValue={formatCurrency(results.minPayment)}
+          subLabel="GELECEK AYA DEVREDEN BORÇ"
+          subValue={formatCurrency(results.remainingBalance)}
+          color="blue"
           variant="precise"
           accentIcon={<CreditCard size={32} />}
           items={[
             {
-              label: "DÖNEM SONU KALAN BORÇ",
-              value: fmt(result.remaining),
-              icon: <Clock size={16} />,
-              color: "bg-zinc-500/10 text-zinc-400"
+              label: "AYLIK FAİZ MALİYETİ",
+              value: `+${formatCurrency(results.estimatedInterest)}`,
+              icon: <TrendingUp size={16} />,
+              color: "text-red-500",
             },
             {
-              label: "AYLIK FAİZ YÜKÜ",
-              value: `+${fmt(result.monthlyInterest)}`,
-              icon: <TrendingDown size={16} />,
-              color: "bg-red-500/10 text-red-500"
-            },
-            {
-              label: "GÜNLÜK FAİZ MALİYETİ",
-              value: fmt(result.dailyInterest),
+              label: "ASGARİ ORAN",
+              value: `%${minPaymentRate}`,
               icon: <AlertCircle size={16} />,
-              color: "bg-red-500/10 text-red-400"
+              color: "text-blue-500",
             }
           ]}
+          footerText="* Hesaplamalar BSMV ve KKDF vergileri hariç akdi faiz üzerinden yapılmıştır."
         />
       )}
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <V2Input label="KREDİ KARTI LİMİTİ" value={limit} onChange={setLimit} unit="₺" />
-        <V2Input label="DÖNEM BORCU" value={debt} onChange={setDebt} unit="₺" />
+      <div className="space-y-8">
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+          <V2Input 
+            label="TOPLAM DÖNEM BORCU" 
+            value={balance} 
+            onChange={setBalance} 
+            unit="₺" 
+            placeholder="20.000"
+          />
+          <div className="grid grid-cols-2 gap-4">
+            <V2Input 
+              label="ASGARİ ÖDEME ORANI" 
+              value={minPaymentRate} 
+              onChange={setMinPaymentRate} 
+              unit="%" 
+              placeholder="20"
+            />
+            <V2Input 
+              label="AYLIK AKDİ FAİZ" 
+              value={interestRate} 
+              onChange={setInterestRate} 
+              unit="%" 
+              placeholder="5.00"
+            />
+          </div>
+          <V2ActionRow 
+            onCalculate={calculate} 
+            onReset={reset} 
+            calculateLabel="💳 Faiz Dahil Analiz Et"
+          />
+        </div>
+
+        <div className="p-4 rounded-2xl bg-amber-500/5 border border-amber-500/10 flex gap-4 items-center">
+           <Info className="w-6 h-6 text-amber-500 shrink-0" />
+           <p className="text-[10px] text-muted italic leading-relaxed">
+             <b>Bilgi:</b> 25.000 TL altı limitli kartlarda asgari ödeme oranı %20, 25.000 TL ve üzeri limitlerde %40 olarak uygulanır.
+           </p>
+        </div>
       </div>
-
-      <V2Input label="AYLIK AKDİ FAİZ (%)" value={interestRate} onChange={setInterestRate} unit="%" step="0.01" />
-
-      <V2ActionRow
-        onCalculate={calculate}
-        onReset={reset}
-        calculateLabel="💳 Faiz Dahil Analiz Et"
-      />
     </V2CalculatorWrapper>
   );
 }

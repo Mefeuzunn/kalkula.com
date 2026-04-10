@@ -1,13 +1,11 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { 
   CreditCard, 
   Wallet, 
-  ArrowRight, 
   RefreshCw, 
   AlertCircle,
-  HelpCircle,
   Clock,
   TrendingDown,
   Info,
@@ -23,34 +21,28 @@ export function CreditCardSuite() {
   const [debt, setDebt] = useState("20000");
   const [limit, setLimit] = useState("50000");
   
-  // Specific inputs for installment
   const [purchaseAmount, setPurchaseAmount] = useState("5000");
   const [installmentCount, setInstallmentCount] = useState("6");
   const [monthlyCommission, setMonthlyCommission] = useState("5.00");
-
-  // Central Bank Caps (approximate for April 2026)
-  const TCMB_CAP = 5.00; // Monthly interest cap
-  const BSMV = 0.15; // 15%
-  const KKDF = 0.15; // 15%
 
   const results = useMemo(() => {
     const d = parseFloat(debt) || 0;
     const l = parseFloat(limit) || 0;
     const p = parseFloat(purchaseAmount) || 0;
     const n = parseInt(installmentCount) || 1;
-    const comm = parseFloat(monthlyCommission) || TCMB_CAP;
+    const rate = parseFloat(monthlyCommission) || 5;
 
     if (task === "minimum") {
       const ratio = l > 25000 ? 0.40 : 0.20;
       const minPayment = d * ratio;
       const remaining = d - minPayment;
-      const dailyInterest = remaining * (TCMB_CAP / 100 / 30) * (1 + BSMV + KKDF);
-      return { minPayment, ratio, remaining, monthlyInterest: dailyInterest * 30 };
+      const monthlyInterest = remaining * (rate / 100) * 1.30; // Including taxes approx.
+      return { minPayment, ratio, remaining, monthlyInterest };
     }
 
     if (task === "installment") {
-      const effectiveRate = (comm / 100) * (1 + BSMV + KKDF);
-      const monthlyPayment = (p * effectiveRate * Math.pow(1 + effectiveRate, n)) / (Math.pow(1 + effectiveRate, n) - 1);
+      const r = (rate / 100) * 1.30; // 30% taxes (BSMV+KKDF)
+      const monthlyPayment = (p * r * Math.pow(1 + r, n)) / (Math.pow(1 + r, n) - 1);
       const totalRepayment = monthlyPayment * n;
       const totalCost = totalRepayment - p;
       return { monthlyPayment, totalRepayment, totalCost };
@@ -61,120 +53,111 @@ export function CreditCardSuite() {
 
   const fmt = (v: number) => new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(v);
 
+  const reset = () => {
+    setDebt("20000");
+    setLimit("50000");
+    setPurchaseAmount("5000");
+    setInstallmentCount("6");
+    setMonthlyCommission("5.00");
+  };
+
   return (
-    <div className="calc-wrapper max-w-5xl mx-auto">
-      {/* 3D TILE SWITCHER */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 max-w-4xl mx-auto">
+    <div className="calc-wrapper max-w-5xl mx-auto space-y-12">
+      {/* TILE SWITCHER */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
         {(["minimum", "installment", "cash-advance", "late-interest"] as CardTask[]).map((t) => (
           <button 
             key={t}
-            onClick={() => { setTask(t); confetti({ particleCount: 25, spread: 30, origin: { y: 0.8 } }); }}
-            className={`flex flex-col items-center justify-center gap-3 p-6 rounded-[2.5rem] transition-all duration-300 relative group border-2 ${
+            onClick={() => { setTask(t); confetti({ particleCount: 20, spread: 30, origin: { y: 0.8 } }); }}
+            className={`flex flex-col items-center justify-center gap-3 p-6 rounded-[2rem] transition-all border-2 ${
               task === t 
-                ? "bg-blue-600 border-blue-500 text-white shadow-[0_20px_50px_rgba(37,99,235,0.4)] -translate-y-3 border-b-[10px] border-blue-800" 
-                : "bg-surface border-border text-muted hover:border-blue-500/30 hover:-translate-y-1 border-b-[4px]"
+                ? "bg-blue-600 border-blue-500 text-white shadow-xl -translate-y-1" 
+                : "bg-surface border-border text-muted hover:border-blue-500/30"
             }`}
           >
-            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl transition-transform duration-500 group-hover:scale-110 ${task === t ? "bg-white/20 rotate-12" : "bg-blue-500/5"}`}>
+            <div className="text-2xl mb-1">
                 {t === "minimum" ? "💳" : t === "installment" ? "🔢" : t === "cash-advance" ? "💵" : "⏰"}
             </div>
-            <div className="flex flex-col items-center">
-                <span className="text-[11px] font-black uppercase tracking-[0.2em] mb-1">
-                    {t === "minimum" ? "Asgari" : t === "installment" ? "Taksit" : t === "cash-advance" ? "Nakit" : "Gecikme"}
-                </span>
-                <span className="text-[9px] font-bold opacity-40 italic">
-                    {t === "minimum" ? "Hesapla" : t === "installment" ? "Maliyeti" : t === "cash-advance" ? "Avans" : "Faizi"}
-                </span>
-            </div>
+            <span className="text-[10px] font-black uppercase tracking-widest text-center">
+                {t === "minimum" ? "Asgari Ödeme" : t === "installment" ? "Taksitlendirme" : t === "cash-advance" ? "Nakit Avans" : "Gecikme Faizi"}
+            </span>
           </button>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        <div className="space-y-8 bg-surface p-10 rounded-[3rem] border border-border shadow-xl">
-           <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500">
-                  <Wallet size={20} />
-              </div>
-              <h3 className="text-xs font-black text-muted uppercase tracking-[0.2em] font-mono">Parametreler</h3>
+        <div className="space-y-8 bg-surface p-8 rounded-[2.5rem] border border-border shadow-xl">
+           <div className="flex items-center gap-3 mb-4">
+              <Wallet className="text-blue-500" size={20} />
+              <h3 className="text-xs font-black text-muted uppercase tracking-widest font-mono">Giriş Parametreleri</h3>
            </div>
 
            {task === "minimum" && (
              <div className="space-y-6">
-                <div className="space-y-3">
-                   <label className="text-[10px] font-black text-muted uppercase ml-2">Kart Limiti</label>
-                   <div className="calc-input-key">
-                      <input type="number" value={limit} onChange={e => setLimit(e.target.value)} className="calc-input-field !text-2xl font-black py-4" placeholder="50.000" />
-                   </div>
+                <div className="space-y-2">
+                   <label className="text-[10px] font-black text-muted uppercase px-2">KART LİMİTİ</label>
+                   <input type="number" value={limit} onChange={e => setLimit(e.target.value)} className="calc-input-field !text-xl font-black py-4" />
                 </div>
-                <div className="space-y-3">
-                   <label className="text-[10px] font-black text-muted uppercase ml-2">Dönem Borcu</label>
-                   <div className="calc-input-key !bg-blue-500/5">
-                      <input type="number" value={debt} onChange={e => setDebt(e.target.value)} className="calc-input-field !text-2xl font-black py-4" placeholder="20.000" />
-                   </div>
+                <div className="space-y-2">
+                   <label className="text-[10px] font-black text-muted uppercase px-2">DÖNEM BORCU</label>
+                   <input type="number" value={debt} onChange={e => setDebt(e.target.value)} className="calc-input-field !text-xl font-black py-4" />
                 </div>
              </div>
            )}
 
            {task === "installment" && (
              <div className="space-y-6">
-                <div className="space-y-3">
-                   <label className="text-[10px] font-black text-muted uppercase ml-2">Alışveriş Tutarı</label>
-                   <div className="calc-input-key">
-                      <input type="number" value={purchaseAmount} onChange={e => setPurchaseAmount(e.target.value)} className="calc-input-field !text-2xl font-black py-4" />
-                   </div>
+                <div className="space-y-2">
+                   <label className="text-[10px] font-black text-muted uppercase px-2">ALIŞVERİŞ TUTARI</label>
+                   <input type="number" value={purchaseAmount} onChange={e => setPurchaseAmount(e.target.value)} className="calc-input-field !text-xl font-black py-4" />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-3">
-                     <label className="text-[10px] font-black text-muted uppercase ml-2 font-mono">Taksit</label>
-                     <div className="calc-input-key">
-                        <select value={installmentCount} onChange={e => setInstallmentCount(e.target.value)} className="calc-input-field !text-xl font-black py-4 appearance-none cursor-pointer">
-                           {[3, 6, 9, 12].map(n => <option key={n} value={n.toString()}>{n} Ay</option>)}
-                        </select>
-                     </div>
+                  <div className="space-y-2">
+                     <label className="text-[10px] font-black text-muted uppercase px-2">TAKSİT</label>
+                     <select value={installmentCount} onChange={e => setInstallmentCount(e.target.value)} className="calc-input-field font-black py-4 appearance-none cursor-pointer">
+                        {[3, 6, 9, 12, 18, 24].map(n => <option key={n} value={n.toString()}>{n} Ay</option>)}
+                     </select>
                   </div>
-                  <div className="space-y-3">
-                     <label className="text-[10px] font-black text-muted uppercase ml-2 font-mono">Faiz (%)</label>
-                     <div className="calc-input-key">
-                        <input type="number" step="0.01" value={monthlyCommission} onChange={e => setMonthlyCommission(e.target.value)} className="calc-input-field !text-xl font-black py-4" />
-                     </div>
+                  <div className="space-y-2">
+                     <label className="text-[10px] font-black text-muted uppercase px-2">FAİZ (%)</label>
+                     <input type="number" value={monthlyCommission} onChange={e => setMonthlyCommission(e.target.value)} className="calc-input-field font-black py-4" />
                   </div>
                 </div>
              </div>
            )}
 
            <div className="pt-6 border-t border-border flex justify-between items-center text-[10px] font-black text-muted italic">
-              <span>* Güncel Faiz Tavanı: %{TCMB_CAP}</span>
-              <button onClick={() => { setDebt("20000"); setLimit("50000"); }} className="p-3 bg-secondary/10 rounded-xl hover:rotate-180 duration-500 transition-all"><RefreshCw size={14} /></button>
+              <span>* TCMB Nisan 2026 Faiz Tavanı: %5.00</span>
+              <button onClick={reset} className="p-3 bg-secondary/10 rounded-xl hover:rotate-180 transition-all"><RefreshCw size={14} /></button>
            </div>
         </div>
 
-        <div className="flex flex-col gap-6">
+        <div className="space-y-6">
            {task === "minimum" && results && "minPayment" in results ? (
              <V2Premium3DResult
                title="KREDİ KARTI ANALİZİ"
-               mainLabel="ASGARI ÖDEME TUTARI"
-               mainValue={fmt(results.minPayment ?? 0)}
-               subLabel="KALAN BORÇ"
-               subValue={fmt(results.remaining ?? 0)}
+               mainLabel="ASGARİ ÖDEME TUTARI"
+               mainValue={fmt(results.minPayment)}
+               subLabel="GELECEK AYA DEVREDEN BORÇ"
+               subValue={fmt(results.remaining)}
                color="blue"
                variant="precise"
                accentIcon={<CreditCard size={32} />}
-               footerText="Asgari ödeme yapıldığında kalan borca akdi faiz uygulanır."
                items={[
                  {
-                   label: "AYLIK FAİZ",
-                   value: `+${fmt(results.monthlyInterest ?? 0)}`,
+                   label: "TAHMİNİ EK FAİZ",
+                   value: `+${fmt(results.monthlyInterest || 0)}`,
                    icon: <TrendingDown size={16} />,
-                   color: "bg-red-500/10 text-red-500"
+                   color: "text-red-500"
                  },
                  {
-                   label: "ORAN",
-                   value: `%${((results.ratio ?? 0) * 100).toFixed(0)}`,
+                   label: "ASGARİ ORAN",
+                   value: `%${((results.ratio || 0) * 100).toFixed(0)}`,
                    icon: <AlertCircle size={16} />,
-                   color: "bg-blue-500/10 text-blue-500"
+                   color: "text-blue-500"
                  }
                ]}
+               footerText="* Hesaplamaya BSMV ve KKDF vergileri dahildir."
              />
            ) : null}
 
@@ -182,35 +165,33 @@ export function CreditCardSuite() {
               <V2Premium3DResult
                 title="TAKSİTLENDİRME ANALİZİ"
                 mainLabel="AYLIK TAKSİT TUTARI"
-                mainValue={fmt(results.monthlyPayment ?? 0)}
+                mainValue={fmt(results.monthlyPayment)}
                 subLabel="TOPLAM GERİ ÖDEME"
-                subValue={fmt(results.totalRepayment ?? 0)}
+                subValue={fmt(results.totalRepayment)}
                 color="zinc"
                 variant="precise"
                 accentIcon={<Clock size={32} />}
                 items={[
                   {
-                    label: "TOPLAM MALİYET",
-                    value: `+${fmt(results.totalCost ?? 0)}`,
+                    label: "TOPLAM FAİZ MALİYETİ",
+                    value: `+${fmt(results.totalCost || 0)}`,
                     icon: <DollarSign size={16} />,
-                    color: "bg-blue-500/10 text-blue-400"
+                    color: "text-blue-400"
                   },
                   {
                     label: "VADE",
                     value: `${installmentCount} Ay`,
                     icon: <Clock size={16} />,
-                    color: "bg-zinc-500/10 text-zinc-400"
+                    color: "text-zinc-400"
                   }
                  ]}
               />
            ) : null}
 
-           <div className="bg-surface p-6 rounded-[2.5rem] border border-border flex items-start gap-4">
-              <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 shrink-0">
-                  <Info size={20} />
-              </div>
+           <div className="bg-surface p-6 rounded-[2rem] border border-border flex items-start gap-4">
+              <Info className="text-blue-500 shrink-0 mt-0.5" size={18} />
               <p className="text-[10px] text-muted leading-relaxed font-bold italic">
-                 <b>Not:</b> Asgari ödeme yapıldığında kalan borca akdi faiz uygulanır.
+                 Asgari ödeme yapıldığında kalan borca akdi faiz uygulanır. Borcunuzun tamamını ödemeniz halinde faiz uygulanmaz.
               </p>
            </div>
         </div>

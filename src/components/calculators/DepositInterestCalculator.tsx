@@ -1,92 +1,112 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-
+import { Landmark, TrendingUp, Percent, Calculator, PiggyBank, DollarSign } from "lucide-react";
 import { V2CalculatorWrapper } from "./ui-v2/V2CalculatorWrapper";
 import { V2Input } from "./ui-v2/V2Input";
 import { V2ActionRow } from "./ui-v2/V2ActionRow";
 import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
-import { Landmark, TrendingUp, Percent, Calculator, PiggyBank, DollarSign } from "lucide-react";
 
 export function DepositInterestCalculator() {
-  const [principal, setPrincipal] = useState("250000");
-  const [days, setDays] = useState("32");
-  const [interestRate, setInterestRate] = useState("48");
+  const [capital, setCapital] = useState("100000");
+  const [interestRate, setInterestRate] = useState("45");
+  const [term, setTerm] = useState("32");
   const [taxRate, setTaxRate] = useState("7.5");
-  const [result, setResult] = useState<{ gross: number; net: number; taxAmount: number; totalEnd: number; dailyNet: number } | null>(null);
+
+  const [result, setResult] = useState<{
+    gross: number;
+    net: number;
+    taxAmount: number;
+    totalEnd: number;
+    dailyNet: number;
+  } | null>(null);
 
   const calculate = () => {
-    const p = parseFloat(principal);
-    const d = parseFloat(days);
-    const r = parseFloat(interestRate) / 100;
-    const t = parseFloat(taxRate) / 100;
-    if (p > 0 && d > 0 && r > 0) {
-      const gross = p * r * (d / 365);
-      const taxAmount = gross * t;
-      const net = gross - taxAmount;
-      const totalEnd = p + net;
-      const dailyNet = net / d;
-      setResult({ gross, net, taxAmount, totalEnd, dailyNet });
-    } else {
-      setResult(null);
-    }
+    const p = parseFloat(capital) || 0;
+    const r = parseFloat(interestRate) || 0;
+    const t = parseFloat(term) || 0;
+    const tax = parseFloat(taxRate) || 0;
+
+    // Formula: (P * R * T) / 36500 (standard for TRY deposits in Turkey)
+    const gross = (p * r * t) / 36500;
+    const taxAmount = (gross * tax) / 100;
+    const net = gross - taxAmount;
+    const totalEnd = p + net;
+    const dailyNet = net / t;
+
+    setResult({
+      gross,
+      net,
+      taxAmount,
+      totalEnd,
+      dailyNet
+    });
   };
 
-  const reset = () => { setPrincipal("250000"); setDays("32"); setInterestRate("48"); setTaxRate("7.5"); setResult(null); };
+  useEffect(() => {
+    calculate();
+  }, [capital, interestRate, term, taxRate]);
 
-  useEffect(() => { calculate(); }, [principal, days, interestRate, taxRate]);
+  const reset = () => {
+    setCapital("100000");
+    setInterestRate("45");
+    setTerm("32");
+    setTaxRate("7.5");
+    setResult(null);
+  };
 
-  const fmt = (v: number) => v.toLocaleString("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 2 });
+  const fmt = (v: number) => new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY" }).format(v);
 
   return (
     <V2CalculatorWrapper
-      title="MEVDUAT GETİRİ ANALİZİ"
-      icon="💰"
+      title="MEVDUAT GETİRİSİ"
+      icon="🏦"
+      infoText="Anaparanızın vade sonundaki net getirisini ve stopaj kesintisini anında hesaplayın. TCMB ve banka oranlarıyla uyumlu algoritma."
       results={result && (
         <V2Premium3DResult
-          title="VADELİ MEVDUAT GETİRİSİ"
-          mainLabel="VADE SONU NET GETİRİ"
-          mainValue={`+${fmt(result.net)}`}
-          subLabel={`%${taxRate} stopaj kesintisi uygulandı`}
-          subValue=""
-          color="blue"
+          title="MEVDUAT ANALİZİ"
+          mainLabel="NET VADE SONU GETİRİSİ"
+          mainValue={fmt(result.net)}
+          subLabel="TOPLAM VADE SONU TUTAR"
+          subValue={fmt(result.totalEnd)}
+          color="emerald"
           variant="precise"
-          accentIcon={<PiggyBank size={32} />}
+          accentIcon={<Landmark size={32} />}
           items={[
             {
-              label: "BRÜT FAİZ GETİRİSİ",
+              label: "BRÜT KAZANÇ",
               value: fmt(result.gross),
               icon: <TrendingUp size={16} />,
-              color: "bg-blue-500/10 text-blue-500"
+              color: "text-emerald-500",
             },
             {
-              label: `STOPAJ VERGİSİ (%${taxRate})`,
-              value: `-${fmt(result.taxAmount)}`,
-              icon: <Calculator size={16} />,
-              color: "bg-red-500/10 text-red-500"
+              label: "STOPAJ KESİNTİSİ",
+              value: `- ${fmt(result.taxAmount)}`,
+              icon: <Percent size={16} />,
+              color: "text-red-500",
             },
             {
-              label: "VADE SONU TOPLAM TUTAR",
-              value: fmt(result.totalEnd),
-              icon: <Landmark size={16} />,
-              color: "bg-blue-500/10 text-blue-600 font-black"
+              label: "GÜNLÜK NET GETİRİ",
+              value: fmt(result.dailyNet),
+              icon: <DollarSign size={16} />,
+              color: "text-blue-500",
             }
           ]}
+          footerText={`* ${term} günlük vade sonunda elde edilecek tahmini verilerdir.`}
         />
       )}
     >
-      <V2Input label="Yatırılacak Anapara" value={principal} onChange={setPrincipal} unit="₺" />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <V2Input label="Faiz Oranı" value={interestRate} onChange={setInterestRate} unit="%" />
-        <V2Input label="Vade (Gün)" value={days} onChange={setDays} unit="GÜN" />
-        <V2Input label="Stopaj" value={taxRate} onChange={setTaxRate} unit="%" />
+      <div className="space-y-8">
+        <div className="p-6 rounded-3xl bg-white/5 border border-white/5 space-y-6">
+          <V2Input label="ANAPARA" value={capital} onChange={setCapital} unit="₺" placeholder="100.000" />
+          <div className="grid grid-cols-2 gap-4">
+            <V2Input label="YILLIK FAİZ (%)" value={interestRate} onChange={setInterestRate} unit="%" placeholder="45" />
+            <V2Input label="VADE (GÜN)" value={term} onChange={setTerm} unit="Gün" placeholder="32" />
+          </div>
+          <V2Input label="STOPAJ ORANI (%)" value={taxRate} onChange={setTaxRate} unit="%" placeholder="7.5" />
+          <V2ActionRow onCalculate={calculate} onReset={reset} calculateLabel="🏦 Mevduat Getirisini Hesapla" />
+        </div>
       </div>
-
-      <V2ActionRow
-        onCalculate={calculate}
-        onReset={reset}
-        calculateLabel="🏦 Mevduat Getirisini Hesapla"
-      />
     </V2CalculatorWrapper>
   );
 }
