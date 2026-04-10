@@ -16,7 +16,6 @@ import {
 import confetti from "canvas-confetti";
 import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
 
-
 type CardTask = "minimum" | "installment" | "cash-advance" | "late-interest";
 
 export function CreditCardSuite() {
@@ -27,7 +26,7 @@ export function CreditCardSuite() {
   // Specific inputs for installment
   const [purchaseAmount, setPurchaseAmount] = useState("5000");
   const [installmentCount, setInstallmentCount] = useState("6");
-  const [monthlyCommission, setMonthlyCommission] = useState("5.00"); // 5% monthly is common now
+  const [monthlyCommission, setMonthlyCommission] = useState("5.00");
 
   // Central Bank Caps (approximate for April 2026)
   const TCMB_CAP = 5.00; // Monthly interest cap
@@ -64,7 +63,7 @@ export function CreditCardSuite() {
 
   return (
     <div className="calc-wrapper max-w-5xl mx-auto">
-      {/* PROFESSIONAL 3D TILE SWITCHER */}
+      {/* 3D TILE SWITCHER */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16 max-w-4xl mx-auto">
         {(["minimum", "installment", "cash-advance", "late-interest"] as CardTask[]).map((t) => (
           <button 
@@ -92,19 +91,18 @@ export function CreditCardSuite() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
-        {/* INPUTS AREA */}
         <div className="space-y-8 bg-surface p-10 rounded-[3rem] border border-border shadow-xl">
            <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-500/10 rounded-xl flex items-center justify-center text-blue-500">
                   <Wallet size={20} />
               </div>
-              <h3 className="text-xs font-black text-muted uppercase tracking-[0.2em] font-mono">Hesaplama Parametreleri</h3>
+              <h3 className="text-xs font-black text-muted uppercase tracking-[0.2em] font-mono">Parametreler</h3>
            </div>
 
            {task === "minimum" && (
              <div className="space-y-6">
                 <div className="space-y-3">
-                   <label className="text-[10px] font-black text-muted uppercase ml-2">Kart Limiti (Limit Bazlı Oran)</label>
+                   <label className="text-[10px] font-black text-muted uppercase ml-2">Kart Limiti</label>
                    <div className="calc-input-key">
                       <input type="number" value={limit} onChange={e => setLimit(e.target.value)} className="calc-input-field !text-2xl font-black py-4" placeholder="50.000" />
                    </div>
@@ -128,15 +126,15 @@ export function CreditCardSuite() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-3">
-                     <label className="text-[10px] font-black text-muted uppercase ml-2 font-mono">Taksit Sayısı</label>
+                     <label className="text-[10px] font-black text-muted uppercase ml-2 font-mono">Taksit</label>
                      <div className="calc-input-key">
                         <select value={installmentCount} onChange={e => setInstallmentCount(e.target.value)} className="calc-input-field !text-xl font-black py-4 appearance-none cursor-pointer">
-                           {[3, 6, 9, 12].map(n => <option key={n} value={n}>{n} Ay</option>)}
+                           {[3, 6, 9, 12].map(n => <option key={n} value={n.toString()}>{n} Ay</option>)}
                         </select>
                      </div>
                   </div>
                   <div className="space-y-3">
-                     <label className="text-[10px] font-black text-muted uppercase ml-2 font-mono">Aylık Faiz (%)</label>
+                     <label className="text-[10px] font-black text-muted uppercase ml-2 font-mono">Faiz (%)</label>
                      <div className="calc-input-key">
                         <input type="number" step="0.01" value={monthlyCommission} onChange={e => setMonthlyCommission(e.target.value)} className="calc-input-field !text-xl font-black py-4" />
                      </div>
@@ -146,7 +144,7 @@ export function CreditCardSuite() {
            )}
 
            <div className="pt-6 border-t border-border flex justify-between items-center text-[10px] font-black text-muted italic">
-              <span>* TCMB Güncel Faiz Tavanı: %{TCMB_CAP}</span>
+              <span>* Güncel Faiz Tavanı: %{TCMB_CAP}</span>
               <button onClick={() => { setDebt("20000"); setLimit("50000"); }} className="p-3 bg-secondary/10 rounded-xl hover:rotate-180 duration-500 transition-all"><RefreshCw size={14} /></button>
            </div>
         </div>
@@ -157,21 +155,21 @@ export function CreditCardSuite() {
                title="KREDİ KARTI ANALİZİ"
                mainLabel="ASGARI ÖDEME TUTARI"
                mainValue={fmt(results.minPayment ?? 0)}
-               subLabel="KALAN BORÇ (BAKİYE DEVRİ)"
+               subLabel="KALAN BORÇ"
                subValue={fmt(results.remaining ?? 0)}
                color="blue"
                variant="precise"
                accentIcon={<CreditCard size={32} />}
-               footerText="<b>Kart Sahibi Notu:</b> Asgari ödeme yapıldığında kalan borca akdi faiz uygulanır. Borcun tamamı ödenmediği sürece 'faizsiz dönem' avantajı kaybolur."
+               footerText="Asgari ödeme yapıldığında kalan borca akdi faiz uygulanır."
                items={[
                  {
-                   label: "AYLIK FAİZ MALİYETİ",
+                   label: "AYLIK FAİZ",
                    value: `+${fmt(results.monthlyInterest ?? 0)}`,
                    icon: <TrendingDown size={16} />,
                    color: "bg-red-500/10 text-red-500"
                  },
                  {
-                   label: "ASGARİ ORANI",
+                   label: "ORAN",
                    value: `%${((results.ratio ?? 0) * 100).toFixed(0)}`,
                    icon: <AlertCircle size={16} />,
                    color: "bg-blue-500/10 text-blue-500"
@@ -198,22 +196,21 @@ export function CreditCardSuite() {
                     color: "bg-blue-500/10 text-blue-400"
                   },
                   {
-                    label: "TAKSİT SAYISI",
+                    label: "VADE",
                     value: `${installmentCount} Ay`,
                     icon: <Clock size={16} />,
                     color: "bg-zinc-500/10 text-zinc-400"
                   }
-                ]}
+                 ]}
               />
            ) : null}
-
 
            <div className="bg-surface p-6 rounded-[2.5rem] border border-border flex items-start gap-4">
               <div className="w-10 h-10 bg-amber-500/10 rounded-xl flex items-center justify-center text-amber-500 shrink-0">
                   <Info size={20} />
               </div>
               <p className="text-[10px] text-muted leading-relaxed font-bold italic">
-                 <b>Kart Sahibi Notu:</b> Asgari ödeme yapıldığında kalan borca akdi faiz uygulanır. Borcun tamamı ödenmediği sürece "faizsiz dönem" avantajı kaybolur.
+                 <b>Not:</b> Asgari ödeme yapıldığında kalan borca akdi faiz uygulanır.
               </p>
            </div>
         </div>

@@ -191,6 +191,7 @@ const GlassGenerator = dynamic(() => import("@/components/calculators/GlassGener
 const AiPromptOptimizer = dynamic(() => import("@/components/calculators/AiPromptOptimizer").then(m => m.AiPromptOptimizer), { loading: () => <LoadingCalculator /> });
 const JwtDebugger = dynamic(() => import("@/components/calculators/JwtDebugger").then(m => m.JwtDebugger), { loading: () => <LoadingCalculator /> });
 const CronVisualizer = dynamic(() => import("@/components/calculators/CronVisualizer").then(m => m.CronVisualizer), { loading: () => <LoadingCalculator /> });
+const StockAverageCalculator = dynamic(() => import("@/components/calculators/StockAverageCalculator").then(m => m.StockAverageCalculator), { loading: () => <LoadingCalculator /> });
 
 // Sağlık Araçları (HealthCalculators.tsx)
 const VaccinationCalculator = dynamic(() => import("@/components/calculators/HealthCalculators").then(m => m.VaccinationCalculator), { loading: () => <LoadingCalculator /> });
@@ -369,6 +370,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "vadeli-islem": return <FuturesCalculator />;
       case "vadeli-mevduat": return <DepositInterestCalculator />;
       case "dolar-maliyet-ortalamasi": return <DcaCalculator />;
+      case "hisse-senedi-ortalama-maliyet": return <StockAverageCalculator />;
       case "kpss-puan": return <KpssCalculator />;
       case "ales-puan": return <AlesCalculator />;
       case "dgs-puan": return <DgsCalculator />;

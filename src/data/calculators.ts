@@ -110,6 +110,7 @@ export const calculators: CalculatorInfo[] = [
   { id: "vadeli_islem", title: "Vadeli İşlem Fiyatı Hesaplama", slug: "vadeli-islem", categoryId: "finans", description: "Dayanak varlığın spot fiyattan vadeli (Futures) teorik fiyatına ulaşım formülü." },
   { id: "vadeli_mevduat", title: "Vadeli Mevduat Faizi Hesaplama", slug: "vadeli-mevduat", categoryId: "finans", description: "Brüt ve net mevduat getirilerini ayrı ayrı görebileceğiniz faiz aracı." },
   { id: "dca-hesaplama", title: "Dolar Maliyet Ortalaması (DCA)", slug: "dolar-maliyet-ortalamasi", categoryId: "finans", description: "Düzenli yatırım simülasyonu ve ortalama maliyet düşürme hesaplayıcısı." },
+  { id: "stock-average", title: "Hisse Senedi Ortalama Maliyet", slug: "hisse-senedi-ortalama-maliyet", categoryId: "finans", description: "Hisse senedi alımlarınızda komisyon dahil yeni maliyetinizi ve toplam lot sayınızı anında hesaplayın." },
 
   // Matematik
   { id: "yuzde", title: "Yüzde Hesaplama", slug: "yuzde", categoryId: "matematik", description: "Bir sayının %x'i, yüzde farkları ve oran orantı problemleri." },
