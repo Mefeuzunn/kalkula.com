@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Calendar, PieChart, ArrowLeft, Download, Share2, Info, ChevronDown, TrendingUp, Clock } from "lucide-react";
+import { Calendar, PieChart, ArrowLeft, Download, Share2, Info, ChevronDown, TrendingUp, TrendingDown, Clock } from "lucide-react";
 import Link from "next/link";
 import { downloadCSV } from "@/lib/ExportUtils";
 import { V2Premium3DResult } from "./ui-v2/V2Premium3DResult";
 
-export function LoanAmortization() {
+function LoanAmortizationContent() {
   const searchParams = useSearchParams();
   
   const [amount, setAmount] = useState(searchParams.get("amount") || "100000");
@@ -107,7 +107,6 @@ export function LoanAmortization() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-        {/* Controls Sidebar */}
         <div className="lg:col-span-4 space-y-8">
            <div className="bg-surface p-10 rounded-[3rem] border border-border shadow-2xl space-y-8">
               <div className="space-y-4">
@@ -153,11 +152,9 @@ export function LoanAmortization() {
            </div>
         </div>
 
-        {/* Results Area */}
         <div className="lg:col-span-8 space-y-8">
            {summary ? (
               <div className="space-y-10">
-                  {/* Top Stats Dashboard (Precise Modernization) */}
                   <V2Premium3DResult
                     title="KREDİ GERİ ÖDEME PROJEKSİYONU"
                     mainLabel="AYLIK TAKSİT TUTARI"
@@ -183,7 +180,6 @@ export function LoanAmortization() {
                     ]}
                   />
 
-                 {/* The Table */}
                  <div className="bg-surface border-4 border-border rounded-[3rem] shadow-2xl overflow-hidden animate-slide-up">
                     <div className="p-8 bg-secondary/5 flex justify-between items-center border-b border-border">
                        <div className="flex items-center gap-3">
@@ -239,3 +235,17 @@ export function LoanAmortization() {
     </div>
   );
 }
+
+export function LoanAmortization() {
+  return (
+    <Suspense fallback={
+      <div className="animate-pulse flex flex-col items-center justify-center p-20 bg-secondary/5 rounded-[4rem] border-dashed border-4 border-border/40 grayscale opacity-40 text-center">
+        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+        <p className="text-[10px] font-black text-muted uppercase tracking-widest italic">Hesaplayıcı Yükleniyor...</p>
+      </div>
+    }>
+      <LoanAmortizationContent />
+    </Suspense>
+  );
+}
+
