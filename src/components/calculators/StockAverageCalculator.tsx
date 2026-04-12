@@ -222,7 +222,7 @@
 
             <div className="space-y-4">
               {rows.map((row, index) => (
-                <div key={row.id} className="grid grid-cols-12 gap-3 items-end opacity-0 animate-fade-in" style={{ animationFillMode: "forwards", animationDelay: \`\${index * 0.05}s\` }}>
+                <div key={row.id} className="grid grid-cols-12 gap-3 items-end opacity-0 animate-fade-in" style={{ animationFillMode: "forwards", animationDelay: `${index * 0.05}s` }}>
                   <div className="col-span-5 relative">
                     <label className="absolute -top-5 left-2 text-[9px] font-black text-muted uppercase tracking-tighter">
                       {index + 1}. ALIM LOT
