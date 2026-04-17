@@ -47,15 +47,15 @@ export const V2Premium3DResult: React.FC<V2Premium3DResultProps> = ({
         </div>
 
         {/* MAIN RESULT CARD (SCREENSHOT STYLE) */}
-        <div className="bg-[#0f172a] rounded-[2.5rem] p-12 md:p-16 text-center relative overflow-hidden border border-white/10 shadow-inner group">
+        <div className="bg-[#0f172a] rounded-[2rem] md:rounded-[2.5rem] p-8 md:p-16 text-center relative overflow-hidden border border-white/10 shadow-inner group">
            {/* THE BLUE GLOW BAR */}
            <div className="absolute top-0 left-8 right-8 h-1 bg-blue-500 shadow-[0_0_20px_#3b82f6] rounded-full group-hover:left-4 group-hover:right-4 transition-all duration-700" />
            
-           <p className="text-blue-400 font-black text-[11px] uppercase tracking-[0.4em] mb-6 animate-pulse">
+           <p className="text-blue-400 font-black text-[10px] md:text-[11px] uppercase tracking-[0.4em] mb-4 md:mb-6 animate-pulse">
               {mainLabel}
            </p>
            
-           <h2 className="text-[#22c55e] text-5xl md:text-7xl font-black tracking-tighter mb-4 drop-shadow-[0_4px_12px_rgba(34,197,94,0.2)]">
+           <h2 className="text-[#22c55e] text-4xl md:text-7xl font-black tracking-tighter mb-4 drop-shadow-[0_4px_12px_rgba(34,197,94,0.2)]">
               {mainValue}
            </h2>
            

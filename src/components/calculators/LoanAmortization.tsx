@@ -180,11 +180,11 @@ function LoanAmortizationContent() {
                     ]}
                   />
 
-                 <div className="bg-surface border-4 border-border rounded-[3rem] shadow-2xl overflow-hidden animate-slide-up">
-                    <div className="p-8 bg-secondary/5 flex justify-between items-center border-b border-border">
+                 <div className="bg-surface border-4 border-border rounded-[2rem] md:rounded-[3rem] shadow-2xl overflow-hidden animate-slide-up">
+                    <div className="p-6 md:p-8 bg-secondary/5 flex flex-col md:flex-row justify-between items-center gap-4 border-b border-border">
                        <div className="flex items-center gap-3">
                           <PieChart size={18} className="text-blue-500" />
-                          <h3 className="text-sm font-black text-primary uppercase tracking-widest italic">Aylık Ödeme Planı Özeti</h3>
+                          <h3 className="text-xs md:text-sm font-black text-primary uppercase tracking-widest italic">Aylık Ödeme Planı Özeti</h3>
                        </div>
                        <div className="flex gap-2">
                           <button onClick={handleDownload} className="p-3 bg-white dark:bg-zinc-800 rounded-xl border border-border shadow-sm hover:translate-y-[-2px] transition-all hover:text-emerald-500"><Download size={14} /></button>
@@ -192,32 +192,32 @@ function LoanAmortizationContent() {
                        </div>
                     </div>
 
-                    <div className="max-h-[600px] overflow-y-auto scrollbar-thin scrollbar-thumb-blue-500/20">
+                    <div className="table-responsive max-h-[600px]">
                        <table className="w-full text-left border-collapse">
                           <thead className="sticky top-0 bg-white dark:bg-zinc-900 border-b-2 border-border z-10">
                              <tr>
-                                <th className="p-6 text-[10px] font-black text-muted uppercase tracking-tighter">DÖNEM</th>
-                                <th className="p-6 text-[10px] font-black text-muted uppercase tracking-tighter">TAKSİT</th>
-                                <th className="p-6 text-[10px] font-black text-muted uppercase tracking-tighter">ANAPARA</th>
-                                <th className="p-6 text-[10px] font-black text-muted uppercase tracking-tighter">FAİZ</th>
-                                <th className="p-6 text-[10px] font-black text-muted uppercase tracking-tighter text-right">KALAN BORÇ</th>
+                                <th className="p-4 md:p-6 text-[10px] font-black text-muted uppercase tracking-tighter">DÖNEM</th>
+                                <th className="p-4 md:p-6 text-[10px] font-black text-muted uppercase tracking-tighter">TAKSİT</th>
+                                <th className="p-4 md:p-6 text-[10px] font-black text-muted uppercase tracking-tighter">ANAPARA</th>
+                                <th className="p-4 md:p-6 text-[10px] font-black text-muted uppercase tracking-tighter">FAİZ</th>
+                                <th className="p-4 md:p-6 text-[10px] font-black text-muted uppercase tracking-tighter text-right">KALAN BORÇ</th>
                              </tr>
                           </thead>
                           <tbody className="divide-y divide-border/40">
                              {summary.schedule.map((row) => (
                                 <tr key={row.period} className="hover:bg-blue-500/5 transition-all group">
-                                   <td className="p-6 text-xs font-black text-muted italic">#{row.period}</td>
-                                   <td className="p-6 text-xs font-bold text-primary">{formatCurrency(row.payment)}</td>
-                                   <td className="p-6 text-xs font-bold text-emerald-600">{formatCurrency(row.principal)}</td>
-                                   <td className="p-6 text-xs font-bold text-red-500">{formatCurrency(row.interestAmt)}</td>
-                                   <td className="p-6 text-xs font-black text-primary text-right tracking-tighter">{formatCurrency(row.balance)}</td>
+                                   <td className="p-4 md:p-6 text-xs font-black text-muted italic">#{row.period}</td>
+                                   <td className="p-4 md:p-6 text-xs font-bold text-primary">{formatCurrency(row.payment)}</td>
+                                   <td className="p-4 md:p-6 text-xs font-bold text-emerald-600">{formatCurrency(row.principal)}</td>
+                                   <td className="p-4 md:p-6 text-xs font-bold text-red-500">{formatCurrency(row.interestAmt)}</td>
+                                   <td className="p-4 md:p-6 text-xs font-black text-primary text-right tracking-tighter">{formatCurrency(row.balance)}</td>
                                 </tr>
                              ))}
                           </tbody>
                        </table>
                     </div>
                     
-                    <div className="p-8 bg-zinc-900 text-center">
+                    <div className="p-6 md:p-8 bg-zinc-900 text-center">
                        <p className="text-[10px] font-black text-white/20 uppercase tracking-widest italic">Projeksiyonun Sonu • {months} Ay Tamamlandı</p>
                     </div>
                  </div>

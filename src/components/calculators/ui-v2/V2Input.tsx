@@ -10,6 +10,7 @@ interface V2InputProps {
   subLabel?: string;
   placeholder?: string;
   type?: "text" | "number" | "date" | "time";
+  inputMode?: "none" | "text" | "decimal" | "numeric" | "tel" | "search" | "email" | "url";
   step?: string;
   min?: string;
   max?: string;
@@ -27,6 +28,7 @@ export const V2Input: React.FC<V2InputProps> = ({
   subLabel,
   placeholder,
   type = "number",
+  inputMode,
   step,
   min,
   max,
@@ -35,12 +37,18 @@ export const V2Input: React.FC<V2InputProps> = ({
   readOnly = false,
   disabled = false,
 }) => {
+  // Determine best inputMode for mobile keyboard
+  const derivedInputMode = inputMode || (type === "number" ? "decimal" : undefined);
+
   return (
-    <div className={`space-y-2 ${className} ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
-      <label className="calc-input-label">{label}</label>
-      <div className="calc-input-key">
+    <div className={`space-y-3 ${className} ${disabled ? 'opacity-50 pointer-events-none' : ''}`}>
+      <label className="calc-input-label flex items-center gap-2 cursor-pointer">
+        {label}
+      </label>
+      <div className="calc-input-key transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-500/20">
         <input
           type={type}
+          inputMode={derivedInputMode}
           value={value}
           onChange={(e) => !readOnly && !disabled && onChange?.(e.target.value)}
           className={`calc-input-field ${fieldClassName}`}
@@ -54,7 +62,7 @@ export const V2Input: React.FC<V2InputProps> = ({
         {unit && <span className="calc-unit-v2">{unit}</span>}
       </div>
       {subLabel && (
-        <div className="text-[10px] font-bold text-muted uppercase tracking-widest opacity-60 px-1">
+        <div className="text-[10px] font-black text-muted uppercase tracking-[0.2em] opacity-50 px-2 italic">
           {subLabel}
         </div>
       )}

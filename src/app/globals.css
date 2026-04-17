@@ -101,7 +101,7 @@ input, textarea, select {
 .panel {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 42px; /* Smoother, larger radius for premium feel */
+  border-radius: var(--radius-panel);
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.02), 0 1px 1px rgba(0, 0, 0, 0.01);
   transition: all var(--transition-normal);
   overflow: hidden;
@@ -285,8 +285,62 @@ input, textarea, select {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 1.5rem;
+  padding: 0 var(--container-px, 1.5rem);
   width: 100%;
+}
+
+:root {
+  --container-px: 1.5rem;
+  --section-py: 3rem;
+  --radius-panel: 42px;
+}
+
+@media (max-width: 768px) {
+  :root {
+    --container-px: 1rem;
+    --section-py: 2rem;
+    --radius-panel: 24px;
+  }
+}
+
+/* Base Panel utilities */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-panel); 
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.02), 0 1px 1px rgba(0, 0, 0, 0.01);
+  transition: all var(--transition-normal);
+  overflow: hidden;
+}
+
+/* Table Responsiveness - Compact & Readable */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.table-responsive table {
+  min-width: 600px; /* Ensures table doesn't squish too much */
+}
+
+/* Prevent iOS Zoom on focus */
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Touch Target sizing */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Ad-Friendly Layout */

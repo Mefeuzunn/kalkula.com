@@ -465,35 +465,37 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
   };
 
   return (
-    <div className="container layout-3col" style={{ padding: "3rem 1rem" }}>
+    <div className="container layout-3col" style={{ padding: "1.5rem 0.75rem" }}>
       <LeftSidebar />
 
       <div className="main-content">
         <AdPlaceholder type="leaderboard" />
 
         {category && (
-          <nav style={{ marginBottom: "1.5rem", fontSize: "0.875rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+          <nav style={{ marginBottom: "1rem", fontSize: "0.75rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
             <Link href="/" style={{ color: "var(--text-muted)" }}>Ana Sayfa</Link>
-            <span>›</span>
+            <span style={{ opacity: 0.5 }}>›</span>
             <Link href={`/kategori/${category.slug}`} style={{ color: "var(--text-muted)" }}>{category.name}</Link>
-            <span>›</span>
+            <span style={{ opacity: 0.5 }}>›</span>
             <span style={{ color: "var(--text-primary)", fontWeight: 500 }}>{calc.title}</span>
           </nav>
         )}
 
         <div className="panel" style={{ padding: 0 }}>
-          <div style={{ padding: "2.5rem 2.5rem 1.75rem", background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}>
-            <h1 style={{ fontSize: "2.25rem", fontWeight: 800, marginBottom: "0.5rem", letterSpacing: "-0.02em" }}>{calc.title}</h1>
-            <p style={{ color: "var(--text-secondary)", fontSize: "1.05rem", lineHeight: 1.6, maxWidth: "800px" }}>
-              {calc.description}
-            </p>
+          <div style={{ padding: "1.5rem 1.25rem", background: "var(--bg-secondary)", borderBottom: "1px solid var(--border)" }}>
+            <div className="md:px-4">
+              <h1 style={{ fontSize: "1.75rem", fontWeight: 800, marginBottom: "0.5rem", letterSpacing: "-0.02em", lineHeight: 1.2 }}>{calc.title}</h1>
+              <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", lineHeight: 1.5, maxWidth: "800px" }}>
+                {calc.description}
+              </p>
+            </div>
           </div>
 
-          <div style={{ padding: "1.5rem 2.5rem" }}>
+          <div style={{ padding: "1rem 1.25rem" }}>
             <AdPlaceholder type="native" />
           </div>
 
-          <div style={{ padding: "2.5rem" }}>
+          <div className="p-4 md:p-10">
             {renderCalculator()}
             <CalculatorGuide slug={slug} />
           </div>
