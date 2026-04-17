@@ -5,7 +5,6 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import Footer from "@/components/Footer";
-import SitewideFaq from "@/components/SitewideFaq";
 import { CookieConsent } from "@/components/CookieConsent";
 
 const outfit = Outfit({
@@ -96,7 +95,6 @@ export default function RootLayout({
             <main style={{ paddingTop: "64px", minHeight: "calc(100vh - 200px)" }}>
               {children}
             </main>
-            <SitewideFaq />
             <Footer />
             <CookieConsent />
           </TimerProvider>

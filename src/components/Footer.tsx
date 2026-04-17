@@ -68,6 +68,7 @@ export default function Footer() {
               {[
                 { label: "Hakkımızda", href: "/hakkimizda" },
                 { label: "Gizlilik Politikası", href: "/gizlilik" },
+                { label: "SSS", href: "/sss" },
                 { label: "İletişim", href: "/iletisim" },
                 { label: "Hesap Makinesi", href: "/calculator" },
                 { label: "Takvim", href: "/calendar" },
