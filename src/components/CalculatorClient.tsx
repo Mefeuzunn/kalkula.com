@@ -6,6 +6,7 @@ import { getCategoryBySlug, Category, CalculatorInfo } from "@/data/calculators"
 import { LeftSidebar } from "@/components/LeftSidebar";
 import { RightSidebarAds } from "@/components/RightSidebarAds";
 import { AdPlaceholder } from "@/components/AdPlaceholder";
+import { CalculatorGuide } from "@/components/CalculatorGuide";
 
 import dynamic from "next/dynamic";
 
@@ -218,7 +219,7 @@ function GenericCalculator() {
         Bu modül şu an 2026 standartlarına uygun şekilde optimize ediliyor. Çok yakında tam kapasite ile yayında olacak.
       </p>
       <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'center', gap: '0.5rem' }}>
-        {[1,2,3].map(i => <div key={i} className="animate-bounce" style={{ width: '8px', height: '8px', background: 'var(--accent-primary)', borderRadius: '50%', animationDelay: `${i * 0.2}s` }}></div>)}
+        {[1, 2, 3].map(i => <div key={i} className="animate-bounce" style={{ width: '8px', height: '8px', background: 'var(--accent-primary)', borderRadius: '50%', animationDelay: `${i * 0.2}s` }}></div>)}
       </div>
     </div>
   );
@@ -257,7 +258,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "makro-hesaplama": return <MacroCalculator />;
       case "bmr": return <BmrCalculator />;
       case "gunluk-kalori-ihtiyaci": return <CalorieCalculator />;
-      
+
       // Yeni Sağlık Araçları
       case "asi-takvimi": return <VaccinationCalculator />;
       case "bebek-gelisimi": return <BabyGrowthCalculator />;
@@ -279,9 +280,9 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "is-yeri-kredisi":
       case "ticari-arac-kredisi":
       case "ticari-ihtiyac-kredisi": return <LoanSuite />;
-      
+
       case "kredi-odeme-plani": return <LoanAmortization />;
-      
+
       case "kredi-karti-asgari":
       case "kredi-karti-ek-taksit":
       case "kredi-karti-taksitli-nakit-avans":
@@ -294,7 +295,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "kredi-gecikme-faizi":
       case "kredi-yillik-maliyet-orani":
       case "kredi-yapilandirma": return <BankingAdvanced />;
-      
+
       case "faiz": return <InterestCalculator />;
       case "enflasyon": return <InflationCalculator />;
       case "yuzde": return <PercentageCalculator />;
@@ -318,7 +319,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "cevre-hesaplama": return <PerimeterCalculator />;
       case "inc-hesaplama": return <InchConverter />;
       case "mil-hesaplama": return <MileConverter />;
-      
+
       // Sınavlar
       case "aks-puan-hesaplama": return <AksCalculator />;
       case "ehliyet-sinavi-puan": return <EhliyetCalculator />;
@@ -333,7 +334,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "eus-puan": return <EusCalculator />;
       case "iyos-puan": return <IyosCalculator />;
       case "oyp-puan": return <OypCalculator />;
-      
+
       case "netten-brute": return <NetGrossCalculator />;
       case "kidem-tazminati": return <SeveranceCalculator />;
       case "meb-ek-ders-hesaplama": return <MebEkDersCalculator />;
@@ -438,7 +439,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "sivi-basinci-hesaplama": return <FluidPressureCalculator />;
       case "istatistik-hesaplama": return <StatisticsCalculator />;
       case "permutasyon-kombinasyon-hesaplama": return <PermutationCombinationCalculator />;
-      
+
       // PDF Araçları
       case "pdf-birlestir": return <PdfMerge />;
       case "pdf-bolme": return <PdfSplit />;
@@ -448,7 +449,7 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
       case "ne-zaman-emekli-olurum": return <RetirementCalculator />;
       case "yatirim-simulatoru": return <InvestmentSimulator />;
       case "karbon-ayak-izi": return <CarbonFootprintCalculator />;
-      
+
       // Geliştirici & Tasarımcı
       case "glassmorphism-generator": return <GlassGenerator />;
       case "ai-prompt-optimizer": return <AiPromptOptimizer />;
@@ -466,10 +467,10 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
   return (
     <div className="container layout-3col" style={{ padding: "3rem 1rem" }}>
       <LeftSidebar />
-      
+
       <div className="main-content">
         <AdPlaceholder type="leaderboard" />
-        
+
         {category && (
           <nav style={{ marginBottom: "1.5rem", fontSize: "0.875rem", color: "var(--text-muted)", display: "flex", alignItems: "center", gap: "0.4rem" }}>
             <Link href="/" style={{ color: "var(--text-muted)" }}>Ana Sayfa</Link>
@@ -487,16 +488,17 @@ export function CalculatorClient({ slug, calc, category }: CalculatorClientProps
               {calc.description}
             </p>
           </div>
-          
+
           <div style={{ padding: "1.5rem 2.5rem" }}>
-             <AdPlaceholder type="native" />
+            <AdPlaceholder type="native" />
           </div>
 
           <div style={{ padding: "2.5rem" }}>
             {renderCalculator()}
+            <CalculatorGuide slug={slug} />
           </div>
         </div>
-        
+
         <AdPlaceholder type="fluid" style={{ marginTop: '2rem' }} />
 
         <div style={{ marginTop: '3rem' }}>
